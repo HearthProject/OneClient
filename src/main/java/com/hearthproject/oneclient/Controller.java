@@ -1,10 +1,11 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fxnodes.InstanceTile;
+import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.util.launcher.InstanceUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -35,12 +36,29 @@ public class Controller {
     @FXML
     public ComboBox mcVersionComboBox;
 
+    public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
+
     public void onStart(Stage stage) throws IOException {
-        setProgress(40);
         GameVersion gameVersion = MinecraftUtil.loadGameVersion();
         gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
         mcVersionComboBox.getSelectionModel().selectFirst();
+        refreshInstances();
+    }
 
+    public void refreshInstances() {
+        StackPane newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+        instancePane.getChildren().clear();
+        for (Instance instance : InstanceUtil.getInstances().instances) {
+            InstanceTile tile = new InstanceTile(instance);
+            instanceTiles.add(tile);
+            instancePane.getChildren().add(tile);
+        }
+        instancePane.getChildren().add(newInstanceTile);
+
+        //TODO: Remove, this is an example on how to set the instance's button action
+        for (InstanceTile tile : instanceTiles) {
+            tile.setAction(() -> System.out.println(tile.nameLabel.getText()));
+        }
     }
 
     public void onNewInstancePress() {

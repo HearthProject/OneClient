@@ -1,5 +1,7 @@
 package com.hearthproject.oneclient;
 
+import com.hearthproject.oneclient.util.launcher.InstanceUtil;
+import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -7,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class Main extends Application {
@@ -17,6 +20,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        loadData();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL fxmlUrl = classLoader.getResource("gui/main.fxml");
         if (fxmlUrl == null) {
@@ -35,5 +39,10 @@ public class Main extends Application {
         scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
         scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
         controller.onStart(stage);
+    }
+
+    public void loadData() throws IOException {
+        MinecraftUtil.loadGameVersion();
+        InstanceUtil.getInstances();
     }
 }
