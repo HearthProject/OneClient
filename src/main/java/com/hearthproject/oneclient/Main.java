@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class Main extends Application {
         fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
         Parent root = fxmlLoader.load(fxmlUrl.openStream());
         stage.setTitle("One Client");
+        stage.getIcons().add(new Image("icon.png"));
         Scene scene = new Scene(root, 1209, 800);
         stage.setScene(scene);
         stage.show();
