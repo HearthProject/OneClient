@@ -1,10 +1,7 @@
 package com.hearthproject.oneclient;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -25,10 +22,15 @@ public class Controller {
     public Button playButton;
     @FXML
     public Button newInstanceButton;
+    @FXML
+    public TextField instanceNameField;
+    @FXML
+    public ChoiceBox mcVersionChoiceBox;
 
     public void onStart(Stage stage) {
         tabBar.setWidth(Integer.MAX_VALUE);
         setProgress(40);
+        mcVersionChoiceBox.getItems().addAll("1.12.1", "1.12", "1.11.2");
     }
 
     public void onNewInstancePress() {

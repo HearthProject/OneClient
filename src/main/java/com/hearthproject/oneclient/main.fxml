@@ -68,7 +68,7 @@
                   <Insets />
                </opaqueInsets>
                <StackPane.margin>
-                  <Insets />
+                  <Insets bottom="6.0" />
                </StackPane.margin>
             </HBox>
          </children>
@@ -100,7 +100,21 @@
                      <children>
                         <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
                         <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ChoiceBox fx:id="mcVersionChoiceBox" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ChoiceBox>
+                              <TextField fx:id="instanceNameField" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
                      </children>
                   </StackPane>
                </children>
