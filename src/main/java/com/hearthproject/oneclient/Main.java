@@ -2,9 +2,12 @@ package com.hearthproject.oneclient;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class Main extends Application {
 
@@ -14,11 +17,20 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("main.fxml"));
-        Parent root = loader.load();
+	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+	    URL fxmlUrl = classLoader.getResource("gui/main.fxml");
+	    if (fxmlUrl == null) {
+		    System.out.println("An error has occurred!");
+		    return;
+	    }
+	    FXMLLoader fxmlLoader = new FXMLLoader();
+	    fxmlLoader.setLocation(fxmlUrl);
+	    fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+	    Parent root = fxmlLoader.load(fxmlUrl.openStream());
+
         stage.setTitle("One Client");
         Scene scene = new Scene(root, 1000, 800);
-        Controller controller = loader.getController();
+        Controller controller = fxmlLoader.getController();
         controller.onStart(stage);
         stage.setScene(scene);
         stage.show();
