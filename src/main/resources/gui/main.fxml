@@ -86,11 +86,11 @@
                         <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="CENTER">
                            <children>
-                              <ChoiceBox fx:id="instanceChoiceBox" prefWidth="150.0">
+                              <ComboBox fx:id="instanceComboBox" prefWidth="150.0">
                                  <VBox.margin>
                                     <Insets bottom="6.0" />
                                  </VBox.margin>
-                              </ChoiceBox>
+                              </ComboBox>
                               <Button fx:id="playButton" mnemonicParsing="false" onAction="#onPlayPress" text="Play" />
                            </children>
                         </VBox>
@@ -102,11 +102,11 @@
                         <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <ChoiceBox fx:id="mcVersionChoiceBox" prefWidth="150.0">
+                              <ComboBox fx:id="mcVersionComboBox" prefWidth="150.0">
                                  <VBox.margin>
                                     <Insets bottom="6.0" />
                                  </VBox.margin>
-                              </ChoiceBox>
+                              </ComboBox>
                               <TextField fx:id="instanceNameField" promptText="Name">
                                  <VBox.margin>
                                     <Insets bottom="6.0" />

@@ -9,8 +9,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class Controller {
     @FXML
@@ -22,7 +20,7 @@ public class Controller {
     @FXML
     public ProgressBar progressBar;
     @FXML
-    public ChoiceBox instanceChoiceBox;
+    public ComboBox instanceComboBox;
     @FXML
     public Button playButton;
     @FXML
@@ -30,14 +28,14 @@ public class Controller {
     @FXML
     public TextField instanceNameField;
     @FXML
-    public ChoiceBox mcVersionChoiceBox;
+    public ComboBox mcVersionComboBox;
 
     public void onStart(Stage stage) throws IOException {
         tabBar.setWidth(Integer.MAX_VALUE);
         setProgress(40);
-	    GameVersion gameVersion = MinecraftUtil.loadGameVersion();
-	    gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionChoiceBox.getItems().add(version.id));
-	    mcVersionChoiceBox.getSelectionModel().selectFirst();
+        GameVersion gameVersion = MinecraftUtil.loadGameVersion();
+        gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
+        mcVersionComboBox.getSelectionModel().selectFirst();
 
     }
 
