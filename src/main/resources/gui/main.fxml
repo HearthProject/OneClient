@@ -35,13 +35,18 @@
                         <Insets left="6.0" right="6.0" />
                      </HBox.margin>
                   </StackPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                  <StackPane>
                      <children>
-                        <Rectangle fill="#343434" height="165.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="328.0">
+                        <Rectangle fill="#343434" height="165.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="165.0">
                            <StackPane.margin>
                               <Insets />
                            </StackPane.margin>
                         </Rectangle>
+                        <ImageView fitHeight="165.0" fitWidth="165.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../logo_big.png" />
+                           </image>
+                        </ImageView>
                      </children>
                      <HBox.margin>
                         <Insets left="6.0" right="6.0" />
