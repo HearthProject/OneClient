@@ -32,7 +32,7 @@ public class Main extends Application {
         fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
         Parent root = fxmlLoader.load(fxmlUrl.openStream());
         stage.setTitle("One Client");
-        Scene scene = new Scene(root, 1000, 800);
+        Scene scene = new Scene(root, 1209, 800);
         stage.setScene(scene);
         stage.show();
         Controller controller = fxmlLoader.getController();

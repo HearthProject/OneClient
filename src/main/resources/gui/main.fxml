@@ -78,24 +78,8 @@
       </StackPane>
       <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="518.0" prefWidth="1209.0">
          <content>
-            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="440.0" prefWidth="1194.0" vgap="6.0">
+            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="440.0" prefWidth="1194.0">
                <children>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
-                        <VBox alignment="CENTER">
-                           <children>
-                              <ComboBox fx:id="instanceComboBox" prefWidth="150.0">
-                                 <VBox.margin>
-                                    <Insets bottom="6.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                              <Button fx:id="playButton" mnemonicParsing="false" onAction="#onPlayPress" text="Play" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
                   <StackPane>
                      <children>
                         <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
@@ -113,6 +97,279 @@
                                  </VBox.margin>
                               </TextField>
                               <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox1" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField1" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton1" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox2" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField2" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton2" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox3" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField3" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton3" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox4" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField4" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton4" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox5" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField5" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton5" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox6" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField6" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton6" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox7" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField7" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton7" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox8" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField8" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton8" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox9" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField9" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton9" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox10" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField10" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton10" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox11" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField11" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton11" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox12" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField12" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton12" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ComboBox fx:id="mcVersionComboBox13" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                              <TextField fx:id="instanceNameField13" promptText="Name">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="newInstanceButton13" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
                            </children>
                         </VBox>
                      </children>
