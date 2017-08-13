@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+}
+
+sourceCompatibility = 1.8
+version = '0.0.1'
+
+// Fetch build number from Jenkins
+def ENV = System.getenv()
+if (ENV.BUILD_NUMBER) {
+    version = version + "." + "${System.getenv().BUILD_NUMBER}"
+}
+
+mainClassName = "com.hearthproject.oneclient.Main"
+
+repositories {
+    mavenCentral()
+
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.zeroturnaround:zt-zip:1.9'
+    compile 'com.intellij:forms_rt:7.0.3'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'OneClient',
+                'Implementation-Version': version,
+                'Main-Class': 'com.hearthproject.oneclient.Main'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+

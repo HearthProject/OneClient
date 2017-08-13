@@ -1,5 +1,19 @@
-*out
+# Ignore everything
+/*
 
-#IntelliJ
-*.idea
-*.iml
+# Folders
+!/gradle
+!/src
+
+# Files
+!/.gitattributes
+!/.gitignore
+!/build.gradle
+!/gradle.properties
+!/gradlew
+!/gradlew.bat
+!/HEADER
+!/Jenkinsfile
+!/LICENSE
+!/README.md
+!/settings.gradle
