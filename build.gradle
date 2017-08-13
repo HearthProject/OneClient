@@ -25,14 +25,24 @@ mainClassName = "com.hearthproject.oneclient.Main"
 
 repositories {
     mavenCentral()
+	maven {
+		url "http://files.minecraftforge.net/maven/"
+	}
 
 }
 
+configurations {
+	shade
+	compile.extendsFrom shade
+}
+
 dependencies {
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'commons-io:commons-io:2.5'
-    compile 'org.zeroturnaround:zt-zip:1.9'
-    compile 'com.intellij:forms_rt:7.0.3'
+    shade 'com.google.code.gson:gson:2.7'
+	shade 'commons-io:commons-io:2.5'
+	shade 'org.zeroturnaround:zt-zip:1.9'
+	shade 'com.intellij:forms_rt:7.0.3'
+
+	compileOnly 'net.minecraftforge:installer:1.7'
 }
 
 jar {
@@ -41,6 +51,6 @@ jar {
                 'Implementation-Version': version,
                 'Main-Class': 'com.hearthproject.oneclient.Main'
     }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.shade.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
