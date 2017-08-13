@@ -41,6 +41,6 @@ public class Controller {
     }
 
     public void setProgress(double percent) {
-        progressBar.setProgress(Double.parseDouble("0." + String.valueOf(percent).replace(".", "")));
+        progressBar.setProgress(percent / 100);
     }
 }
