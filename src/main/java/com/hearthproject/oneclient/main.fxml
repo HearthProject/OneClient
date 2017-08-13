@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -12,7 +13,7 @@
    <children>
       <StackPane alignment="TOP_CENTER">
          <children>
-            <Rectangle fx:id="tabBar" fill="#494949" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="5000.0">
+            <Rectangle fx:id="tabBar" fill="#494949" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1218.0">
                <StackPane.margin>
                   <Insets top="40.0" />
                </StackPane.margin></Rectangle>
@@ -75,198 +76,31 @@
             <Insets top="6.0" />
          </VBox.margin>
       </StackPane>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="618.0" prefWidth="1011.0">
+      <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="518.0" prefWidth="1209.0">
          <content>
-            <TilePane hgap="6.0" vgap="6.0">
+            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="440.0" prefWidth="1194.0" vgap="6.0">
                <children>
                   <StackPane>
                      <children>
                         <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <ChoiceBox fx:id="instanceChoiceBox" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets bottom="6.0" />
+                                 </VBox.margin>
+                              </ChoiceBox>
+                              <Button fx:id="playButton" mnemonicParsing="false" onAction="#onPlayPress" text="Play" />
+                           </children>
+                        </VBox>
                      </children>
                   </StackPane>
                   <StackPane>
                      <children>
                         <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../../../Pictures/agrarianskies2.png" />
-                           </image>
-                        </ImageView>
+                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
+                        <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
                      </children>
                   </StackPane>
                </children>
@@ -276,5 +110,10 @@
             </TilePane>
          </content>
       </ScrollPane>
+      <ProgressBar fx:id="progressBar" prefWidth="1197.0" progress="0.0">
+         <VBox.margin>
+            <Insets top="6.0" />
+         </VBox.margin>
+      </ProgressBar>
    </children>
 </VBox>
