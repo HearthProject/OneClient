@@ -9,32 +9,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1209.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.Controller">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1209.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
    <children>
       <StackPane alignment="TOP_CENTER">
          <children>
-            <Rectangle fx:id="tabBar" fill="#494949" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1218.0">
+            <Rectangle fx:id="tabBar" fill="#494949" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1209.0">
                <StackPane.margin>
                   <Insets top="40.0" />
                </StackPane.margin></Rectangle>
-            <HBox alignment="TOP_CENTER" StackPane.alignment="TOP_CENTER">
+            <HBox fx:id="barBox" alignment="CENTER" spacing="25.0">
                <children>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <Rectangle fill="#343434" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                     </children>
-                     <HBox.margin>
-                        <Insets right="6.0" />
-                     </HBox.margin>
-                  </StackPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <Rectangle fill="#343434" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                     </children>
-                     <HBox.margin>
-                        <Insets left="6.0" right="6.0" />
-                     </HBox.margin>
-                  </StackPane>
+                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Get Content" />
+                  <VBox alignment="CENTER" />
+                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Instances" />
                   <StackPane>
                      <children>
                         <Rectangle fill="#343434" height="165.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="165.0">
@@ -48,32 +35,12 @@
                            </image>
                         </ImageView>
                      </children>
-                     <HBox.margin>
-                        <Insets left="6.0" right="6.0" />
-                     </HBox.margin>
                   </StackPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <Rectangle fill="#343434" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                     </children>
-                     <HBox.margin>
-                        <Insets left="6.0" right="6.0" />
-                     </HBox.margin>
-                  </StackPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <Rectangle fill="#343434" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                     </children>
-                     <HBox.margin>
-                        <Insets left="6.0" />
-                     </HBox.margin>
-                  </StackPane>
+                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="About" />
+                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Settings" />
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
                <StackPane.margin>
-                  <Insets bottom="6.0" />
+                  <Insets left="50.0" right="50.0" />
                </StackPane.margin>
             </HBox>
          </children>
@@ -81,9 +48,9 @@
             <Insets top="6.0" />
          </VBox.margin>
       </StackPane>
-      <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="518.0" prefWidth="1209.0">
+      <ScrollPane id="#dark-background" fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="600.0" prefWidth="1209.0" style="-fx-background-color: transparent;">
          <content>
-            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="440.0" prefWidth="1194.0">
+            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="582.0" prefWidth="1195.0" styleClass="background">
                <children>
                   <StackPane>
                      <children>
@@ -91,16 +58,6 @@
                         <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <ComboBox fx:id="mcVersionComboBox" prefWidth="150.0">
-                                 <VBox.margin>
-                                    <Insets bottom="6.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                              <TextField fx:id="instanceNameField" promptText="Name">
-                                 <VBox.margin>
-                                    <Insets bottom="6.0" />
-                                 </VBox.margin>
-                              </TextField>
                               <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
                            </children>
                         </VBox>
@@ -112,11 +69,9 @@
                </padding>
             </TilePane>
          </content>
-      </ScrollPane>
-      <ProgressBar fx:id="progressBar" prefWidth="1197.0" progress="0.0">
          <VBox.margin>
-            <Insets top="6.0" />
+            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
          </VBox.margin>
-      </ProgressBar>
+      </ScrollPane>
    </children>
 </VBox>

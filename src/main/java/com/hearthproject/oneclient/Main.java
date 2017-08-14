@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient;
 
-import com.hearthproject.oneclient.util.launcher.InstanceUtil;
+import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -35,9 +36,10 @@ public class Main extends Application {
         stage.setTitle("One Client");
         stage.getIcons().add(new Image("icon.png"));
         Scene scene = new Scene(root, 1209, 800);
+        scene.getStylesheets().add("gui/css/theme.css");
         stage.setScene(scene);
         stage.show();
-        Controller controller = fxmlLoader.getController();
+        MainController controller = fxmlLoader.getController();
         scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
         scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
         controller.onStart(stage);
@@ -45,6 +47,6 @@ public class Main extends Application {
 
     public void loadData() throws IOException {
         MinecraftUtil.loadGameVersion();
-        InstanceUtil.getInstances();
+        InstanceManager.getInstances();
     }
 }

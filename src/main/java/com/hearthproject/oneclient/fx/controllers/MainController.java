@@ -1,13 +1,13 @@
-package com.hearthproject.oneclient;
+package com.hearthproject.oneclient.fx.controllers;
 
-import com.hearthproject.oneclient.fxnodes.InstanceTile;
+import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
-import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
-import com.hearthproject.oneclient.util.launcher.InstanceUtil;
-import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.shape.Rectangle;
@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Controller {
+public class MainController {
     @FXML
     public Rectangle tabBar;
     @FXML
@@ -24,31 +24,23 @@ public class Controller {
     @FXML
     public TilePane instancePane;
     @FXML
-    public ProgressBar progressBar;
-    @FXML
-    public ComboBox instanceComboBox;
-    @FXML
-    public Button playButton;
+    public HBox barBox;
     @FXML
     public Button newInstanceButton;
-    @FXML
-    public TextField instanceNameField;
-    @FXML
-    public ComboBox mcVersionComboBox;
 
     public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 
     public void onStart(Stage stage) throws IOException {
-        GameVersion gameVersion = MinecraftUtil.loadGameVersion();
-        gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
-        mcVersionComboBox.getSelectionModel().selectFirst();
+//        GameVersion gameVersion = MinecraftUtil.loadGameVersion();
+//        gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
+//        mcVersionComboBox.getSelectionModel().selectFirst();
         refreshInstances();
     }
 
     public void refreshInstances() {
         StackPane newInstanceTile = (StackPane) instancePane.getChildren().get(0);
         instancePane.getChildren().clear();
-        for (Instance instance : InstanceUtil.getInstances().instances) {
+        for (Instance instance : InstanceManager.getInstances()) {
             InstanceTile tile = new InstanceTile(instance);
             instanceTiles.add(tile);
             instancePane.getChildren().add(tile);
@@ -70,10 +62,5 @@ public class Controller {
 
     public void onSceneResize(Scene scene) {
         tabBar.setWidth(scene.getWidth());
-        progressBar.setPrefWidth(scene.getWidth() - 12);
-    }
-
-    public void setProgress(double percent) {
-        progressBar.setProgress(percent / 100);
     }
 }

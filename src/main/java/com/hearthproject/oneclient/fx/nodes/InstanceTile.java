@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.fxnodes;
+package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import javafx.geometry.Pos;

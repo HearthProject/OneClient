@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+
+<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="307.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.NewInstanceController">
+    <children>
+        <StackPane>
+            <children>
+                <Rectangle fill="#262626" height="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="100.0" />
+                <ImageView fx:id="iconPreview" fitHeight="96.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="6.0" />
+            </VBox.margin>
+        </StackPane>
+        <HBox alignment="CENTER">
+            <children>
+                <TextField fx:id="instanceNameField" prefHeight="27.0" prefWidth="200.0" promptText="Instance Name">
+                    <HBox.margin>
+                        <Insets right="6.0" />
+                    </HBox.margin>
+                </TextField>
+                <Button fx:id="chooseIconButton" mnemonicParsing="false" onAction="#onChooseIconButtonPress" prefHeight="27.0" prefWidth="100.0" text="Choose Icon..." />
+            </children>
+            <VBox.margin>
+                <Insets bottom="6.0" />
+            </VBox.margin>
+        </HBox>
+        <HBox alignment="CENTER">
+            <children>
+                <ComboBox fx:id="mcVersionComboBox" prefHeight="29.0" prefWidth="180.0" promptText="Minecraft Version">
+                    <HBox.margin>
+                        <Insets right="6.0" />
+                    </HBox.margin>
+                </ComboBox>
+                <CheckBox fx:id="showSnapshotCheckBox" mnemonicParsing="false" onAction="#onShowSnapshotsChange" text="Show Snapshots" />
+            </children>
+            <padding>
+                <Insets bottom="6.0" />
+            </padding>
+        </HBox>
+        <HBox alignment="CENTER">
+            <children>
+                <ComboBox fx:id="modLoaderComboBox" onAction="#onModLoaderComboBoxChange" prefHeight="29.0" prefWidth="127.0" promptText="Mod Loader">
+                    <HBox.margin>
+                        <Insets right="6.0" />
+                    </HBox.margin>
+                </ComboBox>
+                <ComboBox fx:id="modLoaderVersionComboBox" disable="true" prefHeight="29.0" prefWidth="174.0" promptText="Mod Loader Version" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="6.0" />
+            </VBox.margin>
+        </HBox>
+        <Button id="default_button" fx:id="createButton" mnemonicParsing="false" onAction="#onCreateButtonPress" prefHeight="27.0" prefWidth="306.0" text="Create" />
+    </children>
+</VBox>

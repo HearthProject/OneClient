@@ -1,0 +1,165 @@
+.background{
+    -fx-background-color: #494949;
+}
+
+#light-background {
+    -fx-background-color: #EFEFEF;
+}
+
+#dark-background {
+     -fx-background-color: #494949;
+}
+
+.scroll-pane:focused {
+        -fx-background-color: #494949;
+        -fx-background-insets: 0, 0, 0;
+        -fx-background-radius: 0, 0, 0;
+}
+
+/*
+    Button
+*/
+
+.button {
+    -fx-background-color: #343434;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: #1E1E1E;
+    -fx-border-width: 2;
+    -fx-padding: 3 8 3 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.button:hover{
+    -fx-background-color: #686868;
+}
+
+.button:focused{
+    -fx-border-color: #3CE0A0;
+}
+
+/*
+    Bar Button
+*/
+
+#bar-button {
+    -fx-background-color: #343434;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: #1E1E1E;
+    -fx-border-width: 0;
+    -fx-padding: 3 8 3 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 26px;
+}
+
+#bar-button:hover{
+    -fx-background-color: #686868;
+}
+
+#bar-button:focused{
+    -fx-border-color: #3CE0A0;
+}
+
+/*
+    Text Field
+*/
+
+.text-field:hover{
+    -fx-background-color: #686868;
+}
+
+.text-field {
+    -fx-background-color: #343434;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: #1E1E1E;
+    -fx-border-width: 2;
+    -fx-padding: 3 8 3 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.text-field:focused {
+    -fx-border-color: #3CE0A0;
+}
+
+/*
+    Check Box
+*/
+
+.check-box {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.check-box .box {
+    -fx-background-color: #343434;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: #1E1E1E;
+    -fx-border-width: 2;
+    -fx-padding: 3 3 3 3;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.check-box .box:hover{
+    -fx-background-color: #686868;
+}
+
+.check-box:focused .box{
+    -fx-border-color: #3CE0A0;
+}
+
+.check-box .mark {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+
+    -fx-padding:7px;
+    -fx-shape: "M1,10L3,8L7,12L14,5L16,7L7,16Z"
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #FFFFFF;
+}
+
+/*
+    Combo Box
+*/
+
+.combo-box-base {
+    -fx-background-color: #343434;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: #1E1E1E;
+    -fx-border-width: 2;
+    -fx-padding: 0 4 0 4;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+
+}
+
+.combo-box-base:hover{
+    -fx-background-color: #686868;
+}
+
+
+.combo-box-base .list-cell{
+    -fx-text-fill: white;
+}
+
+.combo-box-base .arrow {
+    -fx-background-color: transparent, #FFFFFF;
+}
+
+.combo-box:focused {
+    -fx-border-color: #3CE0A0;
+}
