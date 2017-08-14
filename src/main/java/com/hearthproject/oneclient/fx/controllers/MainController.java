@@ -18,59 +18,59 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainController {
-    @FXML
-    public Rectangle tabBar;
-    @FXML
-    public ScrollPane scrollPane;
-    @FXML
-    public TilePane instancePane;
-    @FXML
-    public HBox barBox;
-    @FXML
-    public Button newInstanceButton;
+	@FXML
+	public Rectangle tabBar;
+	@FXML
+	public ScrollPane scrollPane;
+	@FXML
+	public TilePane instancePane;
+	@FXML
+	public HBox barBox;
+	@FXML
+	public Button newInstanceButton;
 
-    public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
+	public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 
-    private StackPane newInstanceTile;
+	private StackPane newInstanceTile;
 
-    public void onStart(Stage stage) throws IOException {
-    	newInstanceTile = (StackPane) instancePane.getChildren().get(0);
-        refreshInstances();
-    }
+	public void onStart(Stage stage) throws IOException {
+		newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+		refreshInstances();
+	}
 
-    public void refreshInstances() {
-    	InstanceManager.load();
-        instancePane.getChildren().clear();
-        for (Instance instance : InstanceManager.getInstances()) {
-            InstanceTile tile = new InstanceTile(instance);
-            instanceTiles.add(tile);
-            instancePane.getChildren().add(tile);
-        }
-        instancePane.getChildren().add(newInstanceTile);
+	public void refreshInstances() {
+		InstanceManager.load();
+		instancePane.getChildren().clear();
+		for (Instance instance : InstanceManager.getInstances()) {
+			InstanceTile tile = new InstanceTile(instance);
+			instanceTiles.add(tile);
+			instancePane.getChildren().add(tile);
+		}
+		instancePane.getChildren().add(newInstanceTile);
 
-        //TODO: Remove, this is an example on how to set the instance's button action
-        for (InstanceTile tile : instanceTiles) {
-            tile.setAction(() -> {
-	            Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
-	            try {
-		            MinecraftUtil.loadMC(instance);
-	            } catch (IOException e) {
-		            //TODO catch the errors and show a warning
-		            e.printStackTrace();
-	            }
-            });
+		//TODO: Remove, this is an example on how to set the instance's button action
+		for (InstanceTile tile : instanceTiles) {
+			tile.setAction(() -> {
+				Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
+				try {
+					MinecraftUtil.loadMC(instance);
+				} catch (IOException e) {
+					//TODO catch the errors and show a warning
+					e.printStackTrace();
+				}
+			});
 
-        }
-    }
+		}
+	}
 
-    public void onNewInstancePress() {
-        NewInstanceController.start();
-    }
+	public void onNewInstancePress() {
+		NewInstanceController.start();
+	}
 
-    public void onPlayPress() {
-    }
+	public void onPlayPress() {
+	}
 
-    public void onSceneResize(Scene scene) {
-        tabBar.setWidth(scene.getWidth());
-    }
+	public void onSceneResize(Scene scene) {
+		tabBar.setWidth(scene.getWidth());
+	}
 }

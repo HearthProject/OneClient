@@ -23,7 +23,7 @@ public class MinecraftUtil {
 	private static GameVersion version = null;
 
 	public static GameVersion loadGameVersion() throws IOException {
-		if(version == null){
+		if (version == null) {
 			String data = IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
 			version = JsonUtil.GSON.fromJson(data, GameVersion.class);
 			return version;
@@ -31,23 +31,22 @@ public class MinecraftUtil {
 		return version;
 	}
 
-
 	public static void loadMC(Instance instance) throws IOException {
 		File launcher = new File(Constants.RUNDIR, "launcher.jar");
 		File mcDir = new File(Constants.RUNDIR, "minecraft");
-		if(!launcher.exists()){ //TODO check hash
+		if (!launcher.exists()) { //TODO check hash
 			System.out.println("Downloading minecraft launcher");
 			FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar"), launcher);
 		}
 
 		System.out.println("Creating launcher json");
 		String versionID = instance.minecraftVersion;
-		if(instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()){
+		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()) {
 			versionID = versionID + "-" + instance.modLoader.toLowerCase() + instance.minecraftVersion + "-" + instance.modLoaderVersion;
 		}
 		checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, versionID));
 
-		if(instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()){
+		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()) {
 			System.out.println("Downloading forge installer");
 			ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}
@@ -57,19 +56,19 @@ public class MinecraftUtil {
 	}
 
 	public static void checkLauncherProfiles(File mcDir, LauncherProfile.Profile profile) throws IOException {
-		File launcherProfiles = new File(mcDir,"launcher_profiles.json");
+		File launcherProfiles = new File(mcDir, "launcher_profiles.json");
 
 		LauncherProfile launcherProfile;
-		if(launcherProfiles.exists()){
+		if (launcherProfiles.exists()) {
 			launcherProfile = JsonUtil.GSON.fromJson(FileUtils.readFileToString(launcherProfiles, StandardCharsets.UTF_8), LauncherProfile.class);
 		} else {
 			launcherProfile = new LauncherProfile();
 		}
 
-		if(launcherProfile.profiles == null){
+		if (launcherProfile.profiles == null) {
 			launcherProfile.profiles = new HashMap<>();
 		}
-		if(launcherProfile.profiles.containsKey(profile.name)){
+		if (launcherProfile.profiles.containsKey(profile.name)) {
 			launcherProfile.profiles.get(profile.name).lastVersionId = profile.lastVersionId;
 		} else {
 			launcherProfile.profiles.put(profile.name, profile);
@@ -83,6 +82,5 @@ public class MinecraftUtil {
 	public static void main(String[] args) throws IOException {
 		loadMC(null);
 	}
-
 
 }

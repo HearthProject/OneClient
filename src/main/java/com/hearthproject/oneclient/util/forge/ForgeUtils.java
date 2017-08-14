@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ForgeUtils {
@@ -28,10 +27,9 @@ public class ForgeUtils {
 		ForgeInstaller.installForge(file);
 	}
 
-
 	//http://files.minecraftforge.net/maven/net/minecraftforge/forge/json
 	public static ForgeVersions loadForgeVerions() throws IOException {
-		if(forgeVersions != null){
+		if (forgeVersions != null) {
 			return forgeVersions;
 		}
 		String jsonStr = IOUtils.toString(new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/json"));
