@@ -1,6 +1,5 @@
 package com.hearthproject.oneclient.util.minecraft;
 
-import com.google.common.base.Predicate;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
@@ -12,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -43,10 +41,17 @@ public class MinecraftUtil {
 		}
 
 		System.out.println("Creating launcher json");
-		checkLauncherProfiles(mcDir, new LauncherProfile.Profile("TestProfile", "1.12.1-forge1.12.1-14.22.0.2452"));
+		String versionID = instance.minecraftVersion;
+		if(instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()){
+			versionID = versionID + "-" + instance.modLoader + instance.modLoaderVersion;
+		}
+		checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, versionID));
 
-		System.out.println("Downloading forge installer");
-		ForgeUtils.installForge(mcDir, "1.12.1-14.22.0.2452");
+		if(instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()){
+			System.out.println("Downloading forge installer");
+			ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
+		}
+
 		ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", launcher.getAbsolutePath(), "--workDir", mcDir.getAbsolutePath());
 		processBuilder.start();
 	}

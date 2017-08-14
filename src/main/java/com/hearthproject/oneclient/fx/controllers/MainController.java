@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,12 +31,15 @@ public class MainController {
 
     public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 
+    private StackPane newInstanceTile;
+
     public void onStart(Stage stage) throws IOException {
+    	newInstanceTile = (StackPane) instancePane.getChildren().get(0);
         refreshInstances();
     }
 
     public void refreshInstances() {
-        StackPane newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+    	InstanceManager.load();
         instancePane.getChildren().clear();
         for (Instance instance : InstanceManager.getInstances()) {
             InstanceTile tile = new InstanceTile(instance);
@@ -46,7 +50,16 @@ public class MainController {
 
         //TODO: Remove, this is an example on how to set the instance's button action
         for (InstanceTile tile : instanceTiles) {
-            tile.setAction(() -> System.out.println(tile.nameLabel.getText()));
+            tile.setAction(() -> {
+	            Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
+	            try {
+		            MinecraftUtil.loadMC(instance);
+	            } catch (IOException e) {
+		            //TODO catch the errors and show a warning
+		            e.printStackTrace();
+	            }
+            });
+
         }
     }
 

@@ -78,13 +78,19 @@ public class NewInstanceController {
     }
 
     public void onCreateButtonPress() {
-        if (!instanceNameField.getText().isEmpty()) {
-            for (Instance instance : InstanceManager.getInstances()) {
-                if (!instance.name.equals(instanceNameField.getText())) {
-
-                }
-            }
-        }
+    	Instance instance = new Instance(instanceNameField.getText());
+    	instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
+    	InstanceManager.addInstance(instance);
+    	stage.close();
+    	Main.mainController.refreshInstances();
+    	//TODO check the instnace can be added and is unique
+//        if (!instanceNameField.getText().isEmpty()) {
+//            for (Instance instance : InstanceManager.getInstances()) {
+//                if (!instance.name.equals(instanceNameField.getText())) {
+//
+//                }
+//            }
+//        }
     }
 
     public void onChooseIconButtonPress() {
@@ -95,11 +101,7 @@ public class NewInstanceController {
         try {
 	        mcVersionComboBox.getItems().clear();
             GameVersion gameVersion = MinecraftUtil.loadGameVersion();
-            if (showSnapshotCheckBox.isSelected()) {
-                gameVersion.versions.stream().forEach(version -> mcVersionComboBox.getItems().add(version.id));
-            } else {
-                gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
-            }
+	        gameVersion.versions.stream().filter(version -> version.type.equals("release") || showSnapshotCheckBox.isSelected()).forEach(version -> mcVersionComboBox.getItems().add(version.id));
             mcVersionComboBox.getSelectionModel().selectFirst();
         } catch (IOException e) {
             e.printStackTrace();

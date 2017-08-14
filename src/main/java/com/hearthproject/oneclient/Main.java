@@ -17,6 +17,7 @@ import java.net.URL;
 public class Main extends Application {
 
     public static Stage stage;
+    public static MainController mainController;
 
     public static void main(String... args) {
         launch(args);
@@ -42,14 +43,14 @@ public class Main extends Application {
         scene.getStylesheets().add("gui/css/theme.css");
         stage.setScene(scene);
         stage.show();
-        MainController controller = fxmlLoader.getController();
-        scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
-        scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> controller.onSceneResize(scene));
-        controller.onStart(stage);
+	    mainController = fxmlLoader.getController();
+        scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
+        scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
+	    mainController.onStart(stage);
     }
 
     public void loadData() throws IOException {
         MinecraftUtil.loadGameVersion();
-        InstanceManager.getInstances();
+        InstanceManager.load();
     }
 }
