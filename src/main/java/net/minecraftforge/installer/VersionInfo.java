@@ -22,7 +22,7 @@ import java.util.List;
 //Taken from: https://github.com/MinecraftForge/Installer/blob/master/src/main/java/net/minecraftforge/installer/VersionInfo.java
 @SuppressWarnings("unused")
 public class VersionInfo {
-	public static final VersionInfo INSTANCE = new VersionInfo();
+	public static VersionInfo INSTANCE = new VersionInfo();
 	public final JsonRootNode versionData;
 	private final List<OptionalLibrary> optionals = Lists.newArrayList();
 	private final TransformInfo[] transforms;

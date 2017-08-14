@@ -83,7 +83,8 @@ public class MinecraftUtil {
 				FileUtils.copyURLToFile(new URL(mcVersionData.downloads.get("client").url), minecraftJar);
 			}
 			OneClientLogging.log("Starting install of forge");
-			ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
+			String target = ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
+			checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, target));
 		}
 
 		new Thread(() -> {
