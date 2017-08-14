@@ -93,6 +93,7 @@ public class NewInstanceController {
 
     public void reloadMCVerList() {
         try {
+	        mcVersionComboBox.getItems().clear();
             GameVersion gameVersion = MinecraftUtil.loadGameVersion();
             if (showSnapshotCheckBox.isSelected()) {
                 gameVersion.versions.stream().forEach(version -> mcVersionComboBox.getItems().add(version.id));
