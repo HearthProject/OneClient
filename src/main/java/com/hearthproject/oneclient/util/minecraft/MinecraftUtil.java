@@ -43,7 +43,7 @@ public class MinecraftUtil {
 		System.out.println("Creating launcher json");
 		String versionID = instance.minecraftVersion;
 		if(instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()){
-			versionID = versionID + "-" + instance.modLoader + instance.modLoaderVersion;
+			versionID = versionID + "-" + instance.modLoader.toLowerCase() + instance.minecraftVersion + "-" + instance.modLoaderVersion;
 		}
 		checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, versionID));
 

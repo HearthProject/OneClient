@@ -1,10 +1,14 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -21,6 +25,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class NewInstanceController {
     public static Stage stage;
@@ -75,11 +83,43 @@ public class NewInstanceController {
         instanceNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             //Todo: Check if newValue contains any characters other than A-Z, 0-9, Space, Underscore, Parenthesis, and Hyphen
         });
+        modLoaderComboBox.getItems().clear();
+	    modLoaderComboBox.getItems().add("Forge");
+	    modLoaderComboBox.getItems().add("None");
+	    modLoaderComboBox.getSelectionModel().selectFirst();
+
+	    modLoaderComboBox.valueProperty().addListener((observable, oldValue, newValue) -> refreshModLoader());
+
+	    mcVersionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> refreshModLoader());
+
+	    refreshModLoader();
+    }
+
+    public void refreshModLoader(){
+	    if(modLoaderComboBox.getValue().toString().equalsIgnoreCase("Forge")){
+		    modLoaderVersionComboBox.setDisable(false);
+		    modLoaderVersionComboBox.getItems().clear();
+		    try {
+			    ForgeUtils.loadForgeVerions().number.entrySet().stream().filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString())).sorted(Comparator.comparingInt(o -> o.getValue().build)).forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
+		    } catch (IOException e) {
+			    e.printStackTrace();
+		    }
+		    if(modLoaderVersionComboBox.getItems().isEmpty()){
+			    modLoaderVersionComboBox.setDisable(true);
+		    } else {
+			    modLoaderVersionComboBox.getSelectionModel().selectFirst();
+		    }
+
+	    } else {
+		    modLoaderVersionComboBox.setDisable(true);
+	    }
     }
 
     public void onCreateButtonPress() {
     	Instance instance = new Instance(instanceNameField.getText());
     	instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
+    	instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
+    	instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
     	InstanceManager.addInstance(instance);
     	stage.close();
     	Main.mainController.refreshInstances();
