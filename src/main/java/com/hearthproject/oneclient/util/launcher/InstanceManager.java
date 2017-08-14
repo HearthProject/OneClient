@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util.launcher;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class InstanceManager {
 		try {
 			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class InstanceManager {
 				Instance instance = JsonUtil.GSON.fromJson(jsonStr, Instance.class);
 				instances.put(instance.name, instance);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 		});
 	}

@@ -1,5 +1,7 @@
 package com.hearthproject.oneclient.util;
 
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -17,9 +19,7 @@ public class ClasspathUtils {
 			method.setAccessible(true);
 			method.invoke(sysloader, fileURL);
 		} catch (Throwable t) {
-			if (t.getMessage() != null) {
-				System.out.println(t.getMessage());
-			}
+			OneClientLogging.log(t);
 			throw new IOException("Error, could not add URL to system classloader");
 		}
 	}

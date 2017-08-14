@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +49,7 @@ public class NewInstanceController {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/newInstance.fxml");
 			if (fxmlUrl == null) {
-				System.out.println("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.log("An error has occurred loading newInstance.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -68,7 +69,7 @@ public class NewInstanceController {
 			NewInstanceController controller = fxmlLoader.getController();
 			controller.onStart(stage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 	}
 
@@ -96,7 +97,7 @@ public class NewInstanceController {
 			try {
 				ForgeUtils.loadForgeVerions().number.entrySet().stream().filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString())).sorted(Comparator.comparingInt(o -> o.getValue().build)).forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 			if (modLoaderVersionComboBox.getItems().isEmpty()) {
 				modLoaderVersionComboBox.setDisable(true);
@@ -137,8 +138,8 @@ public class NewInstanceController {
 			GameVersion gameVersion = MinecraftUtil.loadGameVersion();
 			gameVersion.versions.stream().filter(version -> version.type.equals("release") || showSnapshotCheckBox.isSelected()).forEach(version -> mcVersionComboBox.getItems().add(version.id));
 			mcVersionComboBox.getSelectionModel().selectFirst();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			OneClientLogging.log(e);
 		}
 	}
 

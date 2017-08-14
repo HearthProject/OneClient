@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -54,9 +55,8 @@ public class MainController {
 				Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
 				try {
 					MinecraftUtil.loadMC(instance);
-				} catch (IOException e) {
-					//TODO catch the errors and show a warning
-					e.printStackTrace();
+				} catch (Throwable e) {
+					OneClientLogging.log(e);
 				}
 			});
 

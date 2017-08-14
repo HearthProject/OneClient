@@ -1,9 +1,12 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
@@ -11,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 
 public class Main extends Application {
@@ -20,17 +22,39 @@ public class Main extends Application {
 	public static MainController mainController;
 
 	public static void main(String... args) {
+		Platform.runLater(() -> {
+			OneClientLogging.setupLogController();
+			OneClientLogging.showLogWindow();//TODO config
+		});
+
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage s) throws Exception {
+	public void start(Stage s) {
+
 		stage = s;
-		loadData();
+		new Thread(() -> {
+			try {
+				loadData();
+			} catch (Exception e) {
+				OneClientLogging.log(e);
+			}
+		}).start();
+
+		try {
+			startLauncher();
+		} catch (Exception e) {
+			OneClientLogging.log(e);
+		}
+	}
+
+	public void startLauncher() throws Exception {
+		OneClientLogging.log("Starting One Client");
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/main.fxml");
 		if (fxmlUrl == null) {
-			System.out.println("An error has occurred loading main.fxml!");
+			OneClientLogging.log("An error has occurred loading main.fxml!");
 			return;
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -47,10 +71,17 @@ public class Main extends Application {
 		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		mainController.onStart(stage);
+
 	}
 
-	public void loadData() throws IOException {
+	public void loadData() throws Exception {
+		OneClientLogging.log("Loading minecraft versions");
 		MinecraftUtil.loadGameVersion();
+		OneClientLogging.log("Loading forge versions");
+		ForgeUtils.loadForgeVerions();
+		OneClientLogging.log("Loading instances");
 		InstanceManager.load();
+		Platform.runLater(() -> mainController.refreshInstances());
+
 	}
 }
