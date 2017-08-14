@@ -95,7 +95,12 @@ public class NewInstanceController {
 			modLoaderVersionComboBox.setDisable(false);
 			modLoaderVersionComboBox.getItems().clear();
 			try {
-				ForgeUtils.loadForgeVerions().number.entrySet().stream().filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString())).sorted(Comparator.comparingInt(o -> o.getValue().build)).forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
+				if(mcVersionComboBox.getSelectionModel().getSelectedItem() != null){
+					ForgeUtils.loadForgeVerions().number.entrySet().stream()
+						.filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString()))
+						.sorted(Comparator.comparingInt(o -> o.getValue().build))
+						.forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
+				}
 			} catch (IOException e) {
 				OneClientLogging.log(e);
 			}
@@ -113,8 +118,10 @@ public class NewInstanceController {
 	public void onCreateButtonPress() {
 		Instance instance = new Instance(instanceNameField.getText());
 		instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
-		instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
-		instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
+		if(modLoaderVersionComboBox.getSelectionModel().getSelectedItem() != null && modLoaderComboBox.getSelectionModel().getSelectedItem() != null){
+			instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
+			instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
+		}
 		InstanceManager.addInstance(instance);
 		stage.close();
 		Main.mainController.refreshInstances();

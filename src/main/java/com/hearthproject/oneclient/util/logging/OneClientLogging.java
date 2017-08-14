@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.util.logging;
 
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import javafx.application.Platform;
@@ -10,10 +11,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,9 +28,14 @@ public class OneClientLogging {
 	static Stage stage;
 
 	public static void log(String string) {
-		System.out.println(string);
-		Platform.runLater(() -> logController.logArea.appendText(getPrefix() + string + "\n"));
-
+		String output = getPrefix() + string;
+		System.out.println(output);
+		Platform.runLater(() -> logController.logArea.appendText(output+ "\n"));
+		try {
+			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void log(Throwable throwable) {
