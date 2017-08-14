@@ -31,9 +31,6 @@ public class MainController {
     public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 
     public void onStart(Stage stage) throws IOException {
-//        GameVersion gameVersion = MinecraftUtil.loadGameVersion();
-//        gameVersion.versions.stream().filter(version -> version.type.equals("release")).forEach(version -> mcVersionComboBox.getItems().add(version.id));
-//        mcVersionComboBox.getSelectionModel().selectFirst();
         refreshInstances();
     }
 
@@ -54,7 +51,7 @@ public class MainController {
     }
 
     public void onNewInstancePress() {
-
+        NewInstanceController.start();
     }
 
     public void onPlayPress() {

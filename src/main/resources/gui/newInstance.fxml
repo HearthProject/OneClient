@@ -22,7 +22,7 @@
         </StackPane>
         <HBox alignment="CENTER">
             <children>
-                <TextField fx:id="instanceNameField" prefHeight="27.0" prefWidth="200.0" promptText="Instance Name">
+                <TextField fx:id="instanceNameField" prefHeight="27.0" prefWidth="204.0" promptText="Instance Name">
                     <HBox.margin>
                         <Insets right="6.0" />
                     </HBox.margin>
@@ -35,12 +35,12 @@
         </HBox>
         <HBox alignment="CENTER">
             <children>
-                <ComboBox fx:id="mcVersionComboBox" prefHeight="29.0" prefWidth="180.0" promptText="Minecraft Version">
+                <ComboBox fx:id="mcVersionComboBox" prefHeight="29.0" prefWidth="185.0" promptText="Minecraft Version">
                     <HBox.margin>
                         <Insets right="6.0" />
                     </HBox.margin>
                 </ComboBox>
-                <CheckBox fx:id="showSnapshotCheckBox" mnemonicParsing="false" onAction="#onShowSnapshotsChange" text="Show Snapshots" />
+                <CheckBox fx:id="showSnapshotCheckBox" mnemonicParsing="false" onAction="#reloadMCVerList" text="Show Snapshots" />
             </children>
             <padding>
                 <Insets bottom="6.0" />
@@ -48,7 +48,7 @@
         </HBox>
         <HBox alignment="CENTER">
             <children>
-                <ComboBox fx:id="modLoaderComboBox" onAction="#onModLoaderComboBoxChange" prefHeight="29.0" prefWidth="127.0" promptText="Mod Loader">
+                <ComboBox fx:id="modLoaderComboBox" onAction="#onModLoaderComboBoxChange" prefHeight="29.0" prefWidth="130.0" promptText="Mod Loader">
                     <HBox.margin>
                         <Insets right="6.0" />
                     </HBox.margin>
@@ -59,6 +59,6 @@
                 <Insets bottom="6.0" />
             </VBox.margin>
         </HBox>
-        <Button id="default_button" fx:id="createButton" mnemonicParsing="false" onAction="#onCreateButtonPress" prefHeight="27.0" prefWidth="306.0" text="Create" />
+        <Button id="default_button" fx:id="createButton" mnemonicParsing="false" onAction="#onCreateButtonPress" prefHeight="27.0" prefWidth="310.0" text="Create" />
     </children>
 </VBox>

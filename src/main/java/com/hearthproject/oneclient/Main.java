@@ -16,17 +16,20 @@ import java.net.URL;
 
 public class Main extends Application {
 
+    public static Stage stage;
+
     public static void main(String... args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage s) throws Exception {
+        stage = s;
         loadData();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL fxmlUrl = classLoader.getResource("gui/main.fxml");
         if (fxmlUrl == null) {
-            System.out.println("An error has occurred!");
+            System.out.println("An error has occurred loading main.fxml!");
             return;
         }
         FXMLLoader fxmlLoader = new FXMLLoader();
