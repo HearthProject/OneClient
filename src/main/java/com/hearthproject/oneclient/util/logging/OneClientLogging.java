@@ -36,7 +36,7 @@ public class OneClientLogging {
 	}
 
 	private static String getPrefix() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss.SSS");
 		Date date = new Date();
 		return "[" + dateFormat.format(date) + "] ";
 	}
