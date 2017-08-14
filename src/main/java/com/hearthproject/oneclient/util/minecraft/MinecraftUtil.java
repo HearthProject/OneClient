@@ -48,7 +48,7 @@ public class MinecraftUtil {
 		}
 		checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, versionID));
 
-		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()) {
+		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty() && instance.modLoader.equalsIgnoreCase("forge")) {
 			OneClientLogging.log("Downloading forge installer");
 			ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}

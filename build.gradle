@@ -46,10 +46,7 @@ dependencies {
 	shade 'org.zeroturnaround:zt-zip:1.9'
 	shade 'com.intellij:forms_rt:7.0.3'
 	shade 'com.mashape.unirest:unirest-java:1.4.9'
-
-
-
-	compileOnly 'net.minecraftforge:installer:1.7'
+	shade 'net.minecraftforge:installer:1.7'
 }
 
 jar {
