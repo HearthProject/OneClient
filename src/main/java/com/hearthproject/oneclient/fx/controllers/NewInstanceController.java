@@ -142,7 +142,7 @@ public class NewInstanceController {
 	public void reloadMCVerList() {
 		try {
 			mcVersionComboBox.getItems().clear();
-			GameVersion gameVersion = MinecraftUtil.loadGameVersion();
+			GameVersion gameVersion = MinecraftUtil.loadGameVersions();
 			gameVersion.versions.stream().filter(version -> version.type.equals("release") || showSnapshotCheckBox.isSelected()).forEach(version -> mcVersionComboBox.getItems().add(version.id));
 			mcVersionComboBox.getSelectionModel().selectFirst();
 		} catch (Exception e) {

@@ -9,7 +9,8 @@ public class ForgeInstaller {
 	protected static void installForge(File installDir) {
 		InstallerAction installerAction = InstallerAction.CLIENT;
 		installerAction.run(installDir, s -> {
-			return true;
+			System.out.println(s);
+			return false;
 		});
 	}
 

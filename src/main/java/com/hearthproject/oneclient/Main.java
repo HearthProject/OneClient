@@ -76,7 +76,7 @@ public class Main extends Application {
 
 	public void loadData() throws Exception {
 		OneClientLogging.log("Loading minecraft versions");
-		MinecraftUtil.loadGameVersion();
+		MinecraftUtil.loadGameVersions();
 		OneClientLogging.log("Loading forge versions");
 		ForgeUtils.loadForgeVerions();
 		OneClientLogging.log("Loading instances");

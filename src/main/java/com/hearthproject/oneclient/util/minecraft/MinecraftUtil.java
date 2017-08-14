@@ -1,9 +1,12 @@
 package com.hearthproject.oneclient.util.minecraft;
 
+import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.json.models.minecraft.launcher.LauncherProfile;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -12,10 +15,12 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class MinecraftUtil {
 
@@ -24,13 +29,29 @@ public class MinecraftUtil {
 
 	private static GameVersion version = null;
 
-	public static GameVersion loadGameVersion() throws Exception {
+	public static GameVersion loadGameVersions() throws Exception {
 		if (version == null) {
 			String data = IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
 			version = JsonUtil.GSON.fromJson(data, GameVersion.class);
 			return version;
 		}
 		return version;
+	}
+
+	public static Version downloadMcVersionData(String minecraftVersion)  {
+		try {
+			Optional<GameVersion.Version> optionalVersion = version.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst();
+			if (optionalVersion.isPresent()) {
+				String jsonData = IOUtils.toString(new URL(optionalVersion.get().url), StandardCharsets.UTF_8);
+				return JsonUtil.GSON.fromJson(jsonData, Version.class);
+			} else {
+				OneClientLogging.log(new RuntimeException("Failed downloading Minecraft json"));
+				return null;
+			}
+		} catch (Throwable throwable){
+			OneClientLogging.log(throwable);
+			return null;
+		}
 	}
 
 	public static void loadMC(Instance instance) throws Throwable {
@@ -44,12 +65,24 @@ public class MinecraftUtil {
 		OneClientLogging.log("Creating launcher json");
 		String versionID = instance.minecraftVersion;
 		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()) {
-			versionID = versionID + "-" + instance.modLoader.toLowerCase() + instance.minecraftVersion + "-" + instance.modLoaderVersion;
+			versionID = versionID + "-" + instance.modLoader + instance.minecraftVersion + "-" + instance.modLoaderVersion;
+			if(instance.modLoader.equalsIgnoreCase("forge")){
+				ForgeVersions.ForgeVersion version = ForgeUtils.getForgeVersion(instance.minecraftVersion + "-" + instance.modLoaderVersion);
+				if(version.branch != null && !version.branch.isEmpty()){
+					versionID = versionID + "-" + version.branch;
+				}
+			}
 		}
 		checkLauncherProfiles(mcDir, new LauncherProfile.Profile(instance.name, versionID));
 
 		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty() && instance.modLoader.equalsIgnoreCase("forge")) {
-			OneClientLogging.log("Downloading forge installer");
+			File minecraftJar = new File(mcDir, "versions/" + instance.minecraftVersion + "/" + instance.minecraftVersion + ".jar");
+			Version mcVersionData = downloadMcVersionData(instance.minecraftVersion);
+			if(!minecraftJar.exists()){
+				OneClientLogging.log("Downloading minecraft jar for version " + instance.minecraftVersion);
+				FileUtils.copyURLToFile(new URL(mcVersionData.downloads.get("client").url), minecraftJar);
+			}
+			OneClientLogging.log("Starting install of forge");
 			ForgeUtils.installForge(mcDir, instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}
 
