@@ -2,19 +2,15 @@ package com.hearthproject.oneclient.fx.controllers.content;
 
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
-import com.hearthproject.oneclient.json.models.curse.ModPacks;
 import com.hearthproject.oneclient.json.models.launcher.ModPack;
-import com.hearthproject.oneclient.util.curse.CurseUtil;
+import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.layout.VBox;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -32,7 +28,7 @@ import java.util.*;
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
 
-	static Map<Integer, Image> imageMap = new HashMap<>();
+	static Map<String, Image> imageMap = new HashMap<>();
 	static boolean search;
 	static String seachTerm;
 	static boolean canceUpdate = false;
@@ -54,25 +50,25 @@ public class PackPaneHeader extends ContentPaneController {
 			try {
 
 				try {
-					List<Integer> idList = new ArrayList<>();
+					List<String> nameList = new ArrayList<>();
 					if(search){
-						Query q = new QueryParser("title", CurseUtil.analyzer).parse(seachTerm);
-						IndexReader reader = DirectoryReader.open(CurseUtil.index);
+						Query q = new QueryParser("title", PackUtil.analyzer).parse(seachTerm);
+						IndexReader reader = DirectoryReader.open(PackUtil.index);
 						IndexSearcher searcher = new IndexSearcher(reader);
 						TopDocs docs = searcher.search(q, 50);
 						ScoreDoc[] hits = docs.scoreDocs;
 						for (int i = 0; i < hits.length; i++) {
 							Document d = searcher.doc(hits[i].doc);
-							idList.add(Integer.parseInt(d.get("id")));
+							nameList.add(d.get("title"));
 						}
 					}
 					int i = 0;
-					for(ModPacks.CursePack cursePack : CurseUtil.loadModPacks().Data){
+					for(ModPack modPack : PackUtil.loadModPacks().packs){
 						if(canceUpdate){
 							break;
 						}
 						if(search){
-							if(!idList.contains(cursePack.Id)){
+							if(!nameList.contains(modPack.name)){
 								continue;
 							}
 						}
@@ -80,11 +76,10 @@ public class PackPaneHeader extends ContentPaneController {
 							break;
 						}
 						i++;
-						ModPack pack = new ModPack(cursePack);
 						if(canceUpdate){
 							break;
 						}
-						Platform.runLater(() -> addPackCard(pack, cursePack.Id));
+						Platform.runLater(() -> addPackCard(modPack));
 					}
 
 				} catch (IOException e) {
@@ -119,7 +114,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 	}
 
-	public static void addPackCard(ModPack modPack, int id){
+	public static void addPackCard(ModPack modPack){
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
@@ -136,11 +131,11 @@ public class PackPaneHeader extends ContentPaneController {
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
 			Image image = null;
-			if(imageMap.containsKey(id)){
-				image = imageMap.get(id);
+			if(imageMap.containsKey(modPack.name)){
+				image = imageMap.get(modPack.name);
 			} else {
 				image = new Image(new URL(modPack.iconUrl).openStream());
-				imageMap.put(id, image);
+				imageMap.put(modPack.name, image);
 			}
 			if(image != null){
 				packCardController.modpackImage.setImage(image);

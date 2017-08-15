@@ -2,7 +2,7 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
-import com.hearthproject.oneclient.util.curse.CurseUtil;
+import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -93,8 +93,8 @@ public class Main extends Application {
         OneClientLogging.log("Loading forge versions");
         ForgeUtils.loadForgeVerions();
 	    OneClientLogging.log("Building curse pack index");
-	    CurseUtil.loadModPacks();
-	    CurseUtil.buildPackIndex();
+	    PackUtil.loadModPacks();
+	    PackUtil.buildPackIndex();
 	    OneClientLogging.log("Done!");
 	    SplashScreen.updateProgess("Done!", 100);
 
