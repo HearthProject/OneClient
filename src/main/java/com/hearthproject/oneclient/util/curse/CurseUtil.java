@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.util.curse;
 
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.curse.ModPacks;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
@@ -28,13 +29,18 @@ public class CurseUtil {
 		if(packs != null){
 			return packs;
 		}
+		SplashScreen.updateProgess("Downloading modpacks.json file", 40);
 		String jsonStr = IOUtils.toString(new URL("https://github.com/NikkyAI/alpacka-meta-files/raw/master/modpacks.json"));
+		SplashScreen.updateProgess("Reading modpacks", 80);
 		return packs = JsonUtil.GSON.fromJson(jsonStr, ModPacks.class);
 	}
 
 	public static void buildPackIndex() throws IOException {
+		SplashScreen.updateProgess("Building modpack instances", 80);
 		indexWriter = new IndexWriter(index, config);
-		for(ModPacks.CursePack pack : loadModPacks().Data){
+		int i = 1;
+		for(ModPacks.CursePack pack : packs.Data){
+			SplashScreen.updateProgess("Indexing " + pack.Name, 80 + (packs.Data.size() / i++) * 20);
 			addPack(indexWriter, pack);
 		}
 		indexWriter.close();

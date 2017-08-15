@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.minecraft;
 
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
@@ -31,7 +32,9 @@ public class MinecraftUtil {
 
 	public static GameVersion loadGameVersions() throws Exception {
 		if (version == null) {
+			SplashScreen.updateProgess("Downloading minecraft version json", 20);
 			String data = IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
+			SplashScreen.updateProgess("Reading version json", 25);
 			version = JsonUtil.GSON.fromJson(data, GameVersion.class);
 			return version;
 		}

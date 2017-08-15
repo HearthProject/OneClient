@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.util.launcher;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -48,6 +49,7 @@ public class InstanceManager {
 	}
 
 	public static void load() {
+		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
 		if (!Constants.INSTANCEDIR.exists()) {
 			Constants.INSTANCEDIR.mkdirs();

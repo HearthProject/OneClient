@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.util.forge;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeInstallProfile;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
@@ -88,7 +89,9 @@ public class ForgeUtils {
 		if (forgeVersions != null) {
 			return forgeVersions;
 		}
+		SplashScreen.updateProgess("Downloading forge version json", 30);
 		String jsonStr = IOUtils.toString(new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/json"));
+		SplashScreen.updateProgess("Reading forge version json", 35);
 		forgeVersions = JsonUtil.GSON.fromJson(jsonStr, ForgeVersions.class);
 		return forgeVersions;
 	}

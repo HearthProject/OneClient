@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient;
 
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.util.curse.CurseUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class Main extends Application {
@@ -24,8 +26,13 @@ public class Main extends Application {
 
     public static void main(String... args) {
         Platform.runLater(() -> {
-            OneClientLogging.setupLogController();
-            OneClientLogging.showLogWindow();//TODO config
+	        OneClientLogging.setupLogController();
+	        OneClientLogging.showLogWindow();//TODO config
+	        try {
+		        SplashScreen.show();
+	        } catch (IOException e) {
+		        e.printStackTrace();
+	        }
         });
 
         launch(args);
@@ -33,21 +40,23 @@ public class Main extends Application {
 
     @Override
     public void start(Stage s) {
-
         stage = s;
         new Thread(() -> {
             try {
                 loadData();
+                SplashScreen.hide();
+                Platform.runLater(() -> {
+	                try {
+		                startLauncher();
+	                } catch (Exception e) {
+		                OneClientLogging.log(e);
+	                }
+                });
             } catch (Exception e) {
                 OneClientLogging.log(e);
             }
         }).start();
 
-        try {
-            startLauncher();
-        } catch (Exception e) {
-            OneClientLogging.log(e);
-        }
     }
 
     public void startLauncher() throws Exception {
@@ -84,8 +93,10 @@ public class Main extends Application {
         OneClientLogging.log("Loading forge versions");
         ForgeUtils.loadForgeVerions();
 	    OneClientLogging.log("Building curse pack index");
+	    CurseUtil.loadModPacks();
 	    CurseUtil.buildPackIndex();
 	    OneClientLogging.log("Done!");
+	    SplashScreen.updateProgess("Done!", 100);
 
     }
 }
