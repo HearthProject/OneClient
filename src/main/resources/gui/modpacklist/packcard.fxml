@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="217.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.content.PackCardController">
+   <children>
+      <ImageView fx:id="modpackImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+         <HBox.margin>
+            <Insets right="15.0" />
+         </HBox.margin></ImageView>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+         <top>
+            <Text fx:id="modpackName" strokeType="OUTSIDE" strokeWidth="0.0" text="Modpack Name" BorderPane.alignment="CENTER_LEFT">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+         </top>
+         <bottom>
+            <Button mnemonicParsing="false" onAction="#buttonInstallPack" text="Install Modpack" BorderPane.alignment="TOP_CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" />
+               </BorderPane.margin>
+            </Button>
+         </bottom>
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Text fx:id="modpackDetails" strokeType="OUTSIDE" strokeWidth="0.0" text="Modpack authors" />
+                  <Text fx:id="modpackDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Modpack Description">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Text>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" top="10.0" />
+   </padding>
+</HBox>

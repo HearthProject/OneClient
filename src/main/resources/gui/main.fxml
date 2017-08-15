@@ -21,7 +21,7 @@
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Get Content" />
+                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" onAction="#buttonGetContent" text="Get Content" />
                         <StackPane>
                            <children>
                               <Rectangle fill="WHITE" height="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="200.0" />

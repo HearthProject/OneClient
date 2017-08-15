@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -49,25 +50,30 @@ public class MainController {
                 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
                 URL fxmlUrl = classLoader.getResource(content.fxmlFile);
                 if (fxmlUrl == null) {
-                    OneClientLogging.log("An error has occurred loading " + content.fxmlFile.substring(4, content.fxmlFile.length() - 5) + "!");
+                    OneClientLogging.log("An error has occurred loading " + content.fxmlFile + "!");
                     return;
                 }
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(fxmlUrl);
                 fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+	            contentPane.getChildren().clear();
                 contentPane.getChildren().setAll(fxmlLoader.<Node>load(fxmlUrl.openStream()));
                 currentContent = Content.INSTANCES;
                 contentPaneController = fxmlLoader.getController();
                 contentPaneController.controller = this;
                 contentPaneController.start();
             } catch (IOException e) {
-                e.printStackTrace();
+                OneClientLogging.log(e);
             }
         }
     }
 
-    public enum Content {
-        INSTANCES, SETTINGS;
+	public void buttonGetContent(ActionEvent actionEvent) {
+		setContent(Content.CONTENT);
+	}
+
+	public enum Content {
+        INSTANCES, SETTINGS, CONTENT("gui/modpacklist/packlistheader.fxml");
 
         String fxmlFile;
 
