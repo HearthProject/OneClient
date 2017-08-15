@@ -28,7 +28,6 @@ import org.apache.lucene.search.TopDocs;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
@@ -98,17 +97,6 @@ public class PackPaneHeader extends ContentPaneController {
 	}
 
 
-	static class ImageDownloadItem{
-		public PackCardController controller;
-		public String url;
-
-		public ImageDownloadItem(PackCardController controller, String url) {
-			this.controller = controller;
-			this.url = url;
-		}
-	}
-
-
 	public void updatePackList(){
 		search = !searchBox.getText().isEmpty();
 		seachTerm = searchBox.getText();
@@ -151,7 +139,8 @@ public class PackPaneHeader extends ContentPaneController {
 			if(imageMap.containsKey(id)){
 				image = imageMap.get(id);
 			} else {
-				new ImageDownloadItem(packCardController, modPack.iconUrl);
+				image = new Image(new URL(modPack.iconUrl).openStream());
+				imageMap.put(id, image);
 			}
 			if(image != null){
 				packCardController.modpackImage.setImage(image);
