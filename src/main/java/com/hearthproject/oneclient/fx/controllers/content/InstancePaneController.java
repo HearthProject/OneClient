@@ -16,50 +16,50 @@ import javafx.scene.layout.TilePane;
 import java.util.ArrayList;
 
 public class InstancePaneController extends ContentPaneController {
-    @FXML
-    public TilePane instancePane;
-    @FXML
-    public Button newInstanceButton;
-    private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
-    private StackPane newInstanceTile;
+	@FXML
+	public TilePane instancePane;
+	@FXML
+	public Button newInstanceButton;
+	private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
+	private StackPane newInstanceTile;
 
-    @Override
-    public void onStart() {
-        newInstanceTile = (StackPane) instancePane.getChildren().get(0);
-    }
+	@Override
+	public void onStart() {
+		newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+	}
 
-    @Override
-    public void refresh() {
-        refreshInstances();
-    }
+	@Override
+	public void refresh() {
+		refreshInstances();
+	}
 
-    public void onNewInstancePress() {
-        NewInstanceController.start();
-    }
+	public void onNewInstancePress() {
+		NewInstanceController.start();
+	}
 
-    private void refreshInstances() {
-        if (controller.currentContent == MainController.Content.INSTANCES) {
-            InstanceManager.load();
-            instancePane.getChildren().clear();
-            for (Instance instance : InstanceManager.getInstances()) {
-                InstanceTile tile = new InstanceTile(instance);
-                instanceTiles.add(tile);
-                instancePane.getChildren().add(tile);
-            }
-            instancePane.getChildren().add(newInstanceTile);
+	private void refreshInstances() {
+		if (controller.currentContent == MainController.Content.INSTANCES) {
+			InstanceManager.load();
+			instancePane.getChildren().clear();
+			for (Instance instance : InstanceManager.getInstances()) {
+				InstanceTile tile = new InstanceTile(instance);
+				instanceTiles.add(tile);
+				instancePane.getChildren().add(tile);
+			}
+			instancePane.getChildren().add(newInstanceTile);
 
-            //TODO: Remove, this is an example on how to set the instance's button action
-            for (InstanceTile tile : instanceTiles) {
-                tile.setAction(() -> {
-                    Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
-                    try {
-                        MinecraftUtil.loadMC(instance);
-                    } catch (Throwable e) {
-                        OneClientLogging.log(e);
-                    }
-                });
+			//TODO: Remove, this is an example on how to set the instance's button action
+			for (InstanceTile tile : instanceTiles) {
+				tile.setAction(() -> {
+					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
+					try {
+						MinecraftUtil.loadMC(instance);
+					} catch (Throwable e) {
+						OneClientLogging.log(e);
+					}
+				});
 
-            }
-        }
-    }
+			}
+		}
+	}
 }

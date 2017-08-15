@@ -10,7 +10,6 @@ public class ForgeVersions {
 
 	public HashMap<String, Integer> promos;
 
-
 	public class ForgeVersion {
 		public int build;
 		public String mcversion;

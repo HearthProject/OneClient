@@ -1,6 +1,5 @@
 package com.hearthproject.oneclient.util.minecraft;
 
-import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -16,7 +15,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +39,7 @@ public class MinecraftUtil {
 		return version;
 	}
 
-	public static Version downloadMcVersionData(String minecraftVersion)  {
+	public static Version downloadMcVersionData(String minecraftVersion) {
 		try {
 			Optional<GameVersion.Version> optionalVersion = version.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst();
 			if (optionalVersion.isPresent()) {
@@ -51,7 +49,7 @@ public class MinecraftUtil {
 				OneClientLogging.log(new RuntimeException("Failed downloading Minecraft json"));
 				return null;
 			}
-		} catch (Throwable throwable){
+		} catch (Throwable throwable) {
 			OneClientLogging.log(throwable);
 			return null;
 		}
@@ -69,9 +67,9 @@ public class MinecraftUtil {
 		String versionID = instance.minecraftVersion;
 		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty()) {
 			versionID = versionID + "-" + instance.modLoader + instance.minecraftVersion + "-" + instance.modLoaderVersion;
-			if(instance.modLoader.equalsIgnoreCase("forge")){
+			if (instance.modLoader.equalsIgnoreCase("forge")) {
 				ForgeVersions.ForgeVersion version = ForgeUtils.getForgeVersion(instance.minecraftVersion + "-" + instance.modLoaderVersion);
-				if(version.branch != null && !version.branch.isEmpty()){
+				if (version.branch != null && !version.branch.isEmpty()) {
 					versionID = versionID + "-" + version.branch;
 				}
 			}
@@ -81,7 +79,7 @@ public class MinecraftUtil {
 		if (instance.modLoaderVersion != null && !instance.modLoaderVersion.isEmpty() && instance.modLoader.equalsIgnoreCase("forge")) {
 			File minecraftJar = new File(mcDir, "versions/" + instance.minecraftVersion + "/" + instance.minecraftVersion + ".jar");
 			Version mcVersionData = downloadMcVersionData(instance.minecraftVersion);
-			if(!minecraftJar.exists()){
+			if (!minecraftJar.exists()) {
 				OneClientLogging.log("Downloading minecraft jar for version " + instance.minecraftVersion);
 				FileUtils.copyURLToFile(new URL(mcVersionData.downloads.get("client").url), minecraftJar);
 			}

@@ -23,7 +23,10 @@ import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
@@ -51,7 +54,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 				try {
 					List<String> nameList = new ArrayList<>();
-					if(search){
+					if (search) {
 						Query q = new QueryParser("title", PackUtil.analyzer).parse(seachTerm);
 						IndexReader reader = DirectoryReader.open(PackUtil.index);
 						IndexSearcher searcher = new IndexSearcher(reader);
@@ -62,16 +65,16 @@ public class PackPaneHeader extends ContentPaneController {
 							nameList.add(d.get("title"));
 						}
 					}
-					for(ModPack modPack : PackUtil.loadModPacks().packs){
-						if(canceUpdate){
+					for (ModPack modPack : PackUtil.loadModPacks().packs) {
+						if (canceUpdate) {
 							break;
 						}
-						if(search){
-							if(!nameList.contains(modPack.name)){
+						if (search) {
+							if (!nameList.contains(modPack.name)) {
 								continue;
 							}
 						}
-						if(canceUpdate){
+						if (canceUpdate) {
 							break;
 						}
 						Platform.runLater(() -> addPackCard(modPack));
@@ -86,8 +89,7 @@ public class PackPaneHeader extends ContentPaneController {
 		});
 	}
 
-
-	public void updatePackList(){
+	public void updatePackList() {
 		search = !searchBox.getText().isEmpty();
 		seachTerm = searchBox.getText();
 
@@ -109,7 +111,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 	}
 
-	public static void addPackCard(ModPack modPack){
+	public static void addPackCard(ModPack modPack) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
@@ -126,13 +128,13 @@ public class PackPaneHeader extends ContentPaneController {
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
 			Image image = null;
-			if(imageMap.containsKey(modPack.name)){
+			if (imageMap.containsKey(modPack.name)) {
 				image = imageMap.get(modPack.name);
 			} else {
 				image = new Image(new URL(modPack.iconUrl).openStream());
 				imageMap.put(modPack.name, image);
 			}
-			if(image != null){
+			if (image != null) {
 				packCardController.modpackImage.setImage(image);
 			}
 

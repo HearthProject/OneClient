@@ -44,14 +44,14 @@ public class SplashScreen {
 		stage.show();
 	}
 
-	public static void updateProgess(String text, double percentage){
+	public static void updateProgess(String text, double percentage) {
 		Platform.runLater(() -> {
 			splashScreenController.progressBar.setProgress(percentage / 100);
 			splashScreenController.progressText.setText(text);
 		});
 	}
 
-	public static void hide(){
+	public static void hide() {
 		Platform.runLater(() -> stage.close());
 
 	}

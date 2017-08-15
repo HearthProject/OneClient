@@ -7,7 +7,10 @@ import com.hearthproject.oneclient.json.models.launcher.ModPackList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -27,7 +30,7 @@ public class PackUtil {
 	public static IndexWriter indexWriter;
 
 	public static ModPackList loadModPacks() throws IOException {
-		if(packs != null){
+		if (packs != null) {
 			return packs;
 		}
 		SplashScreen.updateProgess("Downloading modpacks.json file", 40);
@@ -40,7 +43,7 @@ public class PackUtil {
 		SplashScreen.updateProgess("Building modpack instances", 80);
 		indexWriter = new IndexWriter(index, config);
 		int i = 1;
-		for(ModPack pack : packs.packs){
+		for (ModPack pack : packs.packs) {
 			SplashScreen.updateProgess("Indexing " + pack.name, 80 + (packs.packs.size() / i++) * 20);
 			addPack(indexWriter, pack);
 		}
@@ -63,6 +66,5 @@ public class PackUtil {
 		modPackList.packs.add(modPack2);
 		FileUtils.write(new File("modpacks.json"), JsonUtil.GSON.toJson(modPackList));
 	}
-
 
 }
