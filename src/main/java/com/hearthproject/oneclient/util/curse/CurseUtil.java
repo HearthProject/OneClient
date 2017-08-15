@@ -11,9 +11,14 @@ import java.net.URL;
 
 public class CurseUtil {
 
+	public static ModPacks packs;
+
 	public static ModPacks loadModPacks() throws IOException {
+		if(packs != null){
+			return packs;
+		}
 		String jsonStr = IOUtils.toString(new URL("https://github.com/NikkyAI/alpacka-meta-files/raw/master/modpacks.json"));
-		return  JsonUtil.GSON.fromJson(jsonStr, ModPacks.class);
+		return packs = JsonUtil.GSON.fromJson(jsonStr, ModPacks.class);
 	}
 
 

@@ -7,6 +7,8 @@ import com.hearthproject.oneclient.json.models.launcher.ModPack;
 import com.hearthproject.oneclient.util.curse.CurseUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
@@ -17,24 +19,56 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
 
+	static Map<Integer, Image> imageMap = new HashMap<>();
+	static boolean search;
+	static String seachTerm;
+	static boolean canceUpdate = false;
+
+	static MainController staticController;
+
 	@Override
 	protected void onStart() {
+		staticController = controller;
+		updatePackList();
+		searchBox.textProperty().addListener((observable, oldValue, newValue) -> updatePackList());
+	}
 
-		new Thread(() -> {
+	static Thread reloadThread = createUpdateThread();
+
+	private static Thread createUpdateThread() {
+		return new Thread(() -> {
 			try {
 				try {
 					int i = 0;
 					for(ModPacks.CursePack cursePack : CurseUtil.loadModPacks().Data){
+						if(canceUpdate){
+							break;
+						}
+						if(search){
+							if(!cursePack.Name.toLowerCase().contains(seachTerm.toLowerCase())){
+								continue;
+							}
+						}
 						if(i > 50){
 							break;
 						}
 						i++;
 						ModPack pack = new ModPack(cursePack);
-						Image image = new Image(new URL(pack.iconUrl).openStream());
+						Image image;
+						if(imageMap.containsKey(cursePack.Id)){
+							image = imageMap.get(cursePack.Id);
+						} else {
+							image = new Image(new URL(pack.iconUrl).openStream());
+						}
+						if(canceUpdate){
+							break;
+						}
 						Platform.runLater(() -> addPackCard(pack, image));
 					}
 				} catch (IOException e) {
@@ -43,7 +77,24 @@ public class PackPaneHeader extends ContentPaneController {
 			} catch (Exception e) {
 				OneClientLogging.log(e);
 			}
-		}).start();
+		});
+	}
+
+	public void updatePackList(){
+		search = !searchBox.getText().isEmpty();
+		seachTerm = searchBox.getText();
+		Node node = controller.contentPane.getChildren().get(0);
+		controller.contentPane.getChildren().clear();
+		controller.contentPane.getChildren().add(node);
+		canceUpdate = true;
+		try {
+			reloadThread.join();
+		} catch (InterruptedException e) {
+			OneClientLogging.log(e);
+		}
+		canceUpdate = false;
+		reloadThread = createUpdateThread();
+		reloadThread.start();
 	}
 
 	@Override
@@ -55,7 +106,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 	}
 
-	public void addPackCard(ModPack modPack, Image image){
+	public static void addPackCard(ModPack modPack, Image image){
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
@@ -66,7 +117,7 @@ public class PackPaneHeader extends ContentPaneController {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setLocation(fxmlUrl);
 			fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
-			controller.contentPane.getChildren().add(fxmlLoader.load(fxmlUrl.openStream()));
+			staticController.contentPane.getChildren().add(fxmlLoader.load(fxmlUrl.openStream()));
 			PackCardController packCardController = fxmlLoader.getController();
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
