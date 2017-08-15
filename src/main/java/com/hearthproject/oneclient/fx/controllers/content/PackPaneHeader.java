@@ -62,7 +62,6 @@ public class PackPaneHeader extends ContentPaneController {
 							nameList.add(d.get("title"));
 						}
 					}
-					int i = 0;
 					for(ModPack modPack : PackUtil.loadModPacks().packs){
 						if(canceUpdate){
 							break;
@@ -72,10 +71,6 @@ public class PackPaneHeader extends ContentPaneController {
 								continue;
 							}
 						}
-						if(i > 50){
-							break;
-						}
-						i++;
 						if(canceUpdate){
 							break;
 						}
