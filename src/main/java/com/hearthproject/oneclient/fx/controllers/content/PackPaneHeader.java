@@ -20,7 +20,6 @@ import java.util.Map;
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
 
-	static Map<String, Image> imageMap = new HashMap<>();
 	static boolean search;
 	static String seachTerm;
 	static boolean canceUpdate = false;
@@ -48,7 +47,7 @@ public class PackPaneHeader extends ContentPaneController {
 						}
 						if (search) {
 							//TODO REGEX as someone will ask for it when then dont even need it
-							if (!modPack.name.toLowerCase().contains(seachTerm.toLowerCase())) {
+							if (!modPack.name.toLowerCase().contains(seachTerm.toLowerCase()) && !modPack.description.toLowerCase().contains(seachTerm.toLowerCase()) && !modPack.authors.toLowerCase().contains(seachTerm.toLowerCase())) {
 								continue;
 							}
 						}
@@ -105,15 +104,8 @@ public class PackPaneHeader extends ContentPaneController {
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
-			Image image = null;
-			if (imageMap.containsKey(modPack.name)) {
-				image = imageMap.get(modPack.name);
-			} else {
-				image = new Image(new URL(modPack.iconUrl).openStream());
-				imageMap.put(modPack.name, image);
-			}
-			if (image != null) {
-				packCardController.modpackImage.setImage(image);
+			if (modPack.iconImage != null) {
+				packCardController.modpackImage.setImage(modPack.iconImage);
 			}
 
 		} catch (IOException e) {
