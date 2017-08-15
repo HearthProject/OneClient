@@ -34,9 +34,6 @@ public class MainController {
 
     public void onStart(Stage stage) throws IOException {
         setContent(Content.INSTANCES);
-        for (Node children : barBox.getChildren()) {
-            children : 
-        }
     }
 
     public void onSceneResize(Scene scene) {
