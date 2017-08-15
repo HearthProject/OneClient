@@ -18,70 +18,73 @@ import java.net.URL;
 
 public class Main extends Application {
 
-	public static Stage stage;
-	public static MainController mainController;
+    public static Stage stage;
+    public static MainController mainController;
 
-	public static void main(String... args) {
-		Platform.runLater(() -> {
-			OneClientLogging.setupLogController();
-			OneClientLogging.showLogWindow();//TODO config
-		});
+    public static void main(String... args) {
+        Platform.runLater(() -> {
+            OneClientLogging.setupLogController();
+            OneClientLogging.showLogWindow();//TODO config
+        });
 
-		launch(args);
-	}
+        launch(args);
+    }
 
-	@Override
-	public void start(Stage s) {
+    @Override
+    public void start(Stage s) {
 
-		stage = s;
-		new Thread(() -> {
-			try {
-				loadData();
-			} catch (Exception e) {
-				OneClientLogging.log(e);
-			}
-		}).start();
+        stage = s;
+        new Thread(() -> {
+            try {
+                loadData();
+            } catch (Exception e) {
+                OneClientLogging.log(e);
+            }
+        }).start();
 
-		try {
-			startLauncher();
-		} catch (Exception e) {
-			OneClientLogging.log(e);
-		}
-	}
+        try {
+            startLauncher();
+        } catch (Exception e) {
+            OneClientLogging.log(e);
+        }
+    }
 
-	public void startLauncher() throws Exception {
-		OneClientLogging.log("Starting One Client");
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL fxmlUrl = classLoader.getResource("gui/main.fxml");
-		if (fxmlUrl == null) {
-			OneClientLogging.log("An error has occurred loading main.fxml!");
-			return;
-		}
-		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setLocation(fxmlUrl);
-		fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
-		Parent root = fxmlLoader.load(fxmlUrl.openStream());
-		stage.setTitle("One Client");
-		stage.getIcons().add(new Image("icon.png"));
-		Scene scene = new Scene(root, 1209, 800);
-		scene.getStylesheets().add("gui/css/theme.css");
-		stage.setScene(scene);
-		stage.show();
-		mainController = fxmlLoader.getController();
-		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
-		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
-		mainController.onStart(stage);
+    public void startLauncher() throws Exception {
+        OneClientLogging.log("Starting One Client");
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL fxmlUrl = classLoader.getResource("gui/main.fxml");
+        if (fxmlUrl == null) {
+            OneClientLogging.log("An error has occurred loading main.fxml!");
+            return;
+        }
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxmlUrl);
+        fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+        Parent root = fxmlLoader.load(fxmlUrl.openStream());
+        stage.setTitle("One Client");
+        stage.getIcons().add(new Image("icon.png"));
+        Scene scene = new Scene(root, 1221, 800);
+        scene.getStylesheets().add("gui/css/theme.css");
+        stage.setScene(scene);
+        stage.show();
+        stage.setOnCloseRequest((windowEvent) -> OneClientLogging.stage.close());
+        mainController = fxmlLoader.getController();
+        scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
+        scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
+        mainController.onStart(stage);
 
-	}
+    }
 
-	public void loadData() throws Exception {
-		OneClientLogging.log("Loading minecraft versions");
-		MinecraftUtil.loadGameVersions();
-		OneClientLogging.log("Loading forge versions");
-		ForgeUtils.loadForgeVerions();
-		OneClientLogging.log("Loading instances");
-		InstanceManager.load();
-		Platform.runLater(() -> mainController.refreshInstances());
+    public void loadData() throws Exception {
+        OneClientLogging.log("Loading minecraft versions");
+        MinecraftUtil.loadGameVersions();
+        OneClientLogging.log("Loading forge versions");
+        ForgeUtils.loadForgeVerions();
+        OneClientLogging.log("Loading instances");
+        InstanceManager.load();
+        Platform.runLater(() -> {
+            //TODO: refresh content panes
+        });
 
-	}
+    }
 }

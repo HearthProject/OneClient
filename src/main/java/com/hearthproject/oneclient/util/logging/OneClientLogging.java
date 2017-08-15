@@ -24,62 +24,62 @@ import java.util.Date;
 
 public class OneClientLogging {
 
-	static LogController logController;
-	static Stage stage;
+    public static Stage stage;
+    static LogController logController;
 
-	public static void log(String string) {
-		String output = getPrefix() + string;
-		System.out.println(output);
-		Platform.runLater(() -> logController.logArea.appendText(output+ "\n"));
-		try {
-			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void log(String string) {
+        String output = getPrefix() + string;
+        System.out.println(output);
+        Platform.runLater(() -> logController.logArea.appendText(output + "\n"));
+        try {
+            FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void log(Throwable throwable) {
-		StringWriter errors = new StringWriter();
-		throwable.printStackTrace(new PrintWriter(errors));
-		log(errors.toString());
-	}
+    public static void log(Throwable throwable) {
+        StringWriter errors = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(errors));
+        log(errors.toString());
+    }
 
-	private static String getPrefix() {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss.SSS");
-		Date date = new Date();
-		return "[" + dateFormat.format(date) + "] ";
-	}
+    private static String getPrefix() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss.SSS");
+        Date date = new Date();
+        return "[" + dateFormat.format(date) + "] ";
+    }
 
-	public static void setupLogController() {
-		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			URL fxmlUrl = classLoader.getResource("gui/log.fxml");
-			if (fxmlUrl == null) {
-				OneClientLogging.log("An error has occurred loading newInstance.fxml!");
-				return;
-			}
-			FXMLLoader fxmlLoader = new FXMLLoader();
-			fxmlLoader.setLocation(fxmlUrl);
-			fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
-			Parent root = fxmlLoader.load(fxmlUrl.openStream());
-			stage = new Stage();
-			stage.setTitle("One Client - Log");
-			stage.getIcons().add(new Image("icon.png"));
-			stage.setResizable(true);
-			stage.initOwner(Main.stage);
-			stage.initModality(Modality.WINDOW_MODAL);
-			Scene scene = new Scene(root, 600, 300);
-			scene.getStylesheets().add("gui/css/theme.css");
-			stage.setScene(scene);
-			logController = fxmlLoader.getController();
-			logController.setStage(stage);
-		} catch (Exception e) {
-			OneClientLogging.log(e);
-		}
-	}
+    public static void setupLogController() {
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            URL fxmlUrl = classLoader.getResource("gui/log.fxml");
+            if (fxmlUrl == null) {
+                OneClientLogging.log("An error has occurred loading newInstance.fxml!");
+                return;
+            }
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(fxmlUrl);
+            fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+            Parent root = fxmlLoader.load(fxmlUrl.openStream());
+            stage = new Stage();
+            stage.setTitle("One Client - Log");
+            stage.getIcons().add(new Image("icon.png"));
+            stage.setResizable(true);
+            stage.initOwner(Main.stage);
+            stage.initModality(Modality.WINDOW_MODAL);
+            Scene scene = new Scene(root, 600, 300);
+            scene.getStylesheets().add("gui/css/theme.css");
+            stage.setScene(scene);
+            logController = fxmlLoader.getController();
+            logController.setStage(stage);
+        } catch (Exception e) {
+            OneClientLogging.log(e);
+        }
+    }
 
-	public static void showLogWindow() {
-		stage.show();
-	}
+    public static void showLogWindow() {
+        stage.show();
+    }
 
 }

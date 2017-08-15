@@ -11,33 +11,88 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1209.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
    <children>
-      <StackPane alignment="TOP_CENTER">
+      <StackPane fx:id="barPane" alignment="TOP_CENTER">
          <children>
             <Rectangle fx:id="tabBar" fill="#494949" height="85.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1209.0">
                <StackPane.margin>
                   <Insets top="40.0" />
                </StackPane.margin></Rectangle>
-            <HBox fx:id="barBox" alignment="CENTER" spacing="25.0">
+            <HBox fx:id="barBox" alignment="CENTER" maxHeight="100.0" spacing="25.0">
                <children>
-                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Get Content" />
-                  <VBox alignment="CENTER" />
-                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Instances" />
-                  <StackPane>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Rectangle fill="#343434" height="165.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="165.0">
-                           <StackPane.margin>
-                              <Insets />
-                           </StackPane.margin>
-                        </Rectangle>
-                        <ImageView fitHeight="165.0" fitWidth="165.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../logo_big.png" />
-                           </image>
-                        </ImageView>
+                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Get Content" />
+                        <StackPane>
+                           <children>
+                              <Rectangle fill="WHITE" height="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="200.0" />
+                              <Rectangle fill="WHITE" height="8.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -medium-color;" width="188.0" />
+                           </children>
+                        </StackPane>
                      </children>
-                  </StackPane>
-                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="About" />
-                  <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Settings" />
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Instances" />
+                        <StackPane>
+                           <children>
+                              <Rectangle fill="WHITE" height="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="200.0" />
+                              <Rectangle fill="WHITE" height="8.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -accent-color;" width="188.0" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <StackPane>
+                           <children>
+                              <Rectangle fill="#343434" height="165.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="165.0">
+                                 <StackPane.margin>
+                                    <Insets />
+                                 </StackPane.margin>
+                              </Rectangle>
+                              <ImageView fitHeight="165.0" fitWidth="165.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../logo_big.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="About" />
+                        <StackPane>
+                           <children>
+                              <Rectangle fill="WHITE" height="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="200.0" />
+                              <Rectangle fill="WHITE" height="8.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -medium-color;" width="188.0" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Button id="bar-button" minHeight="85.0" minWidth="200.0" mnemonicParsing="false" text="Settings" />
+                        <StackPane>
+                           <children>
+                              <Rectangle fill="WHITE" height="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="200.0" />
+                              <Rectangle fill="WHITE" height="8.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -medium-color;" width="188.0" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin>
+                  </VBox>
                </children>
                <StackPane.margin>
                   <Insets left="50.0" right="50.0" />
@@ -48,30 +103,13 @@
             <Insets top="6.0" />
          </VBox.margin>
       </StackPane>
-      <ScrollPane id="#dark-background" fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="600.0" prefWidth="1209.0" style="-fx-background-color: transparent;">
-         <content>
-            <TilePane fx:id="instancePane" hgap="6.0" prefHeight="582.0" prefWidth="1195.0" styleClass="background">
-               <children>
-                  <StackPane>
-                     <children>
-                        <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                        <ImageView fitHeight="188.0" fitWidth="188.0" pickOnBounds="true" preserveRatio="true" />
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
-               </children>
-               <padding>
-                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-               </padding>
-            </TilePane>
-         </content>
+      <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefHeight="613.0" prefWidth="1197.0" style="-fx-background-color: -dark-background-color;" vbarPolicy="ALWAYS">
          <VBox.margin>
             <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
          </VBox.margin>
+         <content>
+            <VBox fx:id="contentPane" alignment="TOP_CENTER" />
+         </content>
       </ScrollPane>
    </children>
 </VBox>

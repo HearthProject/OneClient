@@ -1,76 +1,85 @@
 package com.hearthproject.oneclient.fx.controllers;
 
-import com.hearthproject.oneclient.fx.nodes.InstanceTile;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URL;
 
 public class MainController {
-	@FXML
-	public Rectangle tabBar;
-	@FXML
-	public ScrollPane scrollPane;
-	@FXML
-	public TilePane instancePane;
-	@FXML
-	public HBox barBox;
-	@FXML
-	public Button newInstanceButton;
+    @FXML
+    public Rectangle tabBar;
+    @FXML
+    public VBox contentPane;
+    @FXML
+    public ScrollPane scrollPane;
+    @FXML
+    public HBox barBox;
+    @FXML
+    public StackPane barPane;
+    public Content currentContent = null;
+    public ContentPaneController contentPaneController = null;
 
-	public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 
-	private StackPane newInstanceTile;
+    public void onStart(Stage stage) throws IOException {
+        setContent(Content.INSTANCES);
+        for (Node children : barBox.getChildren()) {
+            children : 
+        }
+    }
 
-	public void onStart(Stage stage) throws IOException {
-		newInstanceTile = (StackPane) instancePane.getChildren().get(0);
-		refreshInstances();
-	}
+    public void onSceneResize(Scene scene) {
+        tabBar.setWidth(scene.getWidth());
+        scrollPane.setPrefHeight(scene.getHeight() - (6 * 3) - barPane.getHeight());
+    }
 
-	public void refreshInstances() {
-		InstanceManager.load();
-		instancePane.getChildren().clear();
-		for (Instance instance : InstanceManager.getInstances()) {
-			InstanceTile tile = new InstanceTile(instance);
-			instanceTiles.add(tile);
-			instancePane.getChildren().add(tile);
-		}
-		instancePane.getChildren().add(newInstanceTile);
+    public void setContent(Content content) {
+        if (content == null) {
+            contentPane.getChildren().clear();
+        } else {
+            try {
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                URL fxmlUrl = classLoader.getResource(content.fxmlFile);
+                if (fxmlUrl == null) {
+                    OneClientLogging.log("An error has occurred loading " + content.fxmlFile.substring(4, content.fxmlFile.length() - 5) + "!");
+                    return;
+                }
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(fxmlUrl);
+                fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+                contentPane.getChildren().setAll(fxmlLoader.<Node>load(fxmlUrl.openStream()));
+                currentContent = Content.INSTANCES;
+                contentPaneController = fxmlLoader.getController();
+                contentPaneController.controller = this;
+                contentPaneController.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		//TODO: Remove, this is an example on how to set the instance's button action
-		for (InstanceTile tile : instanceTiles) {
-			tile.setAction(() -> {
-				Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
-				try {
-					MinecraftUtil.loadMC(instance);
-				} catch (Throwable e) {
-					OneClientLogging.log(e);
-				}
-			});
+    public enum Content {
+        INSTANCES, SETTINGS;
 
-		}
-	}
+        String fxmlFile;
 
-	public void onNewInstancePress() {
-		NewInstanceController.start();
-	}
+        Content(String fxmlFile) {
+            this.fxmlFile = fxmlFile;
+        }
 
-	public void onPlayPress() {
-	}
-
-	public void onSceneResize(Scene scene) {
-		tabBar.setWidth(scene.getWidth());
-	}
+        Content() {
+            this.fxmlFile = "gui/" + this.name().toLowerCase() + ".fxml";
+        }
+    }
 }
