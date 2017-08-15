@@ -2,8 +2,11 @@ package com.hearthproject.oneclient.fx.controllers.content;
 
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
+import com.hearthproject.oneclient.json.models.curse.ModPacks;
 import com.hearthproject.oneclient.json.models.launcher.ModPack;
+import com.hearthproject.oneclient.util.curse.CurseUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
@@ -20,19 +23,27 @@ public class PackPaneHeader extends ContentPaneController {
 
 	@Override
 	protected void onStart() {
-		ModPack modPack = new ModPack();
-		modPack.name = "Test Pack";
-		modPack.authors = "by modmuss50";
-		modPack.iconUrl = "https://media-elerium.cursecdn.com/avatars/73/795/636163746946033291.png";
-		addPackCard(modPack);
 
-		ModPack modPack2 = new ModPack();
-		modPack2.name = "FTB Unstable 1.12";
-		modPack2.authors = "by FTB";
-		modPack2.description = "The official bleeding-edge testing platform used by Feed The Beast for their more modern 1.12.X packs. Highly experimental and volatile. Just a reminder: no tech support will be offered for this pack!\n";
-		modPack2.iconUrl = "https://media-elerium.cursecdn.com/avatars/thumbnails/105/433/340/340/636352866910284865.png";
-		addPackCard(modPack2);
-		addPackCard(modPack2);
+		new Thread(() -> {
+			try {
+				try {
+					int i = 0;
+					for(ModPacks.CursePack cursePack : CurseUtil.loadModPacks().Data){
+						if(i > 50){
+							break;
+						}
+						i++;
+						ModPack pack = new ModPack(cursePack);
+						Image image = new Image(new URL(pack.iconUrl).openStream());
+						Platform.runLater(() -> addPackCard(pack, image));
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				OneClientLogging.log(e);
+			}
+		}).start();
 	}
 
 	@Override
@@ -44,7 +55,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 	}
 
-	public void addPackCard(ModPack modPack){
+	public void addPackCard(ModPack modPack, Image image){
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
@@ -60,7 +71,12 @@ public class PackPaneHeader extends ContentPaneController {
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
-			packCardController.modpackImage.setImage(new Image(new URL(modPack.iconUrl).openStream()));
+			if(image != null){
+				packCardController.modpackImage.setImage(image);
+			} else {
+				packCardController.modpackImage.setImage(new Image(new URL(modPack.iconUrl).openStream()));
+			}
+
 
 		} catch (IOException e) {
 			OneClientLogging.log(e);
