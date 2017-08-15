@@ -92,9 +92,8 @@ public class Main extends Application {
 		MinecraftUtil.loadGameVersions();
 		OneClientLogging.log("Loading forge versions");
 		ForgeUtils.loadForgeVerions();
-		OneClientLogging.log("Building curse pack index");
+		OneClientLogging.log("Loading mod packs");
 		PackUtil.loadModPacks();
-		PackUtil.buildPackIndex();
 		OneClientLogging.log("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 

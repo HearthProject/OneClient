@@ -12,20 +12,9 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PackPaneHeader extends ContentPaneController {
@@ -53,24 +42,13 @@ public class PackPaneHeader extends ContentPaneController {
 			try {
 
 				try {
-					List<String> nameList = new ArrayList<>();
-					if (search) {
-						Query q = new QueryParser("title", PackUtil.analyzer).parse(seachTerm);
-						IndexReader reader = DirectoryReader.open(PackUtil.index);
-						IndexSearcher searcher = new IndexSearcher(reader);
-						TopDocs docs = searcher.search(q, 50);
-						ScoreDoc[] hits = docs.scoreDocs;
-						for (int i = 0; i < hits.length; i++) {
-							Document d = searcher.doc(hits[i].doc);
-							nameList.add(d.get("title"));
-						}
-					}
 					for (ModPack modPack : PackUtil.loadModPacks().packs) {
 						if (canceUpdate) {
 							break;
 						}
 						if (search) {
-							if (!nameList.contains(modPack.name)) {
+							//TODO REGEX as someone will ask for it when then dont even need it
+							if (!modPack.name.toLowerCase().contains(seachTerm.toLowerCase())) {
 								continue;
 							}
 						}

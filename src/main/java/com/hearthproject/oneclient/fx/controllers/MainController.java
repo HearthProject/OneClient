@@ -71,6 +71,10 @@ public class MainController {
 		setContent(Content.CONTENT);
 	}
 
+	public void buttonInstances(ActionEvent actionEvent) {
+		setContent(Content.INSTANCES);
+	}
+
 	public enum Content {
 		INSTANCES, SETTINGS, CONTENT("gui/modpacklist/packlistheader.fxml");
 
