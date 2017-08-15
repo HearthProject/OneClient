@@ -15,12 +15,20 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputMethodEvent;
-import org.apache.commons.io.IOUtils;
+import javafx.scene.layout.VBox;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class PackPaneHeader extends ContentPaneController {
 	public TextField searchBox;
@@ -31,6 +39,7 @@ public class PackPaneHeader extends ContentPaneController {
 	static boolean canceUpdate = false;
 
 	static MainController staticController;
+	public VBox packlistBox;
 
 	@Override
 	protected void onStart() {
@@ -44,14 +53,27 @@ public class PackPaneHeader extends ContentPaneController {
 	private static Thread createUpdateThread() {
 		return new Thread(() -> {
 			try {
+
 				try {
+					List<Integer> idList = new ArrayList<>();
+					if(search){
+						Query q = new QueryParser("title", CurseUtil.analyzer).parse(seachTerm);
+						IndexReader reader = DirectoryReader.open(CurseUtil.index);
+						IndexSearcher searcher = new IndexSearcher(reader);
+						TopDocs docs = searcher.search(q, 50);
+						ScoreDoc[] hits = docs.scoreDocs;
+						for (int i = 0; i < hits.length; i++) {
+							Document d = searcher.doc(hits[i].doc);
+							idList.add(Integer.parseInt(d.get("id")));
+						}
+					}
 					int i = 0;
 					for(ModPacks.CursePack cursePack : CurseUtil.loadModPacks().Data){
 						if(canceUpdate){
 							break;
 						}
 						if(search){
-							if(!cursePack.Name.toLowerCase().contains(seachTerm.toLowerCase())){
+							if(!idList.contains(cursePack.Id)){
 								continue;
 							}
 						}
@@ -60,17 +82,12 @@ public class PackPaneHeader extends ContentPaneController {
 						}
 						i++;
 						ModPack pack = new ModPack(cursePack);
-						Image image;
-						if(imageMap.containsKey(cursePack.Id)){
-							image = imageMap.get(cursePack.Id);
-						} else {
-							image = new Image(new URL(pack.iconUrl).openStream());
-						}
 						if(canceUpdate){
 							break;
 						}
-						Platform.runLater(() -> addPackCard(pack, image));
+						Platform.runLater(() -> addPackCard(pack, cursePack.Id));
 					}
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -80,12 +97,24 @@ public class PackPaneHeader extends ContentPaneController {
 		});
 	}
 
+
+	static class ImageDownloadItem{
+		public PackCardController controller;
+		public String url;
+
+		public ImageDownloadItem(PackCardController controller, String url) {
+			this.controller = controller;
+			this.url = url;
+		}
+	}
+
+
 	public void updatePackList(){
 		search = !searchBox.getText().isEmpty();
 		seachTerm = searchBox.getText();
-		Node node = controller.contentPane.getChildren().get(0);
-		controller.contentPane.getChildren().clear();
-		controller.contentPane.getChildren().add(node);
+
+		Node sNode = controller.contentPane.getChildren().get(0);
+		controller.contentPane.getChildren().removeIf(node -> node != sNode);
 		canceUpdate = true;
 		try {
 			reloadThread.join();
@@ -102,11 +131,7 @@ public class PackPaneHeader extends ContentPaneController {
 
 	}
 
-	public void seachChanged(InputMethodEvent inputMethodEvent) {
-
-	}
-
-	public static void addPackCard(ModPack modPack, Image image){
+	public static void addPackCard(ModPack modPack, int id){
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
@@ -122,12 +147,15 @@ public class PackPaneHeader extends ContentPaneController {
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
+			Image image = null;
+			if(imageMap.containsKey(id)){
+				image = imageMap.get(id);
+			} else {
+				new ImageDownloadItem(packCardController, modPack.iconUrl);
+			}
 			if(image != null){
 				packCardController.modpackImage.setImage(image);
-			} else {
-				packCardController.modpackImage.setImage(new Image(new URL(modPack.iconUrl).openStream()));
 			}
-
 
 		} catch (IOException e) {
 			OneClientLogging.log(e);

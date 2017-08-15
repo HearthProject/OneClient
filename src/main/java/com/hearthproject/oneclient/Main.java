@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.util.curse.CurseUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -76,15 +77,15 @@ public class Main extends Application {
     }
 
     public void loadData() throws Exception {
+	    OneClientLogging.log("Loading instances");
+	    InstanceManager.load();
         OneClientLogging.log("Loading minecraft versions");
         MinecraftUtil.loadGameVersions();
         OneClientLogging.log("Loading forge versions");
         ForgeUtils.loadForgeVerions();
-        OneClientLogging.log("Loading instances");
-        InstanceManager.load();
-        Platform.runLater(() -> {
-            //TODO: refresh content panes
-        });
+	    OneClientLogging.log("Building curse pack index");
+	    CurseUtil.buildPackIndex();
+	    OneClientLogging.log("Done!");
 
     }
 }
