@@ -7,7 +7,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.LogController">
    <center>
       <TextArea fx:id="logArea" editable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
@@ -22,6 +21,11 @@
               <MenuItem mnemonicParsing="false" onAction="#menuClose" text="Close" />
             </items>
           </Menu>
+            <Menu fx:id="minecraftMenu" disable="true" mnemonicParsing="false" text="Minecraft">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#killMinecraft" text="Kill Minecraft" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>

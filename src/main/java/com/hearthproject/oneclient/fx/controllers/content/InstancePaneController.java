@@ -47,7 +47,7 @@ public class InstancePaneController extends ContentPaneController {
 				instancePane.getChildren().add(tile);
 			}
 			instancePane.getChildren().add(newInstanceTile);
-			
+
 			for (InstanceTile tile : instanceTiles) {
 				tile.setAction(() -> {
 					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());

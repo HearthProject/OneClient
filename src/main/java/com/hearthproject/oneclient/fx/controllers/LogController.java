@@ -3,16 +3,23 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mashape.unirest.http.Unirest;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class LogController {
 	public TextArea logArea;
+	public Menu minecraftMenu;
 
 	private Stage stage;
+
+	public List<Process> processList = new ArrayList<>();
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
@@ -33,5 +40,12 @@ public class LogController {
 
 	public void menuClose(ActionEvent actionEvent) {
 		stage.hide();
+	}
+
+	public void killMinecraft(ActionEvent actionEvent) {
+		minecraftMenu.setDisable(true);
+		OneClientLogging.log("Minecraft was forcefully terminated by the user!");
+		processList.forEach(process -> process.destroyForcibly());
+		processList.clear();
 	}
 }

@@ -15,6 +15,7 @@ import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.application.Platform;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
@@ -152,7 +153,10 @@ public class MinecraftUtil {
 
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(new File(Constants.INSTANCEDIR, instance.name));
+				Platform.runLater(() -> OneClientLogging.logController.minecraftMenu.setDisable(false));
+
 				Process process = processBuilder.start();
+				OneClientLogging.logController.processList.add(process);
 
 				BufferedReader reader =
 					new BufferedReader(new InputStreamReader(process.getInputStream()));
