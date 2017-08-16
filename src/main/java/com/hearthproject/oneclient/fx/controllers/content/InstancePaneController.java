@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -51,14 +52,7 @@ public class InstancePaneController extends ContentPaneController {
 			for (InstanceTile tile : instanceTiles) {
 				tile.setAction(() -> {
 					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
-						new Thread(() -> {
-							try {
-								MinecraftUtil.installMinecraft(instance);
-							} catch (Throwable throwable) {
-								OneClientLogging.log(throwable);
-							}
-							MinecraftUtil.startMinecraft(instance);
-						}).start();
+					MinecraftAuth.loginAndPlay(instance);
 				});
 
 			}

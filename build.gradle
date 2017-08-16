@@ -32,7 +32,9 @@ repositories {
 	maven {
 		url "http://files.minecraftforge.net/maven/"
 	}
-
+	maven {
+		url "https://libraries.minecraft.net/"
+	}
 }
 
 configurations {
@@ -47,6 +49,7 @@ dependencies {
 	shade 'com.intellij:forms_rt:7.0.3'
 	shade 'com.mashape.unirest:unirest-java:1.4.9'
 	shade 'net.minecraftforge:installer:1.7:thin'
+	shade 'com.mojang:authlib:1.5.16'
 }
 
 jar {

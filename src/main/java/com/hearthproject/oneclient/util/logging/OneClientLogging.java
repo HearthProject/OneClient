@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -48,6 +49,18 @@ public class OneClientLogging {
 		StringWriter errors = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(errors));
 		log(errors.toString());
+	}
+
+	public static void logUserError(Throwable throwable, String title) {
+		StringWriter errors = new StringWriter();
+		throwable.printStackTrace(new PrintWriter(errors));
+		log(errors.toString());
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Error!");
+		alert.setHeaderText(title);
+		alert.setContentText(throwable.getLocalizedMessage());
+
+		alert.showAndWait();
 	}
 
 	private static String getPrefix() {

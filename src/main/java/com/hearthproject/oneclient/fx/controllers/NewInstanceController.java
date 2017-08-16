@@ -136,6 +136,14 @@ public class NewInstanceController {
 		if (Main.mainController.currentContent == MainController.Content.INSTANCES) {
 			Main.mainController.contentPaneController.refresh();
 		}
+
+		new Thread(() -> {
+			try {
+				MinecraftUtil.installMinecraft(instance);
+			} catch (Throwable throwable) {
+				OneClientLogging.log(throwable);
+			}
+		}).start();
 		//TODO check the instnace can be added and is unique
 		//        if (!instanceNameField.getText().isEmpty()) {
 		//            for (Instance instance : InstanceManager.getInstances()) {

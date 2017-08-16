@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.util.minecraft;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -15,12 +16,18 @@ import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.mojang.authlib.Agent;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import javafx.application.Platform;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -61,6 +68,7 @@ public class MinecraftUtil {
 	}
 
 	public static void installMinecraft(Instance instance) throws Throwable {
+		OneClientLogging.log("Installing minecraft for " + instance.name);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
 		File versions = new File(mcDir, "versions");
@@ -111,7 +119,7 @@ public class MinecraftUtil {
 		}
 	}
 
-	public static void startMinecraft(Instance instance){
+	public static boolean startMinecraft(Instance instance, String username, String password){
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
 		File versions = new File(mcDir, "versions");
@@ -120,6 +128,20 @@ public class MinecraftUtil {
 		Version versionData = downloadMcVersionData(instance.minecraftVersion);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 		System.out.println(mcJar.exists());
+
+		OneClientLogging.log("Attempting authentication with Mojang");
+
+		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication)(new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
+		auth.setUsername(username);
+		auth.setPassword(password);
+
+		try {
+			auth.logIn();
+		} catch (AuthenticationException e) {
+			OneClientLogging.logUserError(e, "Failed to login to your minecraft account. Please check your username and password");
+			return false;
+		}
+		OneClientLogging.log("Login successful!");
 
 		OneClientLogging.log("Starting minecraft...");
 
@@ -145,7 +167,12 @@ public class MinecraftUtil {
 				arguments.add(cpb.toString());
 				arguments.add(versionData.mainClass);
 
-				arguments.add("--accessToken=123");
+				arguments.add("--accessToken=" + auth.getAuthenticatedToken());
+				arguments.add("--uuid=" + auth.getSelectedProfile().getId().toString().replace("-", ""));
+				arguments.add("--username=" + auth.getSelectedProfile().getName());
+				arguments.add("--userType=" + auth.getUserType().getName());
+				arguments.add("--userProperties=" + (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+
 				arguments.add("--version=" + instance.minecraftVersion);
 				arguments.add("--assetsDir=" + new File(assets, "objects"));
 				arguments.add("--assetIndex=" + versionData.assetIndex.id);
@@ -178,5 +205,6 @@ public class MinecraftUtil {
 			}
 
 		}).start();
+		return true;
 	}
 }
