@@ -19,6 +19,7 @@ public class SplashScreen {
 
 	public static Stage stage;
 	static SplashScreenController splashScreenController;
+	public static boolean loaded = false;
 
 	public static void show() throws IOException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -42,9 +43,13 @@ public class SplashScreen {
 		stage.setScene(scene);
 		splashScreenController = fxmlLoader.getController();
 		stage.show();
+		loaded = true;
 	}
 
 	public static void updateProgess(String text, double percentage) {
+		if(!loaded){
+			return;
+		}
 		Platform.runLater(() -> {
 			splashScreenController.progressBar.setProgress(percentage / 100);
 			splashScreenController.progressText.setText(text);

@@ -80,9 +80,6 @@ public class ForgeUtils {
 		}
 	}
 
-	public static void downlaodMinecraftJar() {
-
-	}
 
 	//http://files.minecraftforge.net/maven/net/minecraftforge/forge/json
 	public static ForgeVersions loadForgeVerions() throws IOException {

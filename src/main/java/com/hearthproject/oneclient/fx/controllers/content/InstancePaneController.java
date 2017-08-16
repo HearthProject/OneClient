@@ -53,7 +53,8 @@ public class InstancePaneController extends ContentPaneController {
 				tile.setAction(() -> {
 					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
 					try {
-						MinecraftUtil.loadMC(instance);
+						MinecraftUtil.installMinecraft(instance);
+						MinecraftUtil.startMinecraft(instance);
 					} catch (Throwable e) {
 						OneClientLogging.log(e);
 					}

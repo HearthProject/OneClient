@@ -14,6 +14,7 @@ public class Version {
 	public List<Library> libraries;
 	public Map<String, Downloads> downloads;
 	public AssetIndex assetIndex;
+	public String mainClass, minecraftArguments;
 
 	public class Downloads {
 		public String url;
@@ -40,10 +41,9 @@ public class Version {
 			return Constants.LIBRARIES_BASE + path;
 		}
 
-		//TODO fix dir if needed
-		public File getFile() {
+		public File getFile(File dir) {
 			String[] parts = this.name.split(":", 3);
-			return new File("TODO", parts[0].replace(".", File.separator) + File.separator + parts[1] + File.separator + parts[2] + File.separator + parts[1] + "-" + parts[2] + getClassifier() + ".jar");
+			return new File(dir, parts[0].replace(".", File.separator) + File.separator + parts[1] + File.separator + parts[2] + File.separator + parts[1] + "-" + parts[2] + getClassifier() + ".jar");
 		}
 
 		public String getSha1() {

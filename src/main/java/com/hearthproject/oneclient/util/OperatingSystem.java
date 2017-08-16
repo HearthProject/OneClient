@@ -24,6 +24,17 @@ public class OperatingSystem {
 		}
 	}
 
+	public static String getJavaDelimiter () {
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.contains("win")) {
+			return ";";
+		} else if (osName.contains("mac")) {
+			return ":";
+		} else {
+			return ":";
+		}
+	}
+
 	public static boolean is64Bit() {
 		return System.getProperty("sun.arch.data.model").contains("64");
 	}

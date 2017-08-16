@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.logging;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +31,9 @@ public class OneClientLogging {
 	public static void log(String string) {
 		String output = getPrefix() + string;
 		System.out.println(output);
-		Platform.runLater(() -> logController.logArea.appendText(output + "\n"));
+		if(SplashScreen.loaded){
+			Platform.runLater(() -> logController.logArea.appendText(output + "\n"));
+		}
 		try {
 			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
 		} catch (IOException e) {
