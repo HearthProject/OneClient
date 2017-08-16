@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.Main">
+   <right>
+      <VBox alignment="TOP_CENTER" style="-fx-background-color: -dark-background-color;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" style="-fx-background-color: transparent; -fx-border-width: 0;" text="MIN">
+                     <HBox.margin>
+                        <Insets right="2.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" style="-fx-background-color: transparent; -fx-border-width: 0;" text="MAX" />
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" style="-fx-background-color: #BD3034; -fx-border-width: 0;" text="X">
+                     <HBox.margin>
+                        <Insets left="2.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <VBox alignment="CENTER">
+               <children>
+                  <StackPane>
+                     <children>
+                        <Rectangle fill="WHITE" height="120.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="120.0">
+                           <StackPane.margin>
+                              <Insets />
+                           </StackPane.margin>
+                        </Rectangle>
+                        <ImageView fitHeight="114.0" fitWidth="114.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../ProfProspectorHead.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="6.0" top="6.0" />
+                     </VBox.margin>
+                  </StackPane>
+                  <Text fx:id="username" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color;" text="ProfProspector">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="6.0" />
+                     </VBox.margin>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </VBox>
+            <VBox>
+               <children>
+                  <Button id="side-panel-button" mnemonicParsing="false" prefHeight="120.0" prefWidth="200.0" style="-fx-background-color: -light-background-color; -fx-text-fill: -fill-color;" text="Instances" />
+                  <Button id="side-panel-button" mnemonicParsing="false" prefHeight="120.0" prefWidth="200.0" text="Get Content" />
+                  <Button id="side-panel-button" mnemonicParsing="false" prefHeight="120.0" prefWidth="200.0" text="Settings" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <VBox id="light-background" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <StackPane alignment="TOP_CENTER">
+               <children>
+                  <VBox prefHeight="1089.0" prefWidth="1000.0">
+                     <children>
+                        <HBox id="dark-background">
+                           <children>
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif;" text="One Client // 0.0.1">
+                                 <font>
+                                    <Font name="System Bold" size="28.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                                 </HBox.margin>
+                              </Text>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <VBox id="dark-background" alignment="TOP_CENTER" prefHeight="47.0" prefWidth="976.0">
+                           <VBox.margin>
+                              <Insets left="12.0" right="12.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <Region minHeight="-Infinity" prefHeight="3.0" style="-fx-background-color: -fill-color;">
+                           <VBox.margin>
+                              <Insets left="12.0" right="12.0" />
+                           </VBox.margin>
+                        </Region>
+                        <VBox id="dark-background" alignment="TOP_CENTER" prefHeight="679.0" prefWidth="976.0">
+                           <VBox.margin>
+                              <Insets bottom="12.0" left="12.0" right="12.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <Region maxHeight="50.0" />
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -27,12 +27,10 @@ public class Main extends Application {
 
     public static void main(String... args) {
         SettingsUtil.init();
-        System.out.println(SettingsUtil.settings.left_align_window_buttons.name + "=" + SettingsUtil.settings.left_align_window_buttons.setting.toString());
-        SettingsUtil.updateSetting("left_align_window_buttons", false);
-        System.out.println(SettingsUtil.settings.left_align_window_buttons.name + "=" + SettingsUtil.settings.left_align_window_buttons.setting.toString());
         Platform.runLater(() -> {
             OneClientLogging.setupLogController();
-            OneClientLogging.showLogWindow();//TODO config
+            if (((Boolean) SettingsUtil.settings.show_log_window.setting))
+                OneClientLogging.showLogWindow();
             try {
                 SplashScreen.show();
             } catch (IOException e) {
@@ -78,7 +76,7 @@ public class Main extends Application {
         Parent root = fxmlLoader.load(fxmlUrl.openStream());
         stage.setTitle("One Client");
         stage.getIcons().add(new Image("icon.png"));
-        Scene scene = new Scene(root, 1221, 800);
+        Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add("gui/css/theme.css");
         stage.setScene(scene);
         stage.show();
