@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.jar.JarFile;
 
 public class ForgeUtils {
 
@@ -24,18 +25,22 @@ public class ForgeUtils {
 		return null;
 	}
 
-	public static void downloadForgeJar(File path, String forgeVer) {
+	public static JarFile downloadForgeJar(File versionsDir, String forgeVer) {
 		try {
 			ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
-			OneClientLogging.log("Downloading forge jar to " + path.getAbsolutePath());
-			URL forgeJar = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + forgeVer + "/forge-" + forgeVer + "-universal.jar");
+			String jarName = forgeVer + "/forge-" + forgeVer + "-universal.jar";
+			File forgeJar = new File(forgeVer, jarName);
+			OneClientLogging.log("Downloading forge jar to " + versionsDir.getAbsolutePath());
 			if (version.branch != null && !version.branch.isEmpty()) {
-				forgeJar = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar");
+				jarName =  forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
 			}
-			FileUtils.copyURLToFile(forgeJar, path);
+			URL forgeJarURL = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + jarName);
+			FileUtils.copyURLToFile(forgeJarURL, forgeJar);
+			return new JarFile(forgeJar);
 		} catch (Throwable throwable) {
 			OneClientLogging.log(throwable);
 		}
+		return null;
 	}
 
 	//http://files.minecraftforge.net/maven/net/minecraftforge/forge/json

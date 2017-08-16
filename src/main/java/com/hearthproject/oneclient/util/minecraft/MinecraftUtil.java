@@ -52,11 +52,12 @@ public class MinecraftUtil {
 		return version;
 	}
 
-	public static Version downloadMcVersionData(String minecraftVersion) {
+	public static Version downloadMcVersionData(String minecraftVersion, File versionsDir) {
 		try {
 			Optional<GameVersion.Version> optionalVersion = version.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst();
 			if (optionalVersion.isPresent()) {
 				String jsonData = IOUtils.toString(new URL(optionalVersion.get().url), StandardCharsets.UTF_8);
+				FileUtils.writeStringToFile(new File(versionsDir, minecraftVersion + ".json"), jsonData, StandardCharsets.UTF_8);
 				return JsonUtil.GSON.fromJson(jsonData, Version.class);
 			} else {
 				OneClientLogging.log(new RuntimeException("Failed downloading Minecraft json"));
@@ -76,7 +77,7 @@ public class MinecraftUtil {
 		File libraries = new File(mcDir, "libraries");
 		File natives = new File(mcDir, "natives");
 
-		Version versionData = downloadMcVersionData(instance.minecraftVersion);
+		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
 		OneClientLogging.log("Downloading minecraft jar");
@@ -126,9 +127,8 @@ public class MinecraftUtil {
 		File versions = new File(mcDir, "versions");
 		File libraries = new File(mcDir, "libraries");
 		File natives = new File(mcDir, "natives");
-		Version versionData = downloadMcVersionData(instance.minecraftVersion);
+		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
-		System.out.println(mcJar.exists());
 
 		OneClientLogging.log("Attempting authentication with Mojang");
 
