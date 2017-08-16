@@ -47,17 +47,18 @@ public class InstancePaneController extends ContentPaneController {
 				instancePane.getChildren().add(tile);
 			}
 			instancePane.getChildren().add(newInstanceTile);
-
-			//TODO: Remove, this is an example on how to set the instance's button action
+			
 			for (InstanceTile tile : instanceTiles) {
 				tile.setAction(() -> {
 					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
-					try {
-						MinecraftUtil.installMinecraft(instance);
-						MinecraftUtil.startMinecraft(instance);
-					} catch (Throwable e) {
-						OneClientLogging.log(e);
-					}
+						new Thread(() -> {
+							try {
+								MinecraftUtil.installMinecraft(instance);
+							} catch (Throwable throwable) {
+								OneClientLogging.log(throwable);
+							}
+							MinecraftUtil.startMinecraft(instance);
+						}).start();
 				});
 
 			}

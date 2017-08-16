@@ -27,6 +27,10 @@ public class Main extends Application {
 
     public static void main(String... args) {
         SettingsUtil.init();
+	    OneClientLogging.log("Starting initial loading of OneClient");
+        if(Constants.CUSTOM_RUN){
+		    OneClientLogging.log("Using custom run dir!! " + Constants.getRunDir().getAbsolutePath());
+	    }
         Platform.runLater(() -> {
             OneClientLogging.setupLogController();
             if (((Boolean) SettingsUtil.settings.show_log_window.setting))
@@ -89,7 +93,7 @@ public class Main extends Application {
     }
 
     public void loadData() throws Exception {
-        OneClientLogging.log("Loading instances");
+	    OneClientLogging.log("Loading instances");
         InstanceManager.load();
         OneClientLogging.log("Loading minecraft versions");
         MinecraftUtil.loadGameVersions();

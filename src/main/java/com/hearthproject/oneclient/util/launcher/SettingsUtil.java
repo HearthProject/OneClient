@@ -11,7 +11,7 @@ public class SettingsUtil {
     public static LauncherSettings settings;
 
     public static void init() {
-        settingsFile = new File(Constants.RUNDIR, "settings.json");
+        settingsFile = new File(Constants.getRunDir(), "settings.json");
         reloadSettings();
     }
 
