@@ -24,7 +24,7 @@ public class OperatingSystem {
 		}
 	}
 
-	public static String getJavaDelimiter () {
+	public static String getJavaDelimiter() {
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.contains("win")) {
 			return ";";

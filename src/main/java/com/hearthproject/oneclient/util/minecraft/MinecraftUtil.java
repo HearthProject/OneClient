@@ -5,16 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
 import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.minecraft.Version;
-import com.hearthproject.oneclient.json.models.minecraft.launcher.LauncherProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -26,12 +23,16 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 
 public class MinecraftUtil {
 
@@ -79,15 +80,15 @@ public class MinecraftUtil {
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
 		OneClientLogging.log("Downloading minecraft jar");
-		if(!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)){
+		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
 
 		OneClientLogging.log("Starting download of " + versionData.libraries.size() + " library's");
 		for (Version.Library library : versionData.libraries) {
 			if (library.allowed() && library.getFile(libraries) != null) {
-				if(library.getFile(libraries).exists()){
-					if(MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())){
+				if (library.getFile(libraries).exists()) {
+					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
 						continue;
 					}
 				}
@@ -97,8 +98,8 @@ public class MinecraftUtil {
 		}
 
 		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
-					OneClientLogging.log("Extracting native " + library.name);
-					ZipUtil.unpack(library.getFile(libraries), natives);
+			OneClientLogging.log("Extracting native " + library.name);
+			ZipUtil.unpack(library.getFile(libraries), natives);
 		});
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
@@ -119,7 +120,7 @@ public class MinecraftUtil {
 		}
 	}
 
-	public static boolean startMinecraft(Instance instance, String username, String password){
+	public static boolean startMinecraft(Instance instance, String username, String password) {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
 		File versions = new File(mcDir, "versions");
@@ -131,7 +132,7 @@ public class MinecraftUtil {
 
 		OneClientLogging.log("Attempting authentication with Mojang");
 
-		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication)(new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
+		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
 		auth.setUsername(username);
 		auth.setPassword(password);
 
@@ -198,7 +199,6 @@ public class MinecraftUtil {
 				while ((lineErr = readerErr.readLine()) != null) {
 					OneClientLogging.log(lineErr);
 				}
-
 
 			} catch (Throwable throwable) {
 				OneClientLogging.log(throwable);

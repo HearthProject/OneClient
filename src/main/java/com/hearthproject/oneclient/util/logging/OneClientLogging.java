@@ -22,20 +22,17 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class OneClientLogging {
 
 	public static Stage stage;
 	public static LogController logController;
 
-
 	public static void log(String string) {
 		String output = getPrefix() + string;
 		System.out.println(output);
-		if(SplashScreen.loaded){
+		if (SplashScreen.loaded) {
 			Platform.runLater(() -> logController.logArea.appendText(output + "\n"));
 		}
 		try {

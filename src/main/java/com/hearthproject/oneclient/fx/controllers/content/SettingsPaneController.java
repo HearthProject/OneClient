@@ -4,13 +4,11 @@ import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneContro
 
 public class SettingsPaneController extends ContentPaneController {
 
+	@Override
+	public void onStart() {
+	}
 
-
-    @Override
-    public void onStart() {
-    }
-
-    @Override
-    public void refresh() {
-    }
+	@Override
+	public void refresh() {
+	}
 }

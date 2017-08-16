@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class MinecraftAuth {
 
-	public static void loginAndPlay(Instance instance){
+	public static void loginAndPlay(Instance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/mc_auth.fxml");

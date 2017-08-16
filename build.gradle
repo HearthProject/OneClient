@@ -30,9 +30,6 @@ mainClassName = "com.hearthproject.oneclient.Main"
 repositories {
     mavenCentral()
 	maven {
-		url "http://files.minecraftforge.net/maven/"
-	}
-	maven {
 		url "https://libraries.minecraft.net/"
 	}
 }
@@ -48,7 +45,6 @@ dependencies {
 	shade 'org.zeroturnaround:zt-zip:1.9'
 	shade 'com.intellij:forms_rt:7.0.3'
 	shade 'com.mashape.unirest:unirest-java:1.4.9'
-	shade 'net.minecraftforge:installer:1.7:thin'
 	shade 'com.mojang:authlib:1.5.16'
 }
 

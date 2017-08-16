@@ -14,7 +14,6 @@ public class PackUtil {
 
 	public static ModPackList packs;
 
-
 	public static ModPackList loadModPacks() throws IOException {
 		if (packs != null) {
 			return packs;
@@ -24,7 +23,7 @@ public class PackUtil {
 		SplashScreen.updateProgess("Reading modpacks", 80);
 		packs = JsonUtil.GSON.fromJson(jsonStr, ModPackList.class);
 		int i = 1;
-		for(ModPack pack : packs.packs){
+		for (ModPack pack : packs.packs) {
 			SplashScreen.updateProgess("Downloading logo for" + pack.name, 80 + (20 * (packs.packs.size() / i++)));
 			pack.iconImage = new Image(new URL(pack.iconUrl).openStream());
 		}

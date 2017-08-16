@@ -47,7 +47,7 @@ public class SplashScreen {
 	}
 
 	public static void updateProgess(String text, double percentage) {
-		if(!loaded){
+		if (!loaded) {
 			return;
 		}
 		Platform.runLater(() -> {

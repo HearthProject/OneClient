@@ -17,7 +17,7 @@ public class MinecraftAuthController {
 
 	public void login(ActionEvent actionEvent) {
 		Platform.runLater(() -> stage.hide());
-		if(!MinecraftUtil.startMinecraft(instance, username.getText(), password.getText())){
+		if (!MinecraftUtil.startMinecraft(instance, username.getText(), password.getText())) {
 			stage.show();
 			return;
 		}
