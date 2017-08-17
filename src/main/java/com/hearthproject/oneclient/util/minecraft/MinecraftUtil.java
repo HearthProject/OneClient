@@ -13,6 +13,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.properties.PropertyMap;
@@ -71,6 +72,7 @@ public class MinecraftUtil {
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		OneClientLogging.log("Installing minecraft for " + instance.name);
+		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
 		File versions = new File(mcDir, "versions");
@@ -145,6 +147,8 @@ public class MinecraftUtil {
 		OneClientLogging.log("Login successful!");
 
 		OneClientLogging.log("Starting minecraft...");
+
+		OneClientTracking.sendRequest("minecraft/play/" + instance.minecraftVersion);
 
 		new Thread(() -> {
 			try {

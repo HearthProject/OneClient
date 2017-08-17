@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -31,9 +32,10 @@ public class Main extends Application {
 		if (Constants.CUSTOM_RUN) {
 			OneClientLogging.log("Using custom run dir!! " + Constants.getRunDir().getAbsolutePath());
 		}
+		OneClientTracking.sendRequest("launch");
 		Platform.runLater(() -> {
 			OneClientLogging.setupLogController();
-			if (((Boolean) SettingsUtil.settings.show_log_window.setting))
+			if (((Boolean) SettingsUtil.settings.show_log_window))
 				OneClientLogging.showLogWindow();
 			try {
 				SplashScreen.show();
