@@ -75,6 +75,7 @@ public abstract class ContentPane {
 	public abstract void refresh();
 
 	public final void start() {
+		button.setSelected(true);
 		onStart();
 		refresh();
 	}

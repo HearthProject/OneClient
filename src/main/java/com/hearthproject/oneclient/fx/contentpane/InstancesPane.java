@@ -30,7 +30,9 @@ public class InstancesPane extends ContentPane {
 
 	@Override
 	public void onStart() {
-		newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+		if (newInstanceTile == null) {
+			newInstanceTile = (StackPane) instancePane.getChildren().get(0);
+		}
 	}
 
 	@Override
