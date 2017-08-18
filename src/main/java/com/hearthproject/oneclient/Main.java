@@ -100,7 +100,7 @@ public class Main extends Application {
 		OneClientLogging.log("Loading minecraft versions");
 		MinecraftUtil.loadGameVersions();
 		OneClientLogging.log("Loading forge versions");
-		ForgeUtils.loadForgeVerions();
+		ForgeUtils.loadForgeVersions();
 		OneClientLogging.log("Loading mod packs");
 		PackUtil.loadModPacks();
 		OneClientLogging.log("Done!");

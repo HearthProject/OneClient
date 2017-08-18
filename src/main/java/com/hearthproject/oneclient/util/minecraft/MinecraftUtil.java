@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
 import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
@@ -12,6 +13,7 @@ import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import com.mojang.authlib.Agent;
@@ -31,9 +33,7 @@ import java.io.InputStreamReader;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MinecraftUtil {
 
@@ -87,7 +87,7 @@ public class MinecraftUtil {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
 
-		OneClientLogging.log("Starting download of " + versionData.libraries.size() + " library's");
+		OneClientLogging.log("Resolving " + versionData.libraries.size() + " library's");
 		for (Version.Library library : versionData.libraries) {
 			if (library.allowed() && library.getFile(libraries) != null) {
 				if (library.getFile(libraries).exists()) {
@@ -105,13 +105,17 @@ public class MinecraftUtil {
 			ZipUtil.unpack(library.getFile(libraries), natives);
 		});
 
+		if(instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()){
+			ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
+		}
+
 		Version.AssetIndex assetIndex = versionData.assetIndex;
-		File assetsInfo = new File(new File(assets, "objects"), "indexes" + File.separator + assetIndex.id + ".json");
+		File assetsInfo = new File(assets, "indexes" + File.separator + assetIndex.id + ".json");
 		FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
 		AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
 		Map<String, AssetObject> parent = index.getFileMap();
 
-		OneClientLogging.log("Starting download of " + parent.entrySet().size() + " assets");
+		OneClientLogging.log("Resolving " + parent.entrySet().size() + " assets");
 		for (Map.Entry<String, AssetObject> entry : parent.entrySet()) {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
@@ -121,6 +125,7 @@ public class MinecraftUtil {
 				FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
 			}
 		}
+		OneClientLogging.log("Done minecraft files are all downloaded");
 	}
 
 	public static boolean startMinecraft(Instance instance, String username, String password) {
@@ -160,6 +165,26 @@ public class MinecraftUtil {
 						cpb.append(library.getFile(libraries).getAbsolutePath());
 					}
 				}
+
+				String mainClass = versionData.mainClass;
+				Optional<String> tweakClass = Optional.empty();
+
+				if(instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()){
+					for (File library : ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
+						cpb.append(OperatingSystem.getJavaDelimiter());
+						cpb.append(library.getAbsolutePath());
+					}
+					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(libraries, instance.minecraftVersion + "-" + instance.modLoaderVersion);
+					mainClass = forgeVersionProfile.mainClass;
+
+					List argList = Arrays.asList(forgeVersionProfile.minecraftArguments.split(" "));
+					OneClientLogging.log("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
+					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
+				}
+
+
+
+
 				cpb.append(OperatingSystem.getJavaDelimiter());
 				cpb.append(mcJar.getAbsolutePath());
 
@@ -170,7 +195,9 @@ public class MinecraftUtil {
 
 				arguments.add("-cp");
 				arguments.add(cpb.toString());
-				arguments.add(versionData.mainClass);
+				arguments.add(mainClass);
+
+				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 
 				arguments.add("--accessToken=" + auth.getAuthenticatedToken());
 				arguments.add("--uuid=" + auth.getSelectedProfile().getId().toString().replace("-", ""));
@@ -179,7 +206,7 @@ public class MinecraftUtil {
 				arguments.add("--userProperties=" + (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
 
 				arguments.add("--version=" + instance.minecraftVersion);
-				arguments.add("--assetsDir=" + new File(assets, "objects"));
+				arguments.add("--assetsDir=" + assets);
 				arguments.add("--assetIndex=" + versionData.assetIndex.id);
 				arguments.add("--gameDir=" + new File(Constants.INSTANCEDIR, instance.name));
 

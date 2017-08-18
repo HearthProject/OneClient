@@ -101,7 +101,7 @@ public class NewInstanceController {
 			modLoaderVersionComboBox.getItems().clear();
 			try {
 				if (mcVersionComboBox.getSelectionModel().getSelectedItem() != null) {
-					ForgeUtils.loadForgeVerions().number.entrySet().stream()
+					ForgeUtils.loadForgeVersions().number.entrySet().stream()
 						.filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString()))
 						.sorted(Comparator.comparingInt(o -> -o.getValue().build))
 						.forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));

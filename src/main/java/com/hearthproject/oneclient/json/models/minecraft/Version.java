@@ -71,7 +71,7 @@ public class Version {
 				if (element == null) {
 					return "";
 				}
-				return "-" + element.getAsString().replace("\"", "");
+				return "-" + element.getAsString().replace("\"", "").replace("${arch}", OperatingSystem.getArch());
 			}
 		}
 
