@@ -24,4 +24,8 @@ public class Constants {
 		return new File(FileSystemView.getFileSystemView().getDefaultDirectory() , "OneClient");
 	}
 
+	public static String getVersion(){
+		return Constants.class.getPackage().getImplementationVersion();
+	}
+
 }

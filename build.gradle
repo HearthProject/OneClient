@@ -1,8 +1,9 @@
+import java.security.MessageDigest
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'application'
-apply plugin: 'edu.sc.seis.macAppBundle'
 
 buildscript {
     repositories {
@@ -11,9 +12,6 @@ buildscript {
         }
         jcenter()
     }
-	dependencies {
-		classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.7"
-	}
 }
 
 sourceCompatibility = 1.8
@@ -60,11 +58,19 @@ jar {
     from { configurations.shade.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-macAppBundle {
-	mainClassName = "com.hearthproject.oneclient.Main"
-	bundleJRE = false //Set this to true if you want to include the JRE
-	icon = "src/main/resources/icon.icns"
-	appOutputDir = "libs"
-	appName = "OneClient-" + version + "-osx"
+task saveHash(dependsOn: jar) {
+	doLast {
+		GFileUtils.writeStringToFile(new File(jar.archivePath.getAbsolutePath() + ".sha1"), calcSha1(jar.archivePath))
+	}
 }
 
+def calcSha1(file)
+{
+	MessageDigest md = MessageDigest.getInstance("SHA-1");
+	file.eachByte 4096, {bytes, size ->
+		md.update(bytes, 0, size);
+	}
+	return md.digest().collect {String.format "%02x", it}.join();
+}
+
+build.finalizedBy saveHash

@@ -28,14 +28,14 @@ public class Main extends Application {
 
 	public static void main(String... args) {
 		SettingsUtil.init();
-		OneClientLogging.log("Starting initial loading of OneClient");
+		OneClientLogging.log("Starting OneClient version: " + Constants.getVersion());
 		if (Constants.CUSTOM_RUN) {
 			OneClientLogging.log("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
 		}
 		OneClientTracking.sendRequest("launch");
 		Platform.runLater(() -> {
 			OneClientLogging.setupLogController();
-			if (((Boolean) SettingsUtil.settings.show_log_window))
+			if (SettingsUtil.settings.show_log_window)
 				OneClientLogging.showLogWindow();
 			try {
 				SplashScreen.show();
@@ -80,7 +80,7 @@ public class Main extends Application {
 		fxmlLoader.setLocation(fxmlUrl);
 		fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
 		Parent root = fxmlLoader.load(fxmlUrl.openStream());
-		stage.setTitle("One Client");
+		stage.setTitle("One Client " + Constants.getVersion());
 		stage.getIcons().add(new Image("icon.png"));
 		Scene scene = new Scene(root, 1200, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
