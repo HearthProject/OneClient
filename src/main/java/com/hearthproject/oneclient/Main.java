@@ -2,7 +2,6 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
-import com.hearthproject.oneclient.json.models.launcher.LauncherUpdate;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.PackUtil;
@@ -47,8 +46,8 @@ public class Main extends Application {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			for(String arg : args){
-				if(arg.equals("-updateSuccess")){
+			for (String arg : args) {
+				if (arg.equals("-updateSuccess")) {
 					Alert alert = new Alert(Alert.AlertType.INFORMATION);
 					alert.setTitle("Update complete!");
 					alert.setHeaderText("The update was successful!");
@@ -57,7 +56,6 @@ public class Main extends Application {
 				}
 			}
 		});
-
 		launch(args);
 	}
 
@@ -72,13 +70,13 @@ public class Main extends Application {
 					try {
 						startLauncher();
 						Optional<String> latestVersion = Updater.checkForUpdate();
-						if(latestVersion.isPresent()){
+						if (latestVersion.isPresent()) {
 							Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 							alert.setTitle("Update?");
 							alert.setContentText("OneClient version " + latestVersion.get() + " is available, you are using " + Constants.getVersion() + ". Would you like to update?");
 							alert.setHeaderText("An update is available!");
 							Optional<ButtonType> result = alert.showAndWait();
-							if (result.get() == ButtonType.OK){
+							if (result.get() == ButtonType.OK) {
 								Updater.startUpdate();
 							}
 						}
@@ -90,7 +88,6 @@ public class Main extends Application {
 				OneClientLogging.log(e);
 			}
 		}).start();
-
 	}
 
 	public void startLauncher() throws Exception {
@@ -130,6 +127,5 @@ public class Main extends Application {
 		PackUtil.loadModPacks();
 		OneClientLogging.log("Done!");
 		SplashScreen.updateProgess("Done!", 100);
-
 	}
 }

@@ -1,9 +1,8 @@
-package com.hearthproject.oneclient.fx.controllers.content;
+package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
-import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
@@ -12,21 +11,22 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
 import java.util.ArrayList;
 
-public class InstancePaneController extends ContentPaneController {
-	@FXML
+public class InstancesPane extends ContentPane {
 	public TilePane instancePane;
-	@FXML
 	public Button newInstanceButton;
-	public Button importCurseButton;
+
 	private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 	private StackPane newInstanceTile;
+
+	public InstancesPane() {
+		super("gui/contentpanes/instances.fxml", "Instances", "#4CB357");
+	}
 
 	@Override
 	public void onStart() {
@@ -43,7 +43,7 @@ public class InstancePaneController extends ContentPaneController {
 	}
 
 	private void refreshInstances() {
-		if (controller.currentContent == MainController.Content.INSTANCES) {
+		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 			InstanceManager.load();
 			instancePane.getChildren().clear();
 			for (Instance instance : InstanceManager.getInstances()) {
@@ -69,8 +69,8 @@ public class InstancePaneController extends ContentPaneController {
 		instance.modLoaderVersion = "14.21.1.2443";
 		instance.modLoader = "forge";
 		InstanceManager.addInstance(instance);
-		if (Main.mainController.currentContent == MainController.Content.INSTANCES) {
-			Main.mainController.contentPaneController.refresh();
+		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
+			refresh();
 		}
 		new Thread(() -> {
 			try {

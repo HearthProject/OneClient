@@ -1,7 +1,8 @@
-package com.hearthproject.oneclient.fx.controllers.content;
+package com.hearthproject.oneclient.fx.contentpane;
 
-import com.hearthproject.oneclient.fx.controllers.MainController;
-import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
+import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.PackCardController;
 import com.hearthproject.oneclient.json.models.launcher.ModPack;
 import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -14,13 +15,16 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 
-public class PackHeaderController extends ContentPaneController {
+public class GetContentPane extends ContentPane {
 	static boolean search;
 	static String seachTerm;
 	static boolean canceUpdate = false;
-	static MainController staticController;
 	static Thread reloadThread = createUpdateThread();
 	public TextField searchBox;
+
+	public GetContentPane() {
+		super("gui/contentpanes/modpacklist/packlistheader.fxml", "Get Content", "#3A54A3");
+	}
 
 	private static Thread createUpdateThread() {
 		return new Thread(() -> {
@@ -55,7 +59,7 @@ public class PackHeaderController extends ContentPaneController {
 	public static void addPackCard(ModPack modPack) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			URL fxmlUrl = classLoader.getResource("gui/modpacklist/packcard.fxml");
+			URL fxmlUrl = classLoader.getResource("gui/contentpanes/modpacklist/packcard.fxml");
 			if (fxmlUrl == null) {
 				OneClientLogging.log("An error has occurred loading the mod pack card!");
 				return;
@@ -63,7 +67,7 @@ public class PackHeaderController extends ContentPaneController {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setLocation(fxmlUrl);
 			fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
-			staticController.contentPane.getChildren().add(fxmlLoader.load(fxmlUrl.openStream()));
+			Main.mainController.contentBox.getChildren().add(fxmlLoader.load(fxmlUrl.openStream()));
 			PackCardController packCardController = fxmlLoader.getController();
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
@@ -79,7 +83,6 @@ public class PackHeaderController extends ContentPaneController {
 
 	@Override
 	protected void onStart() {
-		staticController = controller;
 		updatePackList();
 		searchBox.textProperty().addListener((observable, oldValue, newValue) -> updatePackList());
 	}
@@ -88,8 +91,8 @@ public class PackHeaderController extends ContentPaneController {
 		search = !searchBox.getText().isEmpty();
 		seachTerm = searchBox.getText();
 
-		Node sNode = controller.contentPane.getChildren().get(0);
-		controller.contentPane.getChildren().removeIf(node -> node != sNode);
+		Node sNode = Main.mainController.contentBox.getChildren().get(0);
+		Main.mainController.contentBox.getChildren().removeIf(node -> node != sNode);
 		canceUpdate = true;
 		try {
 			reloadThread.join();

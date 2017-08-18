@@ -1,91 +1,56 @@
 package com.hearthproject.oneclient.fx.controllers;
 
-import com.hearthproject.oneclient.fx.controllers.content.base.ContentPaneController;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.event.ActionEvent;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.JavaFXBuilderFactory;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
+import java.util.ArrayList;
 
 public class MainController {
 	@FXML
-	public Rectangle tabBar;
+	public VBox buttonBox;
 	@FXML
-	public VBox contentPane;
+	public VBox contentBox;
 	@FXML
-	public ScrollPane scrollPane;
+	public VBox sideBox;
 	@FXML
-	public HBox barBox;
-	@FXML
-	public StackPane barPane;
-	public Content currentContent = null;
-	public ContentPaneController contentPaneController = null;
+	public Text copyrightInfo;
+
+	public ContentPane currentContent = null;
+	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
 
 	public void onStart(Stage stage) throws IOException {
-		setContent(Content.INSTANCES);
+		for (ContentPane pane : ContentPanes.panesList) {
+			buttonBox.getChildren().add(pane.getButton());
+		}
+		setContent(ContentPanes.INSTANCES_PANE);
+		onSceneResize(stage.getScene());
 	}
 
 	public void onSceneResize(Scene scene) {
-		tabBar.setWidth(scene.getWidth());
-		scrollPane.setPrefHeight(scene.getHeight() - (6 * 3) - barPane.getHeight());
+		contentBox.setPrefWidth(scene.getWidth() - sideBox.getMinWidth());
+		contentBox.setPrefHeight(scene.getHeight());
 	}
 
-	public void setContent(Content content) {
+	public void setContent(ContentPane content) {
 		if (content == null) {
-			contentPane.getChildren().clear();
+			contentBox.getChildren().clear();
+		} else if (content == currentContent) {
+			return;
 		} else {
-			try {
-				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-				URL fxmlUrl = classLoader.getResource(content.fxmlFile);
-				if (fxmlUrl == null) {
-					OneClientLogging.log("An error has occurred loading " + content.fxmlFile + "!");
-					return;
-				}
-				FXMLLoader fxmlLoader = new FXMLLoader();
-				fxmlLoader.setLocation(fxmlUrl);
-				fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
-				contentPane.getChildren().clear();
-				contentPane.getChildren().setAll(fxmlLoader.<Node>load(fxmlUrl.openStream()));
-				currentContent = Content.INSTANCES;
-				contentPaneController = fxmlLoader.getController();
-				contentPaneController.controller = this;
-				contentPaneController.start();
-			} catch (IOException e) {
-				OneClientLogging.log(e);
+			contentBox.getChildren().clear();
+			if (content.getNode() != null) {
+				contentBox.getChildren().setAll(content.getNode());
+				currentContent = content;
+				currentContent.start();
+			} else {
+				currentContent = null;
 			}
-		}
-	}
-
-	public void buttonGetContent(ActionEvent actionEvent) {
-		setContent(Content.CONTENT);
-	}
-
-	public void buttonInstances(ActionEvent actionEvent) {
-		setContent(Content.INSTANCES);
-	}
-
-	public enum Content {
-		INSTANCES, SETTINGS, CONTENT("gui/modpacklist/packlistheader.fxml");
-
-		String fxmlFile;
-
-		Content(String fxmlFile) {
-			this.fxmlFile = fxmlFile;
-		}
-
-		Content() {
-			this.fxmlFile = "gui/" + this.name().toLowerCase() + ".fxml";
 		}
 	}
 }

@@ -4,6 +4,7 @@
     -light-background-color: #EFEFEF;
     -dark-background-color: #494949;
     -fill-color: #343434;
+    -dark-color: #282828;
     -grey-fill-color: #8E95A6;
     -hover-color: #686868;
     -medium-color: #545454;
@@ -103,6 +104,32 @@
 
 #side-panel-button:selected{
     -fx-background-color: -accent-color;
+}
+
+/*
+    Window Button
+*/
+
+#window-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+#window-button:hover{
+    -fx-background-color: -hover-color;
+}
+
+/*
+    Close Button
+*/
+
+#close-button {
+    -fx-background-color: #BD3034;
+    -fx-border-width: 0;
+}
+
+#close-button:hover{
+    -fx-background-color: #FF4248;
 }
 
 /*

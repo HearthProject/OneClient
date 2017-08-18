@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
@@ -133,8 +134,8 @@ public class NewInstanceController {
 		InstanceManager.addInstance(instance);
 		stage.close();
 
-		if (Main.mainController.currentContent == MainController.Content.INSTANCES) {
-			Main.mainController.contentPaneController.refresh();
+		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
+			Main.mainController.currentContent.refresh();
 		}
 
 		new Thread(() -> {
