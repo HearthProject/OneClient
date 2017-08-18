@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
 public class Constants {
@@ -20,7 +21,7 @@ public class Constants {
 			CUSTOM_RUN = true;
 			return new File(runDir);
 		}
-		return new File(System.getProperty("user.home") + System.getProperty("path.separator") + "OneCLient");
+		return new File(FileSystemView.getFileSystemView().getDefaultDirectory() , "OneClient");
 	}
 
 }

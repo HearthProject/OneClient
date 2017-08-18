@@ -30,7 +30,7 @@ public class Main extends Application {
 		SettingsUtil.init();
 		OneClientLogging.log("Starting initial loading of OneClient");
 		if (Constants.CUSTOM_RUN) {
-			OneClientLogging.log("Using custom run dir!! " + Constants.getRunDir().getAbsolutePath());
+			OneClientLogging.log("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
 		}
 		OneClientTracking.sendRequest("launch");
 		Platform.runLater(() -> {
