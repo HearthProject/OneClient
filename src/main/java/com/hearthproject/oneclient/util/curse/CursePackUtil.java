@@ -2,12 +2,10 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
-
-import java.io.IOException;
-
 import com.hearthproject.oneclient.json.models.curse.CursePacks;
 import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class CursePackUtil {

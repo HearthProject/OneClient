@@ -5,7 +5,6 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.curse.CursePacks;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
-import com.hearthproject.oneclient.util.curse.CursePackUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;

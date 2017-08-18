@@ -5,8 +5,6 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import javafx.application.Platform;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
