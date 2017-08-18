@@ -8,6 +8,7 @@ public class Constants {
 	public static final File TEMPDIR = new File(getRunDir(), "temp");
 	public static final File INSTANCEDIR = new File(getRunDir(), "instances");
 	public static final File LOGFILE = new File(getRunDir(), "log.txt");
+	public static final File TEMP_UPDATE = new File(getRunDir(), "temp_update.jar");
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";

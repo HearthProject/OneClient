@@ -2,10 +2,12 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.json.models.launcher.LauncherUpdate;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
+import com.hearthproject.oneclient.util.launcher.Updater;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
@@ -15,11 +17,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -32,7 +37,7 @@ public class Main extends Application {
 		if (Constants.CUSTOM_RUN) {
 			OneClientLogging.log("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
 		}
-		OneClientTracking.sendRequest("launch");
+		OneClientTracking.sendRequest("launch/" + Constants.getVersion());
 		Platform.runLater(() -> {
 			OneClientLogging.setupLogController();
 			if (SettingsUtil.settings.show_log_window)
@@ -41,6 +46,15 @@ public class Main extends Application {
 				SplashScreen.show();
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+			for(String arg : args){
+				if(arg.equals("-updateSuccess")){
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setTitle("Update complete!");
+					alert.setHeaderText("The update was successful!");
+					alert.setContentText("You are now running OneClient version " + Constants.getVersion() + "!");
+					alert.showAndWait();
+				}
 			}
 		});
 
@@ -57,6 +71,17 @@ public class Main extends Application {
 				Platform.runLater(() -> {
 					try {
 						startLauncher();
+						Optional<String> latestVersion = Updater.checkForUpdate();
+						if(latestVersion.isPresent()){
+							Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+							alert.setTitle("Update?");
+							alert.setContentText("OneClient version " + latestVersion.get() + " is available, you are using " + Constants.getVersion() + ". Would you like to update?");
+							alert.setHeaderText("An update is available!");
+							Optional<ButtonType> result = alert.showAndWait();
+							if (result.get() == ButtonType.OK){
+								Updater.startUpdate();
+							}
+						}
 					} catch (Exception e) {
 						OneClientLogging.log(e);
 					}
