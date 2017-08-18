@@ -126,8 +126,6 @@ public class Main extends Application {
 		ForgeUtils.loadForgeVersions();
 		OneClientLogging.log("Loading mod packs");
 		PackUtil.loadModPacks();
-		OneClientLogging.log("Loading curse mod packs");
-		CursePackUtil.loadModPacks();
 		OneClientLogging.log("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}

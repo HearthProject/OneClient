@@ -21,6 +21,9 @@ public class Updater {
 	public static final String updateURL = "http://hearthproject.uk/files/versions.json";
 
 	public static Optional<String> checkForUpdate() throws IOException {
+		if(Constants.getVersion() == null){
+			return Optional.empty();
+		}
 		String json = IOUtils.toString(new URL(updateURL), StandardCharsets.UTF_8);
 		LauncherUpdate launcherUpdate = JsonUtil.GSON.fromJson(json, LauncherUpdate.class);
 		if(!launcherUpdate.latestVersion.equals(Constants.getVersion())){

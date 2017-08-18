@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.forge;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
@@ -37,7 +38,10 @@ public class ForgeUtils {
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
+		int i = 0;
 		for(ForgeVersionProfile.Library library : forgeVersionProfile.libraries){
+			InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
+			InstallingController.controller.setProgress(i ++, forgeVersionProfile.libraries.size());
 			if(library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)){
 				librarys.add(library.getFile(libraries));
 				continue;

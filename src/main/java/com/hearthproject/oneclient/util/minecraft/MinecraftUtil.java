@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
@@ -72,6 +73,7 @@ public class MinecraftUtil {
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		OneClientLogging.log("Installing minecraft for " + instance.name);
+		InstallingController.controller.setTitleText("Downloading minecraft" + instance.minecraftVersion);
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
@@ -88,7 +90,10 @@ public class MinecraftUtil {
 		}
 
 		OneClientLogging.log("Resolving " + versionData.libraries.size() + " library's");
+		int i = 0;
 		for (Version.Library library : versionData.libraries) {
+			InstallingController.controller.setDetailText("Resolving library " + library.name);
+			InstallingController.controller.setProgress(i ++, versionData.libraries.size());
 			if (library.allowed() && library.getFile(libraries) != null) {
 				if (library.getFile(libraries).exists()) {
 					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
@@ -116,9 +121,12 @@ public class MinecraftUtil {
 		Map<String, AssetObject> parent = index.getFileMap();
 
 		OneClientLogging.log("Resolving " + parent.entrySet().size() + " assets");
+		i = 0;
 		for (Map.Entry<String, AssetObject> entry : parent.entrySet()) {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
+			InstallingController.controller.setDetailText("Resolving asset " + entry.getKey());
+			InstallingController.controller.setProgress(i ++, parent.entrySet().size());
 			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
 				OneClientLogging.log("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
@@ -126,6 +134,7 @@ public class MinecraftUtil {
 			}
 		}
 		OneClientLogging.log("Done minecraft files are all downloaded");
+		InstallingController.close();
 	}
 
 	public static boolean startMinecraft(Instance instance, String username, String password) {

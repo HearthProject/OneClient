@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
+
 <VBox minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" minHeight="200.0" minWidth="200.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS"/>
+      <HBox prefHeight="40.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="buttonInstall" mnemonicParsing="false" text="Install">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="buttonBrowse" mnemonicParsing="false" text="Browse Modpacks">
+               <HBox.margin>
+                  <Insets left="15.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+        <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" minHeight="200.0" minWidth="400.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
     </children>
 </VBox>

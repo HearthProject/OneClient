@@ -2,9 +2,11 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.google.gson.Gson;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import javafx.application.Platform;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -71,6 +73,8 @@ public class CursePackInstaller {
 			instance.minecraftVersion = manifest.minecraft.version;
 			instance.modLoader = "forge";
 			instance.modLoaderVersion = manifest.getForgeVersion();
+			instance.name = manifest.name;
+			InstallingController.controller.setTitleText("Downloading " + instance.name);
 			System.out.println(instance.modLoaderVersion);
 			File minecraftDir = instance.getDirectory();
 
@@ -191,6 +195,7 @@ public class CursePackInstaller {
 	public void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
 		log("Downloading " + file);
 		log("File: " + file + " (" + (total - remaining) + "/" + total + ")");
+		InstallingController.controller.setProgress(total - remaining, total);
 		log("Acquiring Info");
 
 		String baseUrl = "http://minecraft.curseforge.com/projects/" + file.projectID;
@@ -208,11 +213,12 @@ public class CursePackInstaller {
 
 		String filename = m.group(1);
 		filename = URLDecoder.decode(filename, "UTF-8");
-
+		InstallingController.controller.setDetailText("Downloading " + filename);
 		if (filename.endsWith("cookieTest=1")) {
 			log("Missing file! Skipping it");
 			missingMods.add(finalUrl);
 		} else {
+
 			log("Downloading " + filename);
 
 			File f = new File(modsDir, filename);
@@ -261,11 +267,15 @@ public class CursePackInstaller {
 		return uri.toString();
 	}
 
-	public void downloadFileFromURL(File f, URL url) throws IOException, FileNotFoundException {
+	public void downloadFileFromURL(File f, URL url) throws IOException {
 
-		System.out.println(f);
-		if (!f.exists())
+		System.out.println(f + ":" + url);
+		if (!f.exists()){
+			if(!f.getParentFile().exists()){
+				f.getParentFile().mkdirs();
+			}
 			f.createNewFile();
+		}
 
 		try (InputStream instream = url.openStream(); FileOutputStream outStream = new FileOutputStream(f)) {
 			byte[] buff = new byte[4096];
