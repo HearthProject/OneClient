@@ -66,21 +66,6 @@ public class InstancesPane extends ContentPane {
 	}
 
 	public void onCursePress(ActionEvent actionEvent) {
-		Instance instance = new Instance("All the mods 3");
-		instance.minecraftVersion = "1.12";
-		instance.modLoaderVersion = "14.21.1.2443";
-		instance.modLoader = "forge";
-		InstanceManager.addInstance(instance);
-		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
-			refresh();
-		}
-		new Thread(() -> {
-			try {
-				MinecraftUtil.installMinecraft(instance);
-				CursePackInstaller.downloadFromURL("https://minecraft.curseforge.com/projects/all-the-mods-3", "latest", instance);
-			} catch (Throwable throwable) {
-				OneClientLogging.log(throwable);
-			}
-		}).start();
+
 	}
 }

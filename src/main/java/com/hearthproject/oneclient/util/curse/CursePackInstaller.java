@@ -1,8 +1,10 @@
 package com.hearthproject.oneclient.util.curse;
 
 import com.google.gson.Gson;
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -18,17 +20,14 @@ import java.util.regex.Pattern;
 
 //Taken from: https://github.com/Vazkii/CMPDL/tree/master/src/vazkii/cmpdl + changed a bit
 public class CursePackInstaller {
-	public static final Gson GSON_INSTANCE = new Gson();
+	public final Gson GSON_INSTANCE = new Gson();
 
-	public static final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
+	public final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
 
-	public static boolean downloading = false;
 
-	public static List<String> missingMods = null;
+	public List<String> missingMods = null;
 
-	public static void downloadFromURL(String url, String version, Instance instance) throws Exception {
-		if (downloading)
-			return;
+	public void downloadFromURL(String url, String version, Instance instance) throws Exception {
 
 		if (url.contains("feed-the-beast.com") && version.equals("latest")) {
 			log("WARNING: For modpacks hosted in the FTB site, you need to provide a version, \"latest\" will not work!");
@@ -40,7 +39,6 @@ public class CursePackInstaller {
 		}
 
 		missingMods = new ArrayList<String>();
-		downloading = true;
 		log("~ Starting magical modpack download sequence ~");
 		log("Input URL: " + url);
 		log("Input Version: " + version);
@@ -70,6 +68,10 @@ public class CursePackInstaller {
 
 			File unzippedDir = setupModpackMetadata(filename, finalUrl);
 			Manifest manifest = getManifest(unzippedDir);
+			instance.minecraftVersion = manifest.minecraft.version;
+			instance.modLoader = "forge";
+			instance.modLoaderVersion = manifest.getForgeVersion();
+			System.out.println(instance.modLoaderVersion);
 			File minecraftDir = instance.getDirectory();
 
 			downloadModpackFromManifest(minecraftDir, manifest);
@@ -98,7 +100,7 @@ public class CursePackInstaller {
 		}
 	}
 
-	public static File setupModpackMetadata(String filename, String url) throws IOException, ZipException {
+	public File setupModpackMetadata(String filename, String url) throws IOException, ZipException {
 		log("Setting up Metadata");
 
 		File homeDir = getTempDir();
@@ -132,20 +134,11 @@ public class CursePackInstaller {
 		return retDir;
 	}
 
-	public static File getTempDir() {
-		String home = System.getProperty("user.home");
-		File homeDir = new File(home, "/.cmpdl_temp");
-
-		log("CMPDL Temp Dir is " + homeDir);
-		if (!homeDir.exists()) {
-			log("Directory doesn't exist, making it now");
-			homeDir.mkdir();
-		}
-
-		return homeDir;
+	public File getTempDir() {
+		return new File(Constants.TEMPDIR, "curseDownload");
 	}
 
-	public static Manifest getManifest(File dir) throws IOException {
+	public Manifest getManifest(File dir) throws IOException {
 		log("Parsing Manifest");
 		File f = new File(dir, "manifest.json");
 		if (!f.exists())
@@ -157,7 +150,7 @@ public class CursePackInstaller {
 		return manifest;
 	}
 
-	public static File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
+	public File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
 		int total = manifest.files.size();
 
 		log("Downloading modpack from Manifest");
@@ -178,7 +171,7 @@ public class CursePackInstaller {
 		return outputDir;
 	}
 
-	public static void copyOverrides(Manifest manifest, File tempDir, File outDir) throws IOException {
+	public void copyOverrides(Manifest manifest, File tempDir, File outDir) throws IOException {
 		log("Copying modpack overrides");
 		log("Copying modpack overrides");
 		File overridesDir = new File(tempDir, manifest.overrides);
@@ -195,7 +188,7 @@ public class CursePackInstaller {
 		log("Done copying overrides");
 	}
 
-	public static void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
+	public void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
 		log("Downloading " + file);
 		log("File: " + file + " (" + (total - remaining) + "/" + total + ")");
 		log("Acquiring Info");
@@ -236,12 +229,12 @@ public class CursePackInstaller {
 				log("Error: " + e.getClass().toString() + ": " + e.getLocalizedMessage());
 				log("This mod will not be downloaded. If you need the file, you'll have to get it manually:");
 				log(finalUrl);
-				CursePackInstaller.missingMods.add(finalUrl);
+				missingMods.add(finalUrl);
 			}
 		}
 	}
 
-	public static String getLocationHeader(String location) throws IOException, URISyntaxException {
+	public String getLocationHeader(String location) throws IOException, URISyntaxException {
 		URI uri = new URI(location);
 		HttpURLConnection connection = null;
 		String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36";
@@ -268,7 +261,9 @@ public class CursePackInstaller {
 		return uri.toString();
 	}
 
-	public static void downloadFileFromURL(File f, URL url) throws IOException, FileNotFoundException {
+	public void downloadFileFromURL(File f, URL url) throws IOException, FileNotFoundException {
+
+		System.out.println(f);
 		if (!f.exists())
 			f.createNewFile();
 
@@ -281,7 +276,7 @@ public class CursePackInstaller {
 		}
 	}
 
-	public static void log(String s) {
+	public void log(String s) {
 		OneClientLogging.log(s);
 	}
 

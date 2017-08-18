@@ -24,7 +24,6 @@ public class PackUtil {
 		packs = JsonUtil.GSON.fromJson(jsonStr, ModPackList.class);
 		int i = 1;
 		for (ModPack pack : packs.packs) {
-			SplashScreen.updateProgess("Downloading logo for" + pack.name, 80 + (20 * (packs.packs.size() / i++)));
 			pack.iconImage = new Image(new URL(pack.iconUrl).openStream());
 		}
 		return packs;

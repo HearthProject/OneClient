@@ -3,7 +3,9 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.PackCardController;
+import com.hearthproject.oneclient.json.models.curse.CursePacks;
 import com.hearthproject.oneclient.json.models.launcher.ModPack;
+import com.hearthproject.oneclient.util.curse.CursePackUtil;
 import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
@@ -31,7 +33,8 @@ public class GetContentPane extends ContentPane {
 			try {
 
 				try {
-					for (ModPack modPack : PackUtil.loadModPacks().packs) {
+					int size = 0;
+					for (CursePacks.CursePack modPack : CursePackUtil.loadModPacks().packs) {
 						if (canceUpdate) {
 							break;
 						}
@@ -42,6 +45,9 @@ public class GetContentPane extends ContentPane {
 							}
 						}
 						if (canceUpdate) {
+							break;
+						}
+						if(size++ > 25){
 							break;
 						}
 						Platform.runLater(() -> addPackCard(modPack));
@@ -56,7 +62,7 @@ public class GetContentPane extends ContentPane {
 		});
 	}
 
-	public static void addPackCard(ModPack modPack) {
+	public static void addPackCard(CursePacks.CursePack modPack) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/contentpanes/modpacklist/packcard.fxml");
@@ -72,9 +78,10 @@ public class GetContentPane extends ContentPane {
 			packCardController.modpackName.setText(modPack.name);
 			packCardController.modpackDetails.setText(modPack.authors);
 			packCardController.modpackDescription.setText(modPack.description);
-			if (modPack.iconImage != null) {
-				packCardController.modpackImage.setImage(modPack.iconImage);
-			}
+			packCardController.pack = modPack;
+//			if (modPack.iconImage != null) {
+//				packCardController.modpackImage.setImage(modPack.iconImage);
+//			}
 
 		} catch (IOException e) {
 			OneClientLogging.log(e);
