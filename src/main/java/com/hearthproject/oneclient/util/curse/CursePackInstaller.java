@@ -70,6 +70,8 @@ public class CursePackInstaller {
 			instance.modLoader = "forge";
 			instance.modLoaderVersion = manifest.getForgeVersion();
 			instance.name = manifest.name;
+			instance.curseURL = url;
+			instance.curseVersion = manifest.version;
 			int i = 1;
 			while (!InstanceManager.isValid(instance)){
 				instance.name = manifest.name + "(" + i + ")";

@@ -18,6 +18,10 @@ public class Instance {
 
 	public long lastLaunch;
 
+	public String curseURL;
+
+	public String curseVersion;
+
 	public Instance(String name) {
 		this.name = name;
 		icon = "";
