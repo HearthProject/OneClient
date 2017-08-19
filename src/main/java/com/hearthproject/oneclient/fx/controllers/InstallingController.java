@@ -51,7 +51,7 @@ public class InstallingController {
 	}
 
 	public static void close(){
-		stage.close();
+		Platform.runLater(() -> stage.close());
 	}
 
 	public void log(String text){
