@@ -12,6 +12,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import javax.imageio.ImageIO;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class InstanceTile extends StackPane {
 	public final Instance instance;
 	public Rectangle background;
@@ -29,8 +33,15 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (!instance.icon.isEmpty())
-			imageView.setImage(new Image(instance.icon));
+		if (!instance.icon.isEmpty()){
+			try {
+				imageView.setImage(new Image(new FileInputStream(instance.getIcon())));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			imageView.setFitHeight(75);
+			imageView.setFitWidth(75);
+		}
 		nameLabel = new Text(instance.name);
 		nameLabel.setFill(Color.web("#FFFFFF"));
 		nameLabel.setFont(javafx.scene.text.Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));

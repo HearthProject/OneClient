@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -128,8 +129,14 @@ public class NewInstanceController {
 			alert.showAndWait();
 			return;
 		}
+
+		instance.icon = selectedImageFile.getName();
 		if (selectedImageFile != null) {
-			instance.icon = selectedImageFile.getPath();
+			try {
+				FileUtils.copyFile(selectedImageFile, instance.getIcon());
+			} catch (IOException e) {
+				OneClientLogging.log(e);
+			}
 		}
 		instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
 		if (modLoaderVersionComboBox.getSelectionModel().getSelectedItem() != null && modLoaderComboBox.getSelectionModel().getSelectedItem() != null) {

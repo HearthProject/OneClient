@@ -31,4 +31,12 @@ public class Instance {
 		return new File(Constants.INSTANCEDIR, name);
 	}
 
+	public File getIcon(){
+		if(icon == null || icon.isEmpty()){
+			return null;
+		}
+		return new File(getDirectory(), icon);
+	}
+
+
 }
