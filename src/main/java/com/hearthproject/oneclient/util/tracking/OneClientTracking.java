@@ -15,8 +15,8 @@ public class OneClientTracking {
 
 	private static final int siteId = 2;
 
-	public static void sendRequest(String action){
-		if(!SettingsUtil.settings.tracking){
+	public static void sendRequest(String action) {
+		if (!SettingsUtil.settings.tracking) {
 			return;
 		}
 		try {

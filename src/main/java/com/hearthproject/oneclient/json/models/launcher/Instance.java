@@ -23,7 +23,7 @@ public class Instance {
 		icon = "";
 	}
 
-	public File getDirectory(){
+	public File getDirectory() {
 		return new File(Constants.INSTANCEDIR, name);
 	}
 

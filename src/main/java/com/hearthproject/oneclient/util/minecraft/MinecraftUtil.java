@@ -93,7 +93,7 @@ public class MinecraftUtil {
 		int i = 0;
 		for (Version.Library library : versionData.libraries) {
 			InstallingController.controller.setDetailText("Resolving library " + library.name);
-			InstallingController.controller.setProgress(i ++, versionData.libraries.size());
+			InstallingController.controller.setProgress(i++, versionData.libraries.size());
 			if (library.allowed() && library.getFile(libraries) != null) {
 				if (library.getFile(libraries).exists()) {
 					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
@@ -110,7 +110,7 @@ public class MinecraftUtil {
 			ZipUtil.unpack(library.getFile(libraries), natives);
 		});
 
-		if(instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()){
+		if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
 			ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}
 
@@ -126,7 +126,7 @@ public class MinecraftUtil {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
 			InstallingController.controller.setDetailText("Resolving asset " + entry.getKey());
-			InstallingController.controller.setProgress(i ++, parent.entrySet().size());
+			InstallingController.controller.setProgress(i++, parent.entrySet().size());
 			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
 				OneClientLogging.log("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
@@ -178,7 +178,7 @@ public class MinecraftUtil {
 				String mainClass = versionData.mainClass;
 				Optional<String> tweakClass = Optional.empty();
 
-				if(instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()){
+				if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
 					for (File library : ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
@@ -190,9 +190,6 @@ public class MinecraftUtil {
 					OneClientLogging.log("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
 					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
 				}
-
-
-
 
 				cpb.append(OperatingSystem.getJavaDelimiter());
 				cpb.append(mcJar.getAbsolutePath());

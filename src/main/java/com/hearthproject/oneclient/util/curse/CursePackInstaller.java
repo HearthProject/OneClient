@@ -24,7 +24,6 @@ public class CursePackInstaller {
 
 	public final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
 
-
 	public List<String> missingMods = null;
 
 	public void downloadFromURL(String url, String version, Instance instance) throws Exception {
@@ -268,8 +267,8 @@ public class CursePackInstaller {
 	public void downloadFileFromURL(File f, URL url) throws IOException {
 
 		System.out.println(f + ":" + url);
-		if (!f.exists()){
-			if(!f.getParentFile().exists()){
+		if (!f.exists()) {
+			if (!f.getParentFile().exists()) {
 				f.getParentFile().mkdirs();
 			}
 			f.createNewFile();

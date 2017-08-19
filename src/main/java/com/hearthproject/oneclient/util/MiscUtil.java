@@ -47,7 +47,7 @@ public class MiscUtil {
 	}
 
 	public static int getResponseCode(URL url) throws IOException {
-		HttpURLConnection huc = (HttpURLConnection)url.openConnection();
+		HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 		huc.setRequestMethod("GET");
 		huc.connect();
 		int code = huc.getResponseCode();

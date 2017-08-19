@@ -4,7 +4,6 @@ import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
-import com.hearthproject.oneclient.util.launcher.PackUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.launcher.Updater;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -123,8 +122,6 @@ public class Main extends Application {
 		MinecraftUtil.loadGameVersions();
 		OneClientLogging.log("Loading forge versions");
 		ForgeUtils.loadForgeVersions();
-		OneClientLogging.log("Loading mod packs");
-		PackUtil.loadModPacks();
 		OneClientLogging.log("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}

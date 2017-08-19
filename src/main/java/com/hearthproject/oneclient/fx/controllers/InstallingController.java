@@ -50,51 +50,50 @@ public class InstallingController {
 		controller = fxmlLoader.getController();
 	}
 
-	public static void close(){
+	public static void close() {
 		Platform.runLater(() -> stage.close());
 	}
 
-	public void log(String text){
-		if(Platform.isFxApplicationThread()){
+	public void log(String text) {
+		if (Platform.isFxApplicationThread()) {
 			log.appendText(text + "\n");
 		} else {
 			Platform.runLater(() -> log.appendText(text + "\n"));
 		}
 	}
 
-	public void setDetailText(String text){
+	public void setDetailText(String text) {
 		log(text);
-		if(Platform.isFxApplicationThread()){
+		if (Platform.isFxApplicationThread()) {
 			detail.setText(text);
 		} else {
 			Platform.runLater(() -> detail.setText(text));
 		}
 	}
 
-	public void setTitleText(String text){
-		if(Platform.isFxApplicationThread()){
+	public void setTitleText(String text) {
+		if (Platform.isFxApplicationThread()) {
 			title.setText(text);
 		} else {
 			Platform.runLater(() -> title.setText(text));
 		}
 	}
 
-	public void setProgress(double progress){
-		if(Platform.isFxApplicationThread()){
+	public void setProgress(double progress) {
+		if (Platform.isFxApplicationThread()) {
 			progressbar.setProgress(progress / 100);
 		} else {
 			progressbar.setProgress(progress / 100);
 		}
 	}
 
-	public void setProgress(int count, int maxCount){
+	public void setProgress(int count, int maxCount) {
 		double percent = ((count * 100.0f) / maxCount) / 100;
-		if(Platform.isFxApplicationThread()){
+		if (Platform.isFxApplicationThread()) {
 			progressbar.setProgress(percent);
 		} else {
 			progressbar.setProgress(percent);
 		}
 	}
-
 
 }

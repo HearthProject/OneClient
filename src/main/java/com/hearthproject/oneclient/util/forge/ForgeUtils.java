@@ -39,16 +39,16 @@ public class ForgeUtils {
 		ArrayList<File> librarys = new ArrayList<>();
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		int i = 0;
-		for(ForgeVersionProfile.Library library : forgeVersionProfile.libraries){
+		for (ForgeVersionProfile.Library library : forgeVersionProfile.libraries) {
 			InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
-			InstallingController.controller.setProgress(i ++, forgeVersionProfile.libraries.size());
-			if(library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)){
+			InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
+			if (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)) {
 				librarys.add(library.getFile(libraries));
 				continue;
 			}
 			OneClientLogging.log("Downloading " + library.name + " from " + library.getURL());
 			int response = MiscUtil.getResponseCode(new URL(library.getURL()));
-			if(response == 404){
+			if (response == 404) {
 				library.url = Constants.MAVEN_CENTRAL_BASE;
 			}
 			FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
@@ -70,7 +70,7 @@ public class ForgeUtils {
 		File forgeJar = new File(forgeVer, jarName);
 		OneClientLogging.log("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
-			jarName =  forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
+			jarName = forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
 		}
 		URL forgeJarURL = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + jarName);
 		FileUtils.copyURLToFile(forgeJarURL, forgeJar);

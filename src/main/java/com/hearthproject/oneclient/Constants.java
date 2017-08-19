@@ -22,10 +22,10 @@ public class Constants {
 			CUSTOM_RUN = true;
 			return new File(runDir);
 		}
-		return new File(FileSystemView.getFileSystemView().getDefaultDirectory() , "OneClient");
+		return new File(FileSystemView.getFileSystemView().getDefaultDirectory(), "OneClient");
 	}
 
-	public static String getVersion(){
+	public static String getVersion() {
 		return Constants.class.getPackage().getImplementationVersion();
 	}
 
