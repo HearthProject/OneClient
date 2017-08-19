@@ -13,10 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -123,6 +120,14 @@ public class NewInstanceController {
 
 	public void onCreateButtonPress() {
 		Instance instance = new Instance(instanceNameField.getText());
+		if(!InstanceManager.isValid(instance)){
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setTitle("Error");
+			alert.setHeaderText("That isnt a valid instance");
+			alert.setContentText("Do you already have an instance with that name?");
+			alert.showAndWait();
+			return;
+		}
 		if (selectedImageFile != null) {
 			instance.icon = selectedImageFile.getPath();
 		}
@@ -142,17 +147,10 @@ public class NewInstanceController {
 			try {
 				MinecraftUtil.installMinecraft(instance);
 			} catch (Throwable throwable) {
-				OneClientLogging.log(throwable);
+				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
 			}
 		}).start();
-		//TODO check the instnace can be added and is unique
-		//        if (!instanceNameField.getText().isEmpty()) {
-		//            for (Instance instance : InstanceManager.getInstances()) {
-		//                if (!instance.name.equals(instanceNameField.getText())) {
-		//
-		//                }
-		//            }
-		//        }
+
 	}
 
 	public void onChooseIconButtonPress() {

@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.curse.CursePackInstaller;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
@@ -71,7 +72,12 @@ public class CursePacksPane extends ContentPane {
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 					Main.mainController.currentContent.refresh();
 				}
-				//TODO show instances
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Pack has been installed!");
+				alert.setHeaderText(null);
+				alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the instance section.");
+				alert.showAndWait();
+				
 			}).start();
 		});
 	}
