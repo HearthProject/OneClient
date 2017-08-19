@@ -2,26 +2,44 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<VBox minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-      <HBox prefHeight="40.0" prefWidth="200.0">
+<AnchorPane minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="buttonInstall" mnemonicParsing="false" text="Install">
-               <HBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-            <Button fx:id="buttonBrowse" mnemonicParsing="false" text="Browse Modpacks">
-               <HBox.margin>
-                  <Insets left="15.0" top="5.0" />
-               </HBox.margin>
-            </Button>
+            <HBox prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="buttonInstall" mnemonicParsing="false" text="Install">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="buttonBrowse" mnemonicParsing="false" text="Browse Modpacks">
+                     <HBox.margin>
+                        <Insets left="15.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="hBox" minWidth="200.0" prefHeight="100.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" minHeight="200.0" minWidth="400.0" prefHeight="-1.0" prefWidth="-1.0">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin></WebView>
+               </children>
+            </HBox>
          </children>
-      </HBox>
-        <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" minHeight="200.0" minWidth="400.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
-    </children>
-</VBox>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" />
+   </padding>
+</AnchorPane>
