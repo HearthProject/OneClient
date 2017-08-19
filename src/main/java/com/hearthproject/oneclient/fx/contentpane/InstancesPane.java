@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class InstancesPane extends ContentPane {
 	public TilePane instancePane;
-	public Button newInstanceButton;
 
 	private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 	private StackPane newInstanceTile;
@@ -60,9 +59,5 @@ public class InstancesPane extends ContentPane {
 
 			}
 		}
-	}
-
-	public void onCursePress(ActionEvent actionEvent) {
-
 	}
 }
