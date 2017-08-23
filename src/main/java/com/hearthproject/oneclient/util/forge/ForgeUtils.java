@@ -32,7 +32,7 @@ public class ForgeUtils {
 		return null;
 	}
 
-	public static List<File> resloveForgeLibrarys(String forgeVer) throws IOException {
+	public static List<File> resolveForgeLibrarys(String forgeVer) throws IOException {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);

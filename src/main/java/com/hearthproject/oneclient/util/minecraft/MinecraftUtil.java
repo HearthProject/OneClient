@@ -115,7 +115,7 @@ public class MinecraftUtil {
 		});
 
 		if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-			ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
+			ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
@@ -183,7 +183,7 @@ public class MinecraftUtil {
 				Optional<String> tweakClass = Optional.empty();
 
 				if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-					for (File library : ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
+					for (File library : ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
