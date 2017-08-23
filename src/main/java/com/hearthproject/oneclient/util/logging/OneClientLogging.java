@@ -98,4 +98,8 @@ public class OneClientLogging {
 		stage.show();
 	}
 
+	public static void hideLogWindow() {
+		stage.hide();
+	}
+
 }

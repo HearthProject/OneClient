@@ -29,7 +29,7 @@ public class CursePacksPane extends ContentPane {
 	public HBox hBox;
 
 	public CursePacksPane() {
-		super("gui/contentpanes/getCurseContent.fxml", "Get Modpack", "#2D4BAD");
+		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
 	@Override
