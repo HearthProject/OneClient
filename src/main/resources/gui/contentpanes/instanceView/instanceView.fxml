@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane minHeight="-Infinity" minWidth="500.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -77,6 +77,7 @@
                      <children>
                         <Button fx:id="buttonPlay" mnemonicParsing="false" text="Play" GridPane.halignment="CENTER" />
                         <Button fx:id="buttonOpenFolder" mnemonicParsing="false" text="Open Folder" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                        <Button fx:id="buttonEditVersion" mnemonicParsing="false" text="Change Version" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </children>

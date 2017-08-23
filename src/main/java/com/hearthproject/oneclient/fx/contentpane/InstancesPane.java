@@ -38,7 +38,7 @@ public class InstancesPane extends ContentPane {
 	}
 
 	public void onNewInstancePress() {
-		NewInstanceController.start();
+		NewInstanceController.start(null);
 	}
 
 	private void refreshInstances() {

@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane.instanceView;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ public class InstancePane extends ContentPane {
 	public ImageView packIcon;
 	public Button buttonPlay;
 	public Button buttonOpenFolder;
+	public Button buttonEditVersion;
 	public ListView modList;
 
 	public MenuItem menuOpenFolder;
@@ -46,6 +48,8 @@ public class InstancePane extends ContentPane {
 		InstancePane pane = (InstancePane) ContentPanes.getPane(InstancePane.class);
 		pane.setupPane(instance);
 		AnchorPane node = (AnchorPane) pane.getNode();
+		node.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		node.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 		VBox.setVgrow(node, Priority.ALWAYS);
 		HBox.setHgrow(node, Priority.ALWAYS);
 		Main.mainController.currentContent.button.setSelected(false);
@@ -72,7 +76,6 @@ public class InstancePane extends ContentPane {
 			}
 
 		}
-
 		menuOpenFolder.setOnAction(event -> {
 			try {
 				Desktop.getDesktop().open(instance.getDirectory());
@@ -80,7 +83,6 @@ public class InstancePane extends ContentPane {
 				e.printStackTrace();
 			}
 		});
-
 		buttonOpenFolder.setOnAction(event -> {
 			try {
 				Desktop.getDesktop().open(instance.getDirectory());
@@ -91,25 +93,28 @@ public class InstancePane extends ContentPane {
 
 		buttonPlay.setOnAction(event -> MinecraftAuth.loginAndPlay(instance));
 
-		menuDelete.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-				alert.setTitle("Are you sure?");
-				alert.setHeaderText("Are you sure you want to delete the instance");
-				alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
+		menuDelete.setOnAction(event -> {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Are you sure?");
+			alert.setHeaderText("Are you sure you want to delete the instance");
+			alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
 
-				Optional<ButtonType> result = alert.showAndWait();
-				if (result.get() == ButtonType.OK){
-					try {
-						FileUtils.deleteDirectory(instance.getDirectory());
-						ContentPanes.INSTANCES_PANE.button.fire();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK){
+				try {
+					FileUtils.deleteDirectory(instance.getDirectory());
+					ContentPanes.INSTANCES_PANE.button.fire();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		});
+
+		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
+
+		menuDownload.setDisable(true);
+		menuBackup.setDisable(true);
+		menuViewBackups.setDisable(true);
 	}
 
 	@Override

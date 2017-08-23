@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -21,10 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Comparator;
 
@@ -48,7 +46,9 @@ public class NewInstanceController {
 	public Button createButton;
 	public File selectedImageFile;
 
-	public static void start() {
+	public Instance instance;
+
+	public static void start(Instance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/newInstance.fxml");
@@ -71,6 +71,7 @@ public class NewInstanceController {
 			stage.setScene(scene);
 			stage.show();
 			NewInstanceController controller = fxmlLoader.getController();
+			controller.instance = instance;
 			controller.onStart(stage);
 		} catch (Exception e) {
 			OneClientLogging.log(e);
@@ -92,6 +93,23 @@ public class NewInstanceController {
 		mcVersionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> refreshModLoader());
 
 		refreshModLoader();
+
+		if(instance != null){
+			modLoaderComboBox.getSelectionModel().select(instance.modLoader);
+			modLoaderVersionComboBox.getSelectionModel().select(instance.modLoaderVersion);
+			mcVersionComboBox.getSelectionModel().select(instance.minecraftVersion);
+			instanceNameField.setText(instance.name);
+			instanceNameField.setEditable(false);
+			if(instance.getIcon() != null && instance.getIcon().exists()){
+				try {
+					InputStream targetStream = new FileInputStream(instance.getIcon());
+					iconPreview.setImage(new Image(targetStream));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			createButton.setText("Update Instance");
+		}
 	}
 
 	public void refreshModLoader() {
@@ -121,7 +139,12 @@ public class NewInstanceController {
 
 	public void onCreateButtonPress() {
 		Instance instance = new Instance(instanceNameField.getText());
-		if(!InstanceManager.isValid(instance)){
+		boolean newInstance = true;
+		if(this.instance != null){
+			newInstance = false;
+			instance = this.instance;
+		}
+		if(newInstance && !InstanceManager.isValid(instance)){
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setTitle("Error");
 			alert.setHeaderText("That isnt a valid instance");
@@ -143,16 +166,24 @@ public class NewInstanceController {
 			instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
 			instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
 		}
-		InstanceManager.addInstance(instance);
+		if(newInstance){
+			InstanceManager.addInstance(instance);
+		} else {
+			InstanceManager.save(instance);
+		}
+
 		stage.close();
 
 		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 			Main.mainController.currentContent.refresh();
 		}
 
+		Instance finalInstance = instance;
 		new Thread(() -> {
 			try {
-				MinecraftUtil.installMinecraft(instance);
+				MinecraftUtil.installMinecraft(finalInstance);
+				Platform.runLater(() -> ContentPanes.INSTANCES_PANE.button.fire());
+
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
 			}
