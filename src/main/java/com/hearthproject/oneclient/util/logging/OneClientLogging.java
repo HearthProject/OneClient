@@ -52,12 +52,15 @@ public class OneClientLogging {
 		StringWriter errors = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(errors));
 		log(errors.toString());
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error!");
-		alert.setHeaderText(title);
-		alert.setContentText(throwable.getLocalizedMessage());
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText(title);
+			alert.setContentText(throwable.getLocalizedMessage());
 
-		alert.showAndWait();
+			alert.showAndWait();
+		});
+
 	}
 
 	private static String getPrefix() {

@@ -27,10 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +70,14 @@ public class MinecraftUtil {
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		OneClientLogging.log("Installing minecraft for " + instance.name);
-		InstallingController.controller.setTitleText("Downloading minecraft" + instance.minecraftVersion);
+		Platform.runLater(() -> {
+			try {
+				InstallingController.showInstaller();
+				InstallingController.controller.setTitleText("Downloading minecraft" + instance.minecraftVersion);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");

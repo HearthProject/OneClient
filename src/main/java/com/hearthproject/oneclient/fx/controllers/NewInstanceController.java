@@ -130,8 +130,8 @@ public class NewInstanceController {
 			return;
 		}
 
-		instance.icon = selectedImageFile.getName();
 		if (selectedImageFile != null) {
+			instance.icon = selectedImageFile.getName();
 			try {
 				FileUtils.copyFile(selectedImageFile, instance.getIcon());
 			} catch (IOException e) {
