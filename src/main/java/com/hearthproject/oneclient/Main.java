@@ -76,7 +76,10 @@ public class Main extends Application {
 							alert.setHeaderText("An update is available!");
 							Optional<ButtonType> result = alert.showAndWait();
 							if (result.get() == ButtonType.OK) {
-								Updater.startUpdate();
+								stage.hide();
+								SplashScreen.show();
+								SplashScreen.updateProgess("Downloading update...", 0);
+								new Thread(Updater::startUpdate).start();
 							}
 						}
 					} catch (Exception e) {
