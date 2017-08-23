@@ -1,10 +1,15 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,6 +28,7 @@ public class InstanceTile extends StackPane {
 	public VBox nodeBox;
 	public Text nameLabel;
 	public Button playButton;
+	public Button editButton;
 	private Action action;
 
 	public InstanceTile(Instance instance) {
@@ -50,10 +56,14 @@ public class InstanceTile extends StackPane {
 			if (action != null)
 				action.execute();
 		});
-		nodeBox = new VBox(nameLabel, playButton);
+		editButton = new Button("Edit");
+		editButton.setOnAction(event -> {
+			InstancePane.show(instance);
+		});
+		nodeBox = new VBox(nameLabel, imageView, playButton, editButton);
 		nodeBox.setAlignment(Pos.CENTER);
 		nodeBox.setSpacing(6);
-		this.getChildren().addAll(background, imageView, nodeBox);
+		this.getChildren().addAll(background, nodeBox);
 		this.setAlignment(Pos.CENTER);
 	}
 

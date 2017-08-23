@@ -79,4 +79,8 @@ public abstract class ContentPane {
 		onStart();
 		refresh();
 	}
+
+	public boolean showInSideBar() {
+		return true;
+	}
 }

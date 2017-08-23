@@ -15,7 +15,7 @@ public class ContentPanes {
 	public static final SettingsPane SETTINGS_PANE = (SettingsPane) getPane(SettingsPane.class);
 	public static final AboutPane ABOUT_PANE = (AboutPane) getPane(AboutPane.class);
 
-	static ContentPane getPane(Class<? extends ContentPane> clazz) {
+	public static ContentPane getPane(Class<? extends ContentPane> clazz) {
 		try {
 			ContentPane pane = clazz.newInstance();
 			URL fxmlUrl = pane.getFXMLUrl();
@@ -25,7 +25,9 @@ public class ContentPanes {
 			pane.setFXMLLoader(fxmlLoader);
 			fxmlLoader.setController(pane);
 			pane.setNode();
-			panesList.add(pane);
+			if(pane.showInSideBar()){
+				panesList.add(pane);
+			}
 			return fxmlLoader.getController();
 		} catch (Exception e) {
 			OneClientLogging.log(e);
