@@ -40,8 +40,10 @@ public class ForgeUtils {
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		int i = 0;
 		for (ForgeVersionProfile.Library library : forgeVersionProfile.libraries) {
-			InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
-			InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
+			if(InstallingController.controller != null){
+				InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
+				InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
+			}
 			if (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)) {
 				librarys.add(library.getFile(libraries));
 				continue;
