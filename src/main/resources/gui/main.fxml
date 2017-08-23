@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -16,7 +17,7 @@
          <children>
             <VBox>
                <children>
-                  <VBox fx:id="contentBox" fillWidth="false" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: -dark-background-color;" VBox.vgrow="ALWAYS">
+                  <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: -dark-background-color;" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                      </VBox.margin>
@@ -29,7 +30,7 @@
          <children>
             <VBox alignment="CENTER" VBox.vgrow="NEVER">
                <children>
-                  <Text fx:id="username" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color; -fx-font-size: 14;" text="One Client v0.0.1">
+                  <Text fx:id="versionText" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color; -fx-font-size: 14;" text="One Client v0.0.1">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -62,7 +63,8 @@
             <VBox fx:id="buttonBox" VBox.vgrow="ALWAYS" />
             <VBox alignment="CENTER" VBox.vgrow="NEVER">
                <children>
-                  <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" text="©2017 - HEARTH PROJECT&#10;http://hearthproject.uk/" textAlignment="CENTER" textOrigin="TOP" wrappingWidth="142.546875" />
+                  <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="©2017-2017 - HEARTH PROJECT" textAlignment="CENTER" textOrigin="TOP" />
+                  <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openWebsite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf" />
                </children>
                <VBox.margin>
                   <Insets bottom="3.0" top="3.0" />

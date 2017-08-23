@@ -9,11 +9,8 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -32,16 +29,17 @@ public class CursePacksPane extends ContentPane {
 	public HBox hBox;
 
 	public CursePacksPane() {
-		super("gui/contentpanes/getCurseContent.fxml", "Get Curse Pack", "#DB6B20");
+		super("gui/contentpanes/getCurseContent.fxml", "Get Modpack", "#2D4BAD");
 	}
 
 	@Override
 	protected void onStart() {
 		webView.getEngine().load("https://minecraft.curseforge.com/modpacks");
 
-
-		webView.minWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		webView.minHeightProperty().bind(Main.mainController.contentBox.heightProperty());
+		webView.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		webView.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
+		webView.maxWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		webView.maxHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
 		AnchorPane box = (AnchorPane) getNode();
 
@@ -54,7 +52,6 @@ public class CursePacksPane extends ContentPane {
 		WebEngine webEngine = webView.getEngine();
 
 		buttonBrowse.setOnAction(event -> webView.getEngine().load("https://minecraft.curseforge.com/modpacks"));
-
 
 		buttonInstall.setOnAction(event -> {
 			System.out.println("installing");
@@ -82,7 +79,7 @@ public class CursePacksPane extends ContentPane {
 				} catch (Throwable throwable) {
 					OneClientLogging.log(throwable);
 				}
-				
+
 				Platform.runLater(() -> {
 					instance.icon = "icon.png";
 					try {
@@ -96,9 +93,6 @@ public class CursePacksPane extends ContentPane {
 						Main.mainController.currentContent.refresh();
 					}
 
-
-
-
 					Alert alert = new Alert(Alert.AlertType.INFORMATION);
 					alert.setTitle("Pack has been installed!");
 					alert.setHeaderText(null);
@@ -106,8 +100,6 @@ public class CursePacksPane extends ContentPane {
 					alert.showAndWait();
 				});
 
-
-				
 			}).start();
 		});
 	}

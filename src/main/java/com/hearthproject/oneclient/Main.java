@@ -101,7 +101,11 @@ public class Main extends Application {
 		fxmlLoader.setLocation(fxmlUrl);
 		fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
 		Parent root = fxmlLoader.load(fxmlUrl.openStream());
-		stage.setTitle("One Client " + Constants.getVersion());
+		if (Constants.getVersion() == null) {
+			stage.setTitle("One Client");
+		} else {
+			stage.setTitle("One Client " + Constants.getVersion());
+		}
 		stage.getIcons().add(new Image("icon.png"));
 		Scene scene = new Scene(root, 1200, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
