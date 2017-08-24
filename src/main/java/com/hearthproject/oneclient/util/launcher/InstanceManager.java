@@ -31,6 +31,7 @@ public class InstanceManager {
 		//TODO check its unique
 		instances.put(instance.name, instance);
 		save();
+		init(instance);
 	}
 
 	public static boolean isValid(String name) {
@@ -57,6 +58,15 @@ public class InstanceManager {
 			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			OneClientLogging.log(e);
+		}
+	}
+
+	public static void init(Instance instance) {
+		File instanceDir = new File(Constants.INSTANCEDIR, instance.name);
+		for(String dir: Constants.INITIALIZE_DIRS) {
+			File d = new File(instanceDir,dir);
+			if(!d.exists())
+				d.mkdir();
 		}
 	}
 

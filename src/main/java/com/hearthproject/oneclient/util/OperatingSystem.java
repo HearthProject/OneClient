@@ -1,5 +1,9 @@
 package com.hearthproject.oneclient.util;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 //Based of the code from fabric-loom found here: https://github.com/FabricMC/fabric-loom
 public class OperatingSystem {
 
@@ -38,4 +42,20 @@ public class OperatingSystem {
 	public static boolean is64Bit() {
 		return System.getProperty("sun.arch.data.model").contains("64");
 	}
+
+	public static void openWithSystem(File file) {
+		if(Desktop.isDesktopSupported()) {
+			Desktop desktop = Desktop.getDesktop();
+			if (desktop.isSupported(Desktop.Action.OPEN)) {
+				new Thread( () -> {
+					try {
+						desktop.open(file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}).start();
+			}
+		}
+	}
+
 }
