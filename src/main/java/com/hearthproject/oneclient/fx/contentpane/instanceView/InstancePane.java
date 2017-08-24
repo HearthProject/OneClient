@@ -60,7 +60,7 @@ public class InstancePane extends ContentPane {
 		this.instance = instance;
 		textPackName.setText(instance.name);
 		textMinecraftVersion.setText("Minecraft " + instance.minecraftVersion);
-		if(instance.getIcon() != null){
+		if(instance.getIcon() != null && instance.getIcon().exists()){
 			try {
 				packIcon.setImage(new Image(FileUtils.openInputStream(instance.getIcon())));
 				packIcon.setFitWidth(150);
