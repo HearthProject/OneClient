@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -18,6 +19,7 @@ public class MinecraftAuthController {
 
 	public Instance instance;
 	public Stage stage;
+	public Button buttonLogin;
 
 	public void login(ActionEvent actionEvent) {
 		Platform.runLater(() -> stage.hide());
