@@ -19,9 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class CursePacksPane extends ContentPane {
 	public WebView webView;
@@ -97,12 +99,15 @@ public class CursePacksPane extends ContentPane {
 
 			Platform.runLater(() -> {
 				instance.icon = "icon.png";
-				//					Causes core dump on ubuntu
-				//					try {
-				//						FileUtils.copyURLToFile(new URL(webView.getEngine().executeScript("document.getElementsByClassName(\"e-avatar64 lightbox\")[0].href").toString()), instance.getIcon());
-				//					} catch (IOException e) {
-				//						e.printStackTrace();
-				//					}
+
+				try {
+					String url = webView.getEngine().executeScript("document.getElementsByClassName(\"e-avatar64 lightbox\")[0].href").toString();
+					if(url != null && !url.isEmpty()){
+						FileUtils.copyURLToFile(new URL(url), instance.getIcon());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 				InstanceManager.addInstance(instance);
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
