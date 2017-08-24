@@ -40,7 +40,7 @@ public class ForgeUtils {
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		int i = 0;
 		for (ForgeVersionProfile.Library library : forgeVersionProfile.libraries) {
-			if (InstallingController.controller != null) {
+			if(InstallingController.controller != null){
 				InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
 				InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
 			}
@@ -69,7 +69,7 @@ public class ForgeUtils {
 	public static JarFile downloadForgeJar(File versionsDir, String forgeVer) throws IOException {
 		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
 		String jarName = forgeVer + "/forge-" + forgeVer + "-universal.jar";
-		File forgeJar = new File(forgeVer, jarName);
+		File forgeJar = new File(Constants.TEMPDIR, jarName);
 		OneClientLogging.log("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
 			jarName = forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
