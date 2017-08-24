@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.scene.control.*;
@@ -76,20 +77,8 @@ public class InstancePane extends ContentPane {
 
 
 
-		menuOpenFolder.setOnAction(event -> {
-			try {
-				Desktop.getDesktop().open(instance.getDirectory());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-		buttonOpenFolder.setOnAction(event -> {
-			try {
-				Desktop.getDesktop().open(instance.getDirectory());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+		menuOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
+		buttonOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
 
 		buttonPlay.setOnAction(event -> MinecraftAuth.loginAndPlay(instance));
 

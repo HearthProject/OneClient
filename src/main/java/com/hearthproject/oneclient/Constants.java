@@ -14,6 +14,8 @@ public class Constants {
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
 	public static final String MAVEN_CENTRAL_BASE = "http://central.maven.org/maven2/";
 
+	public static String[] INITIALIZE_DIRS = new String[]{"configs","mods"};
+
 	public static boolean CUSTOM_RUN = false;
 
 	public static File getRunDir() {
