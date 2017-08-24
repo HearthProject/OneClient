@@ -61,6 +61,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage s) {
 		stage = s;
+		stage.setOnCloseRequest(event -> System.exit(0));
 		new Thread(() -> {
 			try {
 				loadData();
