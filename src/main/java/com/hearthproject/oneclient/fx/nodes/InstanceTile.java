@@ -39,7 +39,7 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (!instance.icon.isEmpty()){
+		if (!instance.icon.isEmpty() && instance.getIcon().exists()){
 			try {
 				imageView.setImage(new Image(new FileInputStream(instance.getIcon())));
 			} catch (FileNotFoundException e) {

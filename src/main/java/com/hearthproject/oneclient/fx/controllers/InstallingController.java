@@ -24,7 +24,7 @@ public class InstallingController {
 	public TextArea log;
 
 	public static InstallingController controller;
-	static Stage stage;
+	public static Stage stage;
 
 	public static void showInstaller() throws IOException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

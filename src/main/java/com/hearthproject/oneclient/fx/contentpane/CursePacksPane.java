@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -17,95 +18,109 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import org.apache.commons.io.FileUtils;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class CursePacksPane extends ContentPane {
-	public WebView webView;
-	public Button buttonBrowse;
-	public Button buttonInstall;
-	public HBox hBox;
+    public WebView webView;
+    public Button buttonBrowse;
+    public Button buttonInstall;
+    public Button buttonImport;
 
-	public CursePacksPane() {
-		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
-	}
+    public HBox hBox;
 
-	@Override
-	protected void onStart() {
-		webView.getEngine().load("https://minecraft.curseforge.com/modpacks");
+    public CursePacksPane() {
+        super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
+    }
 
-		webView.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		webView.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
-		webView.maxWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		webView.maxHeightProperty().bind(Main.mainController.contentBox.heightProperty());
+    @Override
+    protected void onStart() {
+        webView.getEngine().load("https://minecraft.curseforge.com/modpacks");
 
-		AnchorPane box = (AnchorPane) getNode();
+        webView.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+        webView.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
+        webView.maxWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+        webView.maxHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
-		VBox.setVgrow(getNode(), Priority.ALWAYS);
-		HBox.setHgrow(webView, Priority.ALWAYS);
-		HBox.setHgrow(getNode(), Priority.ALWAYS);
+        AnchorPane box = (AnchorPane) getNode();
 
-		box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+        VBox.setVgrow(getNode(), Priority.ALWAYS);
+        HBox.setHgrow(webView, Priority.ALWAYS);
+        HBox.setHgrow(getNode(), Priority.ALWAYS);
 
-		WebEngine webEngine = webView.getEngine();
+        box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 
-		buttonBrowse.setOnAction(event -> webView.getEngine().load("https://minecraft.curseforge.com/modpacks"));
+        WebEngine webEngine = webView.getEngine();
 
-		buttonInstall.setOnAction(event -> {
-			System.out.println("installing");
+        buttonBrowse.setOnAction(event -> webView.getEngine().load("https://minecraft.curseforge.com/modpacks"));
 
-			String url = webEngine.getLocation();
-			if (!url.startsWith("https://minecraft.curseforge.com/projects/")) {
-				System.out.println("This is not a pack!");
-				return;
-			}
+        buttonInstall.setOnAction(event -> {
+            System.out.println("installing");
+            String url = webEngine.getLocation();
+            if (!url.startsWith("https://minecraft.curseforge.com/projects/")) {
+                System.out.println("This is not a pack!");
+                return;
+            }
+            install(instance -> new CursePackInstaller().downloadFromURL(url, "latest", instance));
+        });
 
-			try {
-				InstallingController.showInstaller();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+        buttonImport.setOnAction(event -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Import Modpack From Zip");
+            File zipFile = chooser.showOpenDialog(InstallingController.stage);
+            if(zipFile == null || !zipFile.exists())
+                return;
+            install(instance -> new CursePackInstaller().importFromZip(instance,zipFile));
+        });
+    }
 
-			InstallingController.controller.setTitleText("Installing...");
-			InstallingController.controller.setDetailText("Preparing to install");
+    public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
+        try {
+            InstallingController.showInstaller();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-			new Thread(() -> {
-				Instance instance = new Instance("Unknown");
-				try {
-					new CursePackInstaller().downloadFromURL(url, "latest", instance);
-					MinecraftUtil.installMinecraft(instance);
-				} catch (Throwable throwable) {
-					OneClientLogging.log(throwable);
-				}
+        InstallingController.controller.setTitleText("Installing...");
+        InstallingController.controller.setDetailText("Preparing to install");
 
-				Platform.runLater(() -> {
-					instance.icon = "icon.png";
-					try {
-						FileUtils.copyURLToFile(new URL(webView.getEngine().executeScript("document.getElementsByClassName(\"e-avatar64 lightbox\")[0].href").toString()), instance.getIcon());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+        new Thread(() -> {
+            Instance instance = new Instance("Unknown");
+            try {
+                downloadFunction.accept(instance);
+                MinecraftUtil.installMinecraft(instance);
+            } catch (Throwable throwable) {
+                OneClientLogging.log(throwable);
+            }
 
-					InstanceManager.addInstance(instance);
-					if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
-						Main.mainController.currentContent.refresh();
-					}
+            Platform.runLater(() -> {
+                instance.icon = "icon.png";
+//					Causes core dump on ubuntu
+//					try {
+//						FileUtils.copyURLToFile(new URL(webView.getEngine().executeScript("document.getElementsByClassName(\"e-avatar64 lightbox\")[0].href").toString()), instance.getIcon());
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
 
-					Alert alert = new Alert(Alert.AlertType.INFORMATION);
-					alert.setTitle("Pack has been installed!");
-					alert.setHeaderText(null);
-					alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the instance section.");
-					alert.showAndWait();
-				});
+                InstanceManager.addInstance(instance);
+                if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
+                    Main.mainController.currentContent.refresh();
+                }
 
-			}).start();
-		});
-	}
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Pack has been installed!");
+                alert.setHeaderText(null);
+                alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the instance section.");
+                alert.showAndWait();
+            });
 
-	@Override
-	public void refresh() {
+        }).start();
+    }
 
-	}
+    @Override
+    public void refresh() {
+
+    }
 }
