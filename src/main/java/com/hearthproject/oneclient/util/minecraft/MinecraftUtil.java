@@ -73,7 +73,7 @@ public class MinecraftUtil {
 		Platform.runLater(() -> {
 			try {
 				InstallingController.showInstaller();
-				InstallingController.controller.setTitleText("Downloading minecraft" + instance.minecraftVersion);
+				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -88,7 +88,7 @@ public class MinecraftUtil {
 		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
-		OneClientLogging.log("Downloading minecraft jar");
+		OneClientLogging.log("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
