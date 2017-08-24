@@ -23,6 +23,11 @@
                         <Insets left="15.0" top="5.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="buttonImport" mnemonicParsing="false" text="Import Modpack From Zip">
+                     <HBox.margin>
+                        <Insets left="15.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" />
