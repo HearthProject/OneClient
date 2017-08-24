@@ -10,6 +10,8 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +32,7 @@ public class CursePacksPane extends ContentPane {
 	public Button buttonBrowse;
 	public Button buttonInstall;
 	public Button buttonImport;
+	public Button buttonBack;
 
 	public HBox hBox;
 
@@ -76,6 +79,8 @@ public class CursePacksPane extends ContentPane {
 				return;
 			install(instance -> new CursePackInstaller().importFromZip(instance, zipFile));
 		});
+
+		buttonBack.setOnAction(event -> webEngine.executeScript("history.back()"));
 	}
 
 	public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
