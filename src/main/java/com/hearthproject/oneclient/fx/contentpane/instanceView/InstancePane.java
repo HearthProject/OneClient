@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -31,6 +32,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonPlay;
 	public Button buttonOpenFolder;
 	public Button buttonEditVersion;
+	public Button buttonGetCurseMods;
 	public ListView modList;
 
 	public MenuItem menuOpenFolder;
@@ -70,13 +72,10 @@ public class InstancePane extends ContentPane {
 				e.printStackTrace();
 			}
 		}
-		File modsDir = new File(instance.getDirectory(), "mods");
-		if (modsDir.exists()) {
-			for (File mod : new File(instance.getDirectory(), "mods").listFiles()) {
-				modList.getItems().add(mod.getName());
-			}
+		updateList();
 
-		}
+
+
 		menuOpenFolder.setOnAction(event -> {
 			try {
 				Desktop.getDesktop().open(instance.getDirectory());
@@ -116,6 +115,68 @@ public class InstancePane extends ContentPane {
 		menuDownload.setDisable(true);
 		menuBackup.setDisable(true);
 		menuViewBackups.setDisable(true);
+		buttonGetCurseMods.setDisable(true);
+
+	}
+
+	public void updateList(){
+		modList.getItems().clear();
+		File modsDir = new File(instance.getDirectory(), "mods");
+		if (modsDir.exists()) {
+			for (File mod : modsDir.listFiles()) {
+				modList.getItems().add(mod.getName());
+			}
+		}
+
+		modList.setCellFactory(param -> {
+			ModListCell cell = new ModListCell();
+			ContextMenu contextMenu = new ContextMenu();
+			MenuItem disableMod = new MenuItem("Disable/Enable mod");
+			disableMod.setOnAction(event -> {
+				try {
+					String item = cell.getItem();
+					File mod = new File(modsDir, item);
+					if(mod.exists()){
+						if(item.endsWith(".disabled")){
+							FileUtils.moveFile(mod, new File(mod.getParent(), mod.getName().substring(0, mod.getName().length() - ".disabled".length())));
+						} else {
+							FileUtils.moveFile(mod, new File(mod.getParent(), mod.getName() + ".disabled"));
+						}
+						updateList();
+					} else {
+						disableMod.setDisable(true);
+					}
+				} catch (IOException e){
+					OneClientLogging.log(e);
+				}
+			});
+			MenuItem deleteMod = new MenuItem("Delete Mod");
+			deleteMod.setOnAction(event -> {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Are you sure?");
+				alert.setHeaderText("Are you sure you want to delete this mod");
+				alert.setContentText("This will remove the whole mod, this may cause issues if you do not know what you are doing!");
+
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ButtonType.OK) {
+					String item = cell.getItem();
+					File mod = new File(modsDir, item);
+					mod.delete();
+				}
+			});
+			contextMenu.getItems().addAll(disableMod, deleteMod);
+
+			cell.textProperty().bind(cell.itemProperty());
+
+			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+				if (isNowEmpty) {
+					cell.setContextMenu(null);
+				} else {
+					cell.setContextMenu(contextMenu);
+				}
+			});
+			return cell;
+		});
 	}
 
 	@Override
