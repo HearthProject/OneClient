@@ -48,6 +48,7 @@ public class InstallingController {
 		stage.setScene(scene);
 		stage.show();
 		controller = fxmlLoader.getController();
+		controller.log.setEditable(false);
 	}
 
 	public static void close() {
