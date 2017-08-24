@@ -2,14 +2,10 @@ package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -17,7 +13,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import javax.imageio.ImageIO;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -39,7 +34,7 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (!instance.icon.isEmpty() && instance.getIcon().exists()){
+		if (!instance.icon.isEmpty() && instance.getIcon().exists()) {
 			try {
 				imageView.setImage(new Image(new FileInputStream(instance.getIcon())));
 			} catch (FileNotFoundException e) {

@@ -33,19 +33,17 @@ public class InstanceManager {
 		save();
 	}
 
-	public static boolean isValid(String name){
+	public static boolean isValid(String name) {
 		return isValid(new Instance(name));
 	}
 
-	public static boolean isValid(Instance instance){
+	public static boolean isValid(Instance instance) {
 		File dir = new File(Constants.INSTANCEDIR, instance.name);
-		if(dir.exists()){
+		if (dir.exists()) {
 			return false;
 		}
 		return true;
 	}
-
-
 
 	public static void save() {
 		instances.values().forEach(InstanceManager::save);
@@ -71,8 +69,8 @@ public class InstanceManager {
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
 			try {
 				File jsonFile = new File(dir, "instance.json");
-				if(!jsonFile.exists()){
-					OneClientLogging.log("ERROR: An invalid instance with the name " + dir.getName() +  " is has been found, it will be ignored.");
+				if (!jsonFile.exists()) {
+					OneClientLogging.log("ERROR: An invalid instance with the name " + dir.getName() + " is has been found, it will be ignored.");
 					return;
 				}
 				String jsonStr = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);

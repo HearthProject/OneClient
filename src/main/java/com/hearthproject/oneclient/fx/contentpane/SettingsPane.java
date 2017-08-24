@@ -30,7 +30,7 @@ public class SettingsPane extends ContentPane {
 			} catch (IOException e) {
 				OneClientLogging.log(e);
 			}
-			if(SettingsUtil.settings.show_log_window){
+			if (SettingsUtil.settings.show_log_window) {
 				OneClientLogging.showLogWindow();
 			} else {
 				OneClientLogging.hideLogWindow();

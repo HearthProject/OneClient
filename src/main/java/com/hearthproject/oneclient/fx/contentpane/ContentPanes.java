@@ -25,7 +25,7 @@ public class ContentPanes {
 			pane.setFXMLLoader(fxmlLoader);
 			fxmlLoader.setController(pane);
 			pane.setNode();
-			if(pane.showInSideBar()){
+			if (pane.showInSideBar()) {
 				panesList.add(pane);
 			}
 			return fxmlLoader.getController();

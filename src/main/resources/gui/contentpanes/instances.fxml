@@ -7,22 +7,21 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
-
 <TilePane fx:id="instancePane" hgap="6.0" styleClass="background" vgap="6.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane>
             <children>
-                <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                <ImageView pickOnBounds="true" preserveRatio="true" />
+                <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0"/>
+                <ImageView pickOnBounds="true" preserveRatio="true"/>
                 <VBox alignment="CENTER">
                     <children>
-                        <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                        <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance"/>
                     </children>
                 </VBox>
             </children>
         </StackPane>
     </children>
     <padding>
-        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
     </padding>
 </TilePane>

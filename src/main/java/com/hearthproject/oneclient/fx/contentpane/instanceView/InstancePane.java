@@ -6,14 +6,15 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.apache.commons.io.FileUtils;
 
@@ -44,7 +45,7 @@ public class InstancePane extends ContentPane {
 		super("gui/contentpanes/instanceView/instanceView.fxml", "InstancePane");
 	}
 
-	public static void show(Instance instance){
+	public static void show(Instance instance) {
 		InstancePane pane = (InstancePane) ContentPanes.getPane(InstancePane.class);
 		pane.setupPane(instance);
 		AnchorPane node = (AnchorPane) pane.getNode();
@@ -56,11 +57,11 @@ public class InstancePane extends ContentPane {
 		Main.mainController.setContent(pane);
 	}
 
-	public void setupPane(Instance instance){
+	public void setupPane(Instance instance) {
 		this.instance = instance;
 		textPackName.setText(instance.name);
 		textMinecraftVersion.setText("Minecraft " + instance.minecraftVersion);
-		if(instance.getIcon() != null && instance.getIcon().exists()){
+		if (instance.getIcon() != null && instance.getIcon().exists()) {
 			try {
 				packIcon.setImage(new Image(FileUtils.openInputStream(instance.getIcon())));
 				packIcon.setFitWidth(150);
@@ -70,8 +71,8 @@ public class InstancePane extends ContentPane {
 			}
 		}
 		File modsDir = new File(instance.getDirectory(), "mods");
-		if(modsDir.exists()){
-			for(File mod : new File(instance.getDirectory(), "mods").listFiles()){
+		if (modsDir.exists()) {
+			for (File mod : new File(instance.getDirectory(), "mods").listFiles()) {
 				modList.getItems().add(mod.getName());
 			}
 
@@ -100,7 +101,7 @@ public class InstancePane extends ContentPane {
 			alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
 
 			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK){
+			if (result.get() == ButtonType.OK) {
 				try {
 					FileUtils.deleteDirectory(instance.getDirectory());
 					ContentPanes.INSTANCES_PANE.button.fire();

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-
-<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MinecraftAuthController">
+<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="400.0"
+      xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MinecraftAuthController">
     <children>
-      <TextField fx:id="username" promptText="Username/Email">
-         <opaqueInsets>
-            <Insets left="25.0" />
-         </opaqueInsets>
-         <VBox.margin>
-            <Insets left="25.0" right="25.0" top="6.0" />
-         </VBox.margin>
-      </TextField>
-      <PasswordField fx:id="password" promptText="Password">
-         <VBox.margin>
-            <Insets left="25.0" right="25.0" top="6.0" />
-         </VBox.margin>
-      </PasswordField>
+        <TextField fx:id="username" promptText="Username/Email">
+            <opaqueInsets>
+                <Insets left="25.0"/>
+            </opaqueInsets>
+            <VBox.margin>
+                <Insets left="25.0" right="25.0" top="6.0"/>
+            </VBox.margin>
+        </TextField>
+        <PasswordField fx:id="password" promptText="Password">
+            <VBox.margin>
+                <Insets left="25.0" right="25.0" top="6.0"/>
+            </VBox.margin>
+        </PasswordField>
         <HBox alignment="CENTER">
             <VBox.margin>
-                <Insets />
+                <Insets/>
             </VBox.margin>
-         <children>
-            <Button mnemonicParsing="false" onAction="#login" text="Login">
-               <HBox.margin>
-                  <Insets top="6.0" />
-               </HBox.margin></Button>
-         </children>
+            <children>
+                <Button mnemonicParsing="false" onAction="#login" text="Login">
+                    <HBox.margin>
+                        <Insets top="6.0"/>
+                    </HBox.margin>
+                </Button>
+            </children>
         </HBox>
-      <Text fill="#d3d3d3" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't trust us? One Client is open source!&#10;Check our code for yourself if you must!" textAlignment="CENTER">
-         <VBox.margin>
-            <Insets top="6.0" />
-         </VBox.margin>
-      </Text>
-      <Hyperlink onAction="#onLinkClick" text="https://github.com/HearthProject/OneClient" textFill="#2183ff">
-         <VBox.margin>
-            <Insets bottom="6.0" />
-         </VBox.margin>
-      </Hyperlink>
+        <Text fill="#d3d3d3" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't trust us? One Client is open source!&#10;Check our code for yourself if you must!" textAlignment="CENTER">
+            <VBox.margin>
+                <Insets top="6.0"/>
+            </VBox.margin>
+        </Text>
+        <Hyperlink onAction="#onLinkClick" text="https://github.com/HearthProject/OneClient" textFill="#2183ff">
+            <VBox.margin>
+                <Insets bottom="6.0"/>
+            </VBox.margin>
+        </Hyperlink>
     </children>
 </VBox>

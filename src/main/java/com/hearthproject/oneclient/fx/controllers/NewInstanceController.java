@@ -94,13 +94,13 @@ public class NewInstanceController {
 
 		refreshModLoader();
 
-		if(instance != null){
+		if (instance != null) {
 			modLoaderComboBox.getSelectionModel().select(instance.modLoader);
 			modLoaderVersionComboBox.getSelectionModel().select(instance.modLoaderVersion);
 			mcVersionComboBox.getSelectionModel().select(instance.minecraftVersion);
 			instanceNameField.setText(instance.name);
 			instanceNameField.setEditable(false);
-			if(instance.getIcon() != null && instance.getIcon().exists()){
+			if (instance.getIcon() != null && instance.getIcon().exists()) {
 				try {
 					InputStream targetStream = new FileInputStream(instance.getIcon());
 					iconPreview.setImage(new Image(targetStream));
@@ -140,11 +140,11 @@ public class NewInstanceController {
 	public void onCreateButtonPress() {
 		Instance instance = new Instance(instanceNameField.getText());
 		boolean newInstance = true;
-		if(this.instance != null){
+		if (this.instance != null) {
 			newInstance = false;
 			instance = this.instance;
 		}
-		if(newInstance && !InstanceManager.isValid(instance)){
+		if (newInstance && !InstanceManager.isValid(instance)) {
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setTitle("Error");
 			alert.setHeaderText("That isnt a valid instance");
@@ -166,7 +166,7 @@ public class NewInstanceController {
 			instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
 			instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
 		}
-		if(newInstance){
+		if (newInstance) {
 			InstanceManager.addInstance(instance);
 		} else {
 			InstanceManager.save(instance);

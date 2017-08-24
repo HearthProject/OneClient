@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.Image?>
@@ -7,28 +8,27 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.SplashScreenController">
-   <children>
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="200.0" layoutY="97.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../loading.gif" />
-         </image>
-      </ImageView>
-      <ProgressBar fx:id="progressBar" layoutX="14.0" layoutY="361.0" prefHeight="22.0" prefWidth="576.0" progress="0.0" />
-      <Text layoutX="268.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading...">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="progressText" layoutX="4.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="596.6708984375">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Text>
-   </children>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" />
-   </padding>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.hearthproject.oneclient.fx.controllers.SplashScreenController">
+    <children>
+        <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="200.0" layoutY="97.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../loading.gif"/>
+            </image>
+        </ImageView>
+        <ProgressBar fx:id="progressBar" layoutX="14.0" layoutY="361.0" prefHeight="22.0" prefWidth="576.0" progress="0.0"/>
+        <Text layoutX="268.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading...">
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Text>
+        <Text fx:id="progressText" layoutX="4.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" wrappingWidth="596.6708984375">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Text>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0"/>
+    </padding>
 </Pane>

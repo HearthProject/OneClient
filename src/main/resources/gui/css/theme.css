@@ -15,7 +15,7 @@
     -text-color: #FFFFFF;
 }
 
-.background{
+.background {
     -fx-background-color: -dark-background-color;
 }
 
@@ -24,7 +24,7 @@
 }
 
 #dark-background {
-     -fx-background-color: -dark-background-color;
+    -fx-background-color: -dark-background-color;
 }
 
 /*
@@ -32,18 +32,19 @@
 */
 
 .scroll-pane {
-        -fx-background-color: transparent;
-        -fx-background-insets: 0, 0, 0;
-        -fx-background-radius: 0, 0, 0;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0, 0, 0;
 }
+
 .scroll-pane:focused {
-        -fx-background-color: transparent;
-        -fx-background-insets: 0, 0, 0;
-        -fx-background-radius: 0, 0, 0;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0, 0, 0;
 }
 
 .scroll-pane > .viewport {
-   -fx-background-color: transparent;
+    -fx-background-color: transparent;
 }
 
 /*
@@ -62,11 +63,11 @@
     -fx-font-size: 12px;
 }
 
-.button:hover{
+.button:hover {
     -fx-background-color: -hover-color;
 }
 
-.button:focused{
+.button:focused {
     -fx-border-color: -accent-color;
 }
 
@@ -80,11 +81,11 @@
     -fx-font-size: 26px;
 }
 
-#bar-button:hover{
+#bar-button:hover {
     -fx-background-color: -hover-color;
 }
 
-#bar-button:focused{
+#bar-button:focused {
     -fx-border-color: -accent-color;
 }
 
@@ -100,11 +101,11 @@
     -fx-font-family: 'Raleway', sans-serif;
 }
 
-#side-panel-button:hover{
+#side-panel-button:hover {
     -fx-background-color: -hover-color;
 }
 
-#side-panel-button:selected{
+#side-panel-button:selected {
     -fx-background-color: -accent-color;
 }
 
@@ -117,7 +118,7 @@
     -fx-border-width: 0;
 }
 
-#window-button:hover{
+#window-button:hover {
     -fx-background-color: -hover-color;
 }
 
@@ -130,7 +131,7 @@
     -fx-border-width: 0;
 }
 
-#close-button:hover{
+#close-button:hover {
     -fx-background-color: #FF4248;
 }
 
@@ -138,7 +139,7 @@
     Text Field
 */
 
-.text-field:hover{
+.text-field:hover {
     -fx-background-color: -hover-color;
 }
 
@@ -180,11 +181,11 @@
     -fx-font-size: 12px;
 }
 
-.check-box .box:hover{
+.check-box .box:hover {
     -fx-background-color: -hover-color;
 }
 
-.check-box:focused .box{
+.check-box:focused .box {
     -fx-border-color: -accent-color;
 }
 
@@ -192,7 +193,7 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 
-    -fx-padding:7px;
+    -fx-padding: 7px;
     -fx-shape: "M1,10L3,8L7,12L14,5L16,7L7,16Z"
 }
 
@@ -200,11 +201,9 @@
     -fx-background-color: -text-color;
 }
 
-
 /*
     Combo Box
 */
-
 
 .combo-box-base {
     -fx-background-color: -fill-color;
@@ -219,12 +218,11 @@
 
 }
 
-.combo-box-base:hover{
+.combo-box-base:hover {
     -fx-background-color: -hover-color;
 }
 
-
-.combo-box-base .list-cell{
+.combo-box-base .list-cell {
     -fx-text-fill: -text-color;
 }
 
@@ -239,34 +237,36 @@
 .combo-box-popup > .list-view {
     -fx-background: -fill-color;
     -fx-background-insets: 0;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 12, 0.0, 0, 8);
 }
+
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-padding: 4 0 4 5;
 
-/* No alternate highlighting */
+    /* No alternate highlighting */
 
     -fx-background: -fill-color;
 }
+
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
     -fx-background: -hover-color;
     -fx-background-color: -hover-color;
 }
-.combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected,
-.combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
+
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected,
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
     -fx-background: -hover-color;
     -fx-background-color: -fill-color, -accent-color, -hover-color;
     -fx-background-insets: 0;
 }
+
 .combo-box-popup > .list-view > .placeholder > .label {
     -fx-text-fill: text-color;
 }
 
-
 /*
     Scroll Bar
 */
-
 
 .scroll-bar {
     -fx-background-color: -fill-color;
@@ -302,10 +302,12 @@
 .scroll-bar > .decrement-button > .decrement-arrow {
     -fx-background-color: -text-color;
 }
+
 .scroll-bar > .increment-button:hover > .increment-arrow,
 .scroll-bar > .decrement-button:hover > .decrement-arrow {
     -fx-background-color: -text-color;
 }
+
 .scroll-bar > .increment-button:pressed > .increment-arrow,
 .scroll-bar > .decrement-button:pressed > .decrement-arrow {
     -fx-background-color: -text-color;

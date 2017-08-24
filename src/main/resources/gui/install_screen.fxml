@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.InstallingController">
-   <bottom>
-      <ProgressBar fx:id="progressbar" prefWidth="500.0" progress="0.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="15.0" />
-         </padding>
-      </ProgressBar>
-   </bottom>
-   <top>
-      <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Installing: Pack Name Here" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Text>
-   </top>
-   <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <top>
-            <Text fx:id="detail" strokeType="OUTSIDE" strokeWidth="0.0" text="More Detailed info here" BorderPane.alignment="CENTER">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Text>
-         </top>
-         <center>
-            <TextArea fx:id="log" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-         </center>
-      </BorderPane>
-   </center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.InstallingController">
+    <bottom>
+        <ProgressBar fx:id="progressbar" prefWidth="500.0" progress="0.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="15.0"/>
+            </padding>
+        </ProgressBar>
+    </bottom>
+    <top>
+        <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Installing: Pack Name Here" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="25.0"/>
+            </font>
+        </Text>
+    </top>
+    <center>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <top>
+                <Text fx:id="detail" strokeType="OUTSIDE" strokeWidth="0.0" text="More Detailed info here" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="20.0"/>
+                    </font>
+                </Text>
+            </top>
+            <center>
+                <TextArea fx:id="log" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+            </center>
+        </BorderPane>
+    </center>
 </BorderPane>

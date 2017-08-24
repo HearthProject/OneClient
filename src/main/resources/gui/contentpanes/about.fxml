@@ -7,26 +7,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
-
 <VBox id="dark-background" fx:id="stuffBox" alignment="CENTER" prefHeight="345.0" prefWidth="461.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <StackPane>
-         <children>
-            <Rectangle fill="DODGERBLUE" height="160.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="160.0" />
-            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../logo_big.png" />
-               </image>
-            </ImageView>
-         </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <padding>
-            <Insets bottom="10.0" top="10.0" />
-         </padding>
-      </StackPane>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -text-color; -fx-font-weight: bold; -fx-font-size: 14;" text="One Client" textAlignment="CENTER" />
-      <VBox fx:id="credits" alignment="CENTER" />
-   </children>
+    <children>
+        <StackPane>
+            <children>
+                <Rectangle fill="DODGERBLUE" height="160.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -fill-color;" width="160.0"/>
+                <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../logo_big.png"/>
+                    </image>
+                </ImageView>
+            </children>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+            <padding>
+                <Insets bottom="10.0" top="10.0"/>
+            </padding>
+        </StackPane>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -text-color; -fx-font-weight: bold; -fx-font-size: 14;" text="One Client" textAlignment="CENTER"/>
+        <VBox fx:id="credits" alignment="CENTER"/>
+    </children>
 </VBox>
