@@ -76,21 +76,7 @@ public class Version {
 		}
 
 		public boolean allowed() {
-			if (this.rules == null || this.rules.length <= 0) {
-				return true;
-			}
-
-			boolean success = false;
-			for (Rule rule : this.rules) {
-				if (rule.os != null && rule.os.name != null) {
-					if (rule.os.name.equalsIgnoreCase(OperatingSystem.getOS())) {
-						return rule.action.equalsIgnoreCase("allow");
-					}
-				} else {
-					success = rule.action.equalsIgnoreCase("allow");
-				}
-			}
-			return success;
+			return true;
 		}
 
 		public String getArtifactName() {

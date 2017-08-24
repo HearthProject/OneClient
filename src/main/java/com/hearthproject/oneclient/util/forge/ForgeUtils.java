@@ -44,7 +44,7 @@ public class ForgeUtils {
 				InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
 				InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
 			}
-			if (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)) {
+			if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
 				librarys.add(library.getFile(libraries));
 				continue;
 			}
@@ -54,6 +54,9 @@ public class ForgeUtils {
 				library.url = Constants.MAVEN_CENTRAL_BASE;
 			}
 			FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
+			if(!library.getFile(libraries).exists()){
+				System.out.println("Error with " + library.name);
+			}
 			librarys.add(library.getFile(libraries));
 		}
 		return librarys;

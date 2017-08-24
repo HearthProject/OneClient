@@ -172,13 +172,6 @@ public class MinecraftUtil {
 			try {
 
 				StringBuilder cpb = new StringBuilder();
-				for (Version.Library library : versionData.libraries) {
-					if (library.allowed() && library.getFile(libraries) != null) {
-						cpb.append(OperatingSystem.getJavaDelimiter());
-						cpb.append(library.getFile(libraries).getAbsolutePath());
-					}
-				}
-
 				String mainClass = versionData.mainClass;
 				Optional<String> tweakClass = Optional.empty();
 
@@ -195,8 +188,18 @@ public class MinecraftUtil {
 					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
 				}
 
+				for (Version.Library library : versionData.libraries) {
+					//TODO check that forge hasnt allready included the lib, as sometimes forge has a newer version of the lib than mc does. Adding the mc libs after forge is a hacky work around for it
+					if (library.allowed() && library.getFile(libraries) != null) {
+						cpb.append(OperatingSystem.getJavaDelimiter());
+						cpb.append(library.getFile(libraries).getAbsolutePath());
+					}
+				}
+
 				cpb.append(OperatingSystem.getJavaDelimiter());
 				cpb.append(mcJar.getAbsolutePath());
+
+				System.out.println(cpb.toString());
 
 				ArrayList<String> arguments = new ArrayList<>();
 				arguments.add("java");
