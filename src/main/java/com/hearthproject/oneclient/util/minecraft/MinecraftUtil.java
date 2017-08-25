@@ -15,6 +15,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
+import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import com.mojang.authlib.Agent;
@@ -199,12 +200,17 @@ public class MinecraftUtil {
 				cpb.append(OperatingSystem.getJavaDelimiter());
 				cpb.append(mcJar.getAbsolutePath());
 
-				System.out.println(cpb.toString());
-
 				ArrayList<String> arguments = new ArrayList<>();
 				arguments.add("java");
 
 				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
+
+				for(String str : SettingsUtil.settings.arguments.split(" ")){
+					arguments.add(str);
+				}
+				arguments.add("-Xmx" + SettingsUtil.settings.minecraftMemory + "m");
+				arguments.add("-Xms" + SettingsUtil.settings.minecraftMemory + "m");
+
 
 				arguments.add("-cp");
 				arguments.add(cpb.toString());
@@ -222,6 +228,8 @@ public class MinecraftUtil {
 				arguments.add("--assetsDir=" + assets);
 				arguments.add("--assetIndex=" + versionData.assetIndex.id);
 				arguments.add("--gameDir=" + new File(Constants.INSTANCEDIR, instance.name));
+
+
 
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(new File(Constants.INSTANCEDIR, instance.name));
