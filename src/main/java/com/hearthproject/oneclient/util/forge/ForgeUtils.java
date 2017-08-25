@@ -32,7 +32,7 @@ public class ForgeUtils {
 		return null;
 	}
 
-	public static List<File> resloveForgeLibrarys(String forgeVer) throws IOException {
+	public static List<File> resolveForgeLibrarys(String forgeVer) throws IOException {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);
@@ -40,9 +40,11 @@ public class ForgeUtils {
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		int i = 0;
 		for (ForgeVersionProfile.Library library : forgeVersionProfile.libraries) {
-			InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
-			InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
-			if (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums)) {
+			if(InstallingController.controller != null){
+				InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
+				InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
+			}
+			if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
 				librarys.add(library.getFile(libraries));
 				continue;
 			}
@@ -52,6 +54,9 @@ public class ForgeUtils {
 				library.url = Constants.MAVEN_CENTRAL_BASE;
 			}
 			FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
+			if(!library.getFile(libraries).exists()){
+				System.out.println("Error with " + library.name);
+			}
 			librarys.add(library.getFile(libraries));
 		}
 		return librarys;
@@ -67,7 +72,7 @@ public class ForgeUtils {
 	public static JarFile downloadForgeJar(File versionsDir, String forgeVer) throws IOException {
 		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
 		String jarName = forgeVer + "/forge-" + forgeVer + "-universal.jar";
-		File forgeJar = new File(forgeVer, jarName);
+		File forgeJar = new File(Constants.TEMPDIR, jarName);
 		OneClientLogging.log("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
 			jarName = forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";

@@ -38,7 +38,7 @@ public class OneClientLogging {
 		try {
 			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 	}
 
@@ -52,12 +52,15 @@ public class OneClientLogging {
 		StringWriter errors = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(errors));
 		log(errors.toString());
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Error!");
-		alert.setHeaderText(title);
-		alert.setContentText(throwable.getLocalizedMessage());
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText(title);
+			alert.setContentText(throwable.getLocalizedMessage());
 
-		alert.showAndWait();
+			alert.showAndWait();
+		});
+
 	}
 
 	private static String getPrefix() {
@@ -96,6 +99,10 @@ public class OneClientLogging {
 
 	public static void showLogWindow() {
 		stage.show();
+	}
+
+	public static void hideLogWindow() {
+		stage.hide();
 	}
 
 }

@@ -1,8 +1,11 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.util.curse.CursePackInstaller;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class Instance {
 
@@ -31,12 +34,24 @@ public class Instance {
 		return new File(Constants.INSTANCEDIR, name);
 	}
 
-	public File getIcon(){
-		if(icon == null || icon.isEmpty()){
+	public File getIcon() {
+		if (icon == null || icon.isEmpty()) {
 			return null;
 		}
 		return new File(getDirectory(), icon);
 	}
 
+	public String getZipURL() throws IOException, URISyntaxException {
+		String packUrl = curseURL;
+		if (packUrl.endsWith("/"))
+			packUrl = packUrl.replaceAll(".$", "");
+
+		String fileUrl;
+		if (curseVersion.equals("latest"))
+			fileUrl = packUrl + "/files/latest";
+		else
+			fileUrl = packUrl + "/files/" + curseVersion + "/download";
+		return CursePackInstaller.getLocationHeader(fileUrl);
+	}
 
 }

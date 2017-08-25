@@ -9,12 +9,14 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.net.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,105 +32,104 @@ public class CursePackInstaller {
 
 	public void downloadFromURL(String url, String version, Instance instance) throws Exception {
 
-//		if (url.contains("feed-the-beast.com") && version.equals("latest")) {
-//			log("WARNING: For modpacks hosted in the FTB site, you need to provide a version, \"latest\" will not work!");
-//			log("To find the version number to insert in the Curse File ID field, click the latest file on the sidebar on the right of the modpack's page.");
-//			log("The number you need to input is the number at the end of the URL.");
-//			log("For example, if you wanted to download https://www.feed-the-beast.com/projects/ftb-presents-skyfactory-3/files/2390075");
-//			log("Then you would use 2390075 as the Curse File ID. Do not change the Modpack URL. Change that and click Download again to continue.");
-//			return;
-//		}
+		//		if (url.contains("feed-the-beast.com") && version.equals("latest")) {
+		//			log("WARNING: For modpacks hosted in the FTB site, you need to provide a version, \"latest\" will not work!");
+		//			log("To find the version number to insert in the Curse File ID field, click the latest file on the sidebar on the right of the modpack's page.");
+		//			log("The number you need to input is the number at the end of the URL.");
+		//			log("For example, if you wanted to download https://www.feed-the-beast.com/projects/ftb-presents-skyfactory-3/files/2390075");
+		//			log("Then you would use 2390075 as the Curse File ID. Do not change the Modpack URL. Change that and click Download again to continue.");
+		//			return;
+		//		}
 
-		missingMods = new ArrayList<String>();
+		missingMods = new ArrayList<>();
 		log("Curse pack downloader created by Vazkii");
 		log("https://github.com/Vazkii/CMPDL");
+		instance.curseVersion = version;
+		instance.curseURL = url;
 
-		String packUrl = url;
-		if (packUrl.endsWith("/"))
-			packUrl = packUrl.replaceAll(".$", "");
-
-		String packVersion = version;
-		if (version == null || version.isEmpty())
-			packVersion = "latest";
-
-		String fileUrl;
-		if (packVersion.equals("latest"))
-			fileUrl = packUrl + "/files/latest";
-		else
-			fileUrl = packUrl + "/files/" + packVersion + "/download";
-
-		String finalUrl = getLocationHeader(fileUrl);
-
-		Matcher matcher = FILE_NAME_URL_PATTERN.matcher(finalUrl);
+		Matcher matcher = FILE_NAME_URL_PATTERN.matcher(instance.getZipURL());
 		if (matcher.matches()) {
 			String filename = matcher.group(1);
-			log("Modpack filename is " + filename);
-
-			File unzippedDir = setupModpackMetadata(filename, finalUrl);
-			Manifest manifest = getManifest(unzippedDir);
-			instance.minecraftVersion = manifest.minecraft.version;
-			instance.modLoader = "forge";
-			instance.modLoaderVersion = manifest.getForgeVersion();
-			instance.name = manifest.name;
-			instance.curseURL = url;
-			instance.curseVersion = manifest.version;
-			int i = 1;
-			while (!InstanceManager.isValid(instance)){
-				instance.name = manifest.name + "(" + i + ")";
-			}
-			InstallingController.controller.setTitleText("Downloading " + manifest.name);
-			OneClientTracking.sendRequest("curse/install/" + manifest.name + "/" + manifest.version);
-			File minecraftDir = instance.getDirectory();
-
-			downloadModpackFromManifest(minecraftDir, manifest);
-			copyOverrides(manifest, unzippedDir, minecraftDir);
-
-			log("Done downloading pack " + manifest.name);
-
-			if (!missingMods.isEmpty()) {
-				log("");
-				log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
-					+ "public download on CurseForge, or there were errors in the download.");
-				log("The missing mods are the following:");
-				for (String mod : missingMods)
-					log(" - " + mod);
-				log("");
-				log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
-					+ "and pulling them from there.");
-			}
-			missingMods = null;
+			File zipFile = downloadPackZip(filename, new URL(instance.getZipURL()));
+			installPack(instance, zipFile);
 		}
 	}
 
-	public File setupModpackMetadata(String filename, String url) throws IOException, ZipException {
-		log("Setting up Metadata");
+	public void importFromZip(Instance instance, File zipFile) throws Exception {
+		File newDir = new File(getTempPackDir(zipFile), zipFile.getName());
+		Files.copy(zipFile.toPath(), newDir.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		installPack(instance, newDir);
+	}
 
-		File homeDir = getTempDir();
-
-		File retDir = new File(homeDir, filename);
-		if (!retDir.exists()) {
-			retDir.mkdir();
+	public void installPack(Instance instance, File zipFile) throws Exception {
+		log("Modpack filename is " + zipFile.getName());
+		File unzippedDir = unzipPack(getTempPackDir(zipFile), zipFile);
+		Manifest manifest = getManifest(unzippedDir);
+		instance.minecraftVersion = manifest.minecraft.version;
+		instance.modLoader = "forge";
+		instance.modLoaderVersion = manifest.getForgeVersion();
+		instance.name = manifest.name;
+		instance.curseVersion = manifest.version;
+		int i = 1;
+		while (!InstanceManager.isValid(instance)) {
+			instance.name = manifest.name + "(" + i + ")";
 		}
+		InstallingController.controller.setTitleText("Downloading " + manifest.name);
+		OneClientTracking.sendRequest("curse/install/" + manifest.name + "/" + manifest.version);
+		File minecraftDir = instance.getDirectory();
 
-		String zipName = filename;
+		downloadModpackFromManifest(minecraftDir, manifest);
+		copyOverrides(manifest, unzippedDir, minecraftDir);
+
+		log("Done downloading pack " + manifest.name);
+
+		if (!missingMods.isEmpty()) {
+			log("");
+			log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
+				+ "public download on CurseForge, or there were errors in the download.");
+			log("The missing mods are the following:");
+			for (String mod : missingMods)
+				log(" - " + mod);
+			log("");
+			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
+				+ "and pulling them from there.");
+		}
+		missingMods = null;
+	}
+
+	public File downloadPackZip(String pack, URL url) throws IOException {
+		File packDir = getTempPackDir(pack);
+		String zipName = pack;
 		if (!zipName.endsWith(".zip"))
 			zipName = zipName + ".zip";
-
-		String retPath = retDir.getAbsolutePath();
-		retDir.deleteOnExit();
-
 		log("Downloading zip file " + zipName);
-		File f = new File(retDir, zipName);
-		downloadFileFromURL(f, new URL(url));
+		File zipFile = new File(packDir, zipName);
+		downloadFileFromURL(zipFile, url);
+		return zipFile;
+	}
 
+	public File unzipPack(File dir, File packZip) throws IOException, ZipException {
 		log("Unzipping Modpack Download");
-		ZipFile zip = new ZipFile(f);
-		zip.extractAll(retPath);
-		return retDir;
+		ZipFile zip = new ZipFile(packZip);
+		zip.extractAll(dir.toString());
+		return dir;
 	}
 
 	public File getTempDir() {
 		return new File(Constants.TEMPDIR, "curseDownload");
+	}
+
+	public File getTempPackDir(String pack) {
+		File home = getTempDir();
+		File retDir = new File(home, FilenameUtils.removeExtension(pack));
+		if (!retDir.exists()) {
+			retDir.mkdir();
+		}
+		return retDir;
+	}
+
+	public File getTempPackDir(File zipFile) {
+		return getTempPackDir(zipFile.getName());
 	}
 
 	public Manifest getManifest(File dir) throws IOException {
@@ -216,7 +217,7 @@ public class CursePackInstaller {
 		}
 	}
 
-	public String getLocationHeader(String location) throws IOException, URISyntaxException {
+	public static String getLocationHeader(String location) throws IOException, URISyntaxException {
 		URI uri = new URI(location);
 		HttpURLConnection connection = null;
 		String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36";

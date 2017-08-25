@@ -7,9 +7,6 @@ import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
@@ -38,7 +35,7 @@ public class InstancesPane extends ContentPane {
 	}
 
 	public void onNewInstancePress() {
-		NewInstanceController.start();
+		NewInstanceController.start(null);
 	}
 
 	private void refreshInstances() {

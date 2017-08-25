@@ -15,6 +15,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
+import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import com.mojang.authlib.Agent;
@@ -27,10 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +71,14 @@ public class MinecraftUtil {
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		OneClientLogging.log("Installing minecraft for " + instance.name);
-		InstallingController.controller.setTitleText("Downloading minecraft" + instance.minecraftVersion);
+		Platform.runLater(() -> {
+			try {
+				InstallingController.showInstaller();
+				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
+			} catch (IOException e) {
+				OneClientLogging.log(e);
+			}
+		});
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
@@ -84,7 +89,7 @@ public class MinecraftUtil {
 		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
-		OneClientLogging.log("Downloading minecraft jar");
+		OneClientLogging.log("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
@@ -111,7 +116,7 @@ public class MinecraftUtil {
 		});
 
 		if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-			ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
+			ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
 		}
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
@@ -168,18 +173,11 @@ public class MinecraftUtil {
 			try {
 
 				StringBuilder cpb = new StringBuilder();
-				for (Version.Library library : versionData.libraries) {
-					if (library.allowed() && library.getFile(libraries) != null) {
-						cpb.append(OperatingSystem.getJavaDelimiter());
-						cpb.append(library.getFile(libraries).getAbsolutePath());
-					}
-				}
-
 				String mainClass = versionData.mainClass;
 				Optional<String> tweakClass = Optional.empty();
 
 				if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-					for (File library : ForgeUtils.resloveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
+					for (File library : ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
@@ -191,6 +189,14 @@ public class MinecraftUtil {
 					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
 				}
 
+				for (Version.Library library : versionData.libraries) {
+					//TODO check that forge hasnt allready included the lib, as sometimes forge has a newer version of the lib than mc does. Adding the mc libs after forge is a hacky work around for it
+					if (library.allowed() && library.getFile(libraries) != null) {
+						cpb.append(OperatingSystem.getJavaDelimiter());
+						cpb.append(library.getFile(libraries).getAbsolutePath());
+					}
+				}
+
 				cpb.append(OperatingSystem.getJavaDelimiter());
 				cpb.append(mcJar.getAbsolutePath());
 
@@ -199,22 +205,31 @@ public class MinecraftUtil {
 
 				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
 
+				for(String str : SettingsUtil.settings.arguments.split(" ")){
+					arguments.add(str);
+				}
+				arguments.add("-Xmx" + SettingsUtil.settings.minecraftMemory + "m");
+				arguments.add("-Xms" + SettingsUtil.settings.minecraftMemory + "m");
+
+
 				arguments.add("-cp");
 				arguments.add(cpb.toString());
 				arguments.add(mainClass);
 
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 
-				arguments.add("--accessToken=" + auth.getAuthenticatedToken());
-				arguments.add("--uuid=" + auth.getSelectedProfile().getId().toString().replace("-", ""));
-				arguments.add("--username=" + auth.getSelectedProfile().getName());
-				arguments.add("--userType=" + auth.getUserType().getName());
-				arguments.add("--userProperties=" + (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+				arguments.add("--accessToken="); arguments.add(auth.getAuthenticatedToken());
+				arguments.add("--uuid="); arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
+				arguments.add("--username="); arguments.add(auth.getSelectedProfile().getName());
+				arguments.add("--userType="); arguments.add(auth.getUserType().getName());
+				arguments.add("--userProperties="); arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
 
-				arguments.add("--version=" + instance.minecraftVersion);
-				arguments.add("--assetsDir=" + assets);
-				arguments.add("--assetIndex=" + versionData.assetIndex.id);
-				arguments.add("--gameDir=" + new File(Constants.INSTANCEDIR, instance.name));
+				arguments.add("--version="); arguments.add(instance.minecraftVersion);
+				arguments.add("--assetsDir="); arguments.add(assets.toString());
+				arguments.add("--assetIndex="); arguments.add(versionData.assetIndex.id);
+				arguments.add("--gameDir="); arguments.add(new File(Constants.INSTANCEDIR, instance.name).toString());
+
+
 
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(new File(Constants.INSTANCEDIR, instance.name));

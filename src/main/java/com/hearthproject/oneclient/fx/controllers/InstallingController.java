@@ -24,7 +24,7 @@ public class InstallingController {
 	public TextArea log;
 
 	public static InstallingController controller;
-	static Stage stage;
+	public static Stage stage;
 
 	public static void showInstaller() throws IOException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -48,6 +48,7 @@ public class InstallingController {
 		stage.setScene(scene);
 		stage.show();
 		controller = fxmlLoader.getController();
+		controller.log.setEditable(false);
 	}
 
 	public static void close() {

@@ -43,7 +43,7 @@ public class Main extends Application {
 			try {
 				SplashScreen.show();
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 			for (String arg : args) {
 				if (arg.equals("-updateSuccess")) {
@@ -61,6 +61,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage s) {
 		stage = s;
+		stage.setOnCloseRequest(event -> System.exit(0));
 		new Thread(() -> {
 			try {
 				loadData();
@@ -76,7 +77,10 @@ public class Main extends Application {
 							alert.setHeaderText("An update is available!");
 							Optional<ButtonType> result = alert.showAndWait();
 							if (result.get() == ButtonType.OK) {
-								Updater.startUpdate();
+								stage.hide();
+								SplashScreen.show();
+								SplashScreen.updateProgess("Downloading update...", 0);
+								new Thread(Updater::startUpdate).start();
 							}
 						}
 					} catch (Exception e) {

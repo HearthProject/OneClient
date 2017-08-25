@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public abstract class ContentPane {
-	private ContentPaneButton button;
+	public ContentPaneButton button;
 	private Node node;
 	private String fxmlFile;
 	private FXMLLoader loader;
@@ -78,5 +78,9 @@ public abstract class ContentPane {
 		button.setSelected(true);
 		onStart();
 		refresh();
+	}
+
+	public boolean showInSideBar() {
+		return true;
 	}
 }

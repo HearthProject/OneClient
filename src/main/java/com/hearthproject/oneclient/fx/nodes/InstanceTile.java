@@ -1,6 +1,8 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -12,9 +14,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import javax.imageio.ImageIO;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class InstanceTile extends StackPane {
 	public final Instance instance;
@@ -23,6 +24,7 @@ public class InstanceTile extends StackPane {
 	public VBox nodeBox;
 	public Text nameLabel;
 	public Button playButton;
+	public Button editButton;
 	private Action action;
 
 	public InstanceTile(Instance instance) {
@@ -33,11 +35,13 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (!instance.icon.isEmpty()){
+		if (!instance.icon.isEmpty() && instance.getIcon().exists()) {
 			try {
-				imageView.setImage(new Image(new FileInputStream(instance.getIcon())));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				FileInputStream iconInputSteam = new FileInputStream(instance.getIcon());
+				imageView.setImage(new Image(iconInputSteam));
+				iconInputSteam.close();
+			} catch (IOException e) {
+				OneClientLogging.log(e);
 			}
 			imageView.setFitHeight(75);
 			imageView.setFitWidth(75);
@@ -50,10 +54,14 @@ public class InstanceTile extends StackPane {
 			if (action != null)
 				action.execute();
 		});
-		nodeBox = new VBox(nameLabel, playButton);
+		editButton = new Button("Edit");
+		editButton.setOnAction(event -> {
+			InstancePane.show(instance);
+		});
+		nodeBox = new VBox(nameLabel, imageView, playButton, editButton);
 		nodeBox.setAlignment(Pos.CENTER);
 		nodeBox.setSpacing(6);
-		this.getChildren().addAll(background, imageView, nodeBox);
+		this.getChildren().addAll(background, nodeBox);
 		this.setAlignment(Pos.CENTER);
 	}
 
