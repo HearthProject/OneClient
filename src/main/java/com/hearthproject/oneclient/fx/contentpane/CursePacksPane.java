@@ -12,9 +12,10 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -22,46 +23,60 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CursePacksPane extends ContentPane {
-    public ScrollPane scroll;
-    public VBox vBox;
-    public Button buttonNext;
+
+    public ListView<CurseTile> listTiles;
+    public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
 
     public CursePacksPane() {
         super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
     }
 
-    private int page = 1;
+    private int page = 1, lastPage = -1, pageDelay = 100;
+    private ViewType type = ViewType.FILTER;
+
 
     @Override
     protected void onStart() {
+        listTiles.setItems(tiles);
         AnchorPane box = (AnchorPane) getNode();
-        VBox.setVgrow(getNode(), Priority.ALWAYS);
-        HBox.setHgrow(scroll, Priority.ALWAYS);
-        HBox.setHgrow(getNode(), Priority.ALWAYS);
+        VBox.setVgrow(box, Priority.ALWAYS);
+        HBox.setHgrow(listTiles, Priority.ALWAYS);
+        HBox.setHgrow(box, Priority.ALWAYS);
         box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-        buttonNext = new Button("Next Page");
-        buttonNext.setOnAction(event -> {
-            page++;
-            OneClientLogging.log("Next page:" + page);
+        listTiles.prefWidthProperty().bind(box.widthProperty());
+        listTiles.prefHeightProperty().bind(box.heightProperty());
+
+        if(type == ViewType.FILTER) {
             loadPacks(page);
-        });
-        loadPacks(page);
+
+            listTiles.setOnScroll(event -> {
+                if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
+                    int old = Math.max(listTiles.getItems().size() - 8, 0);
+                    page++;
+                    loadPacks(page);
+                    listTiles.scrollTo(old);
+                }
+            });
+        }
+
+//        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
     }
+
 
     public void loadPacks(int page) {
 
-
-        vBox.getChildren().clear();
         List<CursePack> packs = CurseUtils.getPacks(page);
-        while(!packs.isEmpty()) {
-            CursePack pack = packs.remove(0);
-            vBox.getChildren().add(new CurseTile(this, pack));
+        if (packs == null) {
+            lastPage = page;
+            return;
         }
-        if(packs.isEmpty())
-            vBox.getChildren().add(buttonNext);
+        OneClientLogging.log("Loading page " + page);
+        while (!packs.isEmpty()) {
+            CursePack pack = packs.remove(0);
+            tiles.add(new CurseTile(this, pack));
+        }
     }
 
     public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
@@ -102,5 +117,11 @@ public class CursePacksPane extends ContentPane {
     @Override
     public void refresh() {
 
+    }
+
+
+    public enum ViewType {
+        FILTER,
+        SEARCH
     }
 }
