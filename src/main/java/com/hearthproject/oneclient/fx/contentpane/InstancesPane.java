@@ -27,6 +27,7 @@ public class InstancesPane extends ContentPane {
 		if (newInstanceTile == null) {
 			newInstanceTile = (StackPane) instancePane.getChildren().get(0);
 		}
+		instancePane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 	}
 
 	@Override
