@@ -1,6 +1,5 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.google.common.collect.Maps;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.CursePacksPane;
 import com.hearthproject.oneclient.util.OperatingSystem;
@@ -15,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 
 import java.io.*;
@@ -27,7 +25,6 @@ import java.util.Map;
 public class CurseTile extends StackPane {
 
     public final CursePack pack;
-    public Rectangle background;
     public ImageView imageView;
     public VBox nodeBox;
     public Hyperlink nameLabel;
@@ -35,11 +32,7 @@ public class CurseTile extends StackPane {
 
     public CurseTile(CursePacksPane parent, CursePack pack) {
         this.pack = pack;
-        background = new Rectangle(192, 192);
-        background.setArcHeight(0);
-        background.setArcWidth(0);
-        background.setFill(Color.web("#262626"));
-        background.setStrokeWidth(0);
+
         imageView = new ImageView();
         nameLabel = new Hyperlink(pack.getTitle());
         nameLabel.setTextFill(Color.web("#FFFFFF"));
@@ -55,7 +48,9 @@ public class CurseTile extends StackPane {
         nodeBox = new VBox(nameLabel, imageView, buttonInstall);
         nodeBox.setAlignment(Pos.CENTER);
         nodeBox.setSpacing(6);
-        this.getChildren().addAll(background, nodeBox);
+        nodeBox.setId("#dark-background");
+
+        this.getChildren().addAll( nodeBox);
         this.setAlignment(Pos.CENTER);
     }
 
@@ -78,12 +73,13 @@ public class CurseTile extends StackPane {
                         e.printStackTrace();
                     }
                 }
-                try {
-                    image = new Image(new FileInputStream(imageFile));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                if(imageFile.exists()) {
+                    try {
+                        image = new Image(new FileInputStream(imageFile));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }
             if(image != null) {
                 CurseUtils.IMAGE_CACHE.put(pack.getTitle(),image);
