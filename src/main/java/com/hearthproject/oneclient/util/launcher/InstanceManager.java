@@ -52,7 +52,7 @@ public class InstanceManager {
 
 	public static void save(Instance instance) {
 		File dir = new File(Constants.INSTANCEDIR, instance.name);
-		File jsonFile = new File(dir, "instance.json");
+		File jsonFile = new File(dir, "pack.json");
 		String jsonStr = JsonUtil.GSON.toJson(instance);
 		try {
 			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
@@ -78,9 +78,9 @@ public class InstanceManager {
 		}
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
 			try {
-				File jsonFile = new File(dir, "instance.json");
+				File jsonFile = new File(dir, "pack.json");
 				if (!jsonFile.exists()) {
-					OneClientLogging.log("ERROR: An invalid instance with the name " + dir.getName() + " is has been found, it will be ignored.");
+					OneClientLogging.log("ERROR: An invalid pack with the name " + dir.getName() + " is has been found, it will be ignored.");
 					return;
 				}
 				String jsonStr = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);

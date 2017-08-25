@@ -2,12 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.WebView?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -38,13 +38,13 @@
                         <Insets bottom="5.0" />
                     </VBox.margin>
                 </HBox>
-                <HBox fx:id="hBox" minWidth="200.0" prefHeight="100.0" VBox.vgrow="ALWAYS">
+                <HBox fx:id="hBox" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" minHeight="200.0" minWidth="400.0" prefHeight="-1.0" prefWidth="-1.0">
-                            <HBox.margin>
-                                <Insets top="5.0" />
-                            </HBox.margin>
-                        </WebView>
+                  <ScrollPane fx:id="scroll">
+                     <content>
+                              <VBox fx:id="vBox" prefHeight="513.0" prefWidth="534.0" />
+                     </content>
+                  </ScrollPane>
                     </children>
                 </HBox>
             </children>

@@ -147,8 +147,8 @@ public class NewInstanceController {
 		if (newInstance && !InstanceManager.isValid(instance)) {
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setTitle("Error");
-			alert.setHeaderText("That isnt a valid instance");
-			alert.setContentText("Do you already have an instance with that name?");
+			alert.setHeaderText("That isnt a valid pack");
+			alert.setContentText("Do you already have an pack with that name?");
 			alert.showAndWait();
 			return;
 		}

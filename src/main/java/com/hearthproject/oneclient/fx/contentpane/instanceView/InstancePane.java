@@ -85,7 +85,7 @@ public class InstancePane extends ContentPane {
 		menuDelete.setOnAction(event -> {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 			alert.setTitle("Are you sure?");
-			alert.setHeaderText("Are you sure you want to delete the instance");
+			alert.setHeaderText("Are you sure you want to delete the pack");
 			alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
 
 			Optional<ButtonType> result = alert.showAndWait();

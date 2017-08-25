@@ -48,6 +48,7 @@ dependencies {
 	shade 'com.mojang:authlib:1.5.16'
 	shade 'org.piwik.java.tracking:piwik-java-tracker:1.2'
 	shade 'net.lingala.zip4j:zip4j:1.3.2'
+	shade 'org.jsoup:jsoup:1.10.3'
 }
 
 jar {
