@@ -2,13 +2,15 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class AboutPane extends ContentPane {
@@ -47,8 +49,8 @@ public class AboutPane extends ContentPane {
 		hyperlink.setStyle("-fx-text-fill: #FFFFFF; " + Main.mainController.siteLink.getStyle());
 		hyperlink.setOnAction((actionEvent) -> {
 			try {
-				Desktop.getDesktop().browse(new URL(url).toURI());
-			} catch (Exception e) {
+				OperatingSystem.browse(new URL(url).toURI());
+			} catch (URISyntaxException | MalformedURLException e) {
 				OneClientLogging.log(e);
 			}
 		});

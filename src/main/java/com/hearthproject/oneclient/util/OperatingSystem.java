@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 //Based of the code from fabric-loom found here: https://github.com/FabricMC/fabric-loom
 public class OperatingSystem {
@@ -55,6 +56,21 @@ public class OperatingSystem {
 				new Thread(() -> {
 					try {
 						desktop.open(file);
+					} catch (IOException e) {
+						OneClientLogging.log(e);
+					}
+				}).start();
+			}
+		}
+	}
+
+	public static void browse(URI url) {
+		if (Desktop.isDesktopSupported()) {
+			Desktop desktop = Desktop.getDesktop();
+			if (desktop.isSupported(Desktop.Action.OPEN)) {
+				new Thread(() -> {
+					try {
+						desktop.browse(url);
 					} catch (IOException e) {
 						OneClientLogging.log(e);
 					}
