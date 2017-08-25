@@ -37,6 +37,7 @@ public class AboutPane extends ContentPane {
 			credits.getChildren().addAll(text, hyperlink, creditsText);
 			addCredit("modmuss50 - Lead Developer", "https://twitter.com/modmuss50");
 			addCredit("Prospector - UX Manager", "https://twitter.com/ProfProspector");
+			addCredit("primetoxinz - Various Contributions", "https://github.com/primetoxinz");
 			addCredit("loading.io - Splash Loading .gif", "https://loading.io/");
 			addCredit("Yannick - Update Cloud Icon", "https://www.flaticon.com/authors/yannick");
 		}
