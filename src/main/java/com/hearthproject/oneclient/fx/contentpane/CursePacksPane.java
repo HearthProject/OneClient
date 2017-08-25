@@ -10,8 +10,6 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -87,7 +85,7 @@ public class CursePacksPane extends ContentPane {
 		try {
 			InstallingController.showInstaller();
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 
 		InstallingController.controller.setTitleText("Installing...");
@@ -111,7 +109,7 @@ public class CursePacksPane extends ContentPane {
 						FileUtils.copyURLToFile(new URL(url), instance.getIcon());
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.log(e);
 				}
 
 				InstanceManager.addInstance(instance);

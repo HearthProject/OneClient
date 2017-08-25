@@ -22,7 +22,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Comparator;
 
@@ -104,8 +107,9 @@ public class NewInstanceController {
 				try {
 					InputStream targetStream = new FileInputStream(instance.getIcon());
 					iconPreview.setImage(new Image(targetStream));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					targetStream.close();
+				} catch (IOException e) {
+					OneClientLogging.log(e);
 				}
 			}
 			createButton.setText("Update Instance");
@@ -200,8 +204,9 @@ public class NewInstanceController {
 			try {
 				InputStream targetStream = new FileInputStream(selectedImageFile);
 				iconPreview.setImage(new Image(targetStream));
+				targetStream.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 		}
 	}

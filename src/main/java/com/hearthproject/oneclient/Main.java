@@ -43,7 +43,7 @@ public class Main extends Application {
 			try {
 				SplashScreen.show();
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 			for (String arg : args) {
 				if (arg.equals("-updateSuccess")) {

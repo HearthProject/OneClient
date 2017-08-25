@@ -56,7 +56,7 @@ public class OperatingSystem {
 					try {
 						desktop.open(file);
 					} catch (IOException e) {
-						e.printStackTrace();
+						OneClientLogging.log(e);
 					}
 				}).start();
 			}

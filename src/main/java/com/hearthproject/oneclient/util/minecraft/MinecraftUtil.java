@@ -76,7 +76,7 @@ public class MinecraftUtil {
 				InstallingController.showInstaller();
 				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 		});
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);

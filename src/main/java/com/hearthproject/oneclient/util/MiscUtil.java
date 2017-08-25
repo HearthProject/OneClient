@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class MiscUtil {
 			}
 			return builder.toString().equals(checksum);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 		return false;
 	}
@@ -41,7 +42,7 @@ public class MiscUtil {
 			}
 			return checksum.contains(builder.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 		return false;
 	}
