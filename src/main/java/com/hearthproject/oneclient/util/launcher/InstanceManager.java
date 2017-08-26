@@ -63,9 +63,9 @@ public class InstanceManager {
 
 	public static void init(Instance instance) {
 		File instanceDir = new File(Constants.INSTANCEDIR, instance.name);
-		for(String dir: Constants.INITIALIZE_DIRS) {
-			File d = new File(instanceDir,dir);
-			if(!d.exists())
+		for (String dir : Constants.INITIALIZE_DIRS) {
+			File d = new File(instanceDir, dir);
+			if (!d.exists())
 				d.mkdir();
 		}
 	}

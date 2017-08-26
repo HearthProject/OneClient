@@ -4,7 +4,6 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
@@ -49,34 +48,27 @@ public class OperatingSystem {
 		return System.getProperty("sun.arch.data.model").contains("64");
 	}
 
-	public static void openWithSystem(File file) {
+	public static void withDesktop(MiscUtil.ThrowingConsumer<Desktop> consumer) {
 		if (Desktop.isDesktopSupported()) {
 			Desktop desktop = Desktop.getDesktop();
 			if (desktop.isSupported(Desktop.Action.OPEN)) {
 				new Thread(() -> {
 					try {
-						desktop.open(file);
-					} catch (IOException e) {
-						OneClientLogging.log(e);
+						consumer.accept(desktop);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}).start();
 			}
 		}
 	}
 
-	public static void browse(URI url) {
-		if (Desktop.isDesktopSupported()) {
-			Desktop desktop = Desktop.getDesktop();
-			if (desktop.isSupported(Desktop.Action.OPEN)) {
-				new Thread(() -> {
-					try {
-						desktop.browse(url);
-					} catch (IOException e) {
-						OneClientLogging.log(e);
-					}
-				}).start();
-			}
-		}
+	public static void openWithSystem(File file) {
+		withDesktop(desktop -> desktop.open(file));
+	}
+
+	public static void browseURI(String uri) {
+		withDesktop(desktop -> desktop.browse(new URI(uri)));
 	}
 
 	public static long getOSTotalMemory() {

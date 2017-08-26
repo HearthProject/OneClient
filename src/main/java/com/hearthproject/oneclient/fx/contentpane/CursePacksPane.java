@@ -3,89 +3,132 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.InstallingController;
+import com.hearthproject.oneclient.fx.nodes.CurseTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.curse.CursePackInstaller;
+import com.hearthproject.oneclient.util.curse.CursePack;
+import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import org.apache.commons.io.FileUtils;
+import javafx.util.StringConverter;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CursePacksPane extends ContentPane {
-	public WebView webView;
-	public Button buttonBrowse;
-	public Button buttonInstall;
-	public Button buttonImport;
-	public Button buttonBack;
 
-	public HBox hBox;
+	public String URL;
+
+	public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
+	public ObservableList<String> versions;
+
+	public ListView<CurseTile> listTiles;
+	public ComboBox<String> filterVersion;
 
 	public CursePacksPane() {
 		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
+	private int page = 1, lastPage = -1;
+	private ViewType type = ViewType.FILTER;
+
+	private static int pageDelay;
+	private static Timer timer = new Timer();
+
+	static {
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if (pageDelay > 0)
+					pageDelay--;
+			}
+		}, 1000, 1000);
+	}
+
 	@Override
 	protected void onStart() {
-		webView.getEngine().load("https://minecraft.curseforge.com/modpacks");
-
-		webView.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		webView.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
-		webView.maxWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		webView.maxHeightProperty().bind(Main.mainController.contentBox.heightProperty());
-
-		AnchorPane box = (AnchorPane) getNode();
-
-		VBox.setVgrow(getNode(), Priority.ALWAYS);
-		HBox.setHgrow(webView, Priority.ALWAYS);
-		HBox.setHgrow(getNode(), Priority.ALWAYS);
-
-		box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-
-		WebEngine webEngine = webView.getEngine();
-
-		buttonBrowse.setOnAction(event -> webView.getEngine().load("https://minecraft.curseforge.com/modpacks"));
-
-		buttonInstall.setOnAction(event -> {
-			System.out.println("installing");
-			String url = webEngine.getLocation();
-			if (!url.startsWith("https://minecraft.curseforge.com/projects/")) {
-				System.out.println("This is not a pack!");
-				return;
+		versions = FXCollections.observableArrayList(CurseUtils.getVersions());
+		filterVersion.setItems(versions);
+		filterVersion.getSelectionModel().selectFirst();
+		filterVersion.setConverter(new StringConverter<String>() {
+			@Override
+			public String toString(String s) {
+				if (s.isEmpty())
+					return "All";
+				return s;
 			}
-			install(instance -> new CursePackInstaller().downloadFromURL(url, "latest", instance));
-		});
 
-		buttonImport.setOnAction(event -> {
-			FileChooser chooser = new FileChooser();
-			chooser.setTitle("Import Modpack From Zip");
-			File zipFile = chooser.showOpenDialog(InstallingController.stage);
-			if (zipFile == null || !zipFile.exists())
-				return;
-			install(instance -> new CursePackInstaller().importFromZip(instance, zipFile));
+			@Override
+			public String fromString(String s) {
+				if (s.equals("All"))
+					return "";
+				return s.replace(" ", "+");
+			}
 		});
+		listTiles.setItems(tiles);
+		AnchorPane box = (AnchorPane) getNode();
+		VBox.setVgrow(box, Priority.ALWAYS);
+		HBox.setHgrow(listTiles, Priority.ALWAYS);
+		HBox.setHgrow(box, Priority.ALWAYS);
+		box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		listTiles.prefWidthProperty().bind(box.widthProperty());
+		listTiles.prefHeightProperty().bind(box.heightProperty());
 
-		buttonBack.setOnAction(event -> webEngine.executeScript("history.back()"));
+		if (type == ViewType.FILTER) {
+			filterVersion.valueProperty().addListener((observableValue, s, t1) -> {
+				tiles.clear();
+				page = 1;
+				loadPacks(page, filterVersion.getValue());
+			});
+			loadPacks(page, filterVersion.getValue());
+			listTiles.setOnScroll(event -> {
+				if (pageDelay > 0)
+					return;
+				if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
+					int old = Math.max(listTiles.getItems().size() - 8, 0);
+					page++;
+					loadPacks(page, filterVersion.getValue());
+					listTiles.scrollTo(old);
+					pageDelay = 5;
+				}
+			});
+		}
+		//TODO implement searching
+		//        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
+	}
+
+	public void loadPacks(int page, String version) {
+
+		List<CursePack> packs = CurseUtils.getPacks(page, version);
+		if (packs == null) {
+			lastPage = page;
+			return;
+		}
+		OneClientLogging.log("Loading page " + page);
+		while (!packs.isEmpty()) {
+			CursePack pack = packs.remove(0);
+			tiles.add(new CurseTile(this, pack));
+		}
 	}
 
 	public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
 		try {
 			InstallingController.showInstaller();
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			e.printStackTrace();
 		}
 
 		InstallingController.controller.setTitleText("Installing...");
@@ -93,6 +136,7 @@ public class CursePacksPane extends ContentPane {
 
 		new Thread(() -> {
 			Instance instance = new Instance("Unknown");
+			instance.icon = "icon.png";
 			try {
 				downloadFunction.accept(instance);
 				MinecraftUtil.installMinecraft(instance);
@@ -101,29 +145,15 @@ public class CursePacksPane extends ContentPane {
 			}
 
 			Platform.runLater(() -> {
-				instance.icon = "icon.png";
-
-				try {
-					String url = webView.getEngine().executeScript("document.getElementsByClassName(\"e-avatar64 lightbox\")[0].href").toString();
-					if(url != null && !url.isEmpty()){
-						FileUtils.copyURLToFile(new URL(url), instance.getIcon());
-					}
-				} catch (IOException e) {
-					OneClientLogging.log(e);
-				}
-
 				InstanceManager.addInstance(instance);
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 					Main.mainController.currentContent.refresh();
 				}
-				
-				InstallingController.close();
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setTitle("Pack has been installed!");
 				alert.setHeaderText(null);
-				alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the instance section.");
+				alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the pack section.");
 				alert.showAndWait();
-				InstallingController.close();
 			});
 
 		}).start();
@@ -132,5 +162,10 @@ public class CursePacksPane extends ContentPane {
 	@Override
 	public void refresh() {
 
+	}
+
+	public enum ViewType {
+		FILTER,
+		SEARCH
 	}
 }
