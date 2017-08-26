@@ -63,16 +63,26 @@ public class CursePack {
 		return "";
 	}
 
-	public String getStats() {
-		StringBuilder builder = new StringBuilder();
+	public String getAverageDownloads() {
 		try {
-			builder.append(this.averageDownloads.get());
-			builder.append("\t\t");
-			builder.append(this.totalDownloads.get());
-		} catch (InterruptedException | ExecutionException e) {
+			return this.averageDownloads.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		return builder.toString();
+		return "";
+	}
+
+	public String getTotalDownloads() {
+		try {
+			return this.totalDownloads.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	public String getCreatedDate() {

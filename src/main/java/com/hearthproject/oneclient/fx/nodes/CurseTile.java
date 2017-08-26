@@ -45,14 +45,16 @@ public class CurseTile extends StackPane {
 			if (imageFile != null)
 				Files.copy(imageFile.toPath(), new File(instance.getDirectory(), "icon.png").toPath());
 		}));
-		Label stats = new Label(pack.getStats());
-		stats.setTextFill(Color.web("#FFFFFF"));
+		Label average = new Label(pack.getAverageDownloads());
+		Label total = new Label(pack.getTotalDownloads());
+		average.setTextFill(Color.web("#FFFFFF"));
+		total.setTextFill(Color.web("#FFFFFF"));
 		Label date = new Label(pack.getCreatedDate());
 		date.setTextFill(Color.web("#FFFFFF"));
 		Label version = new Label(pack.getVersion());
 		version.setTextFill(Color.web("#FFFFFF"));
 
-		VBox vBox = new VBox(labelTitle, stats, date, version);
+		VBox vBox = new VBox(labelTitle, average, total, date, version);
 		nodeBox = new HBox(buttonInstall, imageView, vBox);
 		nodeBox.setAlignment(Pos.CENTER_LEFT);
 		nodeBox.setSpacing(6);
