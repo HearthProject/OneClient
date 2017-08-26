@@ -43,7 +43,6 @@ public class AboutPane extends ContentPane {
 	public void addCredit(String credit, String url) {
 		Hyperlink hyperlink = new Hyperlink(credit);
 		hyperlink.setStyle("-fx-text-fill: #FFFFFF; " + Main.mainController.siteLink.getStyle());
-		vb
 		hyperlink.setOnAction((actionEvent) -> OperatingSystem.browseURI(url));
 		hyperlink.focusTraversableProperty().setValue(false);
 		credits.getChildren().add(hyperlink);
