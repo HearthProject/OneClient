@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CursePacksPane extends ContentPane {
-
+  
     public String URL;
 
     public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
