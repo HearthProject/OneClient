@@ -9,9 +9,13 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -143,6 +147,8 @@ public class CursePackInstaller {
 		return manifest;
 	}
 
+	public int left;
+
 	public File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
 		int total = manifest.files.size();
 
@@ -153,10 +159,19 @@ public class CursePackInstaller {
 		if (!modsDir.exists())
 			modsDir.mkdir();
 
-		int left = total;
-		for (Manifest.FileData f : manifest.files) {
+		left = total;
+
+		manifest.files.parallelStream().forEach(f -> {
 			left--;
-			downloadFile(f, modsDir, left, total);
+			try {
+				downloadFile(f, modsDir, left, total);
+			} catch (IOException | URISyntaxException e) {
+				OneClientLogging.log(e);
+			}
+		});
+
+		for (Manifest.FileData f : manifest.files) {
+
 		}
 
 		log("Mod downloads complete");
@@ -251,13 +266,7 @@ public class CursePackInstaller {
 			}
 			f.createNewFile();
 		}
-		try (InputStream instream = url.openStream(); FileOutputStream outStream = new FileOutputStream(f)) {
-			byte[] buff = new byte[4096];
-
-			int i;
-			while ((i = instream.read(buff)) > 0)
-				outStream.write(buff, 0, i);
-		}
+		FileUtils.copyURLToFile(url, f);
 	}
 
 	public void log(String s) {
