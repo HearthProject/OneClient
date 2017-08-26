@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -14,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class InstanceTile extends StackPane {
 	public final Instance instance;
@@ -36,9 +37,11 @@ public class InstanceTile extends StackPane {
 		imageView = new ImageView();
 		if (!instance.icon.isEmpty() && instance.getIcon().exists()) {
 			try {
-				imageView.setImage(new Image(new FileInputStream(instance.getIcon())));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				FileInputStream iconInputSteam = new FileInputStream(instance.getIcon());
+				imageView.setImage(new Image(iconInputSteam));
+				iconInputSteam.close();
+			} catch (IOException e) {
+				OneClientLogging.log(e);
 			}
 			imageView.setFitHeight(75);
 			imageView.setFitWidth(75);

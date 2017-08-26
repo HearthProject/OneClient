@@ -15,8 +15,10 @@ public abstract class ContentPane {
 	private String fxmlFile;
 	private FXMLLoader loader;
 	private String name;
+	private String color;
 
 	public ContentPane(String fxmlFile, String name, String color) {
+		this.color = color;
 		button = new ContentPaneButton(color);
 		button.setText(name);
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());

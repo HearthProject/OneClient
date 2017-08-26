@@ -6,11 +6,10 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -20,9 +19,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.apache.commons.io.FileUtils;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 public class InstancePane extends ContentPane {
@@ -34,6 +33,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonOpenFolder;
 	public Button buttonEditVersion;
 	public Button buttonGetCurseMods;
+	public Button buttonBack;
 	public ListView modList;
 
 	public MenuItem menuOpenFolder;
@@ -66,16 +66,16 @@ public class InstancePane extends ContentPane {
 		textMinecraftVersion.setText("Minecraft " + instance.minecraftVersion);
 		if (instance.getIcon() != null && instance.getIcon().exists()) {
 			try {
-				packIcon.setImage(new Image(FileUtils.openInputStream(instance.getIcon())));
+				InputStream iconStream = FileUtils.openInputStream(instance.getIcon());
+				packIcon.setImage(new Image(iconStream));
+				iconStream.close();
 				packIcon.setFitWidth(150);
 				packIcon.setFitHeight(150);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.log(e);
 			}
 		}
 		updateList();
-
-
 
 		menuOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
 		buttonOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
@@ -91,10 +91,12 @@ public class InstancePane extends ContentPane {
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
 				try {
-					FileUtils.deleteDirectory(instance.getDirectory());
 					ContentPanes.INSTANCES_PANE.button.fire();
+					FileUtils.deleteDirectory(instance.getDirectory());
+					InstanceManager.load();
+					ContentPanes.INSTANCES_PANE.refresh();
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.log(e);
 				}
 			}
 		});
@@ -105,6 +107,8 @@ public class InstancePane extends ContentPane {
 		menuBackup.setDisable(true);
 		menuViewBackups.setDisable(true);
 		buttonGetCurseMods.setDisable(true);
+
+		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
 
 	}
 

@@ -38,7 +38,7 @@ public class OneClientLogging {
 		try {
 			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.log(e);
 		}
 	}
 

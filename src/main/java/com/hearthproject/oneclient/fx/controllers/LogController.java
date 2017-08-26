@@ -15,10 +15,8 @@ import java.util.List;
 public class LogController {
 	public TextArea logArea;
 	public Menu minecraftMenu;
-
-	private Stage stage;
-
 	public List<Process> processList = new ArrayList<>();
+	private Stage stage;
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
