@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.LogController">
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.LogController">
     <center>
-        <TextArea fx:id="logArea" editable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+        <TextArea fx:id="logArea" editable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
     </center>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#menuUpload" text="Upload Log"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" onAction="#menuClose" text="Close"/>
+                        <MenuItem mnemonicParsing="false" onAction="#menuUpload" text="Upload Log" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuClose" text="Close" />
                     </items>
                 </Menu>
                 <Menu fx:id="minecraftMenu" disable="true" mnemonicParsing="false" text="Minecraft">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#killMinecraft" text="Kill Minecraft"/>
+                        <MenuItem mnemonicParsing="false" onAction="#killMinecraft" text="Kill Minecraft" />
                     </items>
                 </Menu>
             </menus>

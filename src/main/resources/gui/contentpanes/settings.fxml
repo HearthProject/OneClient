@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane id="dark-background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="72.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="423.0" minWidth="10.0" prefWidth="423.0" />
@@ -22,7 +29,7 @@
     </rowConstraints>
     <children>
         <CheckBox fx:id="checkLog" mnemonicParsing="false" text="Show Log Window" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <CheckBox fx:id="checkTracking" mnemonicParsing="false" text="Anonymous Tacking" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+        <CheckBox fx:id="checkTracking" mnemonicParsing="false" text="Anonymous Tracking" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
         <Button fx:id="buttonSave" mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Launcher Settings" GridPane.columnIndex="1" GridPane.halignment="CENTER">
             <font>
@@ -34,7 +41,7 @@
             <Font size="30.0" />
          </font>
       </Text>
-      <Slider fx:id="memorySlider" blockIncrement="256.0" majorTickUnit="1024.0" max="4096.0" minorTickCount="256" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+      <Slider fx:id="memorySlider" blockIncrement="256.0" majorTickUnit="1024.0" max="4096.0" minorTickCount="64" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets top="15.0" />
          </GridPane.margin>
