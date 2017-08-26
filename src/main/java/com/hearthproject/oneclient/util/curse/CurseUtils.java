@@ -5,13 +5,14 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class CurseUtils {
@@ -21,16 +22,21 @@ public class CurseUtils {
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
 
     public static Filter versionFilter(String value) {
-        return new Filter("?filter-project-game-version=", value);
+        return new Filter("filter-project-game-version=", value);
     }
 
     public static Filter page(String value) {
-        return new Filter("&page=", value);
+        return new Filter("page=", value);
     }
 
-    public static List<CursePack> getPacks(int page) {
-        Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter("1.12"), page(Integer.toString(page)));
+    public static List<String> getVersions() {
+        Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
+        Elements versions = d.select("#filter-project-game-version option");
+        return versions.stream().map(Element::val).distinct().collect(Collectors.toList());
+    }
 
+    public static List<CursePack> getPacks(int page, String version) {
+        Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), page(Integer.toString(page)));
         String realPage = d.select(".b-pagination-item").select(".s-active").first().text();
         if (Integer.parseInt(realPage) != page) {
             return null;
@@ -41,7 +47,6 @@ public class CurseUtils {
     }
 
     public static List<CursePack> searchCurse(String query) {
-
         String formatQuery = query.replace(" ", "+");
         Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("?search=", formatQuery), new Filter("#t1:", "modpacks"));
         Elements results = d.select("#tab-modpacks .minecraft");
@@ -51,7 +56,21 @@ public class CurseUtils {
 
     public static Document getHtml(String url, String path, Filter... filters) {
         try {
-            String filter = Stream.of(filters).map(f -> f.get()).collect(Collectors.joining());
+            String filter = "";
+            if(filters != null && filters.length > 0) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("?"+filters[0].toString());
+                if(filters.length > 1) {
+                    for (int i = 1; i < filters.length; i++) {
+                        String f = filters[i].toString();
+                        if(!f.startsWith("#"))
+                            builder.append("&"+f);
+                        else
+                            builder.append(f);
+                    }
+                }
+                filter = builder.toString();
+            }
             String finalURL = url + path + filter;
             System.out.println(finalURL);
             return Jsoup.connect(finalURL).get();
@@ -70,11 +89,13 @@ public class CurseUtils {
             this.value = value;
         }
 
-        public String get() {
+        @Override
+        public String toString() {
             if (value.isEmpty())
                 return "";
             return String.format("%s%s", key, value);
         }
+
     }
 
 }

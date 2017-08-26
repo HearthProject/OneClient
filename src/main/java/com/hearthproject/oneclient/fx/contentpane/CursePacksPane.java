@@ -15,30 +15,69 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CursePacksPane extends ContentPane {
 
-    public ListView<CurseTile> listTiles;
+    public String URL;
+
     public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
+    public ObservableList<String> versions;
+
+
+    public ListView<CurseTile> listTiles;
+    public ComboBox<String> filterVersion;
 
     public CursePacksPane() {
         super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
     }
 
-    private int page = 1, lastPage = -1, pageDelay = 100;
+    private int page = 1, lastPage = -1, pageDelay;
     private ViewType type = ViewType.FILTER;
-
+    private Timer timer;
+    private TimerTask cooldownTask = new TimerTask() {
+        @Override
+        public void run() {
+            if (pageDelay > 0)
+                pageDelay--;
+        }
+    };
 
     @Override
     protected void onStart() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(cooldownTask, 1000,1000);
+        versions = FXCollections.observableArrayList(CurseUtils.getVersions());
+        System.out.println(versions);
+        filterVersion.setItems(versions);
+        filterVersion.getSelectionModel().selectFirst();
+        filterVersion.setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String s) {
+                if (s.isEmpty())
+                    return "All";
+                return s;
+            }
+
+            @Override
+            public String fromString(String s) {
+                if (s.equals("All"))
+                    return "";
+                return s.replace(" ", "+");
+            }
+        });
         listTiles.setItems(tiles);
         AnchorPane box = (AnchorPane) getNode();
         VBox.setVgrow(box, Priority.ALWAYS);
@@ -48,26 +87,33 @@ public class CursePacksPane extends ContentPane {
         listTiles.prefWidthProperty().bind(box.widthProperty());
         listTiles.prefHeightProperty().bind(box.heightProperty());
 
-        if(type == ViewType.FILTER) {
-            loadPacks(page);
-
+        if (type == ViewType.FILTER) {
+            filterVersion.valueProperty().addListener((observableValue, s, t1) -> {
+                tiles.clear();
+                page = 1;
+                loadPacks(page, filterVersion.getValue());
+            });
+            loadPacks(page, filterVersion.getValue());
             listTiles.setOnScroll(event -> {
+                if (pageDelay > 0)
+                    return;
                 if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
                     int old = Math.max(listTiles.getItems().size() - 8, 0);
                     page++;
-                    loadPacks(page);
+                    loadPacks(page, filterVersion.getValue());
                     listTiles.scrollTo(old);
+                    pageDelay = 5;
                 }
             });
         }
-
+        //TODO implement searching
 //        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
     }
 
 
-    public void loadPacks(int page) {
+    public void loadPacks(int page, String version) {
 
-        List<CursePack> packs = CurseUtils.getPacks(page);
+        List<CursePack> packs = CurseUtils.getPacks(page, version);
         if (packs == null) {
             lastPage = page;
             return;
