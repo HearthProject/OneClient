@@ -4,7 +4,6 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
@@ -13,9 +12,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -78,10 +74,6 @@ public class MainController {
 	}
 
 	public void openWebsite() {
-		try {
-			OperatingSystem.browse(new URL("http://hearthproject.uk/").toURI());
-		} catch (URISyntaxException | MalformedURLException e) {
-			OneClientLogging.log(e);
-		}
+		OperatingSystem.browseURI("http://hearthproject.uk/");
 	}
 }
