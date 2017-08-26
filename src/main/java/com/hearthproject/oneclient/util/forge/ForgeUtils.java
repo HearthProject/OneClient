@@ -32,33 +32,41 @@ public class ForgeUtils {
 		return null;
 	}
 
+	public static int count = 0;
+
 	public static List<File> resolveForgeLibrarys(String forgeVer) throws IOException {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
 		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
-		int i = 0;
-		for (ForgeVersionProfile.Library library : forgeVersionProfile.libraries) {
-			if(InstallingController.controller != null){
-				InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
-				InstallingController.controller.setProgress(i++, forgeVersionProfile.libraries.size());
-			}
-			if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
+		count = 0;
+		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
+			try {
+				if (InstallingController.controller != null) {
+					InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
+					InstallingController.controller.setProgress(count++, forgeVersionProfile.libraries.size());
+				}
+				if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
+					librarys.add(library.getFile(libraries));
+					return;
+				}
+				OneClientLogging.log("Downloading " + library.name + " from " + library.getURL());
+				int response = MiscUtil.getResponseCode(new URL(library.getURL()));
+				if (response == 404) {
+					library.url = Constants.MAVEN_CENTRAL_BASE;
+				}
+				FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
+				if (!library.getFile(libraries).exists()) {
+					System.out.println("Error with " + library.name);
+				}
 				librarys.add(library.getFile(libraries));
-				continue;
+			} catch (Exception e) {
+				OneClientLogging.log(e);
 			}
-			OneClientLogging.log("Downloading " + library.name + " from " + library.getURL());
-			int response = MiscUtil.getResponseCode(new URL(library.getURL()));
-			if (response == 404) {
-				library.url = Constants.MAVEN_CENTRAL_BASE;
-			}
-			FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
-			if(!library.getFile(libraries).exists()){
-				System.out.println("Error with " + library.name);
-			}
-			librarys.add(library.getFile(libraries));
-		}
+
+		});
+
 		return librarys;
 	}
 
