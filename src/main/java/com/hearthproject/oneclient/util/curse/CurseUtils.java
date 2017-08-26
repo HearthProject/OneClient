@@ -1,7 +1,6 @@
 package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Maps;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,7 +38,6 @@ public class CurseUtils {
         if (Integer.parseInt(realPage) != page) {
             return null;
         }
-        OneClientLogging.log(d.baseUri());
         Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
         return packs.stream().map(CursePack::new).collect(Collectors.toList());
     }
@@ -88,8 +86,8 @@ public class CurseUtils {
 
         @Override
         public String toString() {
-            if (value.isEmpty())
-                return "";
+	        if (value == null || value.isEmpty())
+		        return "";
             return String.format("%s%s", key, value);
         }
 
