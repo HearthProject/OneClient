@@ -56,7 +56,8 @@ public class CursePacksPane extends ContentPane {
     @Override
     protected void onStart() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(cooldownTask, 1000, 1000);
+	    timer.purge();
+	    timer.scheduleAtFixedRate(cooldownTask, 1000, 1000);
         versions = FXCollections.observableArrayList(CurseUtils.getVersions());
         System.out.println(versions);
         filterVersion.setItems(versions);
