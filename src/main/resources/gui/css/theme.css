@@ -5,6 +5,7 @@
     -light-background-color: #EFEFEF;
     -dark-background-color: #494949;
     -fill-color: #343434;
+    -fill-color-alt: #3F3F3F;
     -dark-color: #282828;
     -grey-fill-color: #8E95A6;
     -hover-color: #686868;
@@ -441,11 +442,11 @@
 }
 
 .list-view .list-cell:even {
-    -fx-background-color: -dark-background-color;
+    -fx-background-color: -fill-color;
     -fx-text-fill: -text-color;
 }
 
 .list-view .list-cell:odd {
-    -fx-background-color: -dark-color;
+    -fx-background-color: -fill-color-alt;
     -fx-text-fill: -text-color;
 }
