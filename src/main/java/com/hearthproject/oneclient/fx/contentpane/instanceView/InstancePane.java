@@ -33,6 +33,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonOpenFolder;
 	public Button buttonEditVersion;
 	public Button buttonGetCurseMods;
+	public Button buttonBack;
 	public ListView modList;
 
 	public MenuItem menuOpenFolder;
@@ -106,6 +107,8 @@ public class InstancePane extends ContentPane {
 		menuBackup.setDisable(true);
 		menuViewBackups.setDisable(true);
 		buttonGetCurseMods.setDisable(true);
+
+		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
 
 	}
 
