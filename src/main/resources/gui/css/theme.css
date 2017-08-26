@@ -441,10 +441,11 @@
 }
 
 .list-view .list-cell:even {
--fx-background-color: -dark-background-color;
--fx-text-fill: -text-color;
+    -fx-background-color: -dark-background-color;
+    -fx-text-fill: -text-color;
 }
+
 .list-view .list-cell:odd {
--fx-background-color: -dark-color;
--fx-text-fill: -text-color;
+    -fx-background-color: -dark-color;
+    -fx-text-fill: -text-color;
 }
