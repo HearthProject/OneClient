@@ -174,6 +174,7 @@ public class MinecraftUtil {
 
 				StringBuilder cpb = new StringBuilder();
 				String mainClass = versionData.mainClass;
+				String providedArugments = versionData.minecraftArguments;
 				Optional<String> tweakClass = Optional.empty();
 
 				if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
@@ -183,6 +184,7 @@ public class MinecraftUtil {
 					}
 					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(libraries, instance.minecraftVersion + "-" + instance.modLoaderVersion);
 					mainClass = forgeVersionProfile.mainClass;
+					providedArugments = forgeVersionProfile.minecraftArguments;
 
 					List argList = Arrays.asList(forgeVersionProfile.minecraftArguments.split(" "));
 					OneClientLogging.log("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
@@ -218,16 +220,22 @@ public class MinecraftUtil {
 
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 
-				arguments.add("--accessToken="); arguments.add(auth.getAuthenticatedToken());
-				arguments.add("--uuid="); arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
-				arguments.add("--username="); arguments.add(auth.getSelectedProfile().getName());
-				arguments.add("--userType="); arguments.add(auth.getUserType().getName());
-				arguments.add("--userProperties="); arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+				arguments.add("--accessToken"); arguments.add(auth.getAuthenticatedToken());
+				arguments.add("--uuid"); arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
+				arguments.add("--username"); arguments.add(auth.getSelectedProfile().getName());
+				arguments.add("--userType"); arguments.add(auth.getUserType().getName());
+				if(providedArugments.contains("${user_properties}")){
+					arguments.add("--userProperties"); arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+				}
 
-				arguments.add("--version="); arguments.add(instance.minecraftVersion);
-				arguments.add("--assetsDir="); arguments.add(assets.toString());
-				arguments.add("--assetIndex="); arguments.add(versionData.assetIndex.id);
-				arguments.add("--gameDir="); arguments.add(new File(Constants.INSTANCEDIR, instance.name).toString());
+				if(providedArugments.contains("${user_properties_map}")){
+					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+				}
+
+				arguments.add("--version"); arguments.add(instance.minecraftVersion);
+				arguments.add("--assetsDir"); arguments.add(assets.toString());
+				arguments.add("--assetIndex"); arguments.add(versionData.assetIndex.id);
+				arguments.add("--gameDir"); arguments.add(new File(Constants.INSTANCEDIR, instance.name).toString());
 
 
 
