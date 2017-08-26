@@ -25,77 +25,76 @@ import java.nio.file.Paths;
 
 public class CurseTile extends StackPane {
 
-    public final CursePack pack;
-    public ImageView imageView;
-    public HBox nodeBox;
-    public Hyperlink labelTitle;
-    public Button buttonInstall;
+	public final CursePack pack;
+	public ImageView imageView;
+	public HBox nodeBox;
+	public Hyperlink labelTitle;
+	public Button buttonInstall;
 
+	public CurseTile(CursePacksPane parent, CursePack pack) {
+		this.pack = pack;
+		imageView = new ImageView();
+		labelTitle = new Hyperlink(pack.getTitle());
+		labelTitle.setTextFill(Color.web("#FFFFFF"));
+		labelTitle.setFont(javafx.scene.text.Font.font(labelTitle.getFont().getFamily(), FontWeight.BOLD, labelTitle.getFont().getSize()));
+		labelTitle.setOnAction(event -> OperatingSystem.browseURI(pack.getUrl()));
+		buttonInstall = new Button("Install");
+		final File imageFile = getImageFile();
+		buttonInstall.setOnAction(event -> parent.install(instance -> {
+			new CursePackInstaller().downloadFromURL(pack.getUrl(), "latest", instance);
+			if (imageFile != null)
+				Files.copy(imageFile.toPath(), new File(instance.getDirectory(), "icon.png").toPath());
+		}));
+		Label stats = new Label(pack.getStats());
+		stats.setTextFill(Color.web("#FFFFFF"));
+		Label date = new Label(pack.getCreatedDate());
+		date.setTextFill(Color.web("#FFFFFF"));
+		Label version = new Label(pack.getVersion());
+		version.setTextFill(Color.web("#FFFFFF"));
 
-    public CurseTile(CursePacksPane parent, CursePack pack) {
-        this.pack = pack;
-        imageView = new ImageView();
-        labelTitle = new Hyperlink(pack.getTitle());
-        labelTitle.setTextFill(Color.web("#FFFFFF"));
-        labelTitle.setFont(javafx.scene.text.Font.font(labelTitle.getFont().getFamily(), FontWeight.BOLD, labelTitle.getFont().getSize()));
-        labelTitle.setOnAction(event -> OperatingSystem.browseURI(pack.getUrl()));
-        buttonInstall = new Button("Install");
-        final File imageFile = getImageFile();
-        buttonInstall.setOnAction(event -> parent.install(instance -> {
-            new CursePackInstaller().downloadFromURL(pack.getUrl(), "latest", instance);
-            if (imageFile != null)
-                Files.copy(imageFile.toPath(), new File(instance.getDirectory(), "icon.png").toPath());
-        }));
-        Label stats = new Label(pack.getStats());
-        stats.setTextFill(Color.web("#FFFFFF"));
-        Label date = new Label(pack.getCreatedDate());
-        date.setTextFill(Color.web("#FFFFFF"));
-        Label version = new Label(pack.getVersion());
-        version.setTextFill(Color.web("#FFFFFF"));
+		VBox vBox = new VBox(labelTitle, stats, date, version);
+		nodeBox = new HBox(buttonInstall, imageView, vBox);
+		nodeBox.setAlignment(Pos.CENTER_LEFT);
+		nodeBox.setSpacing(6);
+		this.getChildren().addAll(nodeBox);
+		this.setAlignment(Pos.CENTER_LEFT);
+	}
 
-        VBox vBox = new VBox(labelTitle, stats, date, version);
-        nodeBox = new HBox(buttonInstall, imageView, vBox);
-        nodeBox.setAlignment(Pos.CENTER_LEFT);
-        nodeBox.setSpacing(6);
-        this.getChildren().addAll(nodeBox);
-        this.setAlignment(Pos.CENTER_LEFT);
-    }
-
-    public File getImageFile() {
-        File imageFile = null;
-        String icon = pack.getIcon();
-        if (icon != null && !icon.isEmpty()) {
-            Image image = null;
-            if (CurseUtils.IMAGE_CACHE.containsKey(pack.getTitle()))
-                image = CurseUtils.IMAGE_CACHE.get(pack.getTitle());
-            if (image == null) {
-                File dir = new File(Constants.TEMPDIR, "icons");
-                if (!dir.exists())
-                    dir.mkdir();
-                imageFile = new File(dir, pack.getTitle() + ".jpeg");
-                if (!imageFile.exists()) {
-                    try (InputStream in = new URL(pack.getIcon()).openStream()) {
-                        Files.copy(in, Paths.get(dir.toString(), pack.getTitle() + ".jpeg"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (imageFile.exists()) {
-                    try {
-                        image = new Image(new FileInputStream(imageFile));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            if (image != null) {
-                CurseUtils.IMAGE_CACHE.put(pack.getTitle(), image);
-                imageView.setImage(image);
-            }
-            imageView.setFitHeight(75);
-            imageView.setFitWidth(75);
-        }
-        return imageFile;
-    }
+	public File getImageFile() {
+		File imageFile = null;
+		String icon = pack.getIcon();
+		if (icon != null && !icon.isEmpty()) {
+			Image image = null;
+			if (CurseUtils.IMAGE_CACHE.containsKey(pack.getTitle()))
+				image = CurseUtils.IMAGE_CACHE.get(pack.getTitle());
+			if (image == null) {
+				File dir = new File(Constants.TEMPDIR, "icons");
+				if (!dir.exists())
+					dir.mkdir();
+				imageFile = new File(dir, pack.getTitle() + ".jpeg");
+				if (!imageFile.exists()) {
+					try (InputStream in = new URL(pack.getIcon()).openStream()) {
+						Files.copy(in, Paths.get(dir.toString(), pack.getTitle() + ".jpeg"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if (imageFile.exists()) {
+					try {
+						image = new Image(new FileInputStream(imageFile));
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if (image != null) {
+				CurseUtils.IMAGE_CACHE.put(pack.getTitle(), image);
+				imageView.setImage(image);
+			}
+			imageView.setFitHeight(75);
+			imageView.setFitWidth(75);
+		}
+		return imageFile;
+	}
 
 }

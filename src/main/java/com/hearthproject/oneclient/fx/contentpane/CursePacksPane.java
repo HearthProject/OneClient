@@ -23,7 +23,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
@@ -35,7 +34,6 @@ public class CursePacksPane extends ContentPane {
 
     public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
     public ObservableList<String> versions;
-
 
     public ListView<CurseTile> listTiles;
     public ComboBox<String> filterVersion;
@@ -58,7 +56,7 @@ public class CursePacksPane extends ContentPane {
     @Override
     protected void onStart() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(cooldownTask, 1000,1000);
+        timer.scheduleAtFixedRate(cooldownTask, 1000, 1000);
         versions = FXCollections.observableArrayList(CurseUtils.getVersions());
         System.out.println(versions);
         filterVersion.setItems(versions);
@@ -107,9 +105,8 @@ public class CursePacksPane extends ContentPane {
             });
         }
         //TODO implement searching
-//        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
+        //        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
     }
-
 
     public void loadPacks(int page, String version) {
 
@@ -164,7 +161,6 @@ public class CursePacksPane extends ContentPane {
     public void refresh() {
 
     }
-
 
     public enum ViewType {
         FILTER,

@@ -46,7 +46,7 @@ public class SettingsPane extends ContentPane {
 				OneClientLogging.hideLogWindow();
 			}
 		});
-		if(OperatingSystem.getOSTotalMemory() != 0){
+		if (OperatingSystem.getOSTotalMemory() != 0) {
 			memorySlider.setMax(OperatingSystem.getOSTotalMemory());
 		}
 		memorySlider.setValue(SettingsUtil.settings.minecraftMemory);

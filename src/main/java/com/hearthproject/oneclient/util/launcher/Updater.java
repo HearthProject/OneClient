@@ -62,7 +62,7 @@ public class Updater {
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		Thread.sleep(3000); //We wait a few seconds to allow the old pack to close so we can rename it without causing an exception
+		Thread.sleep(3000); //We wait a few seconds to allow the old instance to close so we can rename it without causing an exception
 		File oldJar = new File(args[0]);
 		File newJar = Constants.TEMP_UPDATE;
 		FileUtils.moveFile(oldJar, new File(oldJar.getAbsolutePath() + ".old")); //Backup the old jar so if things go wrong it can be manually reverted

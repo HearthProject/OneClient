@@ -7,7 +7,7 @@ public class ModListCell extends ListCell<String> {
 	@Override
 	protected void updateItem(String item, boolean empty) {
 		super.updateItem(item, empty);
-		if(item != null && item.endsWith(".disabled")){
+		if (item != null && item.endsWith(".disabled")) {
 			this.setTextFill(Color.RED);
 		} else {
 			this.setTextFill(Color.BLACK);

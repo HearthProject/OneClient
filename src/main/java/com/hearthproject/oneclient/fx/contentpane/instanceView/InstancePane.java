@@ -112,7 +112,7 @@ public class InstancePane extends ContentPane {
 
 	}
 
-	public void updateList(){
+	public void updateList() {
 		modList.getItems().clear();
 		File modsDir = new File(instance.getDirectory(), "mods");
 		if (modsDir.exists()) {
@@ -129,8 +129,8 @@ public class InstancePane extends ContentPane {
 				try {
 					String item = cell.getItem();
 					File mod = new File(modsDir, item);
-					if(mod.exists()){
-						if(item.endsWith(".disabled")){
+					if (mod.exists()) {
+						if (item.endsWith(".disabled")) {
 							FileUtils.moveFile(mod, new File(mod.getParent(), mod.getName().substring(0, mod.getName().length() - ".disabled".length())));
 						} else {
 							FileUtils.moveFile(mod, new File(mod.getParent(), mod.getName() + ".disabled"));
@@ -139,7 +139,7 @@ public class InstancePane extends ContentPane {
 					} else {
 						disableMod.setDisable(true);
 					}
-				} catch (IOException e){
+				} catch (IOException e) {
 					OneClientLogging.log(e);
 				}
 			});

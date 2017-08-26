@@ -90,6 +90,4 @@ public class MinecraftAuthController {
 		return new File(Constants.getRunDir(), "authstore.dat");
 	}
 
-
-
 }

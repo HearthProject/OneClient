@@ -11,9 +11,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
-
 
 public class CurseUtils {
     public static final Map<String, Image> IMAGE_CACHE = Maps.newHashMap();
@@ -57,14 +55,14 @@ public class CurseUtils {
     public static Document getHtml(String url, String path, Filter... filters) {
         try {
             String filter = "";
-            if(filters != null && filters.length > 0) {
+            if (filters != null && filters.length > 0) {
                 StringBuilder builder = new StringBuilder();
-                builder.append("?"+filters[0].toString());
-                if(filters.length > 1) {
+                builder.append("?" + filters[0].toString());
+                if (filters.length > 1) {
                     for (int i = 1; i < filters.length; i++) {
                         String f = filters[i].toString();
-                        if(!f.startsWith("#"))
-                            builder.append("&"+f);
+                        if (!f.startsWith("#"))
+                            builder.append("&" + f);
                         else
                             builder.append(f);
                     }
@@ -82,7 +80,6 @@ public class CurseUtils {
 
     public static class Filter {
         private String key, value;
-
 
         public Filter(String key, String value) {
             this.key = key;

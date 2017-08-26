@@ -10,22 +10,22 @@
             <children>
                 <HBox prefHeight="40.0" prefWidth="200.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" />
+                        <Insets bottom="5.0"/>
                     </VBox.margin>
-               <children>
-                  <!--<TextField alignment="CENTER" HBox.hgrow="ALWAYS" />-->
-                  <ComboBox fx:id="filterVersion" prefWidth="150.0" />
-               </children>
+                    <children>
+                        <!--<TextField alignment="CENTER" HBox.hgrow="ALWAYS" />-->
+                        <ComboBox fx:id="filterVersion" prefWidth="150.0"/>
+                    </children>
                 </HBox>
                 <HBox fx:id="hBox" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
                     <children>
-                          <ListView fx:id="listTiles" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                        <ListView fx:id="listTiles" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </children>
         </VBox>
     </children>
     <padding>
-        <Insets bottom="5.0" />
+        <Insets bottom="5.0"/>
     </padding>
 </AnchorPane>
