@@ -116,12 +116,14 @@ public class CursePacksPane extends ContentPane {
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 					Main.mainController.currentContent.refresh();
 				}
-
+				
+				InstallingController.close();
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setTitle("Pack has been installed!");
 				alert.setHeaderText(null);
 				alert.setContentText(instance.name + " has been downloaded and installed! You can find it in the instance section.");
 				alert.showAndWait();
+				InstallingController.close();
 			});
 
 		}).start();
