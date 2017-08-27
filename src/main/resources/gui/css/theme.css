@@ -440,6 +440,9 @@
     -fx-background-color: -text-color;
 }
 
+.list-view {
+    -fx-background-color: -dark-background-color;
+}
 .list-view .list-cell:even {
     -fx-background-color: -dark-background-color;
     -fx-text-fill: -text-color;
