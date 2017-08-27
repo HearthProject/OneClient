@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -42,12 +43,13 @@ public class CursePacksPane extends ContentPane {
 	public Button buttonSearch;
 	public TextField textSearch;
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
+
 	public CursePacksPane() {
 		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
 	private int page = 1, lastPage = -1;
-	private ViewType type = ViewType.FILTER;
+	private volatile ViewType type = ViewType.FILTER;
 
 	private static int pageDelay;
 	private static Timer timer = new Timer();
@@ -119,12 +121,11 @@ public class CursePacksPane extends ContentPane {
 			page = 1;
 			loadPacks(page, filterVersion.getValue());
 		});
-		buttonSearch.setOnAction(event -> {
-			type = ViewType.SEARCH;
-			tiles.clear();
-			search();
+		buttonSearch.setOnAction(event -> search());
+		textSearch.setOnKeyPressed(keyEvent -> {
+			if (keyEvent.getCode() == KeyCode.ENTER)
+				search();
 		});
-
 	}
 
 	public void loadPacks(int page, String version) {
@@ -155,7 +156,15 @@ public class CursePacksPane extends ContentPane {
 	}
 
 	public void search() {
-		tiles.addAll(CurseUtils.searchCurse(textSearch.getText()).stream().map(p -> new CurseTile(this, p)).collect(Collectors.toList()));
+		new Thread(() -> {
+			type = ViewType.SEARCH;
+
+			List<CursePack> packs = CurseUtils.searchCurse(textSearch.getText());
+			Platform.runLater(() -> {
+				tiles.clear();
+				tiles.addAll(packs.stream().map(p -> new CurseTile(this, p)).collect(Collectors.toList()));
+			});
+		}).start();
 	}
 
 	public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
