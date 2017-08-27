@@ -1,6 +1,8 @@
 package com.hearthproject.oneclient.util.curse;
 
-import com.google.common.collect.Maps;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import javafx.scene.image.Image;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,11 +11,11 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class CurseUtils {
-	public static final Map<String, Image> IMAGE_CACHE = Maps.newHashMap();
+	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 	public static final String CURSE_BASE = "https://mods.curse.com";
 	public static final String CURSEFORGE_BASE = "https://minecraft.curseforge.com";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
@@ -34,9 +36,13 @@ public class CurseUtils {
 
 	public static List<CursePack> getPacks(int page, String version) {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), page(Integer.toString(page)));
-		String realPage = d.select(".b-pagination-item").select(".s-active").first().text();
-		if (Integer.parseInt(realPage) != page) {
+		Element e = d.select(".b-pagination-item").select(".s-active").first();
+		String realPage = e != null ? e.text() : null;
+		if (realPage == null) {
 			return null;
+		}
+		if (Integer.parseInt(realPage) != page) {
+			return Lists.newArrayList();
 		}
 		Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
 		return packs.stream().map(CursePack::new).collect(Collectors.toList());
@@ -44,7 +50,7 @@ public class CurseUtils {
 
 	public static List<CursePack> searchCurse(String query) {
 		String formatQuery = query.replace(" ", "+");
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("?search=", formatQuery), new Filter("#t1:", "modpacks"));
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("game-slug", "minecraft"), new Filter("search=", formatQuery), new Filter("#t1:", "modpacks"));
 		Elements results = d.select("#tab-modpacks .minecraft");
 		return results.stream().map(CursePack.CurseSearch::new).collect(Collectors.toList());
 

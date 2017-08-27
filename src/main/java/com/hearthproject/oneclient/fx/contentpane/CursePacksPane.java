@@ -12,21 +12,24 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 public class CursePacksPane extends ContentPane {
 
@@ -37,13 +40,16 @@ public class CursePacksPane extends ContentPane {
 
 	public ListView<CurseTile> listTiles;
 	public ComboBox<String> filterVersion;
+	public Button buttonSearch;
+	public TextField textSearch;
+	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
 
 	public CursePacksPane() {
 		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
 	private int page = 1, lastPage = -1;
-	private ViewType type = ViewType.FILTER;
+	private volatile ViewType type = ViewType.FILTER;
 
 	private static int pageDelay;
 	private static Timer timer = new Timer();
@@ -57,6 +63,8 @@ public class CursePacksPane extends ContentPane {
 			}
 		}, 1000, 1000);
 	}
+
+	private static volatile BooleanProperty pageLoading = new SimpleBooleanProperty();
 
 	@Override
 	protected void onStart() {
@@ -78,6 +86,8 @@ public class CursePacksPane extends ContentPane {
 				return s.replace(" ", "+");
 			}
 		});
+		pageLoading.addListener((observableValue, oldValue, newValue) -> {
+		});
 		listTiles.setItems(tiles);
 		AnchorPane box = (AnchorPane) getNode();
 		VBox.setVgrow(box, Priority.ALWAYS);
@@ -87,12 +97,11 @@ public class CursePacksPane extends ContentPane {
 		listTiles.prefWidthProperty().bind(box.widthProperty());
 		listTiles.prefHeightProperty().bind(box.heightProperty());
 
+		placeHolderMissing.setTextFill(Color.web("#FFFFFF"));
+		placeHolderLoading.setTextFill(Color.web("#FFFFFF"));
+		listTiles.setPlaceholder(placeHolderLoading);
+
 		if (type == ViewType.FILTER) {
-			filterVersion.valueProperty().addListener((observableValue, s, t1) -> {
-				tiles.clear();
-				page = 1;
-				loadPacks(page, filterVersion.getValue());
-			});
 			loadPacks(page, filterVersion.getValue());
 			listTiles.setOnScroll(event -> {
 				if (pageDelay > 0)
@@ -102,26 +111,60 @@ public class CursePacksPane extends ContentPane {
 					page++;
 					loadPacks(page, filterVersion.getValue());
 					listTiles.scrollTo(old);
-					pageDelay = 5;
+					pageDelay = 3;
 				}
 			});
 		}
-		//TODO implement searching
-		//        tiles.addAll(CurseUtils.searchCurse("All The Mods").stream().map( p -> new CurseTile(this,p)).collect(Collectors.toList()));
+		filterVersion.valueProperty().addListener((observableValue, s, t1) -> {
+			type = ViewType.FILTER;
+			tiles.clear();
+			page = 1;
+			loadPacks(page, filterVersion.getValue());
+		});
+		buttonSearch.setOnAction(event -> search());
+		textSearch.setOnKeyPressed(keyEvent -> {
+			if (keyEvent.getCode() == KeyCode.ENTER)
+				search();
+		});
 	}
 
 	public void loadPacks(int page, String version) {
+		new Thread(() -> {
+			try {
+				if (pageLoading.get())
+					return;
+				pageLoading.set(true);
+				List<CursePack> packs = CurseUtils.getPacks(page, version);
+				if (packs != null) {
+					if (!packs.isEmpty()) {
+						OneClientLogging.log("Loading page " + page);
+						while (!packs.isEmpty()) {
+							CursePack pack = packs.remove(0);
+							Platform.runLater(() -> tiles.add(new CurseTile(this, pack)));
+						}
+					} else {
+						lastPage = page;
+					}
+				} else {
+					Platform.runLater(() -> listTiles.setPlaceholder(placeHolderMissing));
+				}
+				pageLoading.set(false);
+			} catch (Exception e) {
+				OneClientLogging.log(e);
+			}
+		}).start();
+	}
 
-		List<CursePack> packs = CurseUtils.getPacks(page, version);
-		if (packs == null) {
-			lastPage = page;
-			return;
-		}
-		OneClientLogging.log("Loading page " + page);
-		while (!packs.isEmpty()) {
-			CursePack pack = packs.remove(0);
-			tiles.add(new CurseTile(this, pack));
-		}
+	public void search() {
+		new Thread(() -> {
+			type = ViewType.SEARCH;
+
+			List<CursePack> packs = CurseUtils.searchCurse(textSearch.getText());
+			Platform.runLater(() -> {
+				tiles.clear();
+				tiles.addAll(packs.stream().map(p -> new CurseTile(this, p)).collect(Collectors.toList()));
+			});
+		}).start();
 	}
 
 	public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
