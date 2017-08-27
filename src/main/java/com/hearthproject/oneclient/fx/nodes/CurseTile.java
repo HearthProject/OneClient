@@ -55,7 +55,6 @@ public class CurseTile extends StackPane {
 		title.setTextFill(Color.web("#FFFFFF"));
 		title.setFont(javafx.scene.text.Font.font(title.getFont().getFamily(), FontWeight.BOLD, title.getFont().getSize()));
 		title.setOnAction(event -> OperatingSystem.browseURI(pack.getUrl()));
-		buttonInstall = new Button("Install");
 		final File imageFile = getImageFile();
 		buttonInstall.setOnAction(event -> parent.install(instance -> {
 			new CursePackInstaller().downloadFromURL(pack.getUrl(), "latest", instance);
