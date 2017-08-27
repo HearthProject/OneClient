@@ -83,15 +83,15 @@ public class CurseTile extends StackPane {
 		File imageFile = null;
 		String icon = pack.getIcon();
 		if (icon != null && !icon.isEmpty()) {
-			Image image = CurseUtils.IMAGE_CACHE.getIfPresent(pack.getTitle());
+			Image image = CurseUtils.IMAGE_CACHE.getIfPresent(pack.getTitle().replaceAll(":", ""));
 			if (image == null) {
 				File dir = new File(Constants.TEMPDIR, "icons");
 				if (!dir.exists())
 					dir.mkdir();
-				imageFile = new File(dir, pack.getTitle() + ".jpeg");
+				imageFile = new File(dir, pack.getTitle().replaceAll(":", "") + ".jpeg");
 				if (!imageFile.exists()) {
 					try (InputStream in = new URL(pack.getIcon()).openStream()) {
-						Files.copy(in, Paths.get(dir.toString(), pack.getTitle() + ".jpeg"));
+						Files.copy(in, Paths.get(dir.toString(), pack.getTitle().replaceAll(":", "") + ".jpeg"));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
