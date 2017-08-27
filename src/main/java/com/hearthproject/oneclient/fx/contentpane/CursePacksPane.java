@@ -137,7 +137,7 @@ public class CursePacksPane extends ContentPane {
 				List<CursePack> packs = CurseUtils.getPacks(page, version);
 				if (packs != null) {
 					if (!packs.isEmpty()) {
-						OneClientLogging.log("Loading page " + page);
+						OneClientLogging.logger.info("Loading page " + page);
 						while (!packs.isEmpty()) {
 							CursePack pack = packs.remove(0);
 							Platform.runLater(() -> tiles.add(new CurseTile(this, pack)));
@@ -150,7 +150,7 @@ public class CursePacksPane extends ContentPane {
 				}
 				pageLoading.set(false);
 			} catch (Exception e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		}).start();
 	}
@@ -184,7 +184,7 @@ public class CursePacksPane extends ContentPane {
 				downloadFunction.accept(instance);
 				MinecraftUtil.installMinecraft(instance);
 			} catch (Throwable throwable) {
-				OneClientLogging.log(throwable);
+				OneClientLogging.logger.error(throwable);
 			}
 
 			Platform.runLater(() -> {

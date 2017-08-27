@@ -21,7 +21,7 @@ public class MinecraftAuth {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/mc_auth.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.log("An error has occurred loading mc_auth.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading mc_auth.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -44,7 +44,7 @@ public class MinecraftAuth {
 			controller.buttonLogin.setDefaultButton(true);
 			controller.load();
 		} catch (Exception e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 

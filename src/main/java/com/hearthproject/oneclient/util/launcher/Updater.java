@@ -38,7 +38,7 @@ public class Updater {
 			LauncherUpdate launcherUpdate = JsonUtil.GSON.fromJson(json, LauncherUpdate.class);
 			FileUtils.copyURLToFile(new URL(launcherUpdate.downloadUrl), Constants.TEMP_UPDATE);
 			File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-			OneClientLogging.log("Updating " + currentJar.getAbsolutePath() + "@" + Constants.getVersion() + " with " + Constants.TEMP_UPDATE + "@" + launcherUpdate.latestVersion);
+			OneClientLogging.logger.error("Updating " + currentJar.getAbsolutePath() + "@" + Constants.getVersion() + " with " + Constants.TEMP_UPDATE + "@" + launcherUpdate.latestVersion);
 			List<String> args = new ArrayList<>();
 			args.add("java");
 			args.add("-cp");
@@ -51,7 +51,7 @@ public class Updater {
 			processBuilder.start();
 			System.exit(0);
 		} catch (Exception e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 
 	}

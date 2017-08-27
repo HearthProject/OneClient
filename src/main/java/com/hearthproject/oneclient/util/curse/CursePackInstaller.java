@@ -167,7 +167,7 @@ public class CursePackInstaller {
 			try {
 				downloadFile(f, modsDir, left, total);
 			} catch (IOException | URISyntaxException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		});
 
@@ -270,8 +270,10 @@ public class CursePackInstaller {
 		FileUtils.copyURLToFile(url, f);
 	}
 
+	//Find alternative to this
+	@Deprecated
 	public void log(String s) {
-		OneClientLogging.log(s);
+		OneClientLogging.logger.info(s);
 		InstallingController.controller.setDetailText(s);
 	}
 

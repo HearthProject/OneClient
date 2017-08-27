@@ -30,7 +30,7 @@ public class ContentPanes {
 			}
 			return fxmlLoader.getController();
 		} catch (Exception e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 		return null;
 	}

@@ -108,11 +108,11 @@ public class OperatingSystem {
 			if (value != null) {
 				ram = Long.valueOf(value.toString()) / 1024 / 1024;
 			} else {
-				OneClientLogging.log(warning);
+				OneClientLogging.logger.warn(warning);
 				ram = 1024;
 			}
 		} catch (Exception e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 
 		return ram;

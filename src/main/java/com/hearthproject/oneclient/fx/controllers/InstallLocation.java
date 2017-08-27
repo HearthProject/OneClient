@@ -29,7 +29,7 @@ public class InstallLocation {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/install_location.fxml");
 		if (fxmlUrl == null) {
-			OneClientLogging.log("An error has occurred loading the fxml!");
+			OneClientLogging.logger.error("An error has occurred loading the fxml!");
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setLocation(fxmlUrl);

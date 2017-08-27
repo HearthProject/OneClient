@@ -1,8 +1,6 @@
 package com.hearthproject.oneclient.util.logging;
 
-import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,60 +11,37 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class OneClientLogging {
 
 	public static Stage stage;
 	public static LogController logController;
 
-	public static void log(String string) {
-		String output = getPrefix() + string;
-		System.out.println(output);
-		if (SplashScreen.loaded) {
-			Platform.runLater(() -> logController.logArea.appendText(output + "\n"));
-		}
-		try {
-			FileUtils.writeStringToFile(Constants.LOGFILE, output + "\n", StandardCharsets.UTF_8, true);
-		} catch (IOException e) {
-			OneClientLogging.log(e);
-		}
-	}
+	public static Logger logger = LogManager.getLogger("OneClientLogging");
 
-	public static void log(Throwable throwable) {
-		StringWriter errors = new StringWriter();
-		throwable.printStackTrace(new PrintWriter(errors));
-		log(errors.toString());
+	public static void init() {
+		LoggerContext context = (LoggerContext) LogManager.getContext(false);
+		context.reconfigure();
 	}
 
 	public static void logUserError(Throwable throwable, String title) {
 		StringWriter errors = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(errors));
-		log(errors.toString());
+		logger.error(errors.toString());
 		Platform.runLater(() -> {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Error!");
 			alert.setHeaderText(title);
 			alert.setContentText(throwable.getLocalizedMessage());
-
 			alert.showAndWait();
 		});
-
-	}
-
-	private static String getPrefix() {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss.SSS");
-		Date date = new Date();
-		return "[" + dateFormat.format(date) + "] ";
 	}
 
 	public static void setupLogController() {
@@ -74,7 +49,7 @@ public class OneClientLogging {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/log.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.log("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -92,8 +67,9 @@ public class OneClientLogging {
 			stage.setScene(scene);
 			logController = fxmlLoader.getController();
 			logController.setStage(stage);
+			TextAreaAppender.setTextArea(logController.logArea);
 		} catch (Exception e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 

@@ -46,9 +46,9 @@ public class Main extends Application {
 
 	public void startOneClient() {
 		SettingsUtil.init();
-		OneClientLogging.log("Starting OneClient version: " + Constants.getVersion());
+		OneClientLogging.logger.info("Starting OneClient version: " + Constants.getVersion());
 		if (Constants.CUSTOM_RUN) {
-			OneClientLogging.log("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
+			OneClientLogging.logger.info("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
 		}
 		OneClientTracking.sendRequest("launch/" + Constants.getVersion());
 		Platform.runLater(() -> {
@@ -58,7 +58,7 @@ public class Main extends Application {
 			try {
 				SplashScreen.show();
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 			for (String arg : args) {
 				if (arg.equals("-updateSuccess")) {
@@ -92,21 +92,21 @@ public class Main extends Application {
 							}
 						}
 					} catch (Exception e) {
-						OneClientLogging.log(e);
+						OneClientLogging.logger.error(e);
 					}
 				});
 			} catch (Exception e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		}).start();
 	}
 
 	public void startLauncher() throws Exception {
-		OneClientLogging.log("Starting One Client");
+		OneClientLogging.logger.info("Starting One Client");
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/main.fxml");
 		if (fxmlUrl == null) {
-			OneClientLogging.log("An error has occurred loading main.fxml!");
+			OneClientLogging.logger.error("An error has occurred loading main.fxml!");
 			return;
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -125,7 +125,7 @@ public class Main extends Application {
 		stage.show();
 		stage.setOnCloseRequest(event -> {
 			OneClientLogging.stage.close();
-			OneClientLogging.log("Goodbye");
+			OneClientLogging.logger.info("Goodbye");
 			System.exit(0);
 		});
 		mainController = fxmlLoader.getController();
@@ -136,13 +136,13 @@ public class Main extends Application {
 	}
 
 	public void loadData() throws Exception {
-		OneClientLogging.log("Loading instances");
+		OneClientLogging.logger.info("Loading instances");
 		InstanceManager.load();
-		OneClientLogging.log("Loading minecraft versions");
+		OneClientLogging.logger.info("Loading minecraft versions");
 		MinecraftUtil.loadGameVersions();
-		OneClientLogging.log("Loading forge versions");
+		OneClientLogging.logger.info("Loading forge versions");
 		ForgeUtils.loadForgeVersions();
-		OneClientLogging.log("Done!");
+		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}
 }

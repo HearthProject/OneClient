@@ -72,7 +72,7 @@ public class InstancePane extends ContentPane {
 				packIcon.setFitWidth(150);
 				packIcon.setFitHeight(150);
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		}
 		updateList();
@@ -96,7 +96,7 @@ public class InstancePane extends ContentPane {
 					InstanceManager.load();
 					ContentPanes.INSTANCES_PANE.refresh();
 				} catch (IOException e) {
-					OneClientLogging.log(e);
+					OneClientLogging.logger.error(e);
 				}
 			}
 		});
@@ -140,7 +140,7 @@ public class InstancePane extends ContentPane {
 						disableMod.setDisable(true);
 					}
 				} catch (IOException e) {
-					OneClientLogging.log(e);
+					OneClientLogging.logger.error(e);
 				}
 			});
 			MenuItem deleteMod = new MenuItem("Delete Mod");

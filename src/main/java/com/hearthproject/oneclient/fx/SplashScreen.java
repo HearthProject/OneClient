@@ -25,7 +25,7 @@ public class SplashScreen {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/splash.fxml");
 		if (fxmlUrl == null) {
-			OneClientLogging.log("An error has occurred loading newInstance.fxml!");
+			OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
 			return;
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();

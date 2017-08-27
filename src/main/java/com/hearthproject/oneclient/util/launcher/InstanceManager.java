@@ -57,7 +57,7 @@ public class InstanceManager {
 		try {
 			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 
@@ -80,14 +80,14 @@ public class InstanceManager {
 			try {
 				File jsonFile = new File(dir, "instance.json");
 				if (!jsonFile.exists()) {
-					OneClientLogging.log("ERROR: An invalid instance with the name " + dir.getName() + " is has been found, it will be ignored.");
+					OneClientLogging.logger.error("ERROR: An invalid instance with the name " + dir.getName() + " is has been found, it will be ignored.");
 					return;
 				}
 				String jsonStr = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
 				Instance instance = JsonUtil.GSON.fromJson(jsonStr, Instance.class);
 				instances.put(instance.name, instance);
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		});
 	}

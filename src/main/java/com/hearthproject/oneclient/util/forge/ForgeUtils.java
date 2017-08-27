@@ -39,7 +39,7 @@ public class ForgeUtils {
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
-		OneClientLogging.log("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
+		OneClientLogging.logger.info("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		count = 0;
 		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
 			try {
@@ -51,18 +51,18 @@ public class ForgeUtils {
 					librarys.add(library.getFile(libraries));
 					return;
 				}
-				OneClientLogging.log("Downloading " + library.name + " from " + library.getURL());
+				OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL());
 				int response = MiscUtil.getResponseCode(new URL(library.getURL()));
 				if (response == 404) {
 					library.url = Constants.MAVEN_CENTRAL_BASE;
 				}
 				FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
 				if (!library.getFile(libraries).exists()) {
-					System.out.println("Error with " + library.name);
+					OneClientLogging.logger.error("Error with " + library.name);
 				}
 				librarys.add(library.getFile(libraries));
 			} catch (Exception e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 
 		});
@@ -81,7 +81,7 @@ public class ForgeUtils {
 		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
 		String jarName = forgeVer + "/forge-" + forgeVer + "-universal.jar";
 		File forgeJar = new File(Constants.TEMPDIR, jarName);
-		OneClientLogging.log("Downloading forge jar to " + versionsDir.getAbsolutePath());
+		OneClientLogging.logger.info("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
 			jarName = forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
 		}

@@ -41,7 +41,7 @@ public class InstanceTile extends StackPane {
 				imageView.setImage(new Image(iconInputSteam));
 				iconInputSteam.close();
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 			imageView.setFitHeight(75);
 			imageView.setFitWidth(75);

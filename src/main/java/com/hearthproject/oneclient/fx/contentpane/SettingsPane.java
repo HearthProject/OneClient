@@ -38,7 +38,7 @@ public class SettingsPane extends ContentPane {
 			try {
 				SettingsUtil.saveSetting();
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 			if (SettingsUtil.settings.show_log_window) {
 				OneClientLogging.showLogWindow();

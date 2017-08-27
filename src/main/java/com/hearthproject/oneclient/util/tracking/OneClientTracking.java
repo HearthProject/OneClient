@@ -23,7 +23,7 @@ public class OneClientTracking {
 			PiwikRequest request = new PiwikRequest(siteId, new URL("http://oneclient.analytics.hearthproject.uk/action/" + action));
 			HttpResponse response = tracker.sendRequest(request);
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 

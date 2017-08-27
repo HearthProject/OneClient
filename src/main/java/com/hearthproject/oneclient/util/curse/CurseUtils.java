@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util.curse;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -74,10 +75,9 @@ public class CurseUtils {
 				filter = builder.toString();
 			}
 			String finalURL = url + path + filter;
-			System.out.println(finalURL);
 			return Jsoup.connect(finalURL).get();
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.logger.error(e);
 		}
 		return null;
 	}

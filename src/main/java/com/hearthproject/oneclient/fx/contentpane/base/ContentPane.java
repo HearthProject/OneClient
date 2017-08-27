@@ -44,7 +44,7 @@ public abstract class ContentPane {
 		try {
 			node = getFXMLLoader().load(getFXMLUrl().openStream());
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 

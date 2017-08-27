@@ -3,6 +3,7 @@ package com.hearthproject.oneclient;
 import com.hearthproject.oneclient.fx.controllers.InstallLocation;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
 import org.apache.commons.io.FileUtils;
 
@@ -53,6 +54,8 @@ public class Constants {
 			setUpDirs();
 			runnable.run();
 		}
+		System.setProperty("logFilename", LOGFILE.toString());
+		OneClientLogging.init();
 	}
 
 	public static void setUpDirs() {
