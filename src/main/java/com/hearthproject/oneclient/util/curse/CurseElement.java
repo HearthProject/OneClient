@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-public class CursePack {
+public class CurseElement {
 	private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
 	protected String title;
@@ -22,10 +22,10 @@ public class CursePack {
 
 	private Document cursePage;
 
-	public CursePack() {
+	public CurseElement() {
 	}
 
-	public CursePack(Element element) {
+	public CurseElement(Element element) {
 		this.title = element.select(".title a").text().trim().replaceAll("[^a-zA-Z0-9\\s]", "");
 
 		String url = CurseUtils.CURSE_BASE + element.select(".title a").attr("href");
@@ -53,6 +53,13 @@ public class CursePack {
 		this.created = executor.submit(() -> getCursePage.get().select(".updated").last().text());
 		this.version = executor.submit(() -> getCursePage.get().select(".version").text());
 		this.authors = executor.submit(() -> getCursePage.get().select(".authors li").stream().map(Element::text).collect(Collectors.toList()));
+	}
+
+	public String getID() {
+		String url = getUrl();
+		if (url.isEmpty())
+			return "";
+		return url.replaceAll("\\D", "");
 	}
 
 	public String getTitle() {
@@ -126,15 +133,6 @@ public class CursePack {
 		return "";
 	}
 
-	public static class CurseSearch extends CursePack {
-		public CurseSearch(Element element) {
-			super();
-			this.title = element.select("td > dl > dt > a").text();
-			String url = CurseUtils.CURSE_BASE + element.select("td > dl > dt > a").attr("href");
-			init(url);
-		}
-	}
-
 	public List<String> getAuthors() {
 		try {
 			return authors.get();
@@ -144,6 +142,15 @@ public class CursePack {
 			e.printStackTrace();
 		}
 		return Lists.newArrayList();
+	}
+
+	public static class CurseSearch extends CurseElement {
+		public CurseSearch(Element element) {
+			super();
+			this.title = element.select("td > dl > dt > a").text();
+			String url = CurseUtils.CURSE_BASE + element.select("td > dl > dt > a").attr("href");
+			init(url);
+		}
 	}
 }
 
