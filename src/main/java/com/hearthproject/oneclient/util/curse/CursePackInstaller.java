@@ -86,18 +86,19 @@ public class CursePackInstaller {
 		copyOverrides(manifest, unzippedDir, minecraftDir);
 
 		log("Done downloading pack " + manifest.name);
+		InstallingController.close();
 
-		if (!missingMods.isEmpty()) {
-			log("");
-			log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
-				+ "public download on CurseForge, or there were errors in the download.");
-			log("The missing mods are the following:");
-			for (String mod : missingMods)
-				log(" - " + mod);
-			log("");
-			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
-				+ "and pulling them from there.");
-		}
+		//		if (!missingMods.isEmpty()) {
+		//			log("");
+		//			log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
+		//				+ "public download on CurseForge, or there were errors in the download.");
+		//			log("The missing mods are the following:");
+		//			for (String mod : missingMods)
+		//				log(" - " + mod);
+		//			log("");
+		//			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
+		//				+ "and pulling them from there.");
+		//		}
 		missingMods = null;
 	}
 
@@ -166,7 +167,7 @@ public class CursePackInstaller {
 			try {
 				downloadFile(f, modsDir, left, total);
 			} catch (IOException | URISyntaxException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		});
 
@@ -269,8 +270,10 @@ public class CursePackInstaller {
 		FileUtils.copyURLToFile(url, f);
 	}
 
+	//Find alternative to this
+	@Deprecated
 	public void log(String s) {
-		OneClientLogging.log(s);
+		OneClientLogging.logger.info(s);
 		InstallingController.controller.setDetailText(s);
 	}
 

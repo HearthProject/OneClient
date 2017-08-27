@@ -60,11 +60,11 @@ public class MinecraftUtil {
 				FileUtils.writeStringToFile(new File(versionsDir, minecraftVersion + ".json"), jsonData, StandardCharsets.UTF_8);
 				return JsonUtil.GSON.fromJson(jsonData, Version.class);
 			} else {
-				OneClientLogging.log(new RuntimeException("Failed downloading Minecraft json"));
+				OneClientLogging.logger.error(new RuntimeException("Failed downloading Minecraft json"));
 				return null;
 			}
 		} catch (Throwable throwable) {
-			OneClientLogging.log(throwable);
+			OneClientLogging.logger.error(throwable);
 			return null;
 		}
 	}
@@ -72,13 +72,13 @@ public class MinecraftUtil {
 	public static int libCount = 0;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
-		OneClientLogging.log("Installing minecraft for " + instance.name);
+		OneClientLogging.logger.info("Installing minecraft for " + instance.name);
 		Platform.runLater(() -> {
 			try {
 				InstallingController.showInstaller();
 				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		});
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
@@ -91,12 +91,12 @@ public class MinecraftUtil {
 		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
-		OneClientLogging.log("Downloading Minecraft jar");
+		OneClientLogging.logger.info("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
 
-		OneClientLogging.log("Resolving " + versionData.libraries.size() + " library's");
+		OneClientLogging.logger.info("Resolving " + versionData.libraries.size() + " library's");
 		libCount = 0;
 
 		versionData.libraries.parallelStream().forEach(library -> {
@@ -108,17 +108,17 @@ public class MinecraftUtil {
 						return;
 					}
 				}
-				OneClientLogging.log("Downloading " + library.name + " from " + library.getURL());
+				OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL());
 				try {
 					FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
 				} catch (IOException e) {
-					OneClientLogging.log(e);
+					OneClientLogging.logger.error(e);
 				}
 			}
 		});
 
 		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
-			OneClientLogging.log("Extracting native " + library.name);
+			OneClientLogging.logger.info("Extracting native " + library.name);
 			ZipUtil.unpack(library.getFile(libraries), natives);
 		});
 
@@ -132,7 +132,7 @@ public class MinecraftUtil {
 		AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
 		Map<String, AssetObject> parent = index.getFileMap();
 
-		OneClientLogging.log("Resolving " + parent.entrySet().size() + " assets");
+		OneClientLogging.logger.info("Resolving " + parent.entrySet().size() + " assets");
 		libCount = 0;
 		parent.entrySet().parallelStream().forEach(entry -> {
 			AssetObject object = entry.getValue();
@@ -141,15 +141,15 @@ public class MinecraftUtil {
 			InstallingController.controller.setProgress(libCount++, parent.entrySet().size());
 			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
-				OneClientLogging.log("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
+				OneClientLogging.logger.info("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
 				try {
 					FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
 				} catch (IOException e) {
-					OneClientLogging.log(e);
+					OneClientLogging.logger.error(e);
 				}
 			}
 		});
-		OneClientLogging.log("Done minecraft files are all downloaded");
+		OneClientLogging.logger.info("Done minecraft files are all downloaded");
 		InstallingController.close();
 	}
 
@@ -162,7 +162,7 @@ public class MinecraftUtil {
 		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
 		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
 
-		OneClientLogging.log("Attempting authentication with Mojang");
+		OneClientLogging.logger.info("Attempting authentication with Mojang");
 
 		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
 		auth.setUsername(username);
@@ -174,9 +174,9 @@ public class MinecraftUtil {
 			OneClientLogging.logUserError(e, "Failed to login to your minecraft account. Please check your username and password");
 			return false;
 		}
-		OneClientLogging.log("Login successful!");
+		OneClientLogging.logger.info("Login successful!");
 
-		OneClientLogging.log("Starting minecraft...");
+		OneClientLogging.logger.info("Starting minecraft...");
 
 		OneClientTracking.sendRequest("minecraft/play/" + instance.minecraftVersion);
 
@@ -198,7 +198,7 @@ public class MinecraftUtil {
 					providedArugments = forgeVersionProfile.minecraftArguments;
 
 					List argList = Arrays.asList(forgeVersionProfile.minecraftArguments.split(" "));
-					OneClientLogging.log("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
+					OneClientLogging.logger.info("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
 					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
 				}
 
@@ -267,18 +267,18 @@ public class MinecraftUtil {
 					new BufferedReader(new InputStreamReader(process.getInputStream()));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					OneClientLogging.log(line);
+					OneClientLogging.logger.info(line);
 				}
 
 				BufferedReader readerErr =
 					new BufferedReader(new InputStreamReader(process.getErrorStream()));
 				String lineErr;
 				while ((lineErr = readerErr.readLine()) != null) {
-					OneClientLogging.log(lineErr);
+					OneClientLogging.logger.error(lineErr);
 				}
 
 			} catch (Throwable throwable) {
-				OneClientLogging.log(throwable);
+				OneClientLogging.logger.error(throwable);
 			}
 
 		}).start();

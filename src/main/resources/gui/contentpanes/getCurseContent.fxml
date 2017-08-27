@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
@@ -10,11 +9,29 @@
             <children>
                 <HBox prefHeight="40.0" prefWidth="200.0">
                     <VBox.margin>
-                        <Insets bottom="5.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </VBox.margin>
                     <children>
-                        <!--<TextField alignment="CENTER" HBox.hgrow="ALWAYS" />-->
-                        <ComboBox fx:id="filterVersion" prefWidth="150.0"/>
+                        <TextField fx:id="textSearch" alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </TextField>
+                        <Button fx:id="buttonSearch" mnemonicParsing="false" text="Search">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <ComboBox fx:id="filterVersion" prefWidth="150.0">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </ComboBox>
+                        <ComboBox fx:id="filterSort" prefWidth="150.0">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </ComboBox>
                     </children>
                 </HBox>
                 <HBox fx:id="hBox" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">

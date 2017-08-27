@@ -26,12 +26,12 @@ public class LogController {
 		try {
 			String key = Unirest.post("https://hastebin.com/documents").body(logArea.getText()).asJson().getBody().getObject().getString("key");
 			String url = "https://hastebin.com/" + key + ".hs";
-			OneClientLogging.log("Log has been uploaded to: " + url);
+			OneClientLogging.logger.info("Log has been uploaded to: " + url);
 			if (Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().browse(new URI(url));
 			}
 		} catch (Throwable e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 	}
 
@@ -39,9 +39,11 @@ public class LogController {
 		stage.hide();
 	}
 
+	public void menuClear(ActionEvent actionEvent) { logArea.clear(); }
+
 	public void killMinecraft(ActionEvent actionEvent) {
 		minecraftMenu.setDisable(true);
-		OneClientLogging.log("Minecraft was forcefully terminated by the user!");
+		OneClientLogging.logger.info("Minecraft was forcefully terminated by the user!");
 		processList.forEach(process -> process.destroyForcibly());
 		processList.clear();
 	}

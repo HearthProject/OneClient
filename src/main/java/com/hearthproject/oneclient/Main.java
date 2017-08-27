@@ -22,18 +22,33 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
 
 	public static Stage stage;
 	public static MainController mainController;
+	public static Scene scene;
+	public static List<String> args;
 
-	public static void main(String... args) {
+	public static void main(String... argArray) throws IOException {
+		Main.args = Arrays.asList(argArray);
+		launch(argArray);
+	}
+
+	@Override
+	public void start(Stage s) throws IOException {
+		stage = s;
+		Constants.earlySetup(this::startOneClient);
+	}
+
+	public void startOneClient() {
 		SettingsUtil.init();
-		OneClientLogging.log("Starting OneClient version: " + Constants.getVersion());
+		OneClientLogging.logger.info("Starting OneClient version: " + Constants.getVersion());
 		if (Constants.CUSTOM_RUN) {
-			OneClientLogging.log("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
+			OneClientLogging.logger.info("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
 		}
 		OneClientTracking.sendRequest("launch/" + Constants.getVersion());
 		Platform.runLater(() -> {
@@ -43,7 +58,7 @@ public class Main extends Application {
 			try {
 				SplashScreen.show();
 			} catch (IOException e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 			for (String arg : args) {
 				if (arg.equals("-updateSuccess")) {
@@ -55,13 +70,6 @@ public class Main extends Application {
 				}
 			}
 		});
-		launch(args);
-	}
-
-	@Override
-	public void start(Stage s) {
-		stage = s;
-		stage.setOnCloseRequest(event -> System.exit(0));
 		new Thread(() -> {
 			try {
 				loadData();
@@ -84,21 +92,21 @@ public class Main extends Application {
 							}
 						}
 					} catch (Exception e) {
-						OneClientLogging.log(e);
+						OneClientLogging.logger.error(e);
 					}
 				});
 			} catch (Exception e) {
-				OneClientLogging.log(e);
+				OneClientLogging.logger.error(e);
 			}
 		}).start();
 	}
 
 	public void startLauncher() throws Exception {
-		OneClientLogging.log("Starting One Client");
+		OneClientLogging.logger.info("Starting One Client");
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/main.fxml");
 		if (fxmlUrl == null) {
-			OneClientLogging.log("An error has occurred loading main.fxml!");
+			OneClientLogging.logger.error("An error has occurred loading main.fxml!");
 			return;
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();
@@ -111,11 +119,15 @@ public class Main extends Application {
 			stage.setTitle("One Client " + Constants.getVersion());
 		}
 		stage.getIcons().add(new Image("icon.png"));
-		Scene scene = new Scene(root, 1230, 800);
+		scene = new Scene(root, 1230, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
 		stage.show();
-		stage.setOnCloseRequest((windowEvent) -> OneClientLogging.stage.close());
+		stage.setOnCloseRequest(event -> {
+			OneClientLogging.stage.close();
+			OneClientLogging.logger.info("Goodbye");
+			System.exit(0);
+		});
 		mainController = fxmlLoader.getController();
 		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
@@ -124,13 +136,13 @@ public class Main extends Application {
 	}
 
 	public void loadData() throws Exception {
-		OneClientLogging.log("Loading instances");
+		OneClientLogging.logger.info("Loading instances");
 		InstanceManager.load();
-		OneClientLogging.log("Loading minecraft versions");
+		OneClientLogging.logger.info("Loading minecraft versions");
 		MinecraftUtil.loadGameVersions();
-		OneClientLogging.log("Loading forge versions");
+		OneClientLogging.logger.info("Loading forge versions");
 		ForgeUtils.loadForgeVersions();
-		OneClientLogging.log("Done!");
+		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}
 }

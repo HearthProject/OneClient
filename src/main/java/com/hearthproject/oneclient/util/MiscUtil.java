@@ -4,6 +4,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class MiscUtil {
 			}
 			return builder.toString().equals(checksum);
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 		return false;
 	}
@@ -42,7 +43,7 @@ public class MiscUtil {
 			}
 			return checksum.contains(builder.toString());
 		} catch (IOException e) {
-			OneClientLogging.log(e);
+			OneClientLogging.logger.error(e);
 		}
 		return false;
 	}
@@ -63,5 +64,13 @@ public class MiscUtil {
 	public static double round(double value, int precision) {
 		int scale = (int) Math.pow(10, precision);
 		return (double) Math.round(value * scale) / scale;
+	}
+
+	public static void runLaterIfNeeded(Runnable runnable) {
+		if (Platform.isFxApplicationThread()) {
+			runnable.run();
+		} else {
+			Platform.runLater(runnable);
+		}
 	}
 }
