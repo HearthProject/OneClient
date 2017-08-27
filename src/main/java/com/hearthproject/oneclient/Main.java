@@ -61,7 +61,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage s) {
 		stage = s;
-		stage.setOnCloseRequest(event -> System.exit(0));
 		new Thread(() -> {
 			try {
 				loadData();
@@ -115,7 +114,11 @@ public class Main extends Application {
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
 		stage.show();
-		stage.setOnCloseRequest((windowEvent) -> OneClientLogging.stage.close());
+		stage.setOnCloseRequest(event -> {
+			OneClientLogging.stage.close();
+			OneClientLogging.log("Goodbye");
+			System.exit(0);
+		});
 		mainController = fxmlLoader.getController();
 		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
