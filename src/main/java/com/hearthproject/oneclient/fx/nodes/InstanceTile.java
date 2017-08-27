@@ -27,6 +27,8 @@ public class InstanceTile extends StackPane {
 	public Button editButton;
 	private Action action;
 
+	private static Image defaultImage = null;
+
 	public InstanceTile(Instance instance) {
 		this.instance = instance;
 		background = new Rectangle(192, 192);
@@ -43,9 +45,14 @@ public class InstanceTile extends StackPane {
 			} catch (IOException e) {
 				OneClientLogging.logger.error(e);
 			}
-			imageView.setFitHeight(75);
-			imageView.setFitWidth(75);
+		} else {
+			if (defaultImage == null) {
+				defaultImage = new Image(this.getClass().getClassLoader().getResourceAsStream("modpack.png"));
+			}
+			imageView.setImage(defaultImage);
 		}
+		imageView.setFitHeight(75);
+		imageView.setFitWidth(75);
 		nameLabel = new Text(instance.name);
 		nameLabel.setFill(Color.web("#FFFFFF"));
 		nameLabel.setFont(javafx.scene.text.Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));
