@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.util.logging;
 
-import javafx.application.Platform;
+import com.hearthproject.oneclient.util.MiscUtil;
 import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -48,7 +48,7 @@ public final class TextAreaAppender extends AbstractAppender {
 
 		// append log text to TextArea
 		try {
-			Platform.runLater(() -> {
+			MiscUtil.runLaterIfNeeded(() -> {
 				try {
 					if (textArea != null) {
 						if (textArea.getText().length() == 0) {
