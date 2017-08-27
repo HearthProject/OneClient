@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 public class InstancesPane extends ContentPane {
 	public TilePane instancePane;
+	public ScrollPane scrollPane;
 
 	private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 	private StackPane newInstanceTile;
@@ -27,7 +29,10 @@ public class InstancesPane extends ContentPane {
 		if (newInstanceTile == null) {
 			newInstanceTile = (StackPane) instancePane.getChildren().get(0);
 		}
-		instancePane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		scrollPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		scrollPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
+		scrollPane.setContent(instancePane);
+		instancePane.prefWidthProperty().bind(scrollPane.widthProperty());
 	}
 
 	@Override
