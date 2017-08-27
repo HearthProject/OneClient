@@ -23,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -37,9 +38,11 @@ public class CursePacksPane extends ContentPane {
 
 	public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
 	public ObservableList<String> versions;
+	public ObservableList<Pair<String, String>> sorting;
 
 	public ListView<CurseTile> listTiles;
 	public ComboBox<String> filterVersion;
+	public ComboBox<Pair<String, String>> filterSort;
 	public Button buttonSearch;
 	public TextField textSearch;
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
@@ -69,6 +72,8 @@ public class CursePacksPane extends ContentPane {
 	@Override
 	protected void onStart() {
 		versions = FXCollections.observableArrayList(CurseUtils.getVersions());
+		sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
+
 		filterVersion.setItems(versions);
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.setConverter(new StringConverter<String>() {
@@ -84,6 +89,20 @@ public class CursePacksPane extends ContentPane {
 				if (s.equals("All"))
 					return "";
 				return s.replace(" ", "+");
+			}
+		});
+
+		filterSort.setItems(sorting);
+		filterSort.getSelectionModel().selectFirst();
+		filterSort.setConverter(new StringConverter<Pair<String, String>>() {
+			@Override
+			public String toString(Pair<String, String> pair) {
+				return pair.getKey();
+			}
+
+			@Override
+			public Pair<String, String> fromString(String s) {
+				return sorting.stream().filter(k -> k.getKey().equals(s)).findFirst().orElse(null);
 			}
 		});
 		pageLoading.addListener((observableValue, oldValue, newValue) -> {
@@ -102,25 +121,22 @@ public class CursePacksPane extends ContentPane {
 		listTiles.setPlaceholder(placeHolderLoading);
 
 		if (type == ViewType.FILTER) {
-			loadPacks(page, filterVersion.getValue());
+			loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
 			listTiles.setOnScroll(event -> {
 				if (pageDelay > 0)
 					return;
 				if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
 					int old = Math.max(listTiles.getItems().size() - 8, 0);
 					page++;
-					loadPacks(page, filterVersion.getValue());
+					loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
 					listTiles.scrollTo(old);
 					pageDelay = 3;
 				}
 			});
 		}
-		filterVersion.valueProperty().addListener((observableValue, s, t1) -> {
-			type = ViewType.FILTER;
-			tiles.clear();
-			page = 1;
-			loadPacks(page, filterVersion.getValue());
-		});
+		filterVersion.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
+		filterSort.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
+
 		buttonSearch.setOnAction(event -> search());
 		textSearch.setOnKeyPressed(keyEvent -> {
 			if (keyEvent.getCode() == KeyCode.ENTER)
@@ -128,13 +144,20 @@ public class CursePacksPane extends ContentPane {
 		});
 	}
 
-	public void loadPacks(int page, String version) {
+	public void refreshFilters() {
+		type = ViewType.FILTER;
+		tiles.clear();
+		page = 1;
+		loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
+	}
+
+	public void loadPacks(int page, String version, String sorting) {
 		new Thread(() -> {
 			try {
 				if (pageLoading.get())
 					return;
 				pageLoading.set(true);
-				List<CursePack> packs = CurseUtils.getPacks(page, version);
+				List<CursePack> packs = CurseUtils.getPacks(page, version, sorting);
 				if (packs != null) {
 					if (!packs.isEmpty()) {
 						OneClientLogging.logger.info("Loading page " + page);

@@ -99,6 +99,15 @@ public class CursePack {
 		return "";
 	}
 
+	public String getLastUpdated() {
+		try {
+			return lastUpdated.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
 	public String getVersion() {
 		try {
 			return version.get();

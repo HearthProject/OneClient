@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
+import javafx.util.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,6 +26,10 @@ public class CurseUtils {
 		return new Filter("filter-project-game-version=", value);
 	}
 
+	public static Filter sortingFilter(String value) {
+		return new Filter("filter-project-sort=", value);
+	}
+
 	public static Filter page(String value) {
 		return new Filter("page=", value);
 	}
@@ -35,8 +40,14 @@ public class CurseUtils {
 		return versions.stream().map(Element::val).distinct().collect(Collectors.toList());
 	}
 
-	public static List<CursePack> getPacks(int page, String version) {
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), page(Integer.toString(page)));
+	public static List<Pair<String, String>> getSorting() {
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
+		Elements versions = d.select("#filter-project-sort option");
+		return versions.stream().map(e -> new Pair<>(e.text(), e.val())).distinct().collect(Collectors.toList());
+	}
+
+	public static List<CursePack> getPacks(int page, String version, String sorting) {
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
 		Element e = d.select(".b-pagination-item").select(".s-active").first();
 		String realPage = e != null ? e.text() : null;
 		if (realPage == null) {

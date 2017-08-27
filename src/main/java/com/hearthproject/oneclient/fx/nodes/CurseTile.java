@@ -65,13 +65,15 @@ public class CurseTile extends StackPane {
 		Label average = new Label(pack.getAverageDownloads());
 		Label total = new Label(pack.getTotalDownloads());
 		Label date = new Label(pack.getCreatedDate());
+		Label updated = new Label(pack.getLastUpdated());
 		Label version = new Label(pack.getVersion());
 		average.setTextFill(Color.web("#FFFFFF"));
 		total.setTextFill(Color.web("#FFFFFF"));
 		date.setTextFill(Color.web("#FFFFFF"));
+		updated.setTextFill(Color.web("#FFFFFF"));
 		version.setTextFill(Color.web("#FFFFFF"));
 
-		info.getChildren().addAll(average, total, date, version);
+		info.getChildren().addAll(average, total, updated, date, version);
 		pack.getAuthors().stream().map(a -> {
 			Label author = new Label(a);
 			author.setTextFill(Color.web("#FFFFFF"));
