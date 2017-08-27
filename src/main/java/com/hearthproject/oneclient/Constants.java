@@ -54,8 +54,7 @@ public class Constants {
 			setUpDirs();
 			runnable.run();
 		}
-		System.setProperty("logFilename", LOGFILE.toString());
-		OneClientLogging.init();
+
 	}
 
 	public static void setUpDirs() {
@@ -63,6 +62,8 @@ public class Constants {
 		INSTANCEDIR = new File(getRunDir(), "instances");
 		LOGFILE = new File(getRunDir(), "log.txt");
 		TEMP_UPDATE = new File(getRunDir(), "temp_update.jar");
+		System.setProperty("logFilename", LOGFILE.toString());
+		OneClientLogging.init();
 	}
 
 	public static File getRunDir() {
