@@ -25,7 +25,7 @@ if (ENV.BUILD_NUMBER) {
     version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
-mainClassName = "com.hearthproject.oneclient.Main"
+mainClassName = "com.hearthproject.oneclient.Launch"
 
 repositories {
     mavenCentral()
@@ -55,7 +55,7 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'OneClient',
                 'Implementation-Version': version,
-                'Main-Class': 'com.hearthproject.oneclient.Main'
+                'Main-Class': 'com.hearthproject.oneclient.Launch'
     }
     from { configurations.shade.collect { it.isDirectory() ? it : zipTree(it) } }
 }

@@ -44,6 +44,23 @@ public class OperatingSystem {
 		}
 	}
 
+	public static File getApplicationDataDirectory() {
+		String userHome = System.getProperty("user.home", ".");
+		if (getOS().equals("windows")) {
+			String applicationData = System.getenv("APPDATA");
+			if (applicationData != null) {
+				return new File(applicationData, "." + "OneClient" + '/');
+			} else {
+				return new File(userHome, '.' + "OneClient" + '/');
+			}
+		} else if (getOS().equals("osx")) {
+			return new File(userHome, "Library/Application Support/OneClient");
+		} else if (getOS().equals("linux")) {
+			return new File(userHome, '.' + "OneClient" + '/');
+		}
+		return new File(userHome, "OneClient" + '/');
+	}
+
 	public static boolean is64Bit() {
 		return System.getProperty("sun.arch.data.model").contains("64");
 	}

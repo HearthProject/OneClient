@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -29,8 +31,20 @@ public class Main extends Application {
 	public static Stage stage;
 	public static MainController mainController;
 	public static Scene scene;
+	public static List<String> args;
 
-	public static void main(String... args) {
+	public static void main(String... argArray) throws IOException {
+		Main.args = Arrays.asList(argArray);
+		launch(argArray);
+	}
+
+	@Override
+	public void start(Stage s) throws IOException {
+		stage = s;
+		Constants.earlySetup(this::startOneClient);
+	}
+
+	public void startOneClient() {
 		SettingsUtil.init();
 		OneClientLogging.log("Starting OneClient version: " + Constants.getVersion());
 		if (Constants.CUSTOM_RUN) {
@@ -56,12 +70,6 @@ public class Main extends Application {
 				}
 			}
 		});
-		launch(args);
-	}
-
-	@Override
-	public void start(Stage s) {
-		stage = s;
 		new Thread(() -> {
 			try {
 				loadData();

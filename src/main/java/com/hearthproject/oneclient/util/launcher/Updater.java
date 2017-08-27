@@ -46,11 +46,6 @@ public class Updater {
 			args.add(Updater.class.getCanonicalName());
 			args.add(currentJar.getAbsolutePath());
 
-			String runDir = System.getProperty("OneClient.runDir", "");
-			if (!runDir.isEmpty()) {
-				args.add("-DOneClient.runDir=" + runDir);
-			}
-
 			ProcessBuilder processBuilder = new ProcessBuilder();
 			processBuilder.command(args);
 			processBuilder.start();
@@ -73,11 +68,6 @@ public class Updater {
 		newArgs.add("-jar");
 		newArgs.add(oldJar.getAbsolutePath()); //The old jar is now the new jar as we copyied it over
 		newArgs.add("-updateSuccess"); //Added here so we can show a dialog if when the new jar is opened
-
-		String runDir = System.getProperty("OneClient.runDir", "");
-		if (!runDir.isEmpty()) {
-			newArgs.add("-DOneClient.runDir=" + runDir);
-		}
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		processBuilder.command(newArgs);
