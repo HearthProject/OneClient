@@ -23,6 +23,7 @@ public abstract class ContentPane {
 		button.setText(name);
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
 		button.setOnAction((actionHandler) -> {
+			Main.mainController.contentPanes.stream().filter(s -> s != this).forEach(ContentPane::close);
 			Main.mainController.currentContent.button.setSelected(false);
 			Main.mainController.setContent(this);
 			button.setSelected(true);
@@ -84,5 +85,9 @@ public abstract class ContentPane {
 
 	public boolean showInSideBar() {
 		return true;
+	}
+
+	public void close() {
+
 	}
 }

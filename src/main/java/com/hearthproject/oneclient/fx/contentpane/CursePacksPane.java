@@ -48,7 +48,7 @@ public class CursePacksPane extends ContentPane {
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
 
 	public CursePacksPane() {
-		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
+		super("gui/contentpanes/curse_packs.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
 	private int page = 1, lastPage = -1;
@@ -229,6 +229,11 @@ public class CursePacksPane extends ContentPane {
 	@Override
 	public void refresh() {
 
+	}
+
+	@Override
+	public void close() {
+		this.tiles.clear();
 	}
 
 	public enum ViewType {

@@ -42,7 +42,7 @@ public class CurseTile extends StackPane {
 	public CurseTile(CursePacksPane parent, CursePack pack) {
 		this.pack = pack;
 		this.parent = parent;
-		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/curseTile.fxml");
+		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/curse_tile.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(loc);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);

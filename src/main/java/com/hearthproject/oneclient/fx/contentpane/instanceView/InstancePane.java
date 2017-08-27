@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane.instanceView;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.OperatingSystem;
@@ -106,10 +107,9 @@ public class InstancePane extends ContentPane {
 		menuDownload.setDisable(true);
 		menuBackup.setDisable(true);
 		menuViewBackups.setDisable(true);
-		buttonGetCurseMods.setDisable(true);
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-
+		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller());
 	}
 
 	public void updateList() {
