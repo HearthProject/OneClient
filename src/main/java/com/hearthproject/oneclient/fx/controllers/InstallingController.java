@@ -52,7 +52,16 @@ public class InstallingController {
 	}
 
 	public static void close() {
-		Platform.runLater(() -> stage.close());
+		if (Platform.isFxApplicationThread()) {
+			stage.hide();
+			stage.close();
+		} else {
+			Platform.runLater(() -> {
+				stage.hide();
+				stage.close();
+			});
+		}
+		OneClientLogging.log("Closing");
 	}
 
 	public void log(String text) {

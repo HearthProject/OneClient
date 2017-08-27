@@ -86,18 +86,19 @@ public class CursePackInstaller {
 		copyOverrides(manifest, unzippedDir, minecraftDir);
 
 		log("Done downloading pack " + manifest.name);
+		InstallingController.close();
 
-		if (!missingMods.isEmpty()) {
-			log("");
-			log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
-				+ "public download on CurseForge, or there were errors in the download.");
-			log("The missing mods are the following:");
-			for (String mod : missingMods)
-				log(" - " + mod);
-			log("");
-			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
-				+ "and pulling them from there.");
-		}
+		//		if (!missingMods.isEmpty()) {
+		//			log("");
+		//			log("WARNING: Some mods could not be downloaded. Either the specific versions were taken down from "
+		//				+ "public download on CurseForge, or there were errors in the download.");
+		//			log("The missing mods are the following:");
+		//			for (String mod : missingMods)
+		//				log(" - " + mod);
+		//			log("");
+		//			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
+		//				+ "and pulling them from there.");
+		//		}
 		missingMods = null;
 	}
 
