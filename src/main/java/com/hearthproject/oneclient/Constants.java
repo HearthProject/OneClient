@@ -17,7 +17,6 @@ public class Constants {
 	public static File TEMPDIR;
 	public static File INSTANCEDIR;
 	public static File LOGFILE;
-	public static File TEMP_UPDATE;
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
@@ -61,7 +60,6 @@ public class Constants {
 		TEMPDIR = new File(getRunDir(), "temp");
 		INSTANCEDIR = new File(getRunDir(), "instances");
 		LOGFILE = new File(getRunDir(), "log.txt");
-		TEMP_UPDATE = new File(getRunDir(), "temp_update.jar");
 		System.setProperty("logFilename", LOGFILE.toString());
 		OneClientLogging.init();
 	}
