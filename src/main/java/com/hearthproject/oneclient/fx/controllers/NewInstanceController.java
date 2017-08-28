@@ -54,9 +54,9 @@ public class NewInstanceController {
 	public static void start(Instance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			URL fxmlUrl = classLoader.getResource("gui/newInstance.fxml");
+			URL fxmlUrl = classLoader.getResource("gui/instance_creation.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading instance_creation.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();

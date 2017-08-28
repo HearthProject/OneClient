@@ -37,7 +37,7 @@ public class InstancePane extends ContentPane {
 	public Instance instance;
 
 	public InstancePane() {
-		super("gui/contentpanes/instanceView/instanceView.fxml", "InstancePane");
+		super("gui/contentpanes/instance_view.fxml", "InstancePane");
 	}
 
 	public static void show(Instance instance) {

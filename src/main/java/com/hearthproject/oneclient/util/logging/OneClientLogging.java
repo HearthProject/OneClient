@@ -52,7 +52,7 @@ public class OneClientLogging {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/log.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading instance_creation.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
