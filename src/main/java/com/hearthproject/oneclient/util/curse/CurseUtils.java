@@ -106,7 +106,7 @@ public class CurseUtils {
 			String finalURL = url + path + filter;
 			return Jsoup.connect(finalURL).get();
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 		return null;
 	}

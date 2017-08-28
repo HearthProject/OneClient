@@ -167,7 +167,7 @@ public class CursePacksPane extends ContentPane {
 				}
 				pageLoading.set(false);
 			} catch (Exception e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		}).start();
 	}

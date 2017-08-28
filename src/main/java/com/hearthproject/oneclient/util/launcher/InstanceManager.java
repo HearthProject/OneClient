@@ -57,7 +57,7 @@ public class InstanceManager {
 		try {
 			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class InstanceManager {
 				Instance instance = JsonUtil.GSON.fromJson(jsonStr, Instance.class);
 				instances.put(instance.name, instance);
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		});
 	}

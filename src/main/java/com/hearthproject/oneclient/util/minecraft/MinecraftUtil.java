@@ -60,11 +60,11 @@ public class MinecraftUtil {
 				FileUtils.writeStringToFile(new File(versionsDir, minecraftVersion + ".json"), jsonData, StandardCharsets.UTF_8);
 				return JsonUtil.GSON.fromJson(jsonData, Version.class);
 			} else {
-				OneClientLogging.logger.error(new RuntimeException("Failed downloading Minecraft json"));
+				OneClientLogging.error(new RuntimeException("Failed downloading Minecraft json"));
 				return null;
 			}
 		} catch (Throwable throwable) {
-			OneClientLogging.logger.error(throwable);
+			OneClientLogging.error(throwable);
 			return null;
 		}
 	}
@@ -78,7 +78,7 @@ public class MinecraftUtil {
 				InstallingController.showInstaller();
 				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		});
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
@@ -112,7 +112,7 @@ public class MinecraftUtil {
 				try {
 					FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
 				} catch (IOException e) {
-					OneClientLogging.logger.error(e);
+					OneClientLogging.error(e);
 				}
 			}
 		});
@@ -145,7 +145,7 @@ public class MinecraftUtil {
 				try {
 					FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
 				} catch (IOException e) {
-					OneClientLogging.logger.error(e);
+					OneClientLogging.error(e);
 				}
 			}
 		});
@@ -278,7 +278,7 @@ public class MinecraftUtil {
 				}
 
 			} catch (Throwable throwable) {
-				OneClientLogging.logger.error(throwable);
+				OneClientLogging.error(throwable);
 			}
 
 		}).start();

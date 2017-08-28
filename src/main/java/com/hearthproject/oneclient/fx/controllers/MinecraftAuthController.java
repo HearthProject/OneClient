@@ -67,7 +67,7 @@ public class MinecraftAuthController {
 				checkboxPasswordSave.setSelected(false);
 			}
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 			checkboxPasswordSave.setSelected(false);
 		}
 
@@ -90,7 +90,7 @@ public class MinecraftAuthController {
 				}
 			}
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 
 	}
@@ -99,7 +99,7 @@ public class MinecraftAuthController {
 		try {
 			Desktop.getDesktop().browse(new URL("https://github.com/HearthProject/OneClient").toURI());
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 

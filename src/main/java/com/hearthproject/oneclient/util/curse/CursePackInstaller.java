@@ -172,7 +172,7 @@ public class CursePackInstaller {
 			try {
 				downloadFile(f, modsDir, left, total);
 			} catch (IOException | URISyntaxException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		});
 

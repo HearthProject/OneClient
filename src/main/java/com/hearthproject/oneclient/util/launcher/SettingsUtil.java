@@ -18,7 +18,7 @@ public class SettingsUtil {
 		try {
 			load();
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 

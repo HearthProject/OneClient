@@ -112,7 +112,7 @@ public class OperatingSystem {
 				ram = 1024;
 			}
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 
 		return ram;

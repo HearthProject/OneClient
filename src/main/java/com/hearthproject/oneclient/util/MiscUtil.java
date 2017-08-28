@@ -26,7 +26,7 @@ public class MiscUtil {
 			}
 			return builder.toString().equals(checksum);
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 		return false;
 	}
@@ -43,7 +43,7 @@ public class MiscUtil {
 			}
 			return checksum.contains(builder.toString());
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 		return false;
 	}

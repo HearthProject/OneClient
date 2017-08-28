@@ -31,7 +31,7 @@ public class LogController {
 				Desktop.getDesktop().browse(new URI(url));
 			}
 		} catch (Throwable e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 
