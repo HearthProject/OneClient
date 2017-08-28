@@ -1,7 +1,7 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.util.curse.CursePackInstaller;
+import com.hearthproject.oneclient.util.curse.CurseUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class Instance {
 			fileUrl = packUrl + "/files/latest";
 		else
 			fileUrl = packUrl + "/files/" + curseVersion + "/download";
-		return CursePackInstaller.getLocationHeader(fileUrl);
+		return CurseUtils.getLocationHeader(fileUrl);
 	}
 
 }

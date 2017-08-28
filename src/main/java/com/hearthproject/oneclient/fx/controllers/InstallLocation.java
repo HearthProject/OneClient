@@ -41,7 +41,7 @@ public class InstallLocation {
 		stage.setResizable(false);
 		stage.initOwner(Main.stage);
 		stage.initModality(Modality.WINDOW_MODAL);
-		Scene scene = new Scene(root, 480, 176);
+		Scene scene = new Scene(root, 500, 150);
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
 		stage.show();

@@ -3,10 +3,10 @@ package com.hearthproject.oneclient.fx.contentpane.instanceView;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.scene.control.*;
@@ -35,13 +35,6 @@ public class InstancePane extends ContentPane {
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
 	public ListView modList;
-
-	public MenuItem menuOpenFolder;
-	public MenuItem menuDelete;
-	public MenuItem menuDownload;
-	public MenuItem menuBackup;
-	public MenuItem menuViewBackups;
-
 	public Instance instance;
 
 	public InstancePane() {
@@ -77,39 +70,14 @@ public class InstancePane extends ContentPane {
 		}
 		updateList();
 
-		menuOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
 		buttonOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
 
 		buttonPlay.setOnAction(event -> MinecraftAuth.loginAndPlay(instance));
 
-		menuDelete.setOnAction(event -> {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Are you sure?");
-			alert.setHeaderText("Are you sure you want to delete the pack");
-			alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
-
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK) {
-				try {
-					ContentPanes.INSTANCES_PANE.button.fire();
-					FileUtils.deleteDirectory(instance.getDirectory());
-					InstanceManager.load();
-					ContentPanes.INSTANCES_PANE.refresh();
-				} catch (IOException e) {
-					OneClientLogging.logger.error(e);
-				}
-			}
-		});
-
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
-		menuDownload.setDisable(true);
-		menuBackup.setDisable(true);
-		menuViewBackups.setDisable(true);
-		buttonGetCurseMods.setDisable(true);
-
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-
+		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller());
 	}
 
 	public void updateList() {

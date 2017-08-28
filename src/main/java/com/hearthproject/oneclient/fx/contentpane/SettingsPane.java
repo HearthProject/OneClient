@@ -59,4 +59,5 @@ public class SettingsPane extends ContentPane {
 	public void refresh() {
 
 	}
+
 }

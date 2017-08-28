@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.hearthproject.oneclient.util.curse.CurseUtils.getLocationHeader;
 
 //Taken from: https://github.com/Vazkii/CMPDL/tree/master/src/vazkii/cmpdl + changed a bit
 public class CursePackInstaller {
@@ -46,7 +50,7 @@ public class CursePackInstaller {
 		//		}
 
 		missingMods = new ArrayList<>();
-		log("Curse pack downloader created by Vazkii");
+		log("Curse element downloader created by Vazkii");
 		log("https://github.com/Vazkii/CMPDL");
 		instance.curseVersion = version;
 		instance.curseURL = url;
@@ -85,7 +89,7 @@ public class CursePackInstaller {
 		downloadModpackFromManifest(minecraftDir, manifest);
 		copyOverrides(manifest, unzippedDir, minecraftDir);
 
-		log("Done downloading pack " + manifest.name);
+		log("Done downloading element " + manifest.name);
 		InstallingController.close();
 
 		//		if (!missingMods.isEmpty()) {
@@ -96,7 +100,7 @@ public class CursePackInstaller {
 		//			for (String mod : missingMods)
 		//				log(" - " + mod);
 		//			log("");
-		//			log("If these mods are crucial to the modpack functioning, try downloading the server version of the pack "
+		//			log("If these mods are crucial to the modpack functioning, try downloading the server version of the element "
 		//				+ "and pulling them from there.");
 		//		}
 		missingMods = null;
@@ -164,16 +168,13 @@ public class CursePackInstaller {
 
 		manifest.files.parallelStream().forEach(f -> {
 			left--;
+
 			try {
 				downloadFile(f, modsDir, left, total);
 			} catch (IOException | URISyntaxException e) {
 				OneClientLogging.logger.error(e);
 			}
 		});
-
-		for (Manifest.FileData f : manifest.files) {
-
-		}
 
 		log("Mod downloads complete");
 
@@ -233,32 +234,7 @@ public class CursePackInstaller {
 		}
 	}
 
-	public static String getLocationHeader(String location) throws IOException, URISyntaxException {
-		URI uri = new URI(location);
-		HttpURLConnection connection = null;
-		String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36";
-		for (; ; ) {
-			URL url = uri.toURL();
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("User-Agent", userAgent);
-			connection.setInstanceFollowRedirects(false);
-			String redirectLocation = connection.getHeaderField("Location");
-			if (redirectLocation == null)
-				break;
 
-			// This gets parsed out later
-			redirectLocation = redirectLocation.replaceAll("\\%20", " ");
-
-			if (redirectLocation.startsWith("/"))
-				uri = new URI(uri.getScheme(), uri.getHost(), redirectLocation, uri.getFragment());
-			else {
-				url = new URL(redirectLocation);
-				uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
-			}
-		}
-
-		return uri.toString();
-	}
 
 	public void downloadFileFromURL(File f, URL url) throws IOException {
 		if (!f.exists()) {

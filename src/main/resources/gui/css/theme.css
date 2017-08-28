@@ -459,3 +459,19 @@
     -fx-background-insets: 0, 0, 0;
     -fx-background-radius: 0, 0, 0;
 }
+
+.hyperlink:focused {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0, 0, 0;
+}
+
+.hyperlink:hover,
+.hyperlink:hover:visited {
+    -fx-underline: true;
+}
+
+.hyperlink:visited {
+    -fx-underline: false;
+}

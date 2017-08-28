@@ -2,15 +2,10 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.controllers.InstallingController;
-import com.hearthproject.oneclient.fx.nodes.CurseTile;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
-import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.curse.CursePack;
+import com.hearthproject.oneclient.fx.nodes.CurseModpack;
+import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -26,7 +21,6 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,11 +30,11 @@ public class CursePacksPane extends ContentPane {
 
 	public String URL;
 
-	public ObservableList<CurseTile> tiles = FXCollections.observableArrayList();
+	public ObservableList<CurseModpack> tiles = FXCollections.observableArrayList();
 	public ObservableList<String> versions;
 	public ObservableList<Pair<String, String>> sorting;
 
-	public ListView<CurseTile> listTiles;
+	public ListView<CurseModpack> listTiles;
 	public ComboBox<String> filterVersion;
 	public ComboBox<Pair<String, String>> filterSort;
 	public Button buttonSearch;
@@ -48,7 +42,7 @@ public class CursePacksPane extends ContentPane {
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
 
 	public CursePacksPane() {
-		super("gui/contentpanes/getCurseContent.fxml", "Curse Modpacks", "#2D4BAD");
+		super("gui/contentpanes/curse_packs.fxml", "Curse Modpacks", "#2D4BAD");
 	}
 
 	private int page = 1, lastPage = -1;
@@ -157,13 +151,13 @@ public class CursePacksPane extends ContentPane {
 				if (pageLoading.get())
 					return;
 				pageLoading.set(true);
-				List<CursePack> packs = CurseUtils.getPacks(page, version, sorting);
+				List<CurseElement> packs = CurseUtils.getPacks(page, version, sorting);
 				if (packs != null) {
 					if (!packs.isEmpty()) {
 						OneClientLogging.logger.info("Loading page " + page);
 						while (!packs.isEmpty()) {
-							CursePack pack = packs.remove(0);
-							Platform.runLater(() -> tiles.add(new CurseTile(this, pack)));
+							CurseElement pack = packs.remove(0);
+							Platform.runLater(() -> tiles.add(new CurseModpack(pack)));
 						}
 					} else {
 						lastPage = page;
@@ -182,53 +176,23 @@ public class CursePacksPane extends ContentPane {
 		new Thread(() -> {
 			type = ViewType.SEARCH;
 
-			List<CursePack> packs = CurseUtils.searchCurse(textSearch.getText());
+			List<CurseElement> packs = CurseUtils.searchCurse(textSearch.getText(), "modpacks");
 			Platform.runLater(() -> {
 				tiles.clear();
-				tiles.addAll(packs.stream().map(p -> new CurseTile(this, p)).collect(Collectors.toList()));
+				tiles.addAll(packs.stream().map(p -> new CurseModpack(p)).collect(Collectors.toList()));
 			});
 		}).start();
 	}
 
-	public void install(MiscUtil.ThrowingConsumer<Instance> downloadFunction) {
-		try {
-			InstallingController.showInstaller();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		InstallingController.controller.setTitleText("Installing...");
-		InstallingController.controller.setDetailText("Preparing to install");
-
-		new Thread(() -> {
-			Instance instance = new Instance("Unknown");
-			instance.icon = "icon.png";
-			try {
-				downloadFunction.accept(instance);
-				MinecraftUtil.installMinecraft(instance);
-			} catch (Throwable throwable) {
-				OneClientLogging.logger.error(throwable);
-			}
-
-			Platform.runLater(() -> {
-				InstanceManager.addInstance(instance);
-				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
-					Main.mainController.currentContent.refresh();
-				}
-				InstallingController.close();
-				Alert alert = new Alert(Alert.AlertType.INFORMATION);
-				alert.setTitle("Pack has been installed!");
-				alert.setHeaderText(null);
-				alert.setContentText(instance.name + " has been downloaded and installed! You can find it under the instances tab.");
-				alert.showAndWait();
-			});
-
-		}).start();
-	}
 
 	@Override
 	public void refresh() {
 
+	}
+
+	@Override
+	public void close() {
+		this.tiles.clear();
 	}
 
 	public enum ViewType {

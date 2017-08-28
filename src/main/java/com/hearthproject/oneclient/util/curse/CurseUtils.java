@@ -12,6 +12,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -19,7 +23,7 @@ import java.util.stream.Collectors;
 public class CurseUtils {
 	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 	public static final String CURSE_BASE = "https://mods.curse.com";
-	public static final String CURSEFORGE_BASE = "https://minecraft.curseforge.com";
+	public static final String CURSEFORGE_PROJECT_BASE = "https://www.curseforge.com/projects/";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
 
 	public static Filter versionFilter(String value) {
@@ -46,7 +50,21 @@ public class CurseUtils {
 		return versions.stream().map(e -> new Pair<>(e.text(), e.val())).distinct().collect(Collectors.toList());
 	}
 
-	public static List<CursePack> getPacks(int page, String version, String sorting) {
+	public static List<CurseElement> getMods(int page, String version, String sorting) {
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/mc-mods/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
+		Element e = d.select(".b-pagination-item").select(".s-active").first();
+		String realPage = e != null ? e.text() : null;
+		if (realPage == null) {
+			return null;
+		}
+		if (Integer.parseInt(realPage) != page) {
+			return Lists.newArrayList();
+		}
+		Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
+		return packs.stream().map(CurseElement::new).collect(Collectors.toList());
+	}
+
+	public static List<CurseElement> getPacks(int page, String version, String sorting) {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
 		Element e = d.select(".b-pagination-item").select(".s-active").first();
 		String realPage = e != null ? e.text() : null;
@@ -57,14 +75,14 @@ public class CurseUtils {
 			return Lists.newArrayList();
 		}
 		Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
-		return packs.stream().map(CursePack::new).collect(Collectors.toList());
+		return packs.stream().map(CurseElement::new).collect(Collectors.toList());
 	}
 
-	public static List<CursePack> searchCurse(String query) {
+	public static List<CurseElement> searchCurse(String query, String type) {
 		String formatQuery = query.replace(" ", "+");
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("game-slug", "minecraft"), new Filter("search=", formatQuery), new Filter("#t1:", "modpacks"));
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("game-slug", "minecraft"), new Filter("search=", formatQuery), new Filter("#t1:", type));
 		Elements results = d.select("#tab-modpacks .minecraft");
-		return results.stream().map(CursePack.CurseSearch::new).collect(Collectors.toList());
+		return results.stream().map(CurseElement.CurseSearch::new).collect(Collectors.toList());
 
 	}
 
@@ -108,6 +126,33 @@ public class CurseUtils {
 			return String.format("%s%s", key, value);
 		}
 
+	}
+
+	public static String getLocationHeader(String location) throws IOException, URISyntaxException {
+		URI uri = new URI(location);
+		HttpURLConnection connection = null;
+		String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36";
+		for (; ; ) {
+			URL url = uri.toURL();
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("User-Agent", userAgent);
+			connection.setInstanceFollowRedirects(false);
+			String redirectLocation = connection.getHeaderField("Location");
+			if (redirectLocation == null)
+				break;
+
+			// This gets parsed out later
+			redirectLocation = redirectLocation.replaceAll("\\%20", " ");
+
+			if (redirectLocation.startsWith("/"))
+				uri = new URI(uri.getScheme(), uri.getHost(), redirectLocation, uri.getFragment());
+			else {
+				url = new URL(redirectLocation);
+				uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+			}
+		}
+
+		return uri.toString();
 	}
 
 }
