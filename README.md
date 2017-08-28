@@ -1,5 +1,5 @@
 # OneClient
-## A modern modded Minecraft client
+## A modern modded Minecraft launcher
 
 ### About
 
