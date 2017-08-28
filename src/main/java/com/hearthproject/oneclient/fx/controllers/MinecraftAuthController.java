@@ -1,10 +1,12 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.hearth.HearthApi;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -25,17 +27,32 @@ public class MinecraftAuthController {
 	public Button buttonLogin;
 	public CheckBox checkboxPasswordSave;
 
+	private boolean minecraft;
+
 	public void login(ActionEvent actionEvent) {
 		stage.hide();
 		save();
-		if (!MinecraftUtil.startMinecraft(instance, username.getText(), password.getText())) {
-			stage.show();
-			return;
+		if (minecraft) {
+			if (!MinecraftUtil.startMinecraft(instance, username.getText(), password.getText())) {
+				stage.show();
+				return;
+			}
+		} else {
+			try {
+				if (!HearthApi.login(username.getText(), password.getText())) {
+					stage.show();
+					return;
+				}
+				HearthApi.getClientPermissions();
+			} catch (UnirestException e) {
+				OneClientLogging.logger.error(e);
+			}
 		}
 		stage.close();
 	}
 
-	public void load() {
+	public void load(boolean minecraft) {
+		this.minecraft = minecraft;
 		try {
 			if (getAuthStore().exists()) {
 				FileInputStream inputStream = new FileInputStream(getAuthStore());

@@ -14,6 +14,7 @@ public class ContentPanes {
 	public static final CursePacksPane CURSE_PACKS_PANE = (CursePacksPane) getPane(CursePacksPane.class);
 	public static final SettingsPane SETTINGS_PANE = (SettingsPane) getPane(SettingsPane.class);
 	public static final AboutPane ABOUT_PANE = (AboutPane) getPane(AboutPane.class);
+	public static final PrivatePackPane PRIVATE_PACK_PANE = (PrivatePackPane) getPane(PrivatePackPane.class);
 
 	public static ContentPane getPane(Class<? extends ContentPane> clazz) {
 		try {

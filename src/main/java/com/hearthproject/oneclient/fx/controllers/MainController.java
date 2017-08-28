@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -28,6 +29,8 @@ public class MainController {
 	public Hyperlink siteLink;
 	@FXML
 	public Text versionText;
+	@FXML
+	public ImageView imageBox;
 
 	public ContentPane currentContent = null;
 	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
