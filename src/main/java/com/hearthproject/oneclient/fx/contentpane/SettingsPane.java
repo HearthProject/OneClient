@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.curse.CursePackImporter;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Button;
@@ -21,6 +22,7 @@ public class SettingsPane extends ContentPane {
 	public Text memoryText;
 	public Slider memorySlider;
 	public TextField argumentBox;
+	public Button buttonImport;
 
 	public SettingsPane() {
 		super("gui/contentpanes/settings.fxml", "Settings", "#9C27B0");
@@ -53,6 +55,7 @@ public class SettingsPane extends ContentPane {
 		memoryText.setText("Allocated Memory: " + MiscUtil.round((memorySlider.getValue() / 1024), 2) + "GB");
 		memorySlider.valueProperty().addListener((observable, oldValue, newValue) -> memoryText.setText("Allocated Memory: " + MiscUtil.round((memorySlider.getValue() / 1024), 2) + "GB"));
 		argumentBox.setText(SettingsUtil.settings.arguments);
+		buttonImport.setOnAction(event -> CursePackImporter.importPacks());
 	}
 
 	@Override
