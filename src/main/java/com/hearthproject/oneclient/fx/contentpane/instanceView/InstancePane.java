@@ -7,10 +7,10 @@ import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -21,7 +21,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Optional;
 
 public class InstancePane extends ContentPane {
@@ -57,16 +56,11 @@ public class InstancePane extends ContentPane {
 		this.instance = instance;
 		textPackName.setText(instance.name);
 		textMinecraftVersion.setText("Minecraft " + instance.minecraftVersion);
+
 		if (instance.getIcon() != null && instance.getIcon().exists()) {
-			try {
-				InputStream iconStream = FileUtils.openInputStream(instance.getIcon());
-				packIcon.setImage(new Image(iconStream));
-				iconStream.close();
-				packIcon.setFitWidth(150);
-				packIcon.setFitHeight(150);
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
+			packIcon.setImage(ImageUtil.openImage(instance.getIcon()));
+			packIcon.setFitWidth(150);
+			packIcon.setFitHeight(150);
 		}
 		updateList();
 

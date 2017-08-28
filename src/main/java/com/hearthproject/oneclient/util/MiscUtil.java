@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
 
@@ -54,6 +55,14 @@ public class MiscUtil {
 		huc.connect();
 		int code = huc.getResponseCode();
 		return code;
+	}
+
+	public static void downloadImageFromURl(URL url, File location) {
+		try {
+			Files.write(Resources.toByteArray(url), location);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FunctionalInterface

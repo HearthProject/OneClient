@@ -4,8 +4,8 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class InstanceManager {
 		File jsonFile = new File(dir, "instance.json");
 		String jsonStr = JsonUtil.GSON.toJson(instance);
 		try {
-			FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
+			org.apache.commons.io.FileUtils.writeStringToFile(jsonFile, jsonStr, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
@@ -64,9 +64,7 @@ public class InstanceManager {
 	public static void init(Instance instance) {
 		File instanceDir = new File(Constants.INSTANCEDIR, instance.name);
 		for (String dir : Constants.INITIALIZE_DIRS) {
-			File d = new File(instanceDir, dir);
-			if (!d.exists())
-				d.mkdir();
+			FileUtil.findDirectory(instanceDir, dir);
 		}
 	}
 
@@ -83,7 +81,7 @@ public class InstanceManager {
 					OneClientLogging.logger.error("ERROR: An invalid instance with the name " + dir.getName() + " is has been found, it will be ignored.");
 					return;
 				}
-				String jsonStr = FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
+				String jsonStr = org.apache.commons.io.FileUtils.readFileToString(jsonFile, StandardCharsets.UTF_8);
 				Instance instance = JsonUtil.GSON.fromJson(jsonStr, Instance.class);
 				instances.put(instance.name, instance);
 			} catch (IOException e) {

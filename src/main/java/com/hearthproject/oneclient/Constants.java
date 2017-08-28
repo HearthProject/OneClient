@@ -3,9 +3,9 @@ package com.hearthproject.oneclient;
 import com.hearthproject.oneclient.fx.controllers.InstallLocation;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
-import org.apache.commons.io.FileUtils;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
@@ -17,6 +17,7 @@ public class Constants {
 	public static File TEMPDIR;
 	public static File INSTANCEDIR;
 	public static File LOGFILE;
+	public static File ICONDIR;
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
@@ -57,9 +58,10 @@ public class Constants {
 	}
 
 	public static void setUpDirs() {
-		TEMPDIR = new File(getRunDir(), "temp");
-		INSTANCEDIR = new File(getRunDir(), "instances");
-		LOGFILE = new File(getRunDir(), "log.txt");
+		TEMPDIR = FileUtil.findDirectory(getRunDir(), "temp");
+		INSTANCEDIR = FileUtil.findDirectory(getRunDir(), "instances");
+		LOGFILE = FileUtil.findDirectory(getRunDir(), "log.txt");
+		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "icons");
 		System.setProperty("logFilename", LOGFILE.toString());
 		OneClientLogging.init();
 	}
@@ -83,13 +85,13 @@ public class Constants {
 	public static StaticSettings getSettings() throws IOException {
 		File config = getInstallConfig();
 		if (config.exists()) {
-			return JsonUtil.GSON.fromJson(FileUtils.readFileToString(config, StandardCharsets.UTF_8), StaticSettings.class);
+			return JsonUtil.GSON.fromJson(org.apache.commons.io.FileUtils.readFileToString(config, StandardCharsets.UTF_8), StaticSettings.class);
 		}
 		return null;
 	}
 
 	public static void saveSettings(StaticSettings staticSettings) throws IOException {
-		FileUtils.writeStringToFile(getInstallConfig(), JsonUtil.GSON.toJson(staticSettings), StandardCharsets.UTF_8);
+		org.apache.commons.io.FileUtils.writeStringToFile(getInstallConfig(), JsonUtil.GSON.toJson(staticSettings), StandardCharsets.UTF_8);
 	}
 
 	public static class StaticSettings {
