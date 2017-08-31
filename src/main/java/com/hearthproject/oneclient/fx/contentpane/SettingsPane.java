@@ -1,16 +1,11 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.curse.CursePackImporter;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 
@@ -19,10 +14,11 @@ public class SettingsPane extends ContentPane {
 	public CheckBox checkLog;
 	public CheckBox checkTracking;
 	public Button buttonSave;
-	public Text memoryText;
-	public Slider memorySlider;
 	public TextField argumentBox;
 	public Button buttonImport;
+	public Spinner<Integer> spinnerMinRAM, spinnerMaxRAM;
+
+	public SpinnerValueFactory.IntegerSpinnerValueFactory minMemory, maxMemory;
 
 	public SettingsPane() {
 		super("gui/contentpanes/settings.fxml", "Settings", "#9C27B0");
@@ -35,7 +31,8 @@ public class SettingsPane extends ContentPane {
 		buttonSave.setOnAction(event -> {
 			SettingsUtil.settings.show_log_window = checkLog.isSelected();
 			SettingsUtil.settings.tracking = checkTracking.isSelected();
-			SettingsUtil.settings.minecraftMemory = (int) memorySlider.getValue();
+			SettingsUtil.settings.minecraftMinMemory = minMemory.getValue();
+			SettingsUtil.settings.minecraftMaxMemory = maxMemory.getValue();
 			SettingsUtil.settings.arguments = argumentBox.getText();
 			try {
 				SettingsUtil.saveSetting();
@@ -48,12 +45,17 @@ public class SettingsPane extends ContentPane {
 				OneClientLogging.hideLogWindow();
 			}
 		});
-		if (OperatingSystem.getOSTotalMemory() != 0) {
-			memorySlider.setMax(OperatingSystem.getOSTotalMemory());
-		}
-		memorySlider.setValue(SettingsUtil.settings.minecraftMemory);
-		memoryText.setText("Allocated Memory: " + MiscUtil.round((memorySlider.getValue() / 1024), 2) + "GB");
-		memorySlider.valueProperty().addListener((observable, oldValue, newValue) -> memoryText.setText("Allocated Memory: " + MiscUtil.round((memorySlider.getValue() / 1024), 2) + "GB"));
+
+		maxMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMaxMemory, 128);
+		minMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxMemory.getValue(), SettingsUtil.settings.minecraftMinMemory, 128);
+		maxMemory.valueProperty().addListener((observableValue, a, b) -> minMemory.setMax(maxMemory.getValue()));
+
+		spinnerMinRAM.setValueFactory(minMemory);
+		spinnerMaxRAM.setValueFactory(maxMemory);
+
+		spinnerMinRAM.setEditable(true);
+		spinnerMaxRAM.setEditable(true);
+
 		argumentBox.setText(SettingsUtil.settings.arguments);
 		buttonImport.setOnAction(event -> CursePackImporter.importPacks());
 	}

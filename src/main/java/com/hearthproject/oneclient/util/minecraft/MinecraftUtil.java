@@ -221,8 +221,8 @@ public class MinecraftUtil {
 				for (String str : SettingsUtil.settings.arguments.split(" ")) {
 					arguments.add(str);
 				}
-				arguments.add("-Xmx" + SettingsUtil.settings.minecraftMemory + "m");
-				arguments.add("-Xms" + SettingsUtil.settings.minecraftMemory + "m");
+				arguments.add("-Xms" + SettingsUtil.settings.minecraftMinMemory + "m");
+				arguments.add("-Xmx" + SettingsUtil.settings.minecraftMaxMemory + "m");
 
 				arguments.add("-cp");
 				arguments.add(cpb.toString());
