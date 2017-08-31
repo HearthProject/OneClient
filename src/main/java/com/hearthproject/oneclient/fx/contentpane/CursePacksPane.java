@@ -69,12 +69,22 @@ public class CursePacksPane extends ContentPane {
 		sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
 
 		filterVersion.setItems(versions);
+		filterSort.setItems(sorting);
+
 		filterVersion.getSelectionModel().selectFirst();
+		filterSort.getSelectionModel().selectFirst();
+
+		filterVersion.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
+		filterSort.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
+
+
+
 		filterVersion.setConverter(new StringConverter<String>() {
 			@Override
 			public String toString(String s) {
 				if (s.isEmpty())
 					return "All";
+				System.out.println(s);
 				return s;
 			}
 
@@ -86,8 +96,6 @@ public class CursePacksPane extends ContentPane {
 			}
 		});
 
-		filterSort.setItems(sorting);
-		filterSort.getSelectionModel().selectFirst();
 		filterSort.setConverter(new StringConverter<Pair<String, String>>() {
 			@Override
 			public String toString(Pair<String, String> pair) {
@@ -99,6 +107,7 @@ public class CursePacksPane extends ContentPane {
 				return sorting.stream().filter(k -> k.getKey().equals(s)).findFirst().orElse(null);
 			}
 		});
+
 		pageLoading.addListener((observableValue, oldValue, newValue) -> {
 		});
 		listTiles.setItems(tiles);
@@ -128,8 +137,6 @@ public class CursePacksPane extends ContentPane {
 				}
 			});
 		}
-		filterVersion.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
-		filterSort.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
 
 		buttonSearch.setOnAction(event -> search());
 		textSearch.setOnKeyPressed(keyEvent -> {
@@ -142,6 +149,8 @@ public class CursePacksPane extends ContentPane {
 		type = ViewType.FILTER;
 		tiles.clear();
 		page = 1;
+		filterVersion.getSelectionModel().selectFirst();
+		filterSort.getSelectionModel().selectFirst();
 		loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
 	}
 
@@ -167,7 +176,7 @@ public class CursePacksPane extends ContentPane {
 				}
 				pageLoading.set(false);
 			} catch (Exception e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		}).start();
 	}

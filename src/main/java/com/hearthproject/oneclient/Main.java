@@ -59,7 +59,7 @@ public class Main extends Application {
 			try {
 				SplashScreen.show();
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 			for (String arg : args) {
 				if (arg.equals("-updateSuccess")) {
@@ -95,11 +95,11 @@ public class Main extends Application {
 							}
 						}
 					} catch (Exception e) {
-						OneClientLogging.logger.error(e);
+						OneClientLogging.error(e);
 					}
 				});
 			} catch (Exception e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		}).start();
 	}

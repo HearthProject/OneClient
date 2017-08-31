@@ -15,8 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 
 public class OneClientLogging {
@@ -26,15 +24,20 @@ public class OneClientLogging {
 
 	public static Logger logger = LogManager.getLogger("OneClientLogging");
 
+	public static void info(String message, Object... params) {
+		logger.info(message, params);
+	}
+
+	public static void error(Throwable error) {
+		logger.error("An Error has occurred:", error);
+	}
 	public static void init() {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
 		context.reconfigure();
 	}
 
 	public static void logUserError(Throwable throwable, String title) {
-		StringWriter errors = new StringWriter();
-		throwable.printStackTrace(new PrintWriter(errors));
-		logger.error(errors.toString());
+		error(throwable);
 		Platform.runLater(() -> {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Error!");
@@ -49,7 +52,7 @@ public class OneClientLogging {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/log.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading instance_creation.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -61,7 +64,7 @@ public class OneClientLogging {
 			stage.getIcons().add(new Image("icon.png"));
 			stage.setResizable(true);
 			stage.initOwner(Main.stage);
-			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initModality(Modality.NONE);
 			Scene scene = new Scene(root, 600, 300);
 			scene.getStylesheets().add("gui/css/theme.css");
 			stage.setScene(scene);
@@ -69,7 +72,7 @@ public class OneClientLogging {
 			logController.setStage(stage);
 			TextAreaAppender.setTextArea(logController.logArea);
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 

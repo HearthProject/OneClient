@@ -70,7 +70,7 @@ public class Updater {
 			processBuilder.start();
 			System.exit(0);
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 
 	}

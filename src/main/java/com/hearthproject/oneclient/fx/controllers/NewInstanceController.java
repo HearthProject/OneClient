@@ -54,9 +54,9 @@ public class NewInstanceController {
 	public static void start(Instance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			URL fxmlUrl = classLoader.getResource("gui/newInstance.fxml");
+			URL fxmlUrl = classLoader.getResource("gui/instance_creation.fxml");
 			if (fxmlUrl == null) {
-				OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
+				OneClientLogging.logger.error("An error has occurred loading instance_creation.fxml!");
 				return;
 			}
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -77,7 +77,7 @@ public class NewInstanceController {
 			controller.instance = instance;
 			controller.onStart(stage);
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class NewInstanceController {
 					iconPreview.setImage(new Image(targetStream));
 					targetStream.close();
 				} catch (IOException e) {
-					OneClientLogging.logger.error(e);
+					OneClientLogging.error(e);
 				}
 			}
 			createButton.setText("Update Instance");
@@ -128,7 +128,7 @@ public class NewInstanceController {
 						.forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
 				}
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 			if (modLoaderVersionComboBox.getItems().isEmpty()) {
 				modLoaderVersionComboBox.setDisable(true);
@@ -162,7 +162,7 @@ public class NewInstanceController {
 			try {
 				FileUtils.copyFile(selectedImageFile, instance.getIcon());
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		}
 		instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
@@ -206,7 +206,7 @@ public class NewInstanceController {
 				iconPreview.setImage(new Image(targetStream));
 				targetStream.close();
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		}
 	}
@@ -218,7 +218,7 @@ public class NewInstanceController {
 			gameVersion.versions.stream().filter(version -> version.type.equals("release") || showSnapshotCheckBox.isSelected()).forEach(version -> mcVersionComboBox.getItems().add(version.id));
 			mcVersionComboBox.getSelectionModel().selectFirst();
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 

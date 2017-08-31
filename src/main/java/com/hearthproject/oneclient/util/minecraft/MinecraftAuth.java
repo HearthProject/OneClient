@@ -44,7 +44,7 @@ public class MinecraftAuth {
 			controller.buttonLogin.setDefaultButton(true);
 			controller.load(instance != null);
 		} catch (Exception e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 

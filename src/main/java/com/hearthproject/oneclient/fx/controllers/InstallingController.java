@@ -30,7 +30,7 @@ public class InstallingController {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL fxmlUrl = classLoader.getResource("gui/install_screen.fxml");
 		if (fxmlUrl == null) {
-			OneClientLogging.logger.error("An error has occurred loading newInstance.fxml!");
+			OneClientLogging.logger.error("An error has occurred loading instance_creation.fxml!");
 			return;
 		}
 		FXMLLoader fxmlLoader = new FXMLLoader();

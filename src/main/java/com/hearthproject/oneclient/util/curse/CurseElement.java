@@ -1,11 +1,16 @@
 package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Lists;
+import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.util.files.ImageUtil;
+import javafx.scene.image.Image;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,13 +71,36 @@ public class CurseElement {
 		return title;
 	}
 
-	public String getIcon() {
+	public Optional<String> getIconURL() {
 		try {
-			return icon.get();
-		} catch (InterruptedException | ExecutionException e) {
+			return Optional.of(icon.get());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		return "";
+		return Optional.empty();
+	}
+
+	public File getIcon() {
+		Optional<String> url = getIconURL();
+		if (url.isPresent()) {
+			File dir = Constants.ICONDIR;
+			File jpeg = new File(dir, getTitle() + ".jpeg");
+			if (!jpeg.exists()) {
+				ImageUtil.downloadFromURL(url.get(), jpeg);
+			}
+			return jpeg;
+		}
+		return null;
+	}
+
+	public Image getIconImage() {
+		File icon = getIcon();
+		if (icon != null) {
+			return ImageUtil.openImage(icon);
+		}
+		return null;
 	}
 
 	public String getAverageDownloads() {

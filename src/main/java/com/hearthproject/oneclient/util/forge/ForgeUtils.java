@@ -62,7 +62,7 @@ public class ForgeUtils {
 				}
 				librarys.add(library.getFile(libraries));
 			} catch (Exception e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 
 		});

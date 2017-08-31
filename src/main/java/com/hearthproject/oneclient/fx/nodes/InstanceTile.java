@@ -43,7 +43,7 @@ public class InstanceTile extends StackPane {
 				imageView.setImage(new Image(iconInputSteam));
 				iconInputSteam.close();
 			} catch (IOException e) {
-				OneClientLogging.logger.error(e);
+				OneClientLogging.error(e);
 			}
 		} else {
 			if (defaultImage == null) {

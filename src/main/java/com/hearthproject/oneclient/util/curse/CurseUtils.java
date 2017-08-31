@@ -1,10 +1,7 @@
 package com.hearthproject.oneclient.util.curse;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.scene.image.Image;
 import javafx.util.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,11 +14,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class CurseUtils {
-	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
+
 	public static final String CURSE_BASE = "https://mods.curse.com";
 	public static final String CURSEFORGE_PROJECT_BASE = "https://www.curseforge.com/projects/";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
@@ -106,7 +102,7 @@ public class CurseUtils {
 			String finalURL = url + path + filter;
 			return Jsoup.connect(finalURL).get();
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 		return null;
 	}

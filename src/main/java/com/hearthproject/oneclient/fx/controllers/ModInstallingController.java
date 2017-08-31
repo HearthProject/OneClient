@@ -59,7 +59,7 @@ public class ModInstallingController {
 			controller.listTiles.setItems(controller.tiles);
 
 		} catch (IOException e) {
-			OneClientLogging.logger.error(e);
+			OneClientLogging.error(e);
 		}
 	}
 
