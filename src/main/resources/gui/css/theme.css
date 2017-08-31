@@ -505,6 +505,41 @@
     -fx-background-color: -hover-color;
 }
 
-.spinner *.increment-arrow-button:hover, .spinner *.decrement-arrow-button:hover {
+.spinner *.increment-arrow-button:focused, .spinner *.decrement-arrow-button:focused {
     -fx-border-color: -accent-color;
 }
+
+.notification-bar>.pane {
+	-fx-text-fill: -text-color;
+    -fx-background-color: -dark-background-color;
+}
+.notification-bar>.pane .title {
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+}
+
+.notification-bar>.pane .label {
+    -fx-text-fill: -text-color;
+    -fx-alignment: top-left;
+}
+
+.notification-bar>.pane .close-button {
+    -fx-background-color: -fill-color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-padding: 3 8 3 8;
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.notification-bar>.pane .close-button:hover {
+    -fx-background-color: -hover-color;
+}
+
+.notification-bar>.pane .close-button:focused {
+    -fx-border-color: -accent-color;
+}
+

@@ -51,6 +51,7 @@ dependencies {
 	shade 'org.jsoup:jsoup:1.10.3'
 	shade 'org.apache.logging.log4j:log4j-api:2.8.2'
 	shade 'org.apache.logging.log4j:log4j-core:2.8.2'
+	shade 'org.controlsfx:controlsfx:8.40.13'
 }
 
 jar {

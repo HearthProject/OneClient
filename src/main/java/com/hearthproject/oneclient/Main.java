@@ -132,7 +132,6 @@ public class Main extends Application {
 		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		mainController.onStart(stage);
-
 	}
 
 	public void loadData() throws Exception {
