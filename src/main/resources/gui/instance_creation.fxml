@@ -58,7 +58,7 @@
                         <Insets bottom="6.0"/>
                     </VBox.margin>
                 </HBox>
-                <Button id="default_button" fx:id="createButton" mnemonicParsing="false" onAction="#onCreateButtonPress" prefWidth="1000.0" text="Create" VBox.vgrow="ALWAYS"/>
+                <Button id="default_button" fx:id="createButton" defaultButton="true" mnemonicParsing="false" onAction="#onCreateButtonPress" prefWidth="1000.0" text="Create" VBox.vgrow="ALWAYS"/>
             </children>
         </VBox>
     </children>

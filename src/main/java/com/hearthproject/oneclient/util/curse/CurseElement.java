@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.scene.image.Image;
 import org.jsoup.nodes.Document;
@@ -88,7 +89,7 @@ public class CurseElement {
 			File dir = Constants.ICONDIR;
 			File jpeg = new File(dir, getTitle() + ".jpeg");
 			if (!jpeg.exists()) {
-				ImageUtil.downloadFromURL(url.get(), jpeg);
+				FileUtil.downloadFromURL(url.get(), jpeg);
 			}
 			return jpeg;
 		}

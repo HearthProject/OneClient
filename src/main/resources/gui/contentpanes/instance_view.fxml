@@ -65,6 +65,12 @@
                                         <Insets bottom="5.0" left="5.0" right="5.0"/>
                                     </VBox.margin>
                                 </Button>
+                                <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete Instance"
+                                        VBox.vgrow="ALWAYS">
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0"/>
+                                    </VBox.margin>
+                                </Button>
                             </children>
                         </VBox>
                     </children>

@@ -33,6 +33,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonEditVersion;
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
+	public Button buttonDelete;
 	public ListView modList;
 	public Instance instance;
 
@@ -72,6 +73,7 @@ public class InstancePane extends ContentPane {
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
 		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller());
+		buttonDelete.setOnAction(event -> instance.delete());
 	}
 
 	public void updateList() {

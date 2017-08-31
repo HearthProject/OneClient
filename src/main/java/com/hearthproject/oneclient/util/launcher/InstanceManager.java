@@ -71,9 +71,6 @@ public class InstanceManager {
 	public static void load() {
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
-		if (!Constants.INSTANCEDIR.exists()) {
-			Constants.INSTANCEDIR.mkdirs();
-		}
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
 			try {
 				File jsonFile = new File(dir, "instance.json");

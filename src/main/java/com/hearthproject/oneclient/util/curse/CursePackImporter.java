@@ -42,7 +42,6 @@ public class CursePackImporter {
 								instance.minecraftVersion = mcVersion;
 								instance.modLoader = "Forge";
 								instance.modLoaderVersion = jsonObject.getAsJsonObject("baseModLoader").get("Name").getAsString().replace("forge-", "");
-								instance.getDirectory().mkdirs();
 								FileUtils.copyDirectory(file, instance.getDirectory());
 								MinecraftUtil.installMinecraft(instance);
 								InstanceManager.addInstance(instance);
