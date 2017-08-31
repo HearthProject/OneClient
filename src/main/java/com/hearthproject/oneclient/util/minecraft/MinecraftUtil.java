@@ -254,10 +254,10 @@ public class MinecraftUtil {
 				arguments.add("--assetIndex");
 				arguments.add(versionData.assetIndex.id);
 				arguments.add("--gameDir");
-				arguments.add(new File(Constants.INSTANCEDIR, instance.name).toString());
+				arguments.add(instance.getDirectory().toString());
 
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-				processBuilder.directory(new File(Constants.INSTANCEDIR, instance.name));
+				processBuilder.directory(instance.getDirectory());
 				Platform.runLater(() -> OneClientLogging.logController.minecraftMenu.setDisable(false));
 
 				Process process = processBuilder.start();

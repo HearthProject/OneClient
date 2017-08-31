@@ -39,7 +39,7 @@ public class InstanceManager {
 	}
 
 	public static boolean isValid(Instance instance) {
-		File dir = new File(Constants.INSTANCEDIR, instance.name);
+		File dir = instance.getDirectory();
 		if (dir.exists()) {
 			return false;
 		}
@@ -51,7 +51,7 @@ public class InstanceManager {
 	}
 
 	public static void save(Instance instance) {
-		File dir = new File(Constants.INSTANCEDIR, instance.name);
+		File dir = instance.getDirectory();
 		File jsonFile = new File(dir, "instance.json");
 		String jsonStr = JsonUtil.GSON.toJson(instance);
 		try {
@@ -62,7 +62,7 @@ public class InstanceManager {
 	}
 
 	public static void init(Instance instance) {
-		File instanceDir = new File(Constants.INSTANCEDIR, instance.name);
+		File instanceDir = instance.getDirectory();
 		for (String dir : Constants.INITIALIZE_DIRS) {
 			FileUtil.findDirectory(instanceDir, dir);
 		}
@@ -71,9 +71,6 @@ public class InstanceManager {
 	public static void load() {
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
-		if (!Constants.INSTANCEDIR.exists()) {
-			Constants.INSTANCEDIR.mkdirs();
-		}
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
 			try {
 				File jsonFile = new File(dir, "instance.json");

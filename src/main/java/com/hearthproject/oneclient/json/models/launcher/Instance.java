@@ -1,11 +1,19 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 public class Instance {
 
@@ -31,7 +39,7 @@ public class Instance {
 	}
 
 	public File getDirectory() {
-		return new File(Constants.INSTANCEDIR, name);
+		return FileUtil.getDirectory(Constants.INSTANCEDIR, name);
 	}
 
 	public File getIcon() {
@@ -54,4 +62,23 @@ public class Instance {
 		return CurseUtils.getLocationHeader(fileUrl);
 	}
 
+	public void delete() {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Are you sure?");
+		alert.setHeaderText("Are you sure you want to delete the pack");
+		alert.setContentText("This will remove all mods and worlds, this cannot be undone!");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			try {
+				ContentPanes.INSTANCES_PANE.button.fire();
+				File dir = getDirectory();
+				FileUtils.deleteDirectory(dir);
+				InstanceManager.load();
+				ContentPanes.INSTANCES_PANE.refresh();
+			} catch (IOException e) {
+				OneClientLogging.logger.error(e);
+			}
+		}
+	}
 }

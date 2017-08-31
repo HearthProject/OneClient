@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
@@ -129,12 +130,7 @@ public class CursePackInstaller {
 	}
 
 	public File getTempPackDir(String pack) {
-		File home = getTempDir();
-		File retDir = new File(home, FilenameUtils.removeExtension(pack));
-		if (!retDir.exists()) {
-			retDir.mkdir();
-		}
-		return retDir;
+		return FileUtil.findDirectory(getTempDir(), FilenameUtils.removeExtension(pack));
 	}
 
 	public File getTempPackDir(File zipFile) {
@@ -160,15 +156,12 @@ public class CursePackInstaller {
 		log("Downloading modpack from Manifest");
 		log("Manifest contains " + total + " files to download");
 
-		File modsDir = new File(outputDir, "mods");
-		if (!modsDir.exists())
-			modsDir.mkdir();
+		File modsDir = FileUtil.findDirectory(outputDir, "mods");
 
 		left = total;
 
 		manifest.files.parallelStream().forEach(f -> {
 			left--;
-
 			try {
 				downloadFile(f, modsDir, left, total);
 			} catch (IOException | URISyntaxException e) {
@@ -234,16 +227,8 @@ public class CursePackInstaller {
 		}
 	}
 
-
-
 	public void downloadFileFromURL(File f, URL url) throws IOException {
-		if (!f.exists()) {
-			if (!f.getParentFile().exists()) {
-				f.getParentFile().mkdirs();
-			}
-			f.createNewFile();
-		}
-		FileUtils.copyURLToFile(url, f);
+		FileUtils.copyURLToFile(url, FileUtil.createFile(f));
 	}
 
 	//Find alternative to this

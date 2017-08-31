@@ -32,6 +32,7 @@ public class Main extends Application {
 	public static MainController mainController;
 	public static Scene scene;
 	public static List<String> args;
+	public static boolean nativeLaunch = false;
 
 	public static void main(String... argArray) throws IOException {
 		Main.args = Arrays.asList(argArray);
@@ -67,6 +68,8 @@ public class Main extends Application {
 					alert.setHeaderText("The update was successful!");
 					alert.setContentText("You are now running OneClient version " + Constants.getVersion() + "!");
 					alert.showAndWait();
+				} else if (arg.equals("-native_launch")) {
+					nativeLaunch = true;
 				}
 			}
 		});
@@ -78,7 +81,7 @@ public class Main extends Application {
 					try {
 						startLauncher();
 						Optional<String> latestVersion = Updater.checkForUpdate();
-						if (latestVersion.isPresent()) {
+						if (latestVersion.isPresent() && !nativeLaunch) {
 							Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 							alert.setTitle("Update?");
 							alert.setContentText("OneClient version " + latestVersion.get() + " is available, you are using " + Constants.getVersion() + ". Would you like to update?");
