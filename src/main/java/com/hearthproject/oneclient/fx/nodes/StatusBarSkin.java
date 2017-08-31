@@ -15,7 +15,7 @@ public class StatusBarSkin extends SkinBase<StatusBar> {
 
 	private HBox leftBox;
 	private HBox rightBox;
-	private Label label, progress;
+	private Label label;
 	private ProgressBar progressBar;
 
 	public StatusBarSkin(StatusBar statusBar) {
@@ -40,8 +40,6 @@ public class StatusBarSkin extends SkinBase<StatusBar> {
 		label.getStyleClass().add("status-label"); //$NON-NLS-1$
 		label.styleProperty().bind(getSkinnable().styleProperty());
 
-		progress = new Label();
-
 		leftBox.getChildren().setAll(getSkinnable().getLeftItems());
 
 		rightBox.getChildren().setAll(getSkinnable().getRightItems());
@@ -58,13 +56,11 @@ public class StatusBarSkin extends SkinBase<StatusBar> {
 		GridPane.setFillHeight(rightBox, true);
 		GridPane.setFillHeight(label, true);
 		GridPane.setFillHeight(progressBar, true);
-		GridPane.setFillHeight(progress, true);
 
 		GridPane.setVgrow(leftBox, Priority.ALWAYS);
 		GridPane.setVgrow(rightBox, Priority.ALWAYS);
 		GridPane.setVgrow(label, Priority.ALWAYS);
 		GridPane.setVgrow(progressBar, Priority.ALWAYS);
-		GridPane.setVgrow(progress, Priority.ALWAYS);
 
 		GridPane.setHgrow(label, Priority.ALWAYS);
 
@@ -72,7 +68,6 @@ public class StatusBarSkin extends SkinBase<StatusBar> {
 		gridPane.add(label, 1, 0);
 		gridPane.add(progressBar, 2, 0);
 		gridPane.add(rightBox, 4, 0);
-		gridPane.add(progress, 5, 0);
 		getChildren().add(gridPane);
 
 		/**
@@ -89,7 +84,6 @@ public class StatusBarSkin extends SkinBase<StatusBar> {
 			} else {
 				gridPane.getChildren().remove(progressBar);
 			}
-			progress.setText(String.format("%.2f", newValue.doubleValue()));
 		});
 		progressBar.progressProperty().bind(statusBar.progressProperty());
 	}
