@@ -64,7 +64,7 @@ public class OneClientLogging {
 			stage.getIcons().add(new Image("icon.png"));
 			stage.setResizable(true);
 			stage.initOwner(Main.stage);
-			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initModality(Modality.NONE);
 			Scene scene = new Scene(root, 600, 300);
 			scene.getStylesheets().add("gui/css/theme.css");
 			stage.setScene(scene);
