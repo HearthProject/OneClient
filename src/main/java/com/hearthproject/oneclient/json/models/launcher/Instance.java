@@ -39,7 +39,7 @@ public class Instance {
 	}
 
 	public File getDirectory() {
-		return FileUtil.findDirectory(Constants.INSTANCEDIR, name);
+		return FileUtil.getDirectory(Constants.INSTANCEDIR, name);
 	}
 
 	public File getIcon() {
@@ -72,7 +72,8 @@ public class Instance {
 		if (result.get() == ButtonType.OK) {
 			try {
 				ContentPanes.INSTANCES_PANE.button.fire();
-				FileUtils.deleteDirectory(getDirectory());
+				File dir = getDirectory();
+				FileUtils.deleteDirectory(dir);
 				InstanceManager.load();
 				ContentPanes.INSTANCES_PANE.refresh();
 			} catch (IOException e) {

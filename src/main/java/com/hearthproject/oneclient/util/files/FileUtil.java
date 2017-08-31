@@ -12,14 +12,21 @@ import java.net.URLEncoder;
 public class FileUtil {
 
 	public static File createDirectory(File path) {
+		if (path == null)
+			return null;
+
 		if (!path.exists())
 			path.mkdirs();
 		return path;
 	}
 
 	public static File findDirectory(File path, String dir) {
+		return createDirectory(getDirectory(path, dir));
+	}
+
+	public static File getDirectory(File path, String dir) {
 		try {
-			return createDirectory(new File(path, URLEncoder.encode(dir, "UTF-8")));
+			return new File(path, URLEncoder.encode(dir, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
