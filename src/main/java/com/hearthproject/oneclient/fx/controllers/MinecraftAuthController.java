@@ -14,6 +14,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.*;
@@ -39,7 +40,7 @@ public class MinecraftAuthController {
 				stage.show();
 				return;
 			}
-			NotifyUtil.notifier(String.format("%s successfully launching!", instance.name), null);
+			NotifyUtil.setText(Duration.seconds(2), "%s successfully launching!", instance.name);
 		} else {
 			try {
 				if (!HearthApi.login(username.getText(), password.getText())) {

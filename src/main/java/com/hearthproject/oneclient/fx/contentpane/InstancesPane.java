@@ -40,6 +40,7 @@ public class InstancesPane extends ContentPane {
 		refreshInstances();
 	}
 
+	@SuppressWarnings("unused")
 	public void onNewInstancePress() {
 		NewInstanceController.start(null);
 	}
@@ -60,8 +61,8 @@ public class InstancesPane extends ContentPane {
 					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
 					MinecraftAuth.loginAndPlay(instance);
 				});
-
 			}
 		}
 	}
+
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
-import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
@@ -15,6 +14,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
@@ -72,15 +72,7 @@ public class MinecraftUtil {
 	public static int libCount = 0;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
-		OneClientLogging.logger.info("Installing minecraft for " + instance.name);
-		Platform.runLater(() -> {
-			try {
-				InstallingController.showInstaller();
-				InstallingController.controller.setTitleText("Downloading Minecraft " + instance.minecraftVersion);
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
-		});
+		NotifyUtil.setText("Installing minecraft for " + instance.name);
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
@@ -100,9 +92,10 @@ public class MinecraftUtil {
 		libCount = 0;
 
 		versionData.libraries.parallelStream().forEach(library -> {
-			InstallingController.controller.setDetailText("Resolving library " + library.name);
-			InstallingController.controller.setProgress(libCount++, versionData.libraries.size());
+			NotifyUtil.setText("Resolving library: %s", library.name);
+			libCount++;
 			if (library.allowed() && library.getFile(libraries) != null) {
+				NotifyUtil.setProgressAscend(libCount, versionData.libraries.size());
 				if (library.getFile(libraries).exists()) {
 					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
 						return;
@@ -137,8 +130,8 @@ public class MinecraftUtil {
 		parent.entrySet().parallelStream().forEach(entry -> {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
-			InstallingController.controller.setDetailText("Resolving asset " + entry.getKey());
-			InstallingController.controller.setProgress(libCount++, parent.entrySet().size());
+			NotifyUtil.setText("Resolving asset: %s", entry.getKey());
+			NotifyUtil.setProgressAscend(libCount++, parent.entrySet().size());
 			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
 				OneClientLogging.logger.info("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
@@ -150,7 +143,7 @@ public class MinecraftUtil {
 			}
 		});
 		OneClientLogging.logger.info("Done minecraft files are all downloaded");
-		InstallingController.close();
+		NotifyUtil.clear();
 	}
 
 	public static boolean startMinecraft(Instance instance, String username, String password) {

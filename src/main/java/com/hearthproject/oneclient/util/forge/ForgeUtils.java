@@ -2,11 +2,11 @@ package com.hearthproject.oneclient.util.forge;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
-import com.hearthproject.oneclient.fx.controllers.InstallingController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -43,10 +43,8 @@ public class ForgeUtils {
 		count = 0;
 		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
 			try {
-				if (InstallingController.controller != null) {
-					InstallingController.controller.setDetailText("Resolving forge lib " + library.name);
-					InstallingController.controller.setProgress(count++, forgeVersionProfile.libraries.size());
-				}
+				NotifyUtil.setText("Resolving Forge Library %s", library.name);
+				NotifyUtil.setProgressAscend(count++, forgeVersionProfile.libraries.size());
 				if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
 					librarys.add(library.getFile(libraries));
 					return;
