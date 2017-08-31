@@ -19,7 +19,7 @@ public class FileUtil {
 
 	public static File findDirectory(File path, String dir) {
 		try {
-			return createDirectory(new File(path, URLEncoder.encode(dir, "UTF-8"));
+			return createDirectory(new File(path, URLEncoder.encode(dir, "UTF-8")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
