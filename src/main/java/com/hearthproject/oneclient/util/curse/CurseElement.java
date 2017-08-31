@@ -50,7 +50,7 @@ public class CurseElement {
 		});
 
 		this.icon = executor.submit(() -> {
-			Element e = getCursePage.get().select(".screenshots img").first();
+			Element e = getCursePage.get().select(".primary-project-attachment").first();
 			return e.attr("src");
 		});
 		this.averageDownloads = executor.submit(() -> getCursePage.get().select(".average-downloads").text());
