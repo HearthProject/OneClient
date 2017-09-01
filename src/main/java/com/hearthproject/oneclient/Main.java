@@ -48,9 +48,6 @@ public class Main extends Application {
 	public void startOneClient() {
 		SettingsUtil.init();
 		OneClientLogging.logger.info("Starting OneClient version: " + Constants.getVersion());
-		if (Constants.CUSTOM_RUN) {
-			OneClientLogging.logger.info("Using custom run dir: " + Constants.getRunDir().getAbsolutePath());
-		}
 		OneClientTracking.sendRequest("launch/" + Constants.getVersion());
 		Platform.runLater(() -> {
 			OneClientLogging.setupLogController();

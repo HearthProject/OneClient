@@ -64,9 +64,27 @@ jar {
     from { configurations.shade.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
+task portableJar(type: Jar) {
+	from sourceSets.main.output
+	manifest {
+		attributes 'Implementation-Title': 'OneClient',
+			'Implementation-Version': version,
+			'Main-Class': 'com.hearthproject.oneclient.LaunchPortable'
+	}
+	from { configurations.shade.collect { it.isDirectory() ? it : zipTree(it) } }
+	classifier = "portable"
+}
+
+artifacts {
+	archives portableJar
+}
+
+portableJar.mustRunAfter jar
+
 task saveHash(dependsOn: jar) {
 	doLast {
 		GFileUtils.writeStringToFile(new File(jar.archivePath.getAbsolutePath() + ".sha1"), calcSha1(jar.archivePath))
+		GFileUtils.writeStringToFile(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), calcSha1(portableJar.archivePath))
 	}
 }
 

@@ -25,11 +25,17 @@ public class Constants {
 
 	public static String[] INITIALIZE_DIRS = new String[] { "configs", "mods" };
 
-	public static boolean CUSTOM_RUN = false;
+	public static boolean PORTABLE = false;
 
 	private static File RUN_DIR = null;
 
 	public static void earlySetup(Runnable runnable) throws IOException {
+		if (PORTABLE) {
+			RUN_DIR = new File(Constants.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile();
+			setUpDirs();
+			runnable.run();
+			return;
+		}
 		StaticSettings staticSettings = getSettings();
 		if (staticSettings == null || !new File(staticSettings.installLocation).exists()) {
 			Platform.runLater(() -> {
