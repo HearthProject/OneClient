@@ -64,7 +64,7 @@ public class ForgeUtils {
 			}
 
 		});
-
+		NotifyUtil.clear();
 		return librarys;
 	}
 
