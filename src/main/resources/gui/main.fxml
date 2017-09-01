@@ -55,7 +55,7 @@
                                 </Rectangle>
                                 <ImageView fx:id="imageBox" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../logo_big.png"/>
+                                        <Image url="@../images/logo_big.png"/>
                                     </image>
                                 </ImageView>
                             </children>

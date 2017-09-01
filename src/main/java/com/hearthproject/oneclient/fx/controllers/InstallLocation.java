@@ -37,7 +37,7 @@ public class InstallLocation {
 		Parent root = fxmlLoader.load(fxmlUrl.openStream());
 		Stage stage = new Stage();
 		stage.setTitle("Select Install Location");
-		stage.getIcons().add(new Image("icon.png"));
+		stage.getIcons().add(new Image("images/icon.png"));
 		stage.setResizable(false);
 		stage.initOwner(Main.stage);
 		stage.initModality(Modality.WINDOW_MODAL);

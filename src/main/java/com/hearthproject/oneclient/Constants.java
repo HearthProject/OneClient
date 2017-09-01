@@ -61,7 +61,7 @@ public class Constants {
 		TEMPDIR = FileUtil.findDirectory(getRunDir(), "temp");
 		INSTANCEDIR = FileUtil.findDirectory(getRunDir(), "instances");
 		LOGFILE = FileUtil.findDirectory(getRunDir(), "log.txt");
-		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "icons");
+		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "images");
 		System.setProperty("logFilename", LOGFILE.toString());
 		OneClientLogging.init();
 	}

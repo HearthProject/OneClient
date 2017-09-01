@@ -34,7 +34,7 @@ public class SplashScreen {
 		Parent root = fxmlLoader.load(fxmlUrl.openStream());
 		stage = new Stage();
 		stage.setTitle("One Client - Loading");
-		stage.getIcons().add(new Image("icon.png"));
+		stage.getIcons().add(new Image("images/icon.png"));
 		stage.setResizable(false);
 		stage.initOwner(Main.stage);
 		stage.initModality(Modality.WINDOW_MODAL);

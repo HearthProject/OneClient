@@ -30,7 +30,7 @@ public class MinecraftAuth {
 			Parent root = fxmlLoader.load(fxmlUrl.openStream());
 			Stage stage = new Stage();
 			stage.setTitle("One Client - Login to minecraft");
-			stage.getIcons().add(new Image("icon.png"));
+			stage.getIcons().add(new Image("images/icon.png"));
 			stage.setResizable(false);
 			stage.initOwner(Main.stage);
 			stage.initModality(Modality.WINDOW_MODAL);

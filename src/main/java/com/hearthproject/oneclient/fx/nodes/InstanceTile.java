@@ -47,7 +47,7 @@ public class InstanceTile extends StackPane {
 			}
 		} else {
 			if (defaultImage == null) {
-				defaultImage = new Image(this.getClass().getClassLoader().getResourceAsStream("modpack.png"));
+				defaultImage = new Image(this.getClass().getClassLoader().getResourceAsStream("images/modpack.png"));
 			}
 			imageView.setImage(defaultImage);
 		}

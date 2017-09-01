@@ -57,6 +57,7 @@ public class MainController {
 		setContent(ContentPanes.INSTANCES_PANE);
 		onSceneResize(stage.getScene());
 		statusBar.setSkin(new StatusBarSkin(statusBar));
+		statusBar.setText("");
 	}
 
 	public void onSceneResize(Scene scene) {
