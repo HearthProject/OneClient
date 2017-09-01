@@ -1,15 +1,23 @@
-package com.hearthproject.oneclient.fx.contentpane.base;
+package com.hearthproject.oneclient.fx.nodes;
 
-import javafx.scene.control.Button;
+import com.jfoenix.controls.JFXButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
-public class ContentPaneButton extends Button {
+public class ContentPaneButton extends JFXButton {
 	private boolean selected = false;
 	private String color;
 
-	public ContentPaneButton(String color) {
-		this.color = color;
-		setPrefHeight(130);
+	public ContentPaneButton(String imageName) {
+		super("TEST", new ImageView(new Image(ContentPaneButton.class.getClassLoader().getResourceAsStream("images/" + imageName))));
+		this.color = "#3CE0A0";
+		setPrefHeight(50);
 		setId("side-panel-button");
+	}
+
+	@Override
+	public ButtonType getButtonType() {
+		return ButtonType.FLAT;
 	}
 
 	public boolean isSelected() {

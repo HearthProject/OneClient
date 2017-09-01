@@ -52,6 +52,7 @@ dependencies {
 	shade 'org.apache.logging.log4j:log4j-api:2.8.2'
 	shade 'org.apache.logging.log4j:log4j-core:2.8.2'
 	shade 'org.controlsfx:controlsfx:8.40.13'
+	shade 'com.jfoenix:jfoenix:1.7.0'
 }
 
 jar {

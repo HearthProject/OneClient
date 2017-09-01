@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane.base;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,11 +16,9 @@ public abstract class ContentPane {
 	private String fxmlFile;
 	private FXMLLoader loader;
 	private String name;
-	private String color;
 
-	public ContentPane(String fxmlFile, String name, String color) {
-		this.color = color;
-		button = new ContentPaneButton(color);
+	public ContentPane(String fxmlFile, String name, String imageName) {
+		button = new ContentPaneButton(imageName);
 		button.setText(name);
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
 		button.setOnAction((actionHandler) -> {
@@ -31,10 +30,6 @@ public abstract class ContentPane {
 		this.fxmlFile = fxmlFile;
 		this.name = name;
 		Main.mainController.contentPanes.add(this);
-	}
-
-	public ContentPane(String fxmlFile, String name) {
-		this(fxmlFile, name, "#A8A8A8");
 	}
 
 	public Node getNode() {

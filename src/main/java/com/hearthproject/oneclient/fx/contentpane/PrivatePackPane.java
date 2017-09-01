@@ -23,7 +23,7 @@ public class PrivatePackPane extends ContentPane {
 	private ClientPermissions clientPermissions;
 
 	public PrivatePackPane() {
-		super("gui/contentpanes/private_pack.fxml", "Private Packs (Alpha)");
+		super("gui/contentpanes/private_pack.fxml", "Private Packs (Alpha)", "modpacks.png");
 	}
 
 	@Override

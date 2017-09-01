@@ -21,7 +21,7 @@ public class SettingsPane extends ContentPane {
 	public SpinnerValueFactory.IntegerSpinnerValueFactory minMemory, maxMemory;
 
 	public SettingsPane() {
-		super("gui/contentpanes/settings.fxml", "Settings", "#9C27B0");
+		super("gui/contentpanes/settings.fxml", "Settings", "settings.png");
 	}
 
 	@Override

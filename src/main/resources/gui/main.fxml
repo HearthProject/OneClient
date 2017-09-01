@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.StatusBar?>
+
 <HBox xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
     <children>
-        <VBox alignment="TOP_CENTER" style="-fx-background-color: -fill-color;">
-            <children>
-                <VBox>
-                    <children>
-                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: -dark-background-color;" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
-                            </VBox.margin>
-                        </VBox>
-                        <HBox prefHeight="100.0" VBox.vgrow="ALWAYS">
-                            <children>
-                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                        <Insets/>
-                                    </HBox.margin>
-                                </StatusBar>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-            </children>
-        </VBox>
         <VBox fx:id="sideBox" alignment="TOP_CENTER" minWidth="200.0" style="-fx-background-color: -dark-background-color;">
             <children>
                 <VBox alignment="CENTER" VBox.vgrow="NEVER">
                     <children>
-                        <Text fx:id="versionText" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color; -fx-font-size: 14;"
-                              text="[TEXT FILLED IN CODE]">
+                        <Text fx:id="versionText" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color; -fx-font-size: 14;" text="[TEXT FILLED IN CODE]">
                             <font>
-                                <Font name="System Bold" size="18.0"/>
+                                <Font name="System Bold" size="18.0" />
                             </font>
                             <VBox.margin>
-                                <Insets top="6.0"/>
+                                <Insets top="6.0" />
                             </VBox.margin>
                         </Text>
                         <StackPane>
                             <children>
                                 <Rectangle fill="WHITE" height="180.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #262626;" width="180.0">
                                     <StackPane.margin>
-                                        <Insets/>
+                                        <Insets />
                                     </StackPane.margin>
                                 </Rectangle>
                                 <ImageView fx:id="imageBox" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../images/logo_big.png"/>
+                                        <Image url="@../images/logo_big.png" />
                                     </image>
                                 </ImageView>
                             </children>
                             <VBox.margin>
-                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                             </VBox.margin>
                         </StackPane>
                     </children>
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                 </VBox>
-                <VBox fx:id="buttonBox" VBox.vgrow="ALWAYS"/>
+                <VBox fx:id="buttonBox" VBox.vgrow="ALWAYS" />
                 <VBox alignment="CENTER" VBox.vgrow="NEVER">
                     <children>
-                        <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="[TEXT FILLED IN CODE]"
-                              textAlignment="CENTER" textOrigin="TOP"/>
-                        <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openWebsite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;"
-                                   text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf"/>
+                        <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="[TEXT FILLED IN CODE]" textAlignment="CENTER" textOrigin="TOP" />
+                        <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openWebsite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf" />
                     </children>
                     <VBox.margin>
-                        <Insets bottom="3.0" top="3.0"/>
+                        <Insets bottom="3.0" top="3.0" />
                     </VBox.margin>
+                </VBox>
+            </children>
+        </VBox>
+        <VBox alignment="TOP_CENTER" style="-fx-background-color: -fill-color;">
+            <children>
+                <VBox>
+                    <children>
+                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: -dark-background-color;" VBox.vgrow="NEVER">
+                            <VBox.margin>
+                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                            </VBox.margin>
+                        </VBox>
+                        <HBox prefHeight="100.0" VBox.vgrow="ALWAYS">
+                            <children>
+                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                        <Insets bottom="12.0" left="12.0" right="12.0" />
+                                    </HBox.margin>
+                                </StatusBar>
+                            </children>
+                        </HBox>
+                    </children>
                 </VBox>
             </children>
         </VBox>
