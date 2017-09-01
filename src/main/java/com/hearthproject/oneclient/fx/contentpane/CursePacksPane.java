@@ -77,8 +77,6 @@ public class CursePacksPane extends ContentPane {
 		filterVersion.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
 		filterSort.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
 
-
-
 		filterVersion.setConverter(new StringConverter<String>() {
 			@Override
 			public String toString(String s) {
@@ -149,9 +147,19 @@ public class CursePacksPane extends ContentPane {
 		type = ViewType.FILTER;
 		tiles.clear();
 		page = 1;
-		filterVersion.getSelectionModel().selectFirst();
-		filterSort.getSelectionModel().selectFirst();
-		loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
+		loadPacks(page, getVersion(), getFilter());
+	}
+
+	private String getVersion() {
+		if (filterVersion.getValue() == null)
+			filterVersion.getSelectionModel().selectFirst();
+		return filterVersion.getValue();
+	}
+
+	private String getFilter() {
+		if (filterSort.getValue() == null)
+			filterSort.getSelectionModel().selectFirst();
+		return filterSort.getValue().getValue();
 	}
 
 	public void loadPacks(int page, String version, String sorting) {
@@ -192,7 +200,6 @@ public class CursePacksPane extends ContentPane {
 			});
 		}).start();
 	}
-
 
 	@Override
 	public void refresh() {
