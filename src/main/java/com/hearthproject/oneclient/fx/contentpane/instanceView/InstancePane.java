@@ -16,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -25,8 +24,8 @@ import java.util.Optional;
 
 public class InstancePane extends ContentPane {
 
-	public Text textPackName;
-	public Text textMinecraftVersion;
+	public Label textPackName;
+	public Label textMinecraftVersion;
 	public ImageView packIcon;
 	public Button buttonPlay;
 	public Button buttonOpenFolder;

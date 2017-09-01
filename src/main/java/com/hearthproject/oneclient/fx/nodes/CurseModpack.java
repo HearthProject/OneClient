@@ -27,12 +27,12 @@ public class CurseModpack extends CurseTile {
 
 		new Thread(() -> {
 			Instance instance = new Instance(element.getTitle());
-			instance.icon = "images/icon.png";
+			instance.icon = "icon.png";
 			try {
 				new CursePackInstaller().downloadFromURL(element.getUrl(), "latest", instance);
 				File image = element.getIcon();
 				if (image != null)
-					Files.copy(image.toPath(), new File(instance.getDirectory(), "images/icon.png").toPath());
+					Files.copy(image.toPath(), new File(instance.getDirectory(), "icon.png").toPath());
 				MinecraftUtil.installMinecraft(instance);
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
