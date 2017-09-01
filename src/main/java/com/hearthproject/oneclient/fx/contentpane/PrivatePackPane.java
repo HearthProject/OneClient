@@ -58,7 +58,7 @@ public class PrivatePackPane extends ContentPane {
 			try {
 				Main.mainController.imageBox.setImage(new Image(new URL("https://crafatar.com/avatars/" + HearthApi.getAuthentication().id).openStream()));
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 			buttonLogin.setVisible(false);
 		});

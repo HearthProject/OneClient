@@ -1,5 +1,7 @@
 package com.hearthproject.oneclient;
 
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
+
 import javax.swing.*;
 import java.io.IOException;
 
@@ -8,7 +10,7 @@ public class Launch {
 		try {
 			Class.forName("javafx.stage.Stage");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 			JOptionPane.showMessageDialog(null,
 				"JavaFX wasn't found installed on this computer, this is usually because you are using OpenJDK that does not include it, to fix this error install openjfx for your distribution."
 					+ "\nOn debian based distributions this can fixed by running"

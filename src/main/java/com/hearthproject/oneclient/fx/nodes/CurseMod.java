@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,9 +20,10 @@ public class CurseMod extends CurseTile {
 			String b = CurseUtils.getLocationHeader(a);
 			System.out.println(b);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
+			OneClientLogging.error(e);
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 }

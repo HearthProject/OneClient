@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.files;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class ImageUtil {
 			try {
 				image = new Image(new FileInputStream(file));
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 			IMAGE_CACHE.put(file.getName(), image);
 		}

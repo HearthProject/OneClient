@@ -46,13 +46,13 @@ public class Constants {
 						try {
 							saveSettings(new StaticSettings(file.getAbsolutePath()));
 						} catch (IOException e) {
-							e.printStackTrace();
+							OneClientLogging.error(e);
 						}
 						runnable.run();
 						return true;
 					});
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			});
 		} else {
