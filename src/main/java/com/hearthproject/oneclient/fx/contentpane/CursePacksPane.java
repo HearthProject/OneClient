@@ -82,7 +82,6 @@ public class CursePacksPane extends ContentPane {
 			public String toString(String s) {
 				if (s.isEmpty())
 					return "All";
-				System.out.println(s);
 				return s;
 			}
 
