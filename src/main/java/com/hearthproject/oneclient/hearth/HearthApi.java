@@ -18,7 +18,7 @@ import java.net.Proxy;
 public class HearthApi {
 
 	//Use this to enable it
-	public static boolean enable = true;
+	public static boolean enable = false;
 	public static String hearthAPI = "http://localhost:4567";
 
 	private static ClientAuthentication authentication;
