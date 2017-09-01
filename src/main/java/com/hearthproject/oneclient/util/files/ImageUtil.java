@@ -14,6 +14,8 @@ public class ImageUtil {
 	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
 	public static Image openImage(File file) {
+		if (file == null)
+			return null;
 		Image image = IMAGE_CACHE.getIfPresent(file.getName());
 		if (image == null) {
 			try {
@@ -25,4 +27,5 @@ public class ImageUtil {
 		}
 		return image;
 	}
+
 }

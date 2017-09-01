@@ -65,4 +65,14 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
+
+	public static File getResource(String resource) {
+		if (resource == null)
+			return null;
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL path = classLoader.getResource(resource);
+		if (path == null)
+			return null;
+		return new File(path.getFile());
+	}
 }
