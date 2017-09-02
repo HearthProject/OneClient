@@ -1,7 +1,5 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
@@ -27,23 +25,22 @@ public class CurseModpack extends CurseTile {
 
 		new Thread(() -> {
 			Instance instance = new Instance(element.getTitle());
+			InstanceManager.setInstanceInstalling(instance, true);
 			instance.icon = "images/icon.png";
 			try {
 				new CursePackInstaller().downloadFromURL(element.getUrl(), "latest", instance);
 				File image = element.getIcon();
+				File iconLocation = new File(instance.getDirectory(), "images/icon.png");
+				if (!iconLocation.getParentFile().exists()) {
+					iconLocation.getParentFile().mkdirs();
+				}
 				if (image != null)
-					Files.copy(image.toPath(), new File(instance.getDirectory(), "images/icon.png").toPath());
+					Files.copy(image.toPath(), iconLocation.toPath());
 				MinecraftUtil.installMinecraft(instance);
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
 			}
-			Platform.runLater(() -> {
-				InstanceManager.addInstance(instance);
-				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
-					Main.mainController.currentContent.refresh();
-				}
-				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", instance.name);
-			});
+			Platform.runLater(() -> NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", instance.name));
 
 		}).start();
 	}

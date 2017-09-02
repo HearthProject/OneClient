@@ -17,7 +17,7 @@ public class InstancesPane extends ContentPane {
 	public TilePane instancePane;
 	public ScrollPane scrollPane;
 
-	private ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
+	public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
 	private StackPane newInstanceTile;
 
 	public InstancesPane() {

@@ -2,8 +2,11 @@ package com.hearthproject.oneclient.util.launcher;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
@@ -83,6 +86,17 @@ public class InstanceManager {
 				instances.put(instance.name, instance);
 			} catch (IOException e) {
 				OneClientLogging.error(e);
+			}
+		});
+	}
+
+	public static void setInstanceInstalling(Instance instance, boolean installing) {
+		MiscUtil.runLaterIfNeeded(() -> {
+			ContentPanes.INSTANCES_PANE.refresh();
+			for (InstanceTile tile : ContentPanes.INSTANCES_PANE.instanceTiles) {
+				if (tile.instance.name.equals(instance.name)) {
+					tile.setInstalling(installing);
+				}
 			}
 		});
 	}

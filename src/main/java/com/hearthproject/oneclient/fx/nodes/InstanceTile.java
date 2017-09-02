@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -23,6 +24,7 @@ public class InstanceTile extends StackPane {
 	public ImageView imageView;
 	public VBox nodeBox;
 	public Text nameLabel;
+	public Text statusLabel;
 	public Button playButton;
 	public Button editButton;
 	private Action action;
@@ -56,6 +58,8 @@ public class InstanceTile extends StackPane {
 		nameLabel = new Text(instance.name);
 		nameLabel.setFill(Color.web("#FFFFFF"));
 		nameLabel.setFont(javafx.scene.text.Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));
+		statusLabel = new Text(instance.minecraftVersion);
+		statusLabel.setFill(Color.web("#FFFFFF"));
 		playButton = new Button("Play");
 		playButton.setOnAction(event -> {
 			if (action != null)
@@ -65,7 +69,7 @@ public class InstanceTile extends StackPane {
 		editButton.setOnAction(event -> {
 			InstancePane.show(instance);
 		});
-		nodeBox = new VBox(nameLabel, imageView, playButton, editButton);
+		nodeBox = new VBox(nameLabel, statusLabel, imageView, playButton, editButton);
 		nodeBox.setAlignment(Pos.CENTER);
 		nodeBox.setSpacing(6);
 		this.getChildren().addAll(background, nodeBox);
@@ -83,4 +87,17 @@ public class InstanceTile extends StackPane {
 	public interface Action {
 		void execute();
 	}
+
+	public void setInstalling(boolean installing) {
+		MiscUtil.runLaterIfNeeded(() -> {
+			playButton.setDisable(installing);
+			editButton.setDisable(installing);
+			if (installing) {
+				statusLabel.setText("Installing...");
+			} else {
+				statusLabel.setText(instance.minecraftVersion);
+			}
+		});
+	}
+
 }

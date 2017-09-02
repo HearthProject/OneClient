@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.google.gson.Gson;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
@@ -58,6 +59,7 @@ public class CursePackInstaller {
 	}
 
 	public void installPack(Instance instance, File zipFile) throws Exception {
+		InstanceManager.setInstanceInstalling(instance, true);
 		NotifyUtil.setText("Modpack filename is %s", zipFile.getName());
 		File unzippedDir = unzipPack(getTempPackDir(zipFile), zipFile);
 		Manifest manifest = getManifest(unzippedDir);
@@ -68,8 +70,12 @@ public class CursePackInstaller {
 		instance.curseVersion = manifest.version;
 		int i = 1;
 		while (!InstanceManager.isValid(instance)) {
-			instance.name = manifest.name + "(" + i + ")";
+			instance.name = manifest.name + "(" + i++ + ")";
 		}
+		InstanceManager.addInstance(instance);
+		InstanceManager.setInstanceInstalling(instance, false);
+		ContentPanes.INSTANCES_PANE.refresh();
+
 		NotifyUtil.setText("Downloading %s", manifest.name);
 		OneClientTracking.sendRequest("curse/install/" + manifest.name + "/" + manifest.version);
 		File minecraftDir = instance.getDirectory();
@@ -134,7 +140,7 @@ public class CursePackInstaller {
 
 		left = total;
 
-		manifest.files.parallelStream().forEach(f -> {
+		manifest.files.stream().forEach(f -> {
 			left--;
 			try {
 				downloadFile(f, modsDir, left, total);
@@ -154,7 +160,7 @@ public class CursePackInstaller {
 		Files.walk(overridesDir.toPath()).forEach(path -> {
 			try {
 				NotifyUtil.setText("Override: %s", path.getFileName());
-				Files.copy(path, Paths.get(path.toString().replace(overridesDir.toString(), outDir.toString())));
+				Files.copy(path, Paths.get(path.toString().replace(overridesDir.toString(), outDir.toString())), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}

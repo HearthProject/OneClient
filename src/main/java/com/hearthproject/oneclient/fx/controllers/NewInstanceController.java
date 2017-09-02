@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
@@ -20,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -187,6 +189,8 @@ public class NewInstanceController {
 			try {
 				MinecraftUtil.installMinecraft(finalInstance);
 				Platform.runLater(() -> ContentPanes.INSTANCES_PANE.button.fire());
+				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.name);
+				InstanceManager.setInstanceInstalling(finalInstance, false);
 
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
