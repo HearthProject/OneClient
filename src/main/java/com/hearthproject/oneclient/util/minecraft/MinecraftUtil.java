@@ -14,6 +14,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -72,6 +73,7 @@ public class MinecraftUtil {
 	public static int libCount = 0;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
+		InstanceManager.setInstanceInstalling(instance, true);
 		NotifyUtil.setText("Installing minecraft for " + instance.name);
 		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
@@ -143,6 +145,7 @@ public class MinecraftUtil {
 			}
 		});
 		OneClientLogging.logger.info("Done minecraft files are all downloaded");
+		InstanceManager.setInstanceInstalling(instance, false);
 		NotifyUtil.clear();
 	}
 

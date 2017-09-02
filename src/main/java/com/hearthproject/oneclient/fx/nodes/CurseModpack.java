@@ -27,6 +27,8 @@ public class CurseModpack extends CurseTile {
 
 		new Thread(() -> {
 			Instance instance = new Instance(element.getTitle());
+			InstanceManager.setInstanceInstalling(instance, true);
+			instance.icon = "images/icon.png";
 			instance.icon = "icon.png";
 			try {
 				new CursePackInstaller().downloadFromURL(element.getUrl(), "latest", instance);
@@ -44,7 +46,6 @@ public class CurseModpack extends CurseTile {
 				}
 				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", instance.name);
 			});
-
 		}).start();
 	}
 }
