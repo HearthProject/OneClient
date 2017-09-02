@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.util.files;
 
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class FileUtil {
 		try {
 			return new File(path, URLEncoder.encode(dir, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return null;
 	}
@@ -39,7 +40,7 @@ public class FileUtil {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 		return file;
@@ -54,7 +55,7 @@ public class FileUtil {
 		try {
 			downloadFromURL(new URL(url), location);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 
@@ -62,7 +63,17 @@ public class FileUtil {
 		try {
 			FileUtils.copyURLToFile(url, location);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
+	}
+
+	public static File getResource(String resource) {
+		if (resource == null)
+			return null;
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		URL path = classLoader.getResource(resource);
+		if (path == null)
+			return null;
+		return new File(path.getFile());
 	}
 }

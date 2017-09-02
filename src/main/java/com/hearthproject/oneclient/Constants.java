@@ -6,11 +6,13 @@ import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
+import org.apache.logging.log4j.ThreadContext;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 
 public class Constants {
 
@@ -29,6 +31,8 @@ public class Constants {
 
 	private static File RUN_DIR = null;
 
+	public static final SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
 	public static void earlySetup(Runnable runnable) throws IOException {
 		if (PORTABLE) {
 			RUN_DIR = new File(Constants.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile();
@@ -46,13 +50,13 @@ public class Constants {
 						try {
 							saveSettings(new StaticSettings(file.getAbsolutePath()));
 						} catch (IOException e) {
-							e.printStackTrace();
+							OneClientLogging.error(e);
 						}
 						runnable.run();
 						return true;
 					});
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			});
 		} else {
@@ -66,9 +70,9 @@ public class Constants {
 	public static void setUpDirs() {
 		TEMPDIR = FileUtil.findDirectory(getRunDir(), "temp");
 		INSTANCEDIR = FileUtil.findDirectory(getRunDir(), "instances");
-		LOGFILE = FileUtil.findDirectory(getRunDir(), "log.txt");
+		LOGFILE = FileUtil.findDirectory(getRunDir(), "logs");
 		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "images");
-		System.setProperty("logFilename", LOGFILE.toString());
+		ThreadContext.put("logs", LOGFILE.toString());
 		OneClientLogging.init();
 	}
 

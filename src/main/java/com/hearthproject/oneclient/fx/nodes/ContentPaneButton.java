@@ -1,5 +1,7 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,7 +11,14 @@ public class ContentPaneButton extends JFXButton {
 	private String color;
 
 	public ContentPaneButton(String imageName) {
-		super("TEST", new ImageView(new Image(ContentPaneButton.class.getClassLoader().getResourceAsStream("images/" + imageName))));
+		super("TEST");
+		ImageView imageView = new ImageView();
+		if (imageName != null && !imageName.isEmpty()) {
+			Image image = ImageUtil.openImage(FileUtil.getResource("images/" + imageName));
+			if (image != null)
+				imageView.setImage(image);
+			setGraphic(imageView);
+		}
 		this.color = "#3CE0A0";
 		setPrefHeight(50);
 		setId("side-panel-button");

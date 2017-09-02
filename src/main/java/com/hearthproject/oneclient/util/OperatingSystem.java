@@ -73,7 +73,7 @@ public class OperatingSystem {
 					try {
 						consumer.accept(desktop);
 					} catch (Exception e) {
-						e.printStackTrace();
+						OneClientLogging.error(e);
 					}
 				}).start();
 			}

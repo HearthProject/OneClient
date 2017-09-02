@@ -101,7 +101,7 @@
                         </VBox>
                         <HBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="702.0">
                             <children>
-                                <Button fx:id="buttonSave" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Save" HBox.hgrow="ALWAYS">
+                                <Button fx:id="buttonSave" alignment="CENTER_RIGHT" mnemonicParsing="false" defaultButton="true" text="Save" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </HBox.margin>

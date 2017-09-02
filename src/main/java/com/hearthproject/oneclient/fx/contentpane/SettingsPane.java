@@ -47,8 +47,28 @@ public class SettingsPane extends ContentPane {
 		});
 
 		maxMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMaxMemory, 128);
-		minMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxMemory.getValue(), SettingsUtil.settings.minecraftMinMemory, 128);
-		maxMemory.valueProperty().addListener((observableValue, a, b) -> minMemory.setMax(maxMemory.getValue()));
+		minMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMinMemory, 128);
+
+		maxMemory.valueProperty().addListener((observableValue, a, b) -> {
+			if (minMemory.getValue() > maxMemory.getValue())
+				minMemory.setValue(maxMemory.getValue());
+		});
+		minMemory.valueProperty().addListener((observableValue, a, b) -> {
+			if (minMemory.getValue() > maxMemory.getValue())
+				maxMemory.setValue(minMemory.getValue());
+		});
+
+		spinnerMinRAM.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue) {
+				spinnerMinRAM.increment(0); // won't change value, but will commit editor
+			}
+		});
+
+		spinnerMaxRAM.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue) {
+				spinnerMaxRAM.increment(0); // won't change value, but will commit editor
+			}
+		});
 
 		spinnerMinRAM.setValueFactory(minMemory);
 		spinnerMaxRAM.setValueFactory(maxMemory);

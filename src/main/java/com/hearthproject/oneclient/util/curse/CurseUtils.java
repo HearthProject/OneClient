@@ -87,12 +87,12 @@ public class CurseUtils {
 			String filter = "";
 			if (filters != null && filters.length > 0) {
 				StringBuilder builder = new StringBuilder();
-				builder.append("?" + filters[0].toString());
+				builder.append("?").append(filters[0].toString());
 				if (filters.length > 1) {
 					for (int i = 1; i < filters.length; i++) {
 						String f = filters[i].toString();
 						if (!f.startsWith("#"))
-							builder.append("&" + f);
+							builder.append("&").append(f);
 						else
 							builder.append(f);
 					}

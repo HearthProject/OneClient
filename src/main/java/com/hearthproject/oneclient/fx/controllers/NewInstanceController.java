@@ -85,9 +85,6 @@ public class NewInstanceController {
 
 	public void onStart(Stage stage) {
 		reloadMCVerList();
-		instanceNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-			//Todo: Check if newValue contains any characters other than A-Z, 0-9, Space, Underscore, Parenthesis, and Hyphen
-		});
 		modLoaderComboBox.getItems().clear();
 		modLoaderComboBox.getItems().add("Forge");
 		modLoaderComboBox.getItems().add("None");

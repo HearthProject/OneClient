@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -75,10 +76,8 @@ public class CurseElement {
 	public Optional<String> getIconURL() {
 		try {
 			return Optional.of(icon.get());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException e) {
+			OneClientLogging.error(e);
 		}
 		return Optional.empty();
 	}
@@ -108,9 +107,9 @@ public class CurseElement {
 		try {
 			return this.averageDownloads.get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -119,9 +118,9 @@ public class CurseElement {
 		try {
 			return this.totalDownloads.get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -130,7 +129,7 @@ public class CurseElement {
 		try {
 			return created.get();
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -139,7 +138,7 @@ public class CurseElement {
 		try {
 			return lastUpdated.get();
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -148,7 +147,7 @@ public class CurseElement {
 		try {
 			return version.get();
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -157,7 +156,7 @@ public class CurseElement {
 		try {
 			return getUrl.get();
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return "";
 	}
@@ -166,9 +165,9 @@ public class CurseElement {
 		try {
 			return authors.get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return Lists.newArrayList();
 	}

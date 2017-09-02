@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class ForgeUtils {
 			}
 
 		});
-
+		NotifyUtil.clear();
 		return librarys;
 	}
 
@@ -94,7 +95,7 @@ public class ForgeUtils {
 			return forgeVersions;
 		}
 		SplashScreen.updateProgess("Downloading forge version json", 30);
-		String jsonStr = IOUtils.toString(new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/json"));
+		String jsonStr = IOUtils.toString(new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/json"), Charset.defaultCharset());
 		SplashScreen.updateProgess("Reading forge version json", 35);
 		forgeVersions = JsonUtil.GSON.fromJson(jsonStr, ForgeVersions.class);
 		return forgeVersions;
