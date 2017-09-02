@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.CurseModpack;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -18,8 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
-import javafx.util.StringConverter;
 
 import java.util.List;
 import java.util.Timer;
@@ -32,11 +31,11 @@ public class CursePacksPane extends ContentPane {
 
 	public ObservableList<CurseModpack> tiles = FXCollections.observableArrayList();
 	public ObservableList<String> versions;
-	public ObservableList<Pair<String, String>> sorting;
+	public ObservableList<CurseUtils.Filter> sorting;
 
 	public ListView<CurseModpack> listTiles;
 	public ComboBox<String> filterVersion;
-	public ComboBox<Pair<String, String>> filterSort;
+	public ComboBox<CurseUtils.Filter> filterSort;
 	public Button buttonSearch;
 	public TextField textSearch;
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
@@ -77,33 +76,8 @@ public class CursePacksPane extends ContentPane {
 		filterVersion.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
 		filterSort.valueProperty().addListener((observableValue, s, t1) -> refreshFilters());
 
-		filterVersion.setConverter(new StringConverter<String>() {
-			@Override
-			public String toString(String s) {
-				if (s.isEmpty())
-					return "All";
-				return s;
-			}
-
-			@Override
-			public String fromString(String s) {
-				if (s.equals("All"))
-					return "";
-				return s.replace(" ", "+");
-			}
-		});
-
-		filterSort.setConverter(new StringConverter<Pair<String, String>>() {
-			@Override
-			public String toString(Pair<String, String> pair) {
-				return pair.getKey();
-			}
-
-			@Override
-			public Pair<String, String> fromString(String s) {
-				return sorting.stream().filter(k -> k.getKey().equals(s)).findFirst().orElse(null);
-			}
-		});
+		filterVersion.setConverter(new CurseUtils.VersionConverter());
+		filterSort.setConverter(new CurseUtils.FilterConverter());
 
 		listTiles.setItems(tiles);
 		AnchorPane box = (AnchorPane) getNode();
@@ -119,18 +93,19 @@ public class CursePacksPane extends ContentPane {
 		listTiles.setPlaceholder(placeHolderLoading);
 
 		if (type == ViewType.FILTER) {
-			loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
-			listTiles.setOnScroll(event -> {
+			loadPacks(page, getVersion(), getFilter());
+
+			listTiles.setOnScroll(event -> MiscUtil.runLaterIfNeeded(() -> {
 				if (pageDelay > 0)
 					return;
 				if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
 					int old = Math.max(listTiles.getItems().size() - 8, 0);
 					page++;
-					loadPacks(page, filterVersion.getValue(), filterSort.getValue().getValue());
+					loadPacks(page, getVersion(), getFilter());
 					listTiles.scrollTo(old);
 					pageDelay = 3;
 				}
-			});
+			}));
 		}
 
 		buttonSearch.setOnAction(event -> search());
@@ -168,7 +143,6 @@ public class CursePacksPane extends ContentPane {
 				List<CurseElement> packs = CurseUtils.getPacks(page, version, sorting);
 				if (packs != null) {
 					if (!packs.isEmpty()) {
-						OneClientLogging.logger.info("Loading page " + page);
 						while (!packs.isEmpty()) {
 							CurseElement pack = packs.remove(0);
 							Platform.runLater(() -> tiles.add(new CurseModpack(pack)));

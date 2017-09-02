@@ -2,7 +2,7 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.util.Pair;
+import javafx.util.StringConverter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,37 +13,69 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class CurseUtils {
+	private static final ExecutorService executor = Executors.newFixedThreadPool(1);
 
 	public static final String CURSE_BASE = "https://mods.curse.com";
 	public static final String CURSEFORGE_PROJECT_BASE = "https://www.curseforge.com/projects/";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
 
-	public static Filter versionFilter(String value) {
-		return new Filter("filter-project-game-version=", value);
+	public static Future<List<String>> versions = executor.submit(CurseUtils::findVersions);
+	public static Future<List<Filter>> sortings = executor.submit(CurseUtils::findSorting);
+
+	public static Query versionFilter(String value) {
+		return new Query("filter-project-game-version=", value);
 	}
 
-	public static Filter sortingFilter(String value) {
-		return new Filter("filter-project-sort=", value);
+	public static Query sortingFilter(String value) {
+		return new Query("filter-project-sort=", value);
 	}
 
-	public static Filter page(String value) {
-		return new Filter("page=", value);
+	public static Query page(String value) {
+		return new Query("page=", value);
 	}
 
 	public static List<String> getVersions() {
+		try {
+			return versions.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return Lists.newArrayList();
+	}
+
+	public static List<Filter> getSorting() {
+		try {
+			return sortings.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return Lists.newArrayList();
+	}
+
+	private static List<String> findVersions() {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
 		Elements versions = d.select("#filter-project-game-version option");
 		return versions.stream().map(Element::val).distinct().collect(Collectors.toList());
 	}
 
-	public static List<Pair<String, String>> getSorting() {
+	private static List<Filter> findSorting() {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
 		Elements versions = d.select("#filter-project-sort option");
-		return versions.stream().map(e -> new Pair<>(e.text(), e.val())).distinct().collect(Collectors.toList());
+		return versions.stream().map(e -> new Filter(e.text(), e.val())).distinct().collect(Collectors.toList());
 	}
 
 	public static List<CurseElement> getMods(int page, String version, String sorting) {
@@ -62,6 +94,7 @@ public class CurseUtils {
 
 	public static List<CurseElement> getPacks(int page, String version, String sorting) {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
+		OneClientLogging.info("Loading page: {}", d.baseUri());
 		Element e = d.select(".b-pagination-item").select(".s-active").first();
 		String realPage = e != null ? e.text() : null;
 		if (realPage == null) {
@@ -76,13 +109,13 @@ public class CurseUtils {
 
 	public static List<CurseElement> searchCurse(String query, String type) {
 		String formatQuery = query.replace(" ", "+");
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Filter("game-slug", "minecraft"), new Filter("search=", formatQuery), new Filter("#t1:", type));
+		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Query("game-slug", "minecraft"), new Query("search=", formatQuery), new Query("#t1:", type));
 		Elements results = d.select("#tab-modpacks .minecraft");
 		return results.stream().map(CurseElement.CurseSearch::new).collect(Collectors.toList());
 
 	}
 
-	public static Document getHtml(String url, String path, Filter... filters) {
+	public static Document getHtml(String url, String path, Query... filters) {
 		try {
 			String filter = "";
 			if (filters != null && filters.length > 0) {
@@ -107,10 +140,10 @@ public class CurseUtils {
 		return null;
 	}
 
-	public static class Filter {
+	public static class Query {
 		private String key, value;
 
-		public Filter(String key, String value) {
+		public Query(String key, String value) {
 			this.key = key;
 			this.value = value;
 		}
@@ -151,4 +184,51 @@ public class CurseUtils {
 		return uri.toString();
 	}
 
+	public static class Filter {
+		private String display, value;
+
+		public Filter(String display, String value) {
+			this.display = display;
+			this.value = value;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
+
+		public String getValue() {
+			return value;
+		}
+	}
+
+	public static class FilterConverter extends StringConverter<Filter> {
+		private Map<String, Filter> map = new HashMap<>();
+
+		@Override
+		public String toString(Filter filter) {
+			map.put(filter.getValue(), filter);
+			return filter.getDisplay();
+		}
+
+		@Override
+		public Filter fromString(String value) {
+			return map.get(value);
+		}
+	}
+
+	public static class VersionConverter extends StringConverter<String> {
+		@Override
+		public String toString(String s) {
+			if (s.isEmpty())
+				return "All";
+			return s;
+		}
+
+		@Override
+		public String fromString(String s) {
+			if (s.equals("All"))
+				return "";
+			return s.replace(" ", "+");
+		}
+	}
 }
