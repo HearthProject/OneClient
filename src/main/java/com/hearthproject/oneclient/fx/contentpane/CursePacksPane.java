@@ -105,8 +105,6 @@ public class CursePacksPane extends ContentPane {
 			}
 		});
 
-		pageLoading.addListener((observableValue, oldValue, newValue) -> {
-		});
 		listTiles.setItems(tiles);
 		AnchorPane box = (AnchorPane) getNode();
 		VBox.setVgrow(box, Priority.ALWAYS);
