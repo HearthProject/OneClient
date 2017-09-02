@@ -1,5 +1,7 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
