@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
+import com.hearthproject.oneclient.fx.contentpane.instance.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;

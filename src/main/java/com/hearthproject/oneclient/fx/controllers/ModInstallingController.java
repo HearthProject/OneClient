@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.CursePacksPane;
 import com.hearthproject.oneclient.fx.nodes.CurseMod;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
@@ -13,8 +14,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,17 +28,22 @@ import java.util.stream.Collectors;
 
 public class ModInstallingController {
 
+	private volatile CursePacksPane.ViewType type = CursePacksPane.ViewType.FILTER;
+
 	public Instance instance;
 	public ObservableList<CurseMod> tiles = FXCollections.observableArrayList();
 	public ObservableList<CurseUtils.Filter> sorting;
 
 	public ListView<CurseMod> listTiles;
 	public ComboBox<CurseUtils.Filter> filterSort;
+	public Button buttonSearch;
+	public TextField textSearch;
 
 	public int page;
 
 	public static ModInstallingController controller;
 	public static Stage stage;
+
 
 	public static void showInstaller(Instance instance) {
 		try {
@@ -63,13 +71,19 @@ public class ModInstallingController {
 			controller.sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
 			controller.instance = instance;
 
+			controller.listTiles.setItems(controller.tiles);
+
 			controller.filterSort.setItems(controller.sorting);
-			controller.filterSort.getSelectionModel().selectFirst();
 			controller.filterSort.valueProperty().addListener((observableValue, s, t1) -> controller.refreshFilters());
 			controller.filterSort.setConverter(new CurseUtils.FilterConverter());
+			controller.filterSort.getSelectionModel().selectFirst();
 
-			controller.loadModPage(1, controller.getFilter());
-			controller.listTiles.setItems(controller.tiles);
+			if (controller.type == CursePacksPane.ViewType.FILTER) {
+				controller.loadModPage(1, controller.getFilter());
+
+			}
+
+			controller.buttonSearch.setOnAction(event -> controller.search());
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
@@ -103,6 +117,17 @@ public class ModInstallingController {
 		if (filterSort.getValue() == null)
 			filterSort.getSelectionModel().selectFirst();
 		return filterSort.getValue().getValue();
+	}
+
+	public void search() {
+		new Thread(() -> {
+			type = CursePacksPane.ViewType.SEARCH;
+			List<CurseElement> packs = CurseUtils.searchCurse(textSearch.getText(), "mods");
+			Platform.runLater(() -> {
+				tiles.clear();
+				tiles.addAll(packs.stream().map(p -> new CurseMod(instance, p)).collect(Collectors.toList()));
+			});
+		}).start();
 	}
 
 }

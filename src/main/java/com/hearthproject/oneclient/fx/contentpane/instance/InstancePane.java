@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.fx.contentpane.instanceView;
+package com.hearthproject.oneclient.fx.contentpane.instance;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;

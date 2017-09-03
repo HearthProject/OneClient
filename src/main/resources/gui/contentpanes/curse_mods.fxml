@@ -21,7 +21,7 @@
                                 <Insets left="5.0" right="5.0"/>
                             </HBox.margin>
                         </TextField>
-                        <Button fx:id="buttonSearch" mnemonicParsing="false" text="Search">
+                        <Button fx:id="buttonSearch" defaultButton="true" mnemonicParsing="false" text="Search">
                             <HBox.margin>
                                 <Insets left="5.0" right="5.0"/>
                             </HBox.margin>

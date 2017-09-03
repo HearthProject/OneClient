@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.fx.contentpane.instanceView;
+package com.hearthproject.oneclient.fx.contentpane.instance;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.paint.Color;
