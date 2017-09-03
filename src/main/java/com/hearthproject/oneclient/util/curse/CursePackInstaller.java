@@ -1,9 +1,9 @@
 package com.hearthproject.oneclient.util.curse;
 
-import com.google.gson.Gson;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.json.models.launcher.Manifest;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
@@ -16,7 +16,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,8 +23,6 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,46 +30,48 @@ import static com.hearthproject.oneclient.util.curse.CurseUtils.getLocationHeade
 
 //Taken from: https://github.com/Vazkii/CMPDL/tree/master/src/vazkii/cmpdl + changed a bit
 public class CursePackInstaller {
-	public final Gson GSON_INSTANCE = new Gson();
+	private static boolean busy = false;
 
-	public final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
+	public static final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
 
-	public List<String> missingMods = null;
-
-	public void downloadFromURL(String url, String version, Instance instance) throws Exception {
-		missingMods = new ArrayList<>();
-		instance.curseVersion = version;
-		instance.curseURL = url;
-
-		Matcher matcher = FILE_NAME_URL_PATTERN.matcher(instance.getZipURL());
+	public static Instance downloadFromURL(String url, String version) throws Exception {
+		Instance instance = null;
+		if (busy)
+			return instance;
+		busy = true;
+		String zipURL = CurseUtils.getZipURL(url, version);
+		Matcher matcher = FILE_NAME_URL_PATTERN.matcher(zipURL);
 		if (matcher.matches()) {
 			String filename = matcher.group(1);
-			File zipFile = downloadPackZip(filename, new URL(instance.getZipURL()));
-			installPack(instance, zipFile);
+			File zipFile = downloadPackZip(filename, new URL(zipURL));
+			instance = installPack(zipFile);
 		}
+		busy = false;
+		return instance;
 	}
 
-	public void importFromZip(Instance instance, File zipFile) throws Exception {
+	public static Instance importFromZip(File zipFile) throws Exception {
+		Instance instance = null;
+		if (busy)
+			return instance;
+		busy = true;
 		File newDir = new File(getTempPackDir(zipFile), zipFile.getName());
 		Files.copy(zipFile.toPath(), newDir.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		installPack(instance, newDir);
+		instance = installPack(newDir);
+		busy = false;
+		return instance;
 	}
 
-	public void installPack(Instance instance, File zipFile) throws Exception {
-		InstanceManager.setInstanceInstalling(instance, true);
+	public static Instance installPack(File zipFile) throws Exception {
+
 		NotifyUtil.setText("Modpack filename is %s", zipFile.getName());
 		File unzippedDir = unzipPack(getTempPackDir(zipFile), zipFile);
-		Manifest manifest = getManifest(unzippedDir);
-		instance.minecraftVersion = manifest.minecraft.version;
-		instance.modLoader = "forge";
-		instance.modLoaderVersion = manifest.getForgeVersion();
-		instance.name = manifest.name;
-		instance.curseVersion = manifest.version;
-		int i = 1;
-		while (!InstanceManager.isValid(instance)) {
-			instance.name = manifest.name + "(" + i++ + ")";
-		}
-		InstanceManager.addInstance(instance);
+		Manifest manifest = CurseUtils.getManifest(unzippedDir);
+		Instance instance = new Instance(manifest);
+		InstanceManager.setInstanceInstalling(instance, true);
+		instance.setManifest(manifest);
+		instance.setName(manifest.name);
+
 		InstanceManager.setInstanceInstalling(instance, false);
 		ContentPanes.INSTANCES_PANE.refresh();
 
@@ -82,13 +81,14 @@ public class CursePackInstaller {
 
 		downloadModpackFromManifest(minecraftDir, manifest);
 		copyOverrides(manifest, unzippedDir, minecraftDir);
-
+		InstanceManager.addInstance(instance);
 		NotifyUtil.setText("Done downloading element %s", manifest.name);
 		NotifyUtil.clear();
-		missingMods = null;
+
+		return instance;
 	}
 
-	public File downloadPackZip(String pack, URL url) throws IOException {
+	public static File downloadPackZip(String pack, URL url) throws IOException {
 		File packDir = getTempPackDir(pack);
 		String zipName = pack;
 		if (!zipName.endsWith(".zip"))
@@ -99,39 +99,28 @@ public class CursePackInstaller {
 		return zipFile;
 	}
 
-	public File unzipPack(File dir, File packZip) throws IOException, ZipException {
+	public static File unzipPack(File dir, File packZip) throws IOException, ZipException {
 		NotifyUtil.setText("Unzipping Modpack Download");
 		ZipFile zip = new ZipFile(packZip);
 		zip.extractAll(dir.toString());
 		return dir;
 	}
 
-	public File getTempDir() {
+	public static File getTempDir() {
 		return new File(Constants.TEMPDIR, "curseDownload");
 	}
 
-	public File getTempPackDir(String pack) {
+	public static File getTempPackDir(String pack) {
 		return FileUtil.findDirectory(getTempDir(), FilenameUtils.removeExtension(pack));
 	}
 
-	public File getTempPackDir(File zipFile) {
+	public static File getTempPackDir(File zipFile) {
 		return getTempPackDir(zipFile.getName());
 	}
 
-	public Manifest getManifest(File dir) throws IOException {
-		NotifyUtil.setText("Parsing Manifest");
-		File f = new File(dir, "manifest.json");
-		if (!f.exists())
-			throw new IllegalArgumentException("This modpack has no manifest");
+	private static int left;
 
-		Manifest manifest = GSON_INSTANCE.fromJson(new FileReader(f), Manifest.class);
-
-		return manifest;
-	}
-
-	public int left;
-
-	public File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
+	public static File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
 		int total = manifest.files.size();
 		NotifyUtil.setText("Downloading modpack from manifest");
 		NotifyUtil.setText("Manifest contains %s files to download", total);
@@ -140,7 +129,7 @@ public class CursePackInstaller {
 
 		left = total;
 
-		manifest.files.stream().forEach(f -> {
+		manifest.files.parallelStream().forEach(f -> {
 			left--;
 			try {
 				downloadFile(f, modsDir, left, total);
@@ -153,7 +142,7 @@ public class CursePackInstaller {
 		return outputDir;
 	}
 
-	public void copyOverrides(Manifest manifest, File tempDir, File outDir) throws IOException {
+	public static void copyOverrides(Manifest manifest, File tempDir, File outDir) throws IOException {
 		NotifyUtil.setText("Copying Modpack overrides");
 		File overridesDir = new File(tempDir, manifest.overrides);
 
@@ -167,7 +156,7 @@ public class CursePackInstaller {
 		});
 	}
 
-	public void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
+	public static void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
 		NotifyUtil.setProgressAscend(remaining, total);
 		String baseUrl = "http://minecraft.curseforge.com/projects/" + file.projectID;
 		String projectUrl = getLocationHeader(baseUrl);
@@ -184,7 +173,6 @@ public class CursePackInstaller {
 		NotifyUtil.setText("Downloading %s", filename);
 		if (filename.endsWith("cookieTest=1")) {
 			NotifyUtil.setText("Missing file:%s. Skipped", filename);
-			missingMods.add(finalUrl);
 		} else {
 			File f = new File(modsDir, filename);
 			try {
@@ -197,12 +185,11 @@ public class CursePackInstaller {
 					downloadFileFromURL(f, new URL(finalUrl));
 			} catch (FileNotFoundException e) {
 				OneClientLogging.error(e);
-				missingMods.add(finalUrl);
 			}
 		}
 	}
 
-	public void downloadFileFromURL(File f, URL url) throws IOException {
+	public static void downloadFileFromURL(File f, URL url) throws IOException {
 		FileUtils.copyURLToFile(url, FileUtil.createFile(f));
 	}
 

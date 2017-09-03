@@ -54,11 +54,11 @@ public class InstancePane extends ContentPane {
 
 	public void setupPane(Instance instance) {
 		this.instance = instance;
-		textPackName.setText(instance.name);
-		textMinecraftVersion.setText("Minecraft " + instance.minecraftVersion);
+		textPackName.setText(instance.getManifest().getName());
+		textMinecraftVersion.setText("Minecraft " + instance.getManifest().getMinecraftVersion());
 
-		if (instance.getIcon() != null && instance.getIcon().exists()) {
-			packIcon.setImage(ImageUtil.openImage(instance.getIcon()));
+		if (instance.getManifest().getIcon().isPresent()) {
+			packIcon.setImage(ImageUtil.openImage(instance.getManifest().getIcon().get()));
 			packIcon.setFitWidth(150);
 			packIcon.setFitHeight(150);
 		}

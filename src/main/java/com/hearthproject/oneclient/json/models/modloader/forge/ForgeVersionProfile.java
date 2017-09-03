@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.json.models.forge;
+package com.hearthproject.oneclient.json.models.modloader.forge;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;

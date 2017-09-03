@@ -3,8 +3,8 @@ package com.hearthproject.oneclient.util.forge;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
-import com.hearthproject.oneclient.json.models.forge.ForgeVersions;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersions;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -26,7 +26,7 @@ public class ForgeUtils {
 
 	public static ForgeVersions.ForgeVersion getForgeVersion(String version) {
 		for (ForgeVersions.ForgeVersion forgeVersion : forgeVersions.number.values()) {
-			if (forgeVersion.version.equalsIgnoreCase(version.split("-")[1])) {
+			if (forgeVersion.version.equalsIgnoreCase(version)) {
 				return forgeVersion;
 			}
 		}
@@ -35,10 +35,10 @@ public class ForgeUtils {
 
 	public static int count = 0;
 
-	public static List<File> resolveForgeLibrarys(String forgeVer) throws IOException {
+	public static List<File> resolveForgeLibrarys(String mcVer, String forgeVer) throws IOException {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File libraries = new File(mcDir, "libraries");
-		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, forgeVer);
+		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, mcVer, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
 		OneClientLogging.logger.info("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
 		count = 0;
@@ -69,24 +69,30 @@ public class ForgeUtils {
 		return librarys;
 	}
 
-	public static ForgeVersionProfile downloadForgeVersion(File versionsDir, String forgeVer) throws IOException {
-		JarFile jarFile = downloadForgeJar(versionsDir, forgeVer);
+	public static ForgeVersionProfile downloadForgeVersion(File versionsDir, String mcVer, String forgeVer) throws IOException {
+		JarFile jarFile = downloadForgeJar(versionsDir, mcVer, forgeVer);
 		String json = IOUtils.toString(jarFile.getInputStream(jarFile.getEntry("version.json")), StandardCharsets.UTF_8);
 		jarFile.close();
 		return JsonUtil.GSON.fromJson(json, ForgeVersionProfile.class);
 	}
 
-	public static JarFile downloadForgeJar(File versionsDir, String forgeVer) throws IOException {
+	public static JarFile downloadForgeJar(File versionsDir, String mcVer, String forgeVer) throws IOException {
 		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
-		String jarName = forgeVer + "/forge-" + forgeVer + "-universal.jar";
+		String jarName = getForgeJar(mcVer, forgeVer, null);
 		File forgeJar = new File(Constants.TEMPDIR, jarName);
 		OneClientLogging.logger.info("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
-			jarName = forgeVer + "-" + version.branch + "/forge-" + forgeVer + "-" + version.branch + "-universal.jar";
+			jarName = getForgeJar(mcVer, forgeVer, version.branch);
 		}
 		URL forgeJarURL = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + jarName);
 		FileUtils.copyURLToFile(forgeJarURL, forgeJar);
 		return new JarFile(forgeJar);
+	}
+
+	public static String getForgeJar(String mcVer, String forgeVer, String branch) {
+		if (branch == null)
+			return String.format("%s-%s/forge-%s-%s-universal.jar", mcVer, forgeVer, mcVer, forgeVer);
+		return String.format("%s-%s-%s/forge-%s-%s-%s-universal.jar", mcVer, forgeVer, branch, mcVer, forgeVer, branch);
 	}
 
 	//http://files.minecraftforge.net/maven/net/minecraftforge/forge/json

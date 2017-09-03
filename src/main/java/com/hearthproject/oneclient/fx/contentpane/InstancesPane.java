@@ -42,7 +42,7 @@ public class InstancesPane extends ContentPane {
 
 	@SuppressWarnings("unused")
 	public void onNewInstancePress() {
-		NewInstanceController.start(null);
+		NewInstanceController.start(new Instance());
 	}
 
 	private void refreshInstances() {

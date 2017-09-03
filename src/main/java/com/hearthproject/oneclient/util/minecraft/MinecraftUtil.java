@@ -5,12 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
 import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.minecraft.Version;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
@@ -74,16 +74,16 @@ public class MinecraftUtil {
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		InstanceManager.setInstanceInstalling(instance, true);
-		NotifyUtil.setText("Installing minecraft for " + instance.name);
-		OneClientTracking.sendRequest("minecraft/install/" + instance.minecraftVersion);
+		NotifyUtil.setText("Installing minecraft for " + instance.getManifest().getName());
+		OneClientTracking.sendRequest("minecraft/install/" + instance.getManifest().getMinecraftVersion());
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
 		File assets = new File(mcDir, "assets");
 		File versions = new File(mcDir, "versions");
 		File libraries = new File(mcDir, "libraries");
 		File natives = new File(mcDir, "natives");
 
-		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
-		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
+		Version versionData = downloadMcVersionData(instance.getManifest().getMinecraftVersion(), versions);
+		File mcJar = new File(versions, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
@@ -116,10 +116,8 @@ public class MinecraftUtil {
 			OneClientLogging.logger.info("Extracting native " + library.name);
 			ZipUtil.unpack(library.getFile(libraries), natives);
 		});
-
-		if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-			ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion);
-		}
+		if (!instance.getManifest().getForge().isEmpty())
+			ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
 		File assetsInfo = new File(assets, "indexes" + File.separator + assetIndex.id + ".json");
@@ -155,8 +153,8 @@ public class MinecraftUtil {
 		File versions = new File(mcDir, "versions");
 		File libraries = new File(mcDir, "libraries");
 		File natives = new File(mcDir, "natives");
-		Version versionData = downloadMcVersionData(instance.minecraftVersion, versions);
-		File mcJar = new File(versions, instance.minecraftVersion + ".jar");
+		Version versionData = downloadMcVersionData(instance.getManifest().getMinecraftVersion(), versions);
+		File mcJar = new File(versions, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Attempting authentication with Mojang");
 
@@ -174,7 +172,7 @@ public class MinecraftUtil {
 
 		OneClientLogging.logger.info("Starting minecraft...");
 
-		OneClientTracking.sendRequest("minecraft/play/" + instance.minecraftVersion);
+		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
 
 		new Thread(() -> {
 			try {
@@ -184,12 +182,12 @@ public class MinecraftUtil {
 				String providedArugments = versionData.minecraftArguments;
 				Optional<String> tweakClass = Optional.empty();
 
-				if (instance.modLoader.equalsIgnoreCase("forge") && !instance.modLoaderVersion.isEmpty()) {
-					for (File library : ForgeUtils.resolveForgeLibrarys(instance.minecraftVersion + "-" + instance.modLoaderVersion)) {
+				if (!instance.getManifest().getForge().isEmpty()) {
+					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge())) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
-					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(libraries, instance.minecraftVersion + "-" + instance.modLoaderVersion);
+					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(libraries, instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 					mainClass = forgeVersionProfile.mainClass;
 					providedArugments = forgeVersionProfile.minecraftArguments;
 
@@ -244,7 +242,7 @@ public class MinecraftUtil {
 				}
 
 				arguments.add("--version");
-				arguments.add(instance.minecraftVersion);
+				arguments.add(instance.getManifest().getMinecraftVersion());
 				arguments.add("--assetsDir");
 				arguments.add(assets.toString());
 				arguments.add("--assetIndex");

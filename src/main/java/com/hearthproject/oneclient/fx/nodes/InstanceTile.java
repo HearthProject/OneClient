@@ -39,9 +39,9 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (!instance.icon.isEmpty() && instance.getIcon().exists()) {
+		if (instance.getManifest().getIcon().isPresent()) {
 			try {
-				FileInputStream iconInputSteam = new FileInputStream(instance.getIcon());
+				FileInputStream iconInputSteam = new FileInputStream(instance.getManifest().getIcon().get());
 				imageView.setImage(new Image(iconInputSteam));
 				iconInputSteam.close();
 			} catch (IOException e) {
@@ -55,10 +55,10 @@ public class InstanceTile extends StackPane {
 		}
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);
-		nameLabel = new Text(instance.name);
+		nameLabel = new Text(instance.getManifest().getName());
 		nameLabel.setFill(Color.web("#FFFFFF"));
 		nameLabel.setFont(javafx.scene.text.Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));
-		statusLabel = new Text(instance.minecraftVersion);
+		statusLabel = new Text(instance.getManifest().getMinecraftVersion());
 		statusLabel.setFill(Color.web("#FFFFFF"));
 		playButton = new Button("Play");
 		playButton.setOnAction(event -> {
@@ -66,9 +66,7 @@ public class InstanceTile extends StackPane {
 				action.execute();
 		});
 		editButton = new Button("Edit");
-		editButton.setOnAction(event -> {
-			InstancePane.show(instance);
-		});
+		editButton.setOnAction(event -> InstancePane.show(instance));
 		nodeBox = new VBox(nameLabel, statusLabel, imageView, playButton, editButton);
 		nodeBox.setAlignment(Pos.CENTER);
 		nodeBox.setSpacing(6);
@@ -95,7 +93,7 @@ public class InstanceTile extends StackPane {
 			if (installing) {
 				statusLabel.setText("Installing...");
 			} else {
-				statusLabel.setText(instance.minecraftVersion);
+				statusLabel.setText(instance.getManifest().getMinecraftVersion());
 			}
 		});
 	}
