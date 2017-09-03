@@ -1,9 +1,8 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
-import com.hearthproject.oneclient.Constants;
+import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.util.curse.CurseUtils;
-import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Alert;
@@ -12,54 +11,32 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class Instance {
 
-	public String name;
+	private Manifest manifest;
 
-	public String minecraftVersion;
+	public Instance() {
+		this.manifest = new Manifest();
+	}
 
-	public String modLoader;
+	public Instance(Manifest manifest) {
+		this.manifest = manifest;
+	}
 
-	public String modLoaderVersion;
+	public void setManifest(Manifest manifest) {
+		this.manifest = manifest;
+	}
 
-	public String icon;
-
-	public long lastLaunch;
-
-	public String curseURL;
-
-	public String curseVersion;
-
-	public Instance(String name) {
-		this.name = name;
-		icon = "";
+	public Manifest getManifest() {
+		return manifest;
 	}
 
 	public File getDirectory() {
-		return FileUtil.getDirectory(Constants.INSTANCEDIR, name);
-	}
-
-	public File getIcon() {
-		if (icon == null || icon.isEmpty()) {
-			return null;
-		}
-		return new File(getDirectory(), icon);
-	}
-
-	public String getZipURL() throws IOException, URISyntaxException {
-		String packUrl = curseURL;
-		if (packUrl.endsWith("/"))
-			packUrl = packUrl.replaceAll(".$", "");
-
-		String fileUrl;
-		if (curseVersion.equals("latest"))
-			fileUrl = packUrl + "/files/latest";
-		else
-			fileUrl = packUrl + "/files/" + curseVersion + "/download";
-		return CurseUtils.getLocationHeader(fileUrl);
+		if (manifest != null)
+			return manifest.getDirectory();
+		return null;
 	}
 
 	public void delete() {
@@ -80,5 +57,56 @@ public class Instance {
 				OneClientLogging.logger.error(e);
 			}
 		}
+	}
+
+	public void setName(String name) {
+		int i = 0;
+		manifest.name = name;
+		while (!isValid()) {
+			manifest.name = (name + "(" + i++ + ")");
+		}
+	}
+
+	public boolean isValid() {
+		return !getDirectory().exists();
+	}
+
+	public void save() {
+		getManifest().save();
+	}
+
+	@Deprecated
+	public static Manifest legacyLoadInstance(File directory) {
+		Manifest manifest = null;
+		File file = new File(directory, "instance.json");
+		if (file.exists()) {
+			JsonObject object = JsonUtil.read(file, JsonObject.class);
+			String name = object.get("name").getAsString();
+			String modloader = object.get("modLoader").getAsString().toLowerCase();
+			String modloaderVersion = object.get("modLoaderVersion").getAsString();
+			String icon = object.get("icon").getAsString();
+			String minecraft = object.get("minecraftVersion").getAsString();
+
+			manifest = new Manifest();
+			manifest.setName(name);
+			manifest.setModloader(modloader + "-" + modloaderVersion);
+			manifest.setIcon(icon);
+			manifest.setMinecraftVersion(minecraft);
+
+			file.deleteOnExit();
+		}
+		return manifest;
+	}
+
+	public static Instance load(File directory) {
+		Manifest manifest = legacyLoadInstance(directory);
+		if (manifest == null)
+			manifest = JsonUtil.read(new File(directory, "manifest.json"), Manifest.class);
+		else {
+			manifest.save();
+		}
+		if (manifest == null)
+			return null;
+		return new Instance(manifest);
 	}
 }

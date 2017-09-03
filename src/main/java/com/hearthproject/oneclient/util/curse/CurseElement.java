@@ -98,7 +98,7 @@ public class CurseElement {
 	public Image getIconImage() {
 		File icon = getIcon();
 		if (icon != null) {
-			return ImageUtil.openImage(icon);
+			return ImageUtil.openCachedImage(icon);
 		}
 		return null;
 	}

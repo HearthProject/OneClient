@@ -1,6 +1,9 @@
 package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Lists;
+import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.launcher.Manifest;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.util.StringConverter;
 import org.jsoup.Jsoup;
@@ -8,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -230,5 +235,28 @@ public class CurseUtils {
 				return "";
 			return s.replace(" ", "+");
 		}
+	}
+
+	public static Manifest getManifest(File dir) throws IOException {
+		NotifyUtil.setText("Parsing Manifest");
+		File f = new File(dir, "manifest.json");
+		if (!f.exists())
+			throw new IllegalArgumentException("This modpack has no manifest");
+
+		Manifest manifest = JsonUtil.GSON.fromJson(new FileReader(f), Manifest.class);
+
+		return manifest;
+	}
+
+	public static String getZipURL(String url, String version) throws IOException, URISyntaxException {
+		if (url.endsWith("/"))
+			url = url.replaceAll(".$", "");
+
+		String fileUrl;
+		if (version.equals("latest"))
+			fileUrl = url + "/files/latest";
+		else
+			fileUrl = url + "/files/" + version + "/download";
+		return CurseUtils.getLocationHeader(fileUrl);
 	}
 }

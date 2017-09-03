@@ -39,7 +39,7 @@
                                 <Insets right="6.0"/>
                             </HBox.margin>
                         </ComboBox>
-                        <CheckBox fx:id="showSnapshotCheckBox" mnemonicParsing="false" onAction="#reloadMCVerList" prefWidth="860.0" text="Show Snapshots"/>
+                        <CheckBox fx:id="showSnapshotCheckBox" mnemonicParsing="false" onAction="#loadVersions" prefWidth="860.0" text="Show Snapshots"/>
                     </children>
                     <padding>
                         <Insets bottom="6.0"/>
@@ -47,12 +47,11 @@
                 </HBox>
                 <HBox alignment="CENTER">
                     <children>
-                        <ComboBox fx:id="modLoaderComboBox" onAction="#onModLoaderComboBoxChange" prefHeight="29.0" prefWidth="1000.0" promptText="Mod Loader">
+                        <ComboBox fx:id="modloaderComboBox" onAction="#onModLoaderComboBoxChange" prefHeight="29.0" prefWidth="1000.0" promptText="Mod Loader">
                             <HBox.margin>
                                 <Insets right="6.0"/>
                             </HBox.margin>
                         </ComboBox>
-                        <ComboBox fx:id="modLoaderVersionComboBox" disable="true" prefHeight="29.0" prefWidth="1000.0" promptText="Mod Loader Version"/>
                     </children>
                     <VBox.margin>
                         <Insets bottom="6.0"/>
