@@ -79,7 +79,11 @@ public class Updater {
 		Thread.sleep(3000); //We wait a few seconds to allow the old instance to close so we can rename it without causing an exception
 		File oldJar = new File(args[0]);
 		File newJar = getTempFile(false);
-		FileUtils.moveFile(oldJar, new File(oldJar.getAbsolutePath() + ".old")); //Backup the old jar so if things go wrong it can be manually reverted
+		File backupJar = new File(oldJar.getAbsolutePath() + ".old");
+		if (backupJar.exists()) {
+			backupJar.delete();
+		}
+		FileUtils.moveFile(oldJar, backupJar); //Backup the old jar so if things go wrong it can be manually reverted
 		FileUtils.copyFile(newJar, oldJar);
 
 		List<String> newArgs = new ArrayList<>();
