@@ -76,4 +76,8 @@ public class FileUtil {
 			return null;
 		return new File(path.getFile());
 	}
+
+	public static boolean isDirectoryEmpty(File dir) {
+		return dir.isDirectory() && (dir.listFiles() == null || dir.listFiles().length == 0);
+	}
 }

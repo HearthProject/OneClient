@@ -94,18 +94,20 @@ public class Instance {
 
 			List<File> files = Lists.newArrayList();
 			files.add(manifest);
+			//			Optional<List<File>> list = new FileSelection(getDirectory()).showAndWait();
+			//			System.out.println(list.get());
+			List<File> overrideFiles = selectOverrideFiles();
+			for (File file : overrideFiles) {
+				try {
+					FileUtils.copyFile(file, overrides);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 
-			File output = new File(getDirectory(), getManifest().getName() + ".zip");
+			files.add(overrides);
 
-			//TODO overrides
-			//			FileUtils.copyFile(manifest,pack);
-			//			for(File file: getDirectory().listFiles()) {
-			//				if(file.isDirectory() && file.listFiles().length > 0) {
-			//					FileUtils.
-			//				}
-			//			}
-
-			ZipFile zip = new ZipFile(output);
+			ZipFile zip = new ZipFile(new File(getDirectory(), getManifest().getName() + ".zip"));
 			ZipParameters parameters = new ZipParameters();
 			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
 			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
@@ -151,6 +153,12 @@ public class Instance {
 		if (manifest == null)
 			return null;
 		return new Instance(manifest);
+	}
+
+	public static List<File> selectOverrideFiles() {
+		List<File> files = Lists.newArrayList();
+
+		return files;
 	}
 
 }
