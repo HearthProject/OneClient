@@ -26,25 +26,23 @@ public class CurseModpack extends CurseTile {
 		NotifyUtil.setText("Installing %s", element.getTitle());
 
 		new Thread(() -> {
-			Instance instance = new Instance(element.getTitle());
-			InstanceManager.setInstanceInstalling(instance, true);
-			instance.icon = "images/icon.png";
-			instance.icon = "icon.png";
+			Instance instance = null;
 			try {
-				new CursePackInstaller().downloadFromURL(element.getUrl(), "latest", instance);
+				instance = CursePackInstaller.downloadFromURL(element.getUrl(), "latest");
 				File image = element.getIcon();
 				if (image != null)
-					Files.copy(image.toPath(), new File(instance.getDirectory(), "icon.png").toPath());
+					Files.copy(image.toPath(), instance.getManifest().getIcon().get().toPath());
 				MinecraftUtil.installMinecraft(instance);
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
 			}
+			final Instance i = instance;
 			Platform.runLater(() -> {
-				InstanceManager.addInstance(instance);
+				InstanceManager.addInstance(i);
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 					Main.mainController.currentContent.refresh();
 				}
-				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", instance.name);
+				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", i.getManifest().getName());
 			});
 		}).start();
 	}

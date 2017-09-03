@@ -21,7 +21,8 @@ public class NotifyUtil {
 
 	public static void setText(String format, Object... params) {
 		MiscUtil.runLaterIfNeeded(() -> {
-			OneClientLogging.info(String.format(format, params));
+			if (!format.isEmpty())
+				OneClientLogging.info(String.format(format, params));
 			getStatus().setText(String.format(format, params));
 		});
 	}

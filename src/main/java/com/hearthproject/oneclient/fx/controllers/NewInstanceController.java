@@ -4,12 +4,16 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.json.models.modloader.IModloader;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -29,9 +33,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class NewInstanceController {
+
+	public ObservableList<GameVersion.Version> minecraftVersions = FXCollections.observableArrayList();
+	public ObservableList<IModloader> modloaderVersions = FXCollections.observableArrayList();
+
 	public static Stage stage;
 	@FXML
 	public ImageView iconPreview;
@@ -40,13 +48,11 @@ public class NewInstanceController {
 	@FXML
 	public Button chooseIconButton;
 	@FXML
-	public ComboBox mcVersionComboBox;
+	public ComboBox<GameVersion.Version> mcVersionComboBox;
+	@FXML
+	public ComboBox<IModloader> modloaderComboBox;
 	@FXML
 	public CheckBox showSnapshotCheckBox;
-	@FXML
-	public ComboBox modLoaderComboBox;
-	@FXML
-	public ComboBox modLoaderVersionComboBox;
 	@FXML
 	public Button createButton;
 	public File selectedImageFile;
@@ -84,95 +90,55 @@ public class NewInstanceController {
 	}
 
 	public void onStart(Stage stage) {
-		reloadMCVerList();
-		modLoaderComboBox.getItems().clear();
-		modLoaderComboBox.getItems().add("Forge");
-		modLoaderComboBox.getItems().add("None");
-		modLoaderComboBox.getSelectionModel().selectFirst();
-
-		modLoaderComboBox.valueProperty().addListener((observable, oldValue, newValue) -> refreshModLoader());
-
-		mcVersionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> refreshModLoader());
-
-		refreshModLoader();
+		loadVersions();
+		loadModloaderVersions();
+		showSnapshotCheckBox.setOnAction(event -> loadVersions());
+		mcVersionComboBox.valueProperty().addListener(((o, a, b) -> loadModloaderVersions()));
 
 		if (instance != null) {
-			modLoaderComboBox.getSelectionModel().select(instance.modLoader);
-			modLoaderVersionComboBox.getSelectionModel().select(instance.modLoaderVersion);
-			mcVersionComboBox.getSelectionModel().select(instance.minecraftVersion);
-			instanceNameField.setText(instance.name);
+			mcVersionComboBox.getSelectionModel().select(instance.getManifest().getGameVersion());
+			modloaderComboBox.getSelectionModel().select(instance.getManifest().getModloader());
+			instanceNameField.setText(instance.getManifest().getName());
 			instanceNameField.setEditable(false);
-			if (instance.getIcon() != null && instance.getIcon().exists()) {
-				try {
-					InputStream targetStream = new FileInputStream(instance.getIcon());
-					iconPreview.setImage(new Image(targetStream));
-					targetStream.close();
-				} catch (IOException e) {
-					OneClientLogging.error(e);
-				}
+			if (instance.getManifest().getIcon().isPresent()) {
+				iconPreview.setImage(ImageUtil.openImage(instance.getManifest().getIcon().get()));
 			}
 			createButton.setText("Update Instance");
 		}
 	}
 
-	public void refreshModLoader() {
-		if (modLoaderComboBox.getValue().toString().equalsIgnoreCase("Forge")) {
-			modLoaderVersionComboBox.setDisable(false);
-			modLoaderVersionComboBox.getItems().clear();
-			try {
-				if (mcVersionComboBox.getSelectionModel().getSelectedItem() != null) {
-					ForgeUtils.loadForgeVersions().number.entrySet().stream()
-						.filter(entry -> entry.getValue().mcversion.equalsIgnoreCase(mcVersionComboBox.getSelectionModel().getSelectedItem().toString()))
-						.sorted(Comparator.comparingInt(o -> -o.getValue().build))
-						.forEach(stringForgeVersionEntry -> modLoaderVersionComboBox.getItems().add(stringForgeVersionEntry.getValue().version));
-				}
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
-			if (modLoaderVersionComboBox.getItems().isEmpty()) {
-				modLoaderVersionComboBox.setDisable(true);
-			} else {
-				modLoaderVersionComboBox.getSelectionModel().selectFirst();
-			}
-
-		} else {
-			modLoaderVersionComboBox.setDisable(true);
-		}
-	}
-
 	public void onCreateButtonPress() {
-		Instance instance = new Instance(instanceNameField.getText());
+		Instance instance = new Instance();
+		instance.setName(instanceNameField.getText());
 		boolean newInstance = true;
 		if (this.instance != null) {
 			newInstance = false;
 			instance = this.instance;
 		}
-		if (newInstance && !InstanceManager.isValid(instance)) {
+		if (newInstance && !instance.isValid()) {
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setTitle("Error");
-			alert.setHeaderText("That isnt a valid instance");
+			alert.setHeaderText("That isn't a valid instance");
 			alert.setContentText("Do you already have an instance with that name?");
 			alert.showAndWait();
 			return;
 		}
 
 		if (selectedImageFile != null) {
-			instance.icon = selectedImageFile.getName();
+			instance.getManifest().setIcon(selectedImageFile.getName());
 			try {
-				FileUtils.copyFile(selectedImageFile, instance.getIcon());
+				FileUtils.copyFile(selectedImageFile, instance.getManifest().getIcon().get());
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 		}
-		instance.minecraftVersion = mcVersionComboBox.getSelectionModel().getSelectedItem().toString();
-		if (modLoaderVersionComboBox.getSelectionModel().getSelectedItem() != null && modLoaderComboBox.getSelectionModel().getSelectedItem() != null) {
-			instance.modLoader = modLoaderComboBox.getSelectionModel().getSelectedItem().toString();
-			instance.modLoaderVersion = modLoaderVersionComboBox.getSelectionModel().getSelectedItem().toString();
-		}
+		instance.getManifest().setMinecraftVersion(mcVersionComboBox.getValue().id);
+		instance.getManifest().setModloader(modloaderComboBox.getValue().toString());
+
 		if (newInstance) {
 			InstanceManager.addInstance(instance);
 		} else {
-			InstanceManager.save(instance);
+			InstanceManager.save();
 		}
 
 		stage.close();
@@ -186,9 +152,8 @@ public class NewInstanceController {
 			try {
 				MinecraftUtil.installMinecraft(finalInstance);
 				Platform.runLater(() -> ContentPanes.INSTANCES_PANE.button.fire());
-				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.name);
+				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getManifest().getName());
 				InstanceManager.setInstanceInstalling(finalInstance, false);
-
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
 			}
@@ -212,14 +177,27 @@ public class NewInstanceController {
 		}
 	}
 
-	public void reloadMCVerList() {
+	public void loadVersions() {
 		try {
-			mcVersionComboBox.getItems().clear();
-			GameVersion gameVersion = MinecraftUtil.loadGameVersions();
-			gameVersion.versions.stream().filter(version -> version.type.equals("release") || showSnapshotCheckBox.isSelected()).forEach(version -> mcVersionComboBox.getItems().add(version.id));
+			GameVersion version = MinecraftUtil.loadGameVersions();
+			minecraftVersions = FXCollections.observableArrayList(version.get(v -> v.type.equals("release") || showSnapshotCheckBox.isSelected()).collect(Collectors.toList()));
+			mcVersionComboBox.setItems(minecraftVersions);
 			mcVersionComboBox.getSelectionModel().selectFirst();
 		} catch (Exception e) {
-			OneClientLogging.error(e);
+			e.printStackTrace();
+		}
+	}
+
+	public void loadModloaderVersions() {
+		if (mcVersionComboBox.getValue() != null) {
+			try {
+				modloaderVersions.clear();
+				modloaderVersions.add(new IModloader.None());
+				modloaderVersions.addAll(ForgeUtils.loadForgeVersions().filterMCVersion(mcVersionComboBox.getValue()));
+				modloaderComboBox.setItems(modloaderVersions);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

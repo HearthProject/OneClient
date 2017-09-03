@@ -1,9 +1,7 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
-import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.util.curse.CurseUtils;
-import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Alert;
@@ -12,54 +10,32 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class Instance {
 
-	public String name;
+	private Manifest manifest;
 
-	public String minecraftVersion;
+	public Instance() {
+		this.manifest = new Manifest();
+	}
 
-	public String modLoader;
+	public Instance(Manifest manifest) {
+		this.manifest = manifest;
+	}
 
-	public String modLoaderVersion;
+	public void setManifest(Manifest manifest) {
+		this.manifest = manifest;
+	}
 
-	public String icon;
-
-	public long lastLaunch;
-
-	public String curseURL;
-
-	public String curseVersion;
-
-	public Instance(String name) {
-		this.name = name;
-		icon = "";
+	public Manifest getManifest() {
+		return manifest;
 	}
 
 	public File getDirectory() {
-		return FileUtil.getDirectory(Constants.INSTANCEDIR, name);
-	}
-
-	public File getIcon() {
-		if (icon == null || icon.isEmpty()) {
-			return null;
-		}
-		return new File(getDirectory(), icon);
-	}
-
-	public String getZipURL() throws IOException, URISyntaxException {
-		String packUrl = curseURL;
-		if (packUrl.endsWith("/"))
-			packUrl = packUrl.replaceAll(".$", "");
-
-		String fileUrl;
-		if (curseVersion.equals("latest"))
-			fileUrl = packUrl + "/files/latest";
-		else
-			fileUrl = packUrl + "/files/" + curseVersion + "/download";
-		return CurseUtils.getLocationHeader(fileUrl);
+		if (manifest != null)
+			return manifest.getDirectory();
+		return null;
 	}
 
 	public void delete() {
@@ -80,5 +56,27 @@ public class Instance {
 				OneClientLogging.logger.error(e);
 			}
 		}
+	}
+
+	public void setName(String name) {
+		int i = 0;
+		manifest.name = name;
+		while (!isValid()) {
+			manifest.name = (name + "(" + i++ + ")");
+		}
+	}
+
+	public boolean isValid() {
+		return !getDirectory().exists();
+	}
+
+	public void save() {
+		String manifest = JsonUtil.GSON.toJson(getManifest());
+		JsonUtil.save(new File(getDirectory(), "manifest.json"), manifest);
+	}
+
+	public static Instance load(File directory) {
+		Manifest manifest = JsonUtil.read(new File(directory, "manifest.json"), Manifest.class);
+		return new Instance(manifest);
 	}
 }

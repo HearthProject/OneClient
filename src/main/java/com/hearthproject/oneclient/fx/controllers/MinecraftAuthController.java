@@ -40,7 +40,7 @@ public class MinecraftAuthController {
 				stage.show();
 				return;
 			}
-			NotifyUtil.setText(Duration.seconds(2), "%s successfully launching!", instance.name);
+			NotifyUtil.setText(Duration.seconds(2), "%s successfully launching!", instance.getManifest().getName());
 		} else {
 			try {
 				if (!HearthApi.login(username.getText(), password.getText())) {
