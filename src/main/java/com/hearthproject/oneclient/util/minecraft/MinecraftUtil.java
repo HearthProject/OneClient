@@ -271,7 +271,7 @@ public class MinecraftUtil {
 						OneClientLogging.logger.error(lineErr);
 					}
 				} catch (IOException ignore) {}
-				
+
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
 			}

@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
+import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
@@ -71,12 +72,39 @@ public class Instance {
 	}
 
 	public void save() {
-		String manifest = JsonUtil.GSON.toJson(getManifest());
-		JsonUtil.save(new File(getDirectory(), "manifest.json"), manifest);
+		getManifest().save();
+	}
+
+	@Deprecated
+	public static Manifest legacyLoadInstance(File directory) {
+		Manifest manifest = null;
+		File file = new File(directory, "instance.json");
+		if (file.exists()) {
+			JsonObject object = JsonUtil.read(file, JsonObject.class);
+			String name = object.get("name").getAsString();
+			String modloader = object.get("modLoader").getAsString().toLowerCase();
+			String modloaderVersion = object.get("modLoaderVersion").getAsString();
+			String icon = object.get("icon").getAsString();
+			String minecraft = object.get("minecraftVersion").getAsString();
+
+			manifest = new Manifest();
+			manifest.setName(name);
+			manifest.setModloader(modloader + "-" + modloaderVersion);
+			manifest.setIcon(icon);
+			manifest.setMinecraftVersion(minecraft);
+
+			file.deleteOnExit();
+		}
+		return manifest;
 	}
 
 	public static Instance load(File directory) {
-		Manifest manifest = JsonUtil.read(new File(directory, "manifest.json"), Manifest.class);
+		Manifest manifest = legacyLoadInstance(directory);
+		if (manifest == null)
+			manifest = JsonUtil.read(new File(directory, "manifest.json"), Manifest.class);
+		else {
+			manifest.save();
+		}
 		if (manifest == null)
 			return null;
 		return new Instance(manifest);

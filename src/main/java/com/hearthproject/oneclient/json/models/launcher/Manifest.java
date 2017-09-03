@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.json.models.launcher;
 
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.modloader.IModloader;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersions;
@@ -88,6 +89,10 @@ public class Manifest {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public static class MinecraftData {
 		public String version;
 		public List<Modloader> modLoaders = Lists.newArrayList();
@@ -128,4 +133,8 @@ public class Manifest {
 		}
 	}
 
+	public void save() {
+		String manifest = JsonUtil.GSON.toJson(this);
+		JsonUtil.save(new File(getDirectory(), "manifest.json"), manifest);
+	}
 }
