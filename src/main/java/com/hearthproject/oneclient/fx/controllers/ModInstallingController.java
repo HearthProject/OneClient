@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,9 +25,14 @@ import java.util.stream.Collectors;
 
 public class ModInstallingController {
 
+	public Instance instance;
 	public ObservableList<CurseMod> tiles = FXCollections.observableArrayList();
+	public ObservableList<CurseUtils.Filter> sorting;
 
 	public ListView<CurseMod> listTiles;
+	public ComboBox<CurseUtils.Filter> filterSort;
+
+	public int page;
 
 	public static ModInstallingController controller;
 	public static Stage stage;
@@ -54,11 +60,16 @@ public class ModInstallingController {
 			stage.setScene(scene);
 			stage.show();
 			controller = fxmlLoader.getController();
+			controller.sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
+			controller.instance = instance;
 
-			List<CurseElement> elementList = CurseUtils.getMods(1, "1.12", "");
-			controller.tiles.addAll(elementList.stream().map(element -> new CurseMod(instance, element)).collect(Collectors.toList()));
+			controller.filterSort.setItems(controller.sorting);
+			controller.filterSort.getSelectionModel().selectFirst();
+			controller.filterSort.valueProperty().addListener((observableValue, s, t1) -> controller.refreshFilters());
+			controller.filterSort.setConverter(new CurseUtils.FilterConverter());
+
+			controller.loadModPage(1, controller.getFilter());
 			controller.listTiles.setItems(controller.tiles);
-
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
@@ -75,6 +86,23 @@ public class ModInstallingController {
 			});
 		}
 		OneClientLogging.logger.error("Closing");
+	}
+
+	public void loadModPage(int page, String sorting) {
+		List<CurseElement> elementList = CurseUtils.getMods(page, instance.getManifest().getMinecraftVersion(), sorting);
+		controller.tiles.addAll(elementList.stream().map(element -> new CurseMod(instance, element)).collect(Collectors.toList()));
+	}
+
+	public void refreshFilters() {
+		tiles.clear();
+		page = 1;
+		loadModPage(page, getFilter());
+	}
+
+	private String getFilter() {
+		if (filterSort.getValue() == null)
+			filterSort.getSelectionModel().selectFirst();
+		return filterSort.getValue().getValue();
 	}
 
 }
