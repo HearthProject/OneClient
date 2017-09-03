@@ -6,7 +6,6 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -23,13 +22,12 @@ public class JsonUtil {
 	}
 
 	public static <T> T read(File file, Class<T> object) {
-		if (!file.exists()) {
-			OneClientLogging.error(new FileNotFoundException("File not found:" + file));
-		}
+		if (!file.exists())
+			return null;
 		try {
 			return GSON.fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), object);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return null;
 	}

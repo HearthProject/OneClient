@@ -10,7 +10,6 @@ import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 public class Manifest {
 
@@ -24,6 +23,8 @@ public class Manifest {
 	public List<FileData> files;
 	public String overrides;
 	public String icon;
+
+	public Manifest() {}
 
 	public MinecraftData getMinecraft() {
 		if (minecraft == null)
@@ -57,21 +58,26 @@ public class Manifest {
 	}
 
 	public String getForge() {
-		return minecraft.modLoaders.stream().map(l -> l.id).filter(id -> id.startsWith("forge")).map(id -> id.replace("forge-", "")).findFirst().orElse("");
+		for (MinecraftData.Modloader m : minecraft.modLoaders) {
+			if (m.getName().equals("forge")) {
+				return m.getVersion();
+			}
+		}
+		return "";
 	}
 
 	public IModloader getModloader() {
 		String forge = getForge();
-		if (forge.isEmpty())
+		if (forge == null || forge.isEmpty())
 			return new IModloader.None();
-		return new ForgeVersions.ForgeVersion(getForge());
+		return new ForgeVersions.ForgeVersion(forge);
 	}
 
-	public Optional<File> getIcon() {
+	public File getIcon() {
 		if (icon == null || icon.isEmpty()) {
-			return Optional.empty();
+			return FileUtil.getResource("images/modpack.png");
 		}
-		return Optional.of(new File(getDirectory(), icon));
+		return new File(getDirectory(), icon);
 	}
 
 	public void setIcon(String icon) {
@@ -84,21 +90,29 @@ public class Manifest {
 
 	public static class MinecraftData {
 		public String version;
-		public List<Modloader> modLoaders;
+		public List<Modloader> modLoaders = Lists.newArrayList();
 
 		public static class Modloader {
-			public String id, name, version;
+			public String id;
 			public boolean primary;
+
+			public String getName() {
+				int i = id.indexOf('-');
+				if (i > 0)
+					return id.substring(0, id.indexOf('-'));
+				return id;
+			}
+
+			public String getVersion() {
+				int i = id.indexOf('-');
+				if (i > 0)
+					return id.substring(i + 1);
+				return "";
+			}
 
 			public Modloader(String id) {
 				this.primary = true;
 				this.id = id;
-				if (id.startsWith("forge")) {
-					this.name = id.substring(0, id.indexOf('-'));
-					this.version = id.substring(id.indexOf('-') + 1);
-				} else {
-					this.name = id;
-				}
 			}
 		}
 	}

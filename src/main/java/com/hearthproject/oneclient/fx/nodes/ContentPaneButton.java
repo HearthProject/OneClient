@@ -14,7 +14,7 @@ public class ContentPaneButton extends JFXButton {
 		super("TEST");
 		ImageView imageView = new ImageView();
 		if (imageName != null && !imageName.isEmpty()) {
-			Image image = ImageUtil.openImage(FileUtil.getResource("images/" + imageName));
+			Image image = ImageUtil.openCachedImage(FileUtil.getResource("images/" + imageName));
 			if (image != null)
 				imageView.setImage(image);
 			setGraphic(imageView);

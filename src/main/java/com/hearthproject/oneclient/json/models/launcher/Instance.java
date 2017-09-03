@@ -77,6 +77,8 @@ public class Instance {
 
 	public static Instance load(File directory) {
 		Manifest manifest = JsonUtil.read(new File(directory, "manifest.json"), Manifest.class);
+		if (manifest == null)
+			return null;
 		return new Instance(manifest);
 	}
 }

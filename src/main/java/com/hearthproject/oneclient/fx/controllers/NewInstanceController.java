@@ -94,15 +94,13 @@ public class NewInstanceController {
 		loadModloaderVersions();
 		showSnapshotCheckBox.setOnAction(event -> loadVersions());
 		mcVersionComboBox.valueProperty().addListener(((o, a, b) -> loadModloaderVersions()));
-
+		mcVersionComboBox.getSelectionModel().selectFirst();
+		modloaderComboBox.getSelectionModel().selectFirst();
 		if (instance != null) {
 			mcVersionComboBox.getSelectionModel().select(instance.getManifest().getGameVersion());
 			modloaderComboBox.getSelectionModel().select(instance.getManifest().getModloader());
 			instanceNameField.setText(instance.getManifest().getName());
-			instanceNameField.setEditable(false);
-			if (instance.getManifest().getIcon().isPresent()) {
-				iconPreview.setImage(ImageUtil.openImage(instance.getManifest().getIcon().get()));
-			}
+			iconPreview.setImage(ImageUtil.openCachedImage(instance.getManifest().getIcon()));
 			createButton.setText("Update Instance");
 		}
 	}
@@ -127,13 +125,14 @@ public class NewInstanceController {
 		if (selectedImageFile != null) {
 			instance.getManifest().setIcon(selectedImageFile.getName());
 			try {
-				FileUtils.copyFile(selectedImageFile, instance.getManifest().getIcon().get());
+				FileUtils.copyFile(selectedImageFile, instance.getManifest().getIcon());
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 		}
 		instance.getManifest().setMinecraftVersion(mcVersionComboBox.getValue().id);
-		instance.getManifest().setModloader(modloaderComboBox.getValue().toString());
+		if (modloaderComboBox.getValue() != null)
+			instance.getManifest().setModloader(modloaderComboBox.getValue().toString());
 
 		if (newInstance) {
 			InstanceManager.addInstance(instance);

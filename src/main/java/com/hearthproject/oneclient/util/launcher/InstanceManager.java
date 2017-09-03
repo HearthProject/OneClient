@@ -49,7 +49,8 @@ public class InstanceManager {
 		instances.clear();
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
 			Instance instance = Instance.load(dir);
-			instances.put(instance.getManifest().getName(), instance);
+			if (instance != null)
+				instances.put(instance.getManifest().getName(), instance);
 		});
 	}
 

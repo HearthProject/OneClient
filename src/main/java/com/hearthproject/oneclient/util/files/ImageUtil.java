@@ -15,8 +15,21 @@ public class ImageUtil {
 	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
 	public static Image openImage(File file) {
+		if (file == null || !file.exists()) {
+			return null;
+		}
+		Image image = null;
+		try {
+			image = new Image(new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			OneClientLogging.error(e);
+		}
+		return image;
+	}
+
+	public static Image openCachedImage(File file) {
 		OneClientLogging.logger.debug("Opening Image : {}", file);
-		if (file == null) {
+		if (file == null || !file.exists()) {
 			return null;
 		}
 		Image image = IMAGE_CACHE.getIfPresent(file.getName());

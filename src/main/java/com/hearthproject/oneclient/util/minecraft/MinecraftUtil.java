@@ -256,21 +256,22 @@ public class MinecraftUtil {
 
 				Process process = processBuilder.start();
 				OneClientLogging.logController.processList.add(process);
+				try {
+					BufferedReader reader =
+						new BufferedReader(new InputStreamReader(process.getInputStream()));
+					String line;
+					while ((line = reader.readLine()) != null) {
+						OneClientLogging.logger.info(line);
+					}
 
-				BufferedReader reader =
-					new BufferedReader(new InputStreamReader(process.getInputStream()));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					OneClientLogging.logger.info(line);
-				}
-
-				BufferedReader readerErr =
-					new BufferedReader(new InputStreamReader(process.getErrorStream()));
-				String lineErr;
-				while ((lineErr = readerErr.readLine()) != null) {
-					OneClientLogging.logger.error(lineErr);
-				}
-
+					BufferedReader readerErr =
+						new BufferedReader(new InputStreamReader(process.getErrorStream()));
+					String lineErr;
+					while ((lineErr = readerErr.readLine()) != null) {
+						OneClientLogging.logger.error(lineErr);
+					}
+				} catch (IOException ignore) {}
+				
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
 			}

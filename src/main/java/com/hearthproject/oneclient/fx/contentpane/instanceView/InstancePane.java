@@ -57,11 +57,10 @@ public class InstancePane extends ContentPane {
 		textPackName.setText(instance.getManifest().getName());
 		textMinecraftVersion.setText("Minecraft " + instance.getManifest().getMinecraftVersion());
 
-		if (instance.getManifest().getIcon().isPresent()) {
-			packIcon.setImage(ImageUtil.openImage(instance.getManifest().getIcon().get()));
-			packIcon.setFitWidth(150);
-			packIcon.setFitHeight(150);
-		}
+		packIcon.setImage(ImageUtil.openImage(instance.getManifest().getIcon()));
+		packIcon.setFitWidth(150);
+		packIcon.setFitHeight(150);
+
 		updateList();
 
 		buttonOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));

@@ -3,10 +3,9 @@ package com.hearthproject.oneclient.fx.nodes;
 import com.hearthproject.oneclient.fx.contentpane.instanceView.InstancePane;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -14,9 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 public class InstanceTile extends StackPane {
 	public final Instance instance;
@@ -29,8 +25,6 @@ public class InstanceTile extends StackPane {
 	public Button editButton;
 	private Action action;
 
-	private static Image defaultImage = null;
-
 	public InstanceTile(Instance instance) {
 		this.instance = instance;
 		background = new Rectangle(192, 192);
@@ -39,20 +33,7 @@ public class InstanceTile extends StackPane {
 		background.setFill(Color.web("#262626"));
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		if (instance.getManifest().getIcon().isPresent()) {
-			try {
-				FileInputStream iconInputSteam = new FileInputStream(instance.getManifest().getIcon().get());
-				imageView.setImage(new Image(iconInputSteam));
-				iconInputSteam.close();
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
-		} else {
-			if (defaultImage == null) {
-				defaultImage = new Image(this.getClass().getClassLoader().getResourceAsStream("images/modpack.png"));
-			}
-			imageView.setImage(defaultImage);
-		}
+		imageView.setImage(ImageUtil.openImage(instance.getManifest().getIcon()));
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);
 		nameLabel = new Text(instance.getManifest().getName());

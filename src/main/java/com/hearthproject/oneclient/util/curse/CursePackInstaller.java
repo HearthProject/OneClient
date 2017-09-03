@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,6 +80,7 @@ public class CursePackInstaller {
 
 		downloadModpackFromManifest(minecraftDir, manifest);
 		copyOverrides(manifest, unzippedDir, minecraftDir);
+
 		InstanceManager.addInstance(instance);
 		NotifyUtil.setText("Done downloading element %s", manifest.name);
 		NotifyUtil.clear();
@@ -146,14 +146,15 @@ public class CursePackInstaller {
 		NotifyUtil.setText("Copying Modpack overrides");
 		File overridesDir = new File(tempDir, manifest.overrides);
 
-		Files.walk(overridesDir.toPath()).forEach(path -> {
-			try {
-				NotifyUtil.setText("Override: %s", path.getFileName());
-				Files.copy(path, Paths.get(path.toString().replace(overridesDir.toString(), outDir.toString())), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
-		});
+		for (File file : overridesDir.listFiles()) {
+			File output = new File(outDir, file.toString().replace(overridesDir.toString(), ""));
+			OneClientLogging.info("{} {}", file, output);
+			NotifyUtil.setText("Override: %s", file);
+			if (file.isDirectory())
+				FileUtils.copyDirectory(file, output);
+			else if (file.isFile())
+				FileUtils.copyFile(file, output);
+		}
 	}
 
 	public static void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
@@ -170,9 +171,9 @@ public class CursePackInstaller {
 
 		String filename = m.group(1);
 		filename = URLDecoder.decode(filename, "UTF-8");
-		NotifyUtil.setText("Downloading %s", filename);
+		NotifyUtil.setText("Downloading: %s", filename);
 		if (filename.endsWith("cookieTest=1")) {
-			NotifyUtil.setText("Missing file:%s. Skipped", filename);
+			NotifyUtil.setText("Skipped: %s is missing. ", filename);
 		} else {
 			File f = new File(modsDir, filename);
 			try {
@@ -180,7 +181,7 @@ public class CursePackInstaller {
 					throw new FileNotFoundException("Invalid filename");
 
 				if (f.exists())
-					NotifyUtil.setText("%s already downloaded. Skipped", filename);
+					NotifyUtil.setText("Skipped: %s already downloaded.", filename);
 				else
 					downloadFileFromURL(f, new URL(finalUrl));
 			} catch (FileNotFoundException e) {
