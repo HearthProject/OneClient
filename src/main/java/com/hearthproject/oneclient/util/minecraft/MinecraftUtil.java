@@ -70,7 +70,7 @@ public class MinecraftUtil {
 		}
 	}
 
-	public static int libCount = 0;
+	public static int i = 0, count;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		InstanceManager.setInstanceInstalling(instance, true);
@@ -90,22 +90,25 @@ public class MinecraftUtil {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
 
-		OneClientLogging.logger.info("Resolving " + versionData.libraries.size() + " library's");
-		libCount = 0;
-
+		i = 0;
+		count = versionData.libraries.size();
+		NotifyUtil.setText("Resolving %s Libraries", count);
 		versionData.libraries.parallelStream().forEach(library -> {
-			NotifyUtil.setText("Resolving library: %s", library.name);
-			libCount++;
+			NotifyUtil.setProgressAscend(i++, count);
 			if (library.allowed() && library.getFile(libraries) != null) {
-				NotifyUtil.setProgressAscend(libCount, versionData.libraries.size());
+
+				OneClientLogging.info("Resolving Library {} {}/{}", library.name, i, count);
 				if (library.getFile(libraries).exists()) {
 					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
 						return;
 					}
 				}
 				OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL());
+
 				try {
-					FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile(libraries));
+					File l = library.getFile(libraries);
+					if (l.exists())
+						FileUtils.copyURLToFile(new URL(library.getURL()), l);
 				} catch (IOException e) {
 					OneClientLogging.error(e);
 				}
@@ -114,8 +117,11 @@ public class MinecraftUtil {
 
 		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
 			OneClientLogging.logger.info("Extracting native " + library.name);
-			ZipUtil.unpack(library.getFile(libraries), natives);
+			File file = library.getFile(libraries);
+			if (file.exists())
+				ZipUtil.unpack(file, natives);
 		});
+
 		if (!instance.getManifest().getForge().isEmpty())
 			ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 
@@ -125,17 +131,19 @@ public class MinecraftUtil {
 		AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
 		Map<String, AssetObject> parent = index.getFileMap();
 
-		OneClientLogging.logger.info("Resolving " + parent.entrySet().size() + " assets");
-		libCount = 0;
+		i = 0;
+		count = parent.entrySet().size();
+		NotifyUtil.setProgress(-1);
+		NotifyUtil.setText("Resolving %s Minecraft Assets", count);
 		parent.entrySet().parallelStream().forEach(entry -> {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
-			NotifyUtil.setText("Resolving asset: %s", entry.getKey());
-			NotifyUtil.setProgressAscend(libCount++, parent.entrySet().size());
 			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
+			NotifyUtil.setProgressAscend(i++, count);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
-				OneClientLogging.logger.info("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
+				OneClientLogging.info("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
 				try {
+					FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
 					FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
 				} catch (IOException e) {
 					OneClientLogging.error(e);

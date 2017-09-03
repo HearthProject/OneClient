@@ -38,11 +38,13 @@ public class NotifyUtil {
 		MiscUtil.runLaterIfNeeded(() -> getStatus().progressProperty().setValue(value));
 	}
 
-	public static void setProgressAscend(int current, int max) {
+	public static void setProgressDescend(int current, int max) {
+		MiscUtil.runLaterIfNeeded(() -> OneClientLogging.info("{}/{}", current, max));
 		setProgress(((max - current) / (double) max));
 	}
 
-	public static void setProgressDescend(int current, int max) {
+	public static void setProgressAscend(int current, int max) {
+		MiscUtil.runLaterIfNeeded(() -> OneClientLogging.info("{}/{}", current, max));
 		setProgress((current / (double) max));
 	}
 }

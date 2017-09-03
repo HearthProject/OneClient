@@ -40,16 +40,15 @@ public class ForgeUtils {
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, mcVer, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
-		OneClientLogging.logger.info("Resolving " + forgeVersionProfile.libraries.size() + " forge library's");
+		OneClientLogging.logger.info("Resolving " + forgeVersionProfile.libraries.size() + " Forge Libraries");
 		count = 0;
 		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
+			NotifyUtil.setProgressAscend(count++, forgeVersionProfile.libraries.size());
+			if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
+				librarys.add(library.getFile(libraries));
+				return;
+			}
 			try {
-				NotifyUtil.setText("Resolving Forge Library %s", library.name);
-				NotifyUtil.setProgressAscend(count++, forgeVersionProfile.libraries.size());
-				if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {
-					librarys.add(library.getFile(libraries));
-					return;
-				}
 				OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL());
 				int response = MiscUtil.getResponseCode(new URL(library.getURL()));
 				if (response == 404) {

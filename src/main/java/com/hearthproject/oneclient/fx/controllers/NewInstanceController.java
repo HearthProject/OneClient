@@ -11,7 +11,6 @@ import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -150,7 +149,6 @@ public class NewInstanceController {
 		new Thread(() -> {
 			try {
 				MinecraftUtil.installMinecraft(finalInstance);
-				Platform.runLater(() -> ContentPanes.INSTANCES_PANE.button.fire());
 				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getManifest().getName());
 				InstanceManager.setInstanceInstalling(finalInstance, false);
 			} catch (Throwable throwable) {

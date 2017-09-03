@@ -158,7 +158,7 @@ public class CursePackInstaller {
 	}
 
 	public static void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
-		NotifyUtil.setProgressAscend(remaining, total);
+		NotifyUtil.setProgressDescend(remaining, total);
 		String baseUrl = "http://minecraft.curseforge.com/projects/" + file.projectID;
 		String projectUrl = getLocationHeader(baseUrl);
 		projectUrl = projectUrl.replaceAll("\\?cookieTest=1", "");
