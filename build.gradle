@@ -1,4 +1,7 @@
 import java.security.MessageDigest
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.auth.BasicAWSCredentials
+import groovy.json.JsonOutput
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -12,12 +15,15 @@ buildscript {
         }
         jcenter()
     }
+	dependencies {
+		classpath 'com.amazonaws:aws-java-sdk:1.11.186'
+	}
 }
 
 apply from: 'https://github.com/HearthProject/OneClient/raw/master/formatter/ideconfig.gradle'
 
 sourceCompatibility = 1.8
-version = '0.0.2'
+version = '0.0.3'
 
 // Fetch build number from Jenkins
 def ENV = System.getenv()
@@ -98,3 +104,33 @@ def calcSha1(file)
 }
 
 build.finalizedBy saveHash
+
+def uploadFileToS3(file, location){
+	project.logger.lifecycle("Uploading " + file + " to aws s3")
+	def s3 = new AmazonS3Client(new BasicAWSCredentials(project.getProperty('aws_access_key'), project.getProperty('aws_secret_key')))
+	s3.putObject("hearthstorage.hearthproject.uk", location + "/" + file.name , file)
+}
+
+task awsUpload(){
+	doLast {
+		uploadFileToS3(jar.archivePath, "oneclient/versions")
+		uploadFileToS3(portableJar.archivePath, "oneclient/versions")
+		uploadFileToS3(new File(jar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+		uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+	}
+}
+
+task buildInfo() {
+	doLast {
+		def buildInfo = new TreeMap<String,Object>()
+		buildInfo['latestVersion'] = project.version
+		buildInfo['downloadUrl'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions/" + jar.archivePath.name
+		buildInfo['portableDownloadUrl'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions/" + portableJar.archivePath.name
+		buildInfo['required'] = "false"
+
+		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/versions.json")
+		jsonFile.write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
+	}
+}
+
+build.finalizedBy buildInfo

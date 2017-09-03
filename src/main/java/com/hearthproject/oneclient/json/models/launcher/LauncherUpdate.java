@@ -4,6 +4,7 @@ public class LauncherUpdate {
 
 	public String latestVersion;
 	public String downloadUrl;
+	public String portableDownloadUrl;
 	public boolean required;
 
 }

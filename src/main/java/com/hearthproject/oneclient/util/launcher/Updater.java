@@ -55,7 +55,7 @@ public class Updater {
 		try {
 			String json = IOUtils.toString(new URL(updateURL), StandardCharsets.UTF_8);
 			LauncherUpdate launcherUpdate = JsonUtil.GSON.fromJson(json, LauncherUpdate.class);
-			FileUtils.copyURLToFile(new URL(launcherUpdate.downloadUrl), getTempFile(true));
+			FileUtils.copyURLToFile(new URL(Constants.PORTABLE ? launcherUpdate.portableDownloadUrl : launcherUpdate.downloadUrl), getTempFile(true));
 			File currentJar = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 			OneClientLogging.logger.error("Updating " + currentJar.getAbsolutePath() + "@" + Constants.getVersion() + " with " + getTempFile(true) + "@" + launcherUpdate.latestVersion);
 			List<String> args = new ArrayList<>();
