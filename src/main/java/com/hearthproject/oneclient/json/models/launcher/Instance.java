@@ -1,16 +1,24 @@
 package com.hearthproject.oneclient.json.models.launcher;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class Instance {
@@ -75,6 +83,41 @@ public class Instance {
 		getManifest().save();
 	}
 
+	public void export() {
+		try {
+			File temp = FileUtil.findDirectory(Constants.TEMPDIR, "curseExport");
+
+			File pack = FileUtil.findDirectory(temp, getManifest().getName());
+			File overrides = FileUtil.findDirectory(pack, "overrides");
+
+			File manifest = new File(getDirectory(), "manifest.json");
+
+			List<File> files = Lists.newArrayList();
+			files.add(manifest);
+
+			File output = new File(getDirectory(), getManifest().getName() + ".zip");
+
+			//TODO overrides
+			//			FileUtils.copyFile(manifest,pack);
+			//			for(File file: getDirectory().listFiles()) {
+			//				if(file.isDirectory() && file.listFiles().length > 0) {
+			//					FileUtils.
+			//				}
+			//			}
+
+			ZipFile zip = new ZipFile(output);
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+
+			zip.addFile(manifest, parameters);
+			pack.delete();
+		} catch (ZipException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	@Deprecated
 	public static Manifest legacyLoadInstance(File directory) {
 		Manifest manifest = null;
@@ -109,4 +152,5 @@ public class Instance {
 			return null;
 		return new Instance(manifest);
 	}
+
 }

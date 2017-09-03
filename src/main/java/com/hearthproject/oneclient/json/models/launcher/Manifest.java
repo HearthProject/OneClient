@@ -25,7 +25,9 @@ public class Manifest {
 	public String overrides;
 	public String icon;
 
-	public Manifest() {}
+	public Manifest() {
+		files = Lists.newArrayList();
+	}
 
 	public MinecraftData getMinecraft() {
 		if (minecraft == null)
@@ -119,17 +121,6 @@ public class Manifest {
 				this.primary = true;
 				this.id = id;
 			}
-		}
-	}
-
-	public static class FileData {
-		public int projectID;
-		public int fileID;
-		public boolean required;
-
-		@Override
-		public String toString() {
-			return projectID + "/" + fileID;
 		}
 	}
 

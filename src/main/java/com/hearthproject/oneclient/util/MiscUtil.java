@@ -5,12 +5,15 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collector;
 
 public class MiscUtil {
 
@@ -73,4 +76,15 @@ public class MiscUtil {
 			Platform.runLater(runnable);
 		}
 	}
+
+	public static <T> Collector<T, ?, ObservableList<T>> toObservableList() {
+		return Collector.of(
+			FXCollections::observableArrayList,
+			ObservableList::add,
+			(l1, l2) -> {
+				l1.addAll(l2);
+				return l1;
+			});
+	}
+
 }

@@ -12,7 +12,6 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 
 public class Constants {
 
@@ -30,8 +29,6 @@ public class Constants {
 	public static boolean PORTABLE = false;
 
 	private static File RUN_DIR = null;
-
-	public static final SimpleDateFormat TIMEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 	public static void earlySetup(Runnable runnable) throws IOException {
 		if (PORTABLE) {

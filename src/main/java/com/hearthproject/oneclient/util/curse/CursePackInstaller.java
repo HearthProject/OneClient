@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util.curse;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.json.models.launcher.FileData;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.launcher.Manifest;
 import com.hearthproject.oneclient.util.files.FileUtil;
@@ -157,7 +158,7 @@ public class CursePackInstaller {
 		}
 	}
 
-	public static void downloadFile(Manifest.FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
+	public static void downloadFile(FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
 		NotifyUtil.setProgressDescend(remaining, total);
 		String baseUrl = "http://minecraft.curseforge.com/projects/" + file.projectID;
 		String projectUrl = getLocationHeader(baseUrl);

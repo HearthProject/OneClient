@@ -6,10 +6,13 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -20,20 +23,23 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class InstancePane extends ContentPane {
+	public ObservableList<String> mods = FXCollections.observableArrayList();
 
 	public Label textPackName;
 	public Label textMinecraftVersion;
 	public ImageView packIcon;
 	public Button buttonPlay;
 	public Button buttonOpenFolder;
+	public Button buttonExportPack;
 	public Button buttonEditVersion;
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
 	public Button buttonDelete;
-	public ListView modList;
+	public ListView<String> modList;
 	public Instance instance;
 
 	public InstancePane() {
@@ -67,22 +73,21 @@ public class InstancePane extends ContentPane {
 
 		buttonPlay.setOnAction(event -> MinecraftAuth.loginAndPlay(instance));
 
+		buttonExportPack.setOnAction(event -> instance.export());
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller());
+		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller(instance));
 		buttonDelete.setOnAction(event -> instance.delete());
 	}
 
 	public void updateList() {
-		modList.getItems().clear();
+
 		File modsDir = new File(instance.getDirectory(), "mods");
 		if (modsDir.exists()) {
-			for (File mod : modsDir.listFiles()) {
-				modList.getItems().add(mod.getName());
-			}
+			mods = Arrays.stream(modsDir.listFiles()).map(File::getName).collect(MiscUtil.toObservableList());
 		}
-
+		modList.setItems(mods);
 		modList.setCellFactory(param -> {
 			ModListCell cell = new ModListCell();
 			ContextMenu contextMenu = new ContextMenu();
@@ -117,6 +122,7 @@ public class InstancePane extends ContentPane {
 					String item = cell.getItem();
 					File mod = new File(modsDir, item);
 					mod.delete();
+					updateList();
 				}
 			});
 			contextMenu.getItems().addAll(disableMod, deleteMod);
@@ -141,6 +147,19 @@ public class InstancePane extends ContentPane {
 
 	@Override
 	public void refresh() {
+		updateList();
+	}
 
+	public class Mod {
+		public String name;
+
+		public Mod(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 }

@@ -7,6 +7,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class JsonUtil {
@@ -29,6 +32,28 @@ public class JsonUtil {
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
+		return null;
+	}
+
+	public static <T> T read(URL url, Class<T> object) {
+		try {
+			InputStreamReader reader = new InputStreamReader(url.openStream());
+			return GSON.fromJson(reader, object);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static <T> T read(URL url, Type type) {
+		try {
+			InputStreamReader reader = new InputStreamReader(url.openStream());
+			return GSON.fromJson(reader, type);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 }

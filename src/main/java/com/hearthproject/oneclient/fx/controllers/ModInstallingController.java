@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.nodes.CurseMod;
+import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -30,7 +31,7 @@ public class ModInstallingController {
 	public static ModInstallingController controller;
 	public static Stage stage;
 
-	public static void showInstaller() {
+	public static void showInstaller(Instance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/contentpanes/curse_mods.fxml");
@@ -55,7 +56,7 @@ public class ModInstallingController {
 			controller = fxmlLoader.getController();
 
 			List<CurseElement> elementList = CurseUtils.getMods(1, "1.12", "");
-			controller.tiles.addAll(elementList.stream().map(CurseMod::new).collect(Collectors.toList()));
+			controller.tiles.addAll(elementList.stream().map(element -> new CurseMod(instance, element)).collect(Collectors.toList()));
 			controller.listTiles.setItems(controller.tiles);
 
 		} catch (IOException e) {

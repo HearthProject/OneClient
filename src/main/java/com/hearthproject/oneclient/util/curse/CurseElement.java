@@ -52,7 +52,7 @@ public class CurseElement {
 
 		this.icon = executor.submit(() -> {
 			Element e = getCursePage.get().select(".primary-project-attachment").first();
-			return e.attr("src");   
+			return e.attr("src");
 		});
 		this.averageDownloads = executor.submit(() -> getCursePage.get().select(".average-downloads").text());
 		this.totalDownloads = executor.submit(() -> getCursePage.get().select(".downloads").text());
@@ -62,11 +62,11 @@ public class CurseElement {
 		this.authors = executor.submit(() -> getCursePage.get().select(".authors li").stream().map(Element::text).collect(Collectors.toList()));
 	}
 
-	public String getID() {
+	public int getID() {
 		String url = getUrl();
 		if (url.isEmpty())
-			return "";
-		return url.replaceAll("\\D", "");
+			return -1;
+		return Integer.parseInt(url.replaceAll("\\D", ""));
 	}
 
 	public String getTitle() {
