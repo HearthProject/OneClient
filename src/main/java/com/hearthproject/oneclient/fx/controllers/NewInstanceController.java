@@ -163,7 +163,7 @@ public class NewInstanceController {
 	public void onChooseIconButtonPress() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("One Client - Choose Instance Icon");
-		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image", "*.png"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image", "*.png", "*.jpeg", "*.gif"));
 		selectedImageFile = fileChooser.showOpenDialog(stage);
 		if (selectedImageFile != null) {
 			try {
