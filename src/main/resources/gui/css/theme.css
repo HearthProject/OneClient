@@ -514,3 +514,47 @@
     -fx-background-color: -dark-background-color;
 }
 
+
+.table-view {
+	-fx-text-fill: -text-color;
+	-fx-background-color: -dark-background-color;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: -text-color;
+}
+
+
+.table-row-cell:even {
+    -fx-background-color: -fill-color;
+    -fx-text-fill: -text-color;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -fill-color-alt;
+    -fx-text-fill: -text-color;
+}
+
+.table-view .column-header-background, .table-view .column-header-background .filler {
+    -fx-background-color: -fill-color
+}
+.table-view .nested-column-header .table-column {
+    -fx-background-color: -fill-color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-color;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+

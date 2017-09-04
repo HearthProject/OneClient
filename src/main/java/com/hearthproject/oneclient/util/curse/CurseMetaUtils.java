@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.FileData;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,6 +39,10 @@ public class CurseMetaUtils {
 
 	public static ProjectFile getLatest(int projectID, String version) {
 		return getFiles(projectID, version).findFirst().orElse(null);
+	}
+
+	public static ProjectFile findProject(File file) {
+		return null;
 	}
 
 	public static class ProjectFile {

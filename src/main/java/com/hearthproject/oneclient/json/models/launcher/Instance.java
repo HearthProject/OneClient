@@ -15,11 +15,16 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Instance {
 
@@ -118,6 +123,12 @@ public class Instance {
 			e.printStackTrace();
 		}
 
+	}
+
+	private static final FileFilter MOD_FILES = FileFilterUtils.and(FileFilterUtils.fileFileFilter(), FileFilterUtils.or(FileFilterUtils.suffixFileFilter("zip"), FileFilterUtils.suffixFileFilter("jar"), FileFilterUtils.suffixFileFilter("disable")));
+
+	public List<Mod> getMods() {
+		return Arrays.stream(new File(getDirectory(), "mods").listFiles(MOD_FILES)).filter(File::isFile).map(Mod::new).sorted(Comparator.comparing(Mod::getName)).collect(Collectors.toList());
 	}
 
 	@Deprecated

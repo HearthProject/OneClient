@@ -5,6 +5,10 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,6 +17,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 public class MiscUtil {
@@ -87,4 +92,64 @@ public class MiscUtil {
 			});
 	}
 
+	public static class ProviderProperty<T> extends ObjectProperty<T> {
+		private Supplier<T> supplier;
+
+		public ProviderProperty(Supplier<T> supplier) {
+			this.supplier = supplier;
+		}
+
+		@Override
+		public void bind(ObservableValue<? extends T> observableValue) {
+
+		}
+
+		@Override
+		public void unbind() {
+
+		}
+
+		@Override
+		public boolean isBound() {
+			return false;
+		}
+
+		@Override
+		public T get() {
+			return supplier.get();
+		}
+
+		@Override
+		public void set(T t) {}
+
+		@Override
+		public Object getBean() {
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			return "";
+		}
+
+		@Override
+		public void addListener(ChangeListener<? super T> changeListener) {
+
+		}
+
+		@Override
+		public void removeListener(ChangeListener<? super T> changeListener) {
+
+		}
+
+		@Override
+		public void addListener(InvalidationListener invalidationListener) {
+
+		}
+
+		@Override
+		public void removeListener(InvalidationListener invalidationListener) {
+
+		}
+	}
 }

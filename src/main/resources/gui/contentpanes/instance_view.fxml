@@ -75,7 +75,8 @@
                 </VBox>
             </left>
             <center>
-                <ListView fx:id="modList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+                <TableView fx:id="tableMods" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                </TableView>
             </center>
         </BorderPane>
     </children>
