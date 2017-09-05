@@ -4,22 +4,25 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import groovy.json.JsonOutput
 
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.amazonaws:aws-java-sdk:1.11.186'
+		classpath 'org.ajoberstar:gradle-git:1.7.2'
+	}
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'org.ajoberstar.grgit'
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        jcenter()
-    }
-	dependencies {
-		classpath 'com.amazonaws:aws-java-sdk:1.11.186'
-	}
-}
 
 apply from: 'https://github.com/HearthProject/OneClient/raw/master/formatter/ideconfig.gradle'
 
@@ -115,10 +118,17 @@ def uploadFileToS3(file, location){
 
 task awsUpload(){
 	doLast {
-		uploadFileToS3(jar.archivePath, "oneclient/versions")
-		uploadFileToS3(portableJar.archivePath, "oneclient/versions")
-		uploadFileToS3(new File(jar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
-		uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+		if(isPublishBranch()){
+			project.logger.lifecycle("Uploading to aws")
+			uploadFileToS3(jar.archivePath, "oneclient/versions")
+			uploadFileToS3(portableJar.archivePath, "oneclient/versions")
+			uploadFileToS3(new File(jar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToS3(new File(project.getBuildDir().getPath() + "/libs/versions.json"), "oneclient")
+		} else {
+			project.logger.lifecycle("Skipping AWS push as not release branch!")
+		}
 	}
 }
 
@@ -133,6 +143,11 @@ task buildInfo() {
 		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/versions.json")
 		jsonFile.write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
 	}
+}
+
+def isPublishBranch(){
+	def grgit = org.ajoberstar.grgit.Grgit.open()
+	return grgit.branch.getCurrent().getName().equals("master")
 }
 
 build.finalizedBy buildInfo
