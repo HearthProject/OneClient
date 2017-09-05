@@ -2,6 +2,7 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
@@ -135,12 +136,15 @@ public class Main extends Application {
 	}
 
 	public void loadData() throws Exception {
-		OneClientLogging.logger.info("Loading instances");
+		OneClientLogging.logger.info("Loading Instances");
 		InstanceManager.load();
-		OneClientLogging.logger.info("Loading minecraft versions");
+		OneClientLogging.logger.info("Loading Minecraft versions");
 		MinecraftUtil.loadGameVersions();
-		OneClientLogging.logger.info("Loading forge versions");
+		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
+		OneClientLogging.logger.info("Loading Curse versions and sorting");
+		CurseUtils.findSorting();
+		CurseUtils.findVersions();
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}

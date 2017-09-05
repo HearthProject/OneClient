@@ -3,8 +3,10 @@ package com.hearthproject.oneclient.util.curse;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Manifest;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,10 +23,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class CurseUtils {
@@ -34,8 +34,8 @@ public class CurseUtils {
 	public static final String CURSEFORGE_PROJECT_BASE = "https://www.curseforge.com/projects/";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
 
-	public static Future<List<String>> versions = executor.submit(CurseUtils::findVersions);
-	public static Future<List<Filter>> sortings = executor.submit(CurseUtils::findSorting);
+	private static ObservableList<String> versions;
+	private static ObservableList<Filter> sortings;
 
 	public static Query versionFilter(String value) {
 		return new Query("filter-project-game-version=", value);
@@ -49,38 +49,24 @@ public class CurseUtils {
 		return new Query("page=", value);
 	}
 
-	public static List<String> getVersions() {
-		try {
-			return versions.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return Lists.newArrayList();
+	public static ObservableList<Filter> getSorting() {
+		return sortings;
 	}
 
-	public static List<Filter> getSorting() {
-		try {
-			return sortings.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return Lists.newArrayList();
+	public static ObservableList<String> getVersions() {
+		return versions;
 	}
 
-	private static List<String> findVersions() {
+	public static void findVersions() {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
-		Elements versions = d.select("#filter-project-game-version option");
-		return versions.stream().map(Element::val).distinct().collect(Collectors.toList());
+		Elements v = d.select("#filter-project-game-version option");
+		versions = v.stream().map(Element::val).distinct().collect(MiscUtil.toObservableList());
 	}
 
-	private static List<Filter> findSorting() {
+	public static void findSorting() {
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
 		Elements versions = d.select("#filter-project-sort option");
-		return versions.stream().map(e -> new Filter(e.text(), e.val())).distinct().collect(Collectors.toList());
+		sortings = versions.stream().map(e -> new Filter(e.text(), e.val())).distinct().collect(MiscUtil.toObservableList());
 	}
 
 	public static List<CurseElement> getMods(int page, String version, String sorting) {

@@ -38,6 +38,8 @@ public class CursePacksPane extends ContentPane {
 	public ComboBox<CurseUtils.Filter> filterSort;
 	public Button buttonSearch;
 	public TextField textSearch;
+
+	public AnchorPane box;
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
 
 	public CursePacksPane() {
@@ -64,10 +66,8 @@ public class CursePacksPane extends ContentPane {
 
 	@Override
 	protected void onStart() {
-		MiscUtil.runLaterIfNeeded(() -> {
-			versions = FXCollections.observableArrayList(CurseUtils.getVersions());
-			sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
-		});
+		versions = CurseUtils.getVersions();
+		sorting = CurseUtils.getSorting();
 
 		filterVersion.setItems(versions);
 		filterSort.setItems(sorting);
@@ -82,7 +82,6 @@ public class CursePacksPane extends ContentPane {
 		filterSort.setConverter(new CurseUtils.FilterConverter());
 
 		listTiles.setItems(tiles);
-		AnchorPane box = (AnchorPane) getNode();
 		VBox.setVgrow(box, Priority.ALWAYS);
 		HBox.setHgrow(listTiles, Priority.ALWAYS);
 		HBox.setHgrow(box, Priority.ALWAYS);
