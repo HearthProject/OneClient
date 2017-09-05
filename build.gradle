@@ -147,7 +147,7 @@ def isPublishBranch(){
 	def ENV = System.getenv()
 	if (ENV.BRANCH_NAME) {
 		project.logger.lifecycle("Branch = ${System.getenv().BRANCH_NAME}")
-		return "${System.getenv().BRANCH_NAME}".equals("master")
+		return "${System.getenv().BRANCH_NAME}" == "master"
 	}
 	project.logger.lifecycle("Branch varible could not be found!")
 	return false
