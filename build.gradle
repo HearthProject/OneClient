@@ -144,6 +144,7 @@ task buildInfo() {
 }
 
 def isPublishBranch(){
+	def ENV = System.getenv()
 	if (ENV.GIT_BRANCH) {
 		project.logger.lifecycle("Branch = ${System.getenv().GIT_BRANCH}")
 		return "${System.getenv().GIT_BRANCH}".equals("master")
