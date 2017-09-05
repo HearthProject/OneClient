@@ -57,7 +57,9 @@ public class MinecraftUtil {
 		try {
 			Optional<GameVersion.Version> optionalVersion = version.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst();
 			if (optionalVersion.isPresent()) {
-				String jsonData = IOUtils.toString(new URL(optionalVersion.get().url), StandardCharsets.UTF_8);
+				URL dataURL = new URL(optionalVersion.get().url);
+				OneClientLogging.info("Downloading Minecraft Data {} ", dataURL);
+				String jsonData = IOUtils.toString(dataURL, StandardCharsets.UTF_8);
 				FileUtils.writeStringToFile(new File(versionsDir, minecraftVersion + ".json"), jsonData, StandardCharsets.UTF_8);
 				return JsonUtil.GSON.fromJson(jsonData, Version.class);
 			} else {
@@ -93,22 +95,23 @@ public class MinecraftUtil {
 		i = 0;
 		count = versionData.libraries.size();
 		NotifyUtil.setText("Resolving %s Libraries", count);
-		versionData.libraries.parallelStream().forEach(library -> {
+		OneClientLogging.info("{}", versionData.libraries);
+		versionData.libraries.stream().forEach(library -> {
 			NotifyUtil.setProgressAscend(i++, count);
 			if (library.allowed() && library.getFile(libraries) != null) {
 
-				OneClientLogging.info("Resolving Library {} {}/{}", library.name, i, count);
+				OneClientLogging.info("Resolving Library {}", library.name, i, count);
 				if (library.getFile(libraries).exists()) {
 					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
+						OneClientLogging.info("Skipping: Library {} already found", library.name, i, count);
 						return;
 					}
 				}
-				OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL());
-
 				try {
 					File l = library.getFile(libraries);
 					if (l.exists())
 						FileUtils.copyURLToFile(new URL(library.getURL()), l);
+					OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL() + " to " + l);
 				} catch (IOException e) {
 					OneClientLogging.error(e);
 				}
