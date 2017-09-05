@@ -64,8 +64,10 @@ public class CursePacksPane extends ContentPane {
 
 	@Override
 	protected void onStart() {
-		versions = FXCollections.observableArrayList(CurseUtils.getVersions());
-		sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
+		MiscUtil.runLaterIfNeeded(() -> {
+			versions = FXCollections.observableArrayList(CurseUtils.getVersions());
+			sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
+		});
 
 		filterVersion.setItems(versions);
 		filterSort.setItems(sorting);
