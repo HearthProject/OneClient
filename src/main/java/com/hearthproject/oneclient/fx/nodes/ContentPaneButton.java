@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.nodes;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -20,6 +21,7 @@ public class ContentPaneButton extends JFXButton {
 			setGraphic(imageView);
 		}
 		this.color = "#3CE0A0";
+		setAlignment(Pos.CENTER_LEFT);
 		setPrefHeight(50);
 		setId("side-panel-button");
 	}
