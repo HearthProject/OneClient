@@ -8,6 +8,7 @@ import org.piwik.java.tracking.PiwikTracker;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 public class OneClientTracking {
 
@@ -22,6 +23,8 @@ public class OneClientTracking {
 		try {
 			PiwikRequest request = new PiwikRequest(siteId, new URL("http://oneclient.analytics.hearthproject.uk/action/" + action));
 			HttpResponse response = tracker.sendRequest(request);
+		} catch (UnknownHostException e) {
+			OneClientLogging.logger.error("Cannot connect to tracking url. Skipping");
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
