@@ -44,8 +44,7 @@ public class Version {
 		public File getFile(File dir) {
 			String[] parts = this.name.split(":", 3);
 			File file = new File(dir, parts[0].replace(".", File.separator) + File.separator + parts[1] + File.separator + parts[2] + File.separator + parts[1] + "-" + parts[2] + getClassifier() + ".jar");
-			;
-			file.mkdirs();
+			file.getParentFile().mkdirs();
 			return file;
 		}
 
