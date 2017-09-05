@@ -513,6 +513,11 @@
 	-fx-text-fill: -text-color;
     -fx-background-color: -dark-background-color;
 }
+.status-bar > * {
+  	-fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px 5px 5px 5px;
+}
 
 
 .table-view {

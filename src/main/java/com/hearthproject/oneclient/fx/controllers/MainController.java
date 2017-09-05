@@ -3,11 +3,11 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.nodes.StatusBarSkin;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -36,6 +36,8 @@ public class MainController {
 	@FXML
 	public StatusBar statusBar;
 
+	public Label labelProgress;
+
 	public ContentPane currentContent = null;
 	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
 
@@ -56,8 +58,9 @@ public class MainController {
 		copyrightInfo.setText("©" + yearString + " - HEARTH PROJECT");
 		setContent(ContentPanes.INSTANCES_PANE);
 		onSceneResize(stage.getScene());
-		statusBar.setSkin(new StatusBarSkin(statusBar));
 		statusBar.setText("");
+		labelProgress = new Label();
+		statusBar.getRightItems().add(labelProgress);
 	}
 
 	public void onSceneResize(Scene scene) {

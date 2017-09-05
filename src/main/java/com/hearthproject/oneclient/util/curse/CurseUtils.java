@@ -102,7 +102,7 @@ public class CurseUtils {
 		String formatQuery = query.replace(" ", "+");
 		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Query("game-slug", "minecraft"), new Query("search=", formatQuery), new Query("#t1:", type));
 		OneClientLogging.info("Searching Curse {}", d.baseUri());
-		Elements results = d.select("#tab-mods .minecraft");
+		Elements results = d.select("#tab-" + type + " .minecraft");
 		return results.stream().map(CurseElement.CurseSearch::new).collect(Collectors.toList());
 
 	}

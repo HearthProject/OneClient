@@ -119,7 +119,7 @@ public class CursePackInstaller {
 		return getTempPackDir(zipFile.getName());
 	}
 
-	private static int left;
+	private static int current;
 
 	public static File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
 		int total = manifest.files.size();
@@ -128,12 +128,11 @@ public class CursePackInstaller {
 
 		File modsDir = FileUtil.findDirectory(outputDir, "mods");
 
-		left = total;
 
 		manifest.files.parallelStream().forEach(f -> {
-			left--;
+			current++;
 			try {
-				downloadFile(f, modsDir, left, total);
+				downloadFile(f, modsDir, current, total);
 			} catch (IOException | URISyntaxException e) {
 				OneClientLogging.error(e);
 			}
@@ -158,8 +157,8 @@ public class CursePackInstaller {
 		}
 	}
 
-	public static void downloadFile(FileData file, File modsDir, int remaining, int total) throws IOException, URISyntaxException {
-		NotifyUtil.setProgressDescend(remaining, total);
+	public static void downloadFile(FileData file, File modsDir, int current, int total) throws IOException, URISyntaxException {
+		NotifyUtil.setProgressAscend(current, total);
 		String baseUrl = "http://minecraft.curseforge.com/projects/" + file.projectID;
 		String projectUrl = getLocationHeader(baseUrl);
 		projectUrl = projectUrl.replaceAll("\\?cookieTest=1", "");

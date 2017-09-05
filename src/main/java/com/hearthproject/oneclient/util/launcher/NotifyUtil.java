@@ -39,12 +39,16 @@ public class NotifyUtil {
 	}
 
 	public static void setProgressDescend(int current, int max) {
-		MiscUtil.runLaterIfNeeded(() -> OneClientLogging.info("{}/{}", current, max));
+		setProgressText(String.format("%s/%s", current, max));
 		setProgress(((max - current) / (double) max));
 	}
 
 	public static void setProgressAscend(int current, int max) {
-		MiscUtil.runLaterIfNeeded(() -> OneClientLogging.info("{}/{}", current, max));
+		setProgressText(String.format("%s/%s", current, max));
 		setProgress((current / (double) max));
+	}
+
+	public static void setProgressText(String value) {
+		MiscUtil.runLaterIfNeeded(() -> Main.mainController.labelProgress.setText(value));
 	}
 }
