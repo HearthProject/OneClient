@@ -147,6 +147,7 @@ task buildInfo() {
 
 def isPublishBranch(){
 	def grgit = org.ajoberstar.grgit.Grgit.open()
+	project.logger.lifecycle("Branch: " + grgit.branch.getCurrent().getName())
 	return grgit.branch.getCurrent().getName().equals("master")
 }
 
