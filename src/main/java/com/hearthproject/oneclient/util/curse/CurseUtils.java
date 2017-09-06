@@ -126,6 +126,9 @@ public class CurseUtils {
 			}
 			String finalURL = url + path + filter;
 			return Jsoup.connect(finalURL).get();
+		} catch (java.net.SocketException socketEX) {
+			OneClientLogging.logger.info("Error connecting to Curse resources.  Continuing on.");
+			return new Document("https://google.com");
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
