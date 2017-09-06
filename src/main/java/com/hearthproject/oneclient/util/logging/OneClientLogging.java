@@ -8,6 +8,7 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
 import java.net.URL;
+import java.net.UnknownHostException;
 
 public class OneClientLogging {
 
@@ -26,6 +28,10 @@ public class OneClientLogging {
 
 	public static void info(String message, Object... params) {
 		logger.info(message, params);
+	}
+
+	public static void error(UnknownHostException error) {
+		logger.error("Internet connection unavailable, going into offline mod");
 	}
 
 	public static void error(Throwable error) {

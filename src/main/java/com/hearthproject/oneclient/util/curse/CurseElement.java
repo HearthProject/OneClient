@@ -13,10 +13,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class CurseElement {
@@ -25,9 +22,9 @@ public class CurseElement {
 	protected String title;
 	private Future<String> getUrl, averageDownloads, totalDownloads, lastUpdated, created, version, icon;
 	public Future<List<String>> authors;
-	private Future<Document> getCursePage;
+	private Future<Optional<Document>> getCursePage;
 
-	private Document cursePage;
+	private Optional<Document> cursePage;
 
 	public CurseElement() {
 	}
@@ -45,21 +42,15 @@ public class CurseElement {
 				cursePage = CurseUtils.getHtml(curseUrl, "");
 			return cursePage;
 		});
-		getUrl = executor.submit(() -> {
-			Elements link = getCursePage.get().select(".curseforge a");
-			return "https:" + link.attr("href");
-		});
+		getUrl = executor.submit(() -> getCursePage.get().map(page -> "https:" + page.select(".curseforge a").attr("href")).orElse(""));
 
-		this.icon = executor.submit(() -> {
-			Element e = getCursePage.get().select(".primary-project-attachment").first();
-			return e.attr("src");
-		});
-		this.averageDownloads = executor.submit(() -> getCursePage.get().select(".average-downloads").text());
-		this.totalDownloads = executor.submit(() -> getCursePage.get().select(".downloads").text());
-		this.lastUpdated = executor.submit(() -> getCursePage.get().select(".updated").first().text());
-		this.created = executor.submit(() -> getCursePage.get().select(".updated").last().text());
-		this.version = executor.submit(() -> getCursePage.get().select(".version").text());
-		this.authors = executor.submit(() -> getCursePage.get().select(".authors li").stream().map(Element::text).collect(Collectors.toList()));
+		this.icon = executor.submit(() -> getCursePage.get().map(page -> page.select(".primary-project-attachment").first().attr("src")).orElse(""));
+		this.averageDownloads = executor.submit(() -> getCursePage.get().map(page -> page.select(".average-downloads").text()).orElse(""));
+		this.totalDownloads = executor.submit(() -> getCursePage.get().map(page -> page.select(".downloads").text()).orElse(""));
+		this.lastUpdated = executor.submit(() -> getCursePage.get().map(page -> page.select(".updated").first().text()).orElse(""));
+		this.created = executor.submit(() -> getCursePage.get().map(page -> page.select(".updated").last().text()).orElse(""));
+		this.version = executor.submit(() -> getCursePage.get().map(page -> page.select(".version").text()).orElse(""));
+		this.authors = executor.submit(() -> getCursePage.get().map(page -> page.select(".authors li").stream().map(Element::text).collect(Collectors.toList())).orElse(Lists.newArrayList()));
 	}
 
 	public int getID() {

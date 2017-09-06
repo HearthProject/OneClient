@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,13 @@ public class Updater {
 		if (oldJar.exists()) {
 			oldJar.delete();
 		}
-		String json = IOUtils.toString(new URL(updateURL), StandardCharsets.UTF_8);
+		String json = "";
+		try {
+			json = IOUtils.toString(new URL(updateURL), StandardCharsets.UTF_8);
+		} catch (UnknownHostException e) {
+			OneClientLogging.error(e);
+			return Optional.empty();
+		}
 		LauncherUpdate launcherUpdate = JsonUtil.GSON.fromJson(json, LauncherUpdate.class);
 		if (Constants.getVersion() == null) {
 			return Optional.empty();

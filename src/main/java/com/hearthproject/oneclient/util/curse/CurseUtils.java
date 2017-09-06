@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.json.models.launcher.Manifest;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import org.jsoup.Jsoup;
@@ -16,13 +17,11 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -34,8 +33,8 @@ public class CurseUtils {
 	public static final String CURSEFORGE_PROJECT_BASE = "https://www.curseforge.com/projects/";
 	public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; rv:50.0) Gecko/20100101 Firefox/50.0";
 
-	private static ObservableList<String> versions;
-	private static ObservableList<Filter> sortings;
+	private static ObservableList<String> versions = FXCollections.emptyObservableList();
+	private static ObservableList<Filter> sortings = FXCollections.emptyObservableList();
 
 	public static Query versionFilter(String value) {
 		return new Query("filter-project-game-version=", value);
@@ -58,56 +57,62 @@ public class CurseUtils {
 	}
 
 	public static void findVersions() {
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
-		Elements v = d.select("#filter-project-game-version option");
-		versions = v.stream().map(Element::val).distinct().collect(MiscUtil.toObservableList());
+		Optional<Document> document = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
+		document.ifPresent(d -> versions = d.select("#filter-project-game-version option").stream().map(Element::val).distinct().collect(MiscUtil.toObservableList()));
 	}
 
 	public static void findSorting() {
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
-		Elements versions = d.select("#filter-project-sort option");
-		sortings = versions.stream().map(e -> new Filter(e.text(), e.val())).distinct().collect(MiscUtil.toObservableList());
+		Optional<Document> document = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft");
+		document.ifPresent(d -> sortings = d.select("#filter-project-sort option").stream().map(e -> new Filter(e.text(), e.val())).distinct().collect(MiscUtil.toObservableList()));
 	}
 
 	public static List<CurseElement> getMods(int page, String version, String sorting) {
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/mc-mods/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
-		Element e = d.select(".b-pagination-item").select(".s-active").first();
-		String realPage = e != null ? e.text() : null;
-		if (realPage == null) {
-			return null;
+		Optional<Document> d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/mc-mods/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
+		if (d.isPresent()) {
+			Element e = d.get().select(".b-pagination-item").select(".s-active").first();
+			String realPage = e != null ? e.text() : null;
+			if (realPage == null) {
+				return null;
+			}
+			if (Integer.parseInt(realPage) != page) {
+				return Lists.newArrayList();
+			}
+			Elements packs = d.get().select("#addons-browse").first().select("ul > li > ul");
+			return packs.stream().map(CurseElement::new).collect(Collectors.toList());
 		}
-		if (Integer.parseInt(realPage) != page) {
-			return Lists.newArrayList();
-		}
-		Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
-		return packs.stream().map(CurseElement::new).collect(Collectors.toList());
+		return Lists.newArrayList();
 	}
 
 	public static List<CurseElement> getPacks(int page, String version, String sorting) {
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
-		OneClientLogging.info("Loading page: {}", d.baseUri());
-		Element e = d.select(".b-pagination-item").select(".s-active").first();
-		String realPage = e != null ? e.text() : null;
-		if (realPage == null) {
-			return null;
+		Optional<Document> d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/modpacks/minecraft", versionFilter(version), sortingFilter(sorting), page(Integer.toString(page)));
+		if (d.isPresent()) {
+			OneClientLogging.info("Loading page: {}", d.get().baseUri());
+			Element e = d.get().select(".b-pagination-item").select(".s-active").first();
+			String realPage = e != null ? e.text() : null;
+			if (realPage == null) {
+				return null;
+			}
+			if (Integer.parseInt(realPage) != page) {
+				return Lists.newArrayList();
+			}
+			Elements packs = d.get().select("#addons-browse").first().select("ul > li > ul");
+			return packs.stream().map(CurseElement::new).collect(Collectors.toList());
 		}
-		if (Integer.parseInt(realPage) != page) {
-			return Lists.newArrayList();
-		}
-		Elements packs = d.select("#addons-browse").first().select("ul > li > ul");
-		return packs.stream().map(CurseElement::new).collect(Collectors.toList());
+		return Lists.newArrayList();
 	}
 
 	public static List<CurseElement> searchCurse(String query, String type) {
 		String formatQuery = query.replace(" ", "+");
-		Document d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Query("game-slug", "minecraft"), new Query("search=", formatQuery), new Query("#t1:", type));
-		OneClientLogging.info("Searching Curse {}", d.baseUri());
-		Elements results = d.select("#tab-" + type + " .minecraft");
-		return results.stream().map(CurseElement.CurseSearch::new).collect(Collectors.toList());
-
+		Optional<Document> d = CurseUtils.getHtml(CurseUtils.CURSE_BASE, "/search", new Query("game-slug", "minecraft"), new Query("search=", formatQuery), new Query("#t1:", type));
+		if (d.isPresent()) {
+			OneClientLogging.info("Searching Curse {}", d.get().baseUri());
+			Elements results = d.get().select("#tab-" + type + " .minecraft");
+			return results.stream().map(CurseElement.CurseSearch::new).collect(Collectors.toList());
+		}
+		return Lists.newArrayList();
 	}
 
-	public static Document getHtml(String url, String path, Query... filters) {
+	public static Optional<Document> getHtml(String url, String path, Query... filters) {
 		try {
 			String filter = "";
 			if (filters != null && filters.length > 0) {
@@ -125,11 +130,16 @@ public class CurseUtils {
 				filter = builder.toString();
 			}
 			String finalURL = url + path + filter;
-			return Jsoup.connect(finalURL).get();
+			try {
+				return Optional.ofNullable(Jsoup.connect(finalURL).get());
+			}
+			catch(UnknownHostException e) {
+				OneClientLogging.error(e);
+			}
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	public static class Query {

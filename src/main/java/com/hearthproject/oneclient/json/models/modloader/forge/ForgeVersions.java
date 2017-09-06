@@ -43,7 +43,7 @@ public class ForgeVersions {
 			.collect(Collectors.toList());
 	}
 
-	public List<ForgeVersion> filterMCVersion(GameVersion.Version version) {
+	public List<ForgeVersion> filterMCVersion(GameVersion.VersionData version) {
 		return get(f -> f.mcversion.equalsIgnoreCase(version.id));
 	}
 

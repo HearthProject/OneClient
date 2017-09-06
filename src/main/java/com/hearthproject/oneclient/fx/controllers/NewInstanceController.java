@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class NewInstanceController {
 
-	public ObservableList<GameVersion.Version> minecraftVersions = FXCollections.observableArrayList();
+	public ObservableList<GameVersion.VersionData> minecraftVersions = FXCollections.observableArrayList();
 	public ObservableList<IModloader> modloaderVersions = FXCollections.observableArrayList();
 
 	public static Stage stage;
@@ -47,7 +47,7 @@ public class NewInstanceController {
 	@FXML
 	public Button chooseIconButton;
 	@FXML
-	public ComboBox<GameVersion.Version> mcVersionComboBox;
+	public ComboBox<GameVersion.VersionData> mcVersionComboBox;
 	@FXML
 	public ComboBox<IModloader> modloaderComboBox;
 	@FXML
@@ -176,10 +176,12 @@ public class NewInstanceController {
 
 	public void loadVersions() {
 		try {
-			GameVersion version = MinecraftUtil.loadGameVersions();
-			minecraftVersions = FXCollections.observableArrayList(version.get(v -> v.type.equals("release") || showSnapshotCheckBox.isSelected()).collect(Collectors.toList()));
-			mcVersionComboBox.setItems(minecraftVersions);
-			mcVersionComboBox.getSelectionModel().selectFirst();
+			GameVersion version = MinecraftUtil.getGameVersionData().orElse(null);
+			if (version != null) {
+				minecraftVersions = FXCollections.observableArrayList(version.get(v -> v.type.equals("release") || showSnapshotCheckBox.isSelected()).collect(Collectors.toList()));
+				mcVersionComboBox.setItems(minecraftVersions);
+				mcVersionComboBox.getSelectionModel().selectFirst();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

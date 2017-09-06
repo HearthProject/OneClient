@@ -47,9 +47,9 @@ public class Manifest {
 		getMinecraft().version = version;
 	}
 
-	public GameVersion.Version getGameVersion() {
+	public GameVersion.VersionData getGameVersion() {
 		try {
-			return MinecraftUtil.loadGameVersions().get(v -> v.id.equalsIgnoreCase(getMinecraftVersion())).findFirst().orElse(null);
+			return MinecraftUtil.getGameVersionData().map(data -> data.get(v -> v.id.equalsIgnoreCase(getMinecraftVersion())).findFirst().orElse(null)).orElse(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

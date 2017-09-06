@@ -69,6 +69,11 @@ public class MiscUtil {
 		void accept(T t) throws Exception;
 	}
 
+	@FunctionalInterface
+	public interface ThrowingSupplier<T> {
+		T get() throws Exception;
+	}
+
 	public static double round(double value, int precision) {
 		int scale = (int) Math.pow(10, precision);
 		return (double) Math.round(value * scale) / scale;

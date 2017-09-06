@@ -19,6 +19,7 @@ public class Constants {
 	public static File INSTANCEDIR;
 	public static File LOGFILE;
 	public static File ICONDIR;
+	public static File MINECRAFTDIR;
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
@@ -69,6 +70,7 @@ public class Constants {
 		INSTANCEDIR = FileUtil.findDirectory(getRunDir(), "instances");
 		LOGFILE = FileUtil.findDirectory(getRunDir(), "logs");
 		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "images");
+		MINECRAFTDIR = FileUtil.findDirectory(getRunDir(), "minecraft");
 		ThreadContext.put("logs", LOGFILE.toString());
 		OneClientLogging.init();
 	}

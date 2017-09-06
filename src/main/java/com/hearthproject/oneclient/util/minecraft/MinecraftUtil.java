@@ -13,6 +13,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
@@ -25,13 +26,17 @@ import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -42,34 +47,61 @@ public class MinecraftUtil {
 
 	private static GameVersion version = null;
 
-	public static GameVersion loadGameVersions() throws Exception {
-		if (version == null) {
-			SplashScreen.updateProgess("Downloading minecraft version json", 20);
-			String data = IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
-			SplashScreen.updateProgess("Reading version json", 25);
-			version = JsonUtil.GSON.fromJson(data, GameVersion.class);
-			return version;
-		}
-		return version;
+	public static File ASSETS;
+	public static File VERSIONS;
+	public static File LIBRARIES;
+	public static File NATIVES;
+	public static File VERSION_MANIFEST;
+
+	public static void load() {
+		ASSETS = new File(Constants.MINECRAFTDIR, "assets");
+		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
+		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");
+		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
+		VERSION_MANIFEST = new File(VERSIONS, "version_manifest.json");
+		parseGameVersions();
 	}
 
-	public static Version downloadMcVersionData(String minecraftVersion, File versionsDir) {
-		try {
-			Optional<GameVersion.Version> optionalVersion = version.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst();
-			if (optionalVersion.isPresent()) {
-				URL dataURL = new URL(optionalVersion.get().url);
-				OneClientLogging.info("Downloading Minecraft Data {} ", dataURL);
-				String jsonData = IOUtils.toString(dataURL, StandardCharsets.UTF_8);
-				FileUtils.writeStringToFile(new File(versionsDir, minecraftVersion + ".json"), jsonData, StandardCharsets.UTF_8);
-				return JsonUtil.GSON.fromJson(jsonData, Version.class);
-			} else {
-				OneClientLogging.error(new RuntimeException("Failed downloading Minecraft json"));
-				return null;
+	private static String parseVersionManifest() throws UnknownHostException {
+		if (!VERSION_MANIFEST.exists()) {
+			SplashScreen.updateProgess("Downloading minecraft version json", 20);
+			try {
+				FileUtil.downloadFromURL(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), VERSION_MANIFEST);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
-		} catch (Throwable throwable) {
-			OneClientLogging.error(throwable);
-			return null;
 		}
+		try {
+			return IOUtils.toString(VERSION_MANIFEST.toURI(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		SplashScreen.updateProgess("Reading version json", 25);
+		return null;
+	}
+
+	private static void parseGameVersions() {
+		if (version == null) {
+			String data = null;
+			try {
+				data = parseVersionManifest();
+			} catch (UnknownHostException e) {
+				OneClientLogging.error(e);
+			}
+			if (data != null)
+				version = JsonUtil.GSON.fromJson(data, GameVersion.class);
+		}
+	}
+
+	public static Optional<GameVersion> getGameVersionData() {
+		if (version == null)
+			parseGameVersions();
+		return Optional.of(version);
+	}
+
+	public static Version parseVersionData(String minecraftVersion) {
+		Optional<GameVersion.VersionData> versionData = getGameVersionData().map(v -> v.get(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst()).orElse(Optional.empty());
+		return versionData.map(GameVersion.VersionData::getData).orElse(null);
 	}
 
 	public static int i = 0, count;
@@ -78,14 +110,9 @@ public class MinecraftUtil {
 		InstanceManager.setInstanceInstalling(instance, true);
 		NotifyUtil.setText("Installing minecraft for " + instance.getManifest().getName());
 		OneClientTracking.sendRequest("minecraft/install/" + instance.getManifest().getMinecraftVersion());
-		File mcDir = new File(Constants.getRunDir(), "minecraft");
-		File assets = new File(mcDir, "assets");
-		File versions = new File(mcDir, "versions");
-		File libraries = new File(mcDir, "libraries");
-		File natives = new File(mcDir, "natives");
 
-		Version versionData = downloadMcVersionData(instance.getManifest().getMinecraftVersion(), versions);
-		File mcJar = new File(versions, instance.getManifest().getMinecraftVersion() + ".jar");
+		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
+		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
@@ -98,19 +125,18 @@ public class MinecraftUtil {
 		OneClientLogging.info("{}", versionData.libraries);
 		versionData.libraries.stream().forEach(library -> {
 			NotifyUtil.setProgressAscend(i++, count);
-			if (library.allowed() && library.getFile(libraries) != null) {
+			if (library.allowed() && library.getFile(LIBRARIES) != null) {
 
 				OneClientLogging.info("Resolving Library {}", library.name, i, count);
-				if (library.getFile(libraries).exists()) {
-					if (MiscUtil.checksumEquals(library.getFile(libraries), library.getSha1())) {
+				if (library.getFile(LIBRARIES).exists()) {
+					if (MiscUtil.checksumEquals(library.getFile(LIBRARIES), library.getSha1())) {
 						OneClientLogging.info("Skipping: Library {} already found", library.name, i, count);
 						return;
 					}
 				}
 				try {
-					File l = library.getFile(libraries);
-					if (l.exists())
-						FileUtils.copyURLToFile(new URL(library.getURL()), l);
+					File l = library.getFile(LIBRARIES);
+					FileUtils.copyURLToFile(new URL(library.getURL()), l);
 					OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL() + " to " + l);
 				} catch (IOException e) {
 					OneClientLogging.error(e);
@@ -120,16 +146,16 @@ public class MinecraftUtil {
 
 		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
 			OneClientLogging.logger.info("Extracting native " + library.name);
-			File file = library.getFile(libraries);
+			File file = library.getFile(LIBRARIES);
 			if (file.exists())
-				ZipUtil.unpack(file, natives);
+				ZipUtil.unpack(file, NATIVES);
 		});
 
 		if (!instance.getManifest().getForge().isEmpty())
 			ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
-		File assetsInfo = new File(assets, "indexes" + File.separator + assetIndex.id + ".json");
+		File assetsInfo = new File(ASSETS, "indexes" + File.separator + assetIndex.id + ".json");
 		FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
 		AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
 		Map<String, AssetObject> parent = index.getFileMap();
@@ -141,7 +167,7 @@ public class MinecraftUtil {
 		parent.entrySet().parallelStream().forEach(entry -> {
 			AssetObject object = entry.getValue();
 			String sha1 = object.getHash();
-			File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
+			File file = new File(ASSETS, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
 			NotifyUtil.setProgressAscend(i++, count);
 			if (!file.exists() || !MiscUtil.checksumEquals(file, sha1)) {
 				OneClientLogging.info("Downloading asset " + entry.getKey() + " from " + Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1 + " to " + file);
@@ -159,32 +185,29 @@ public class MinecraftUtil {
 	}
 
 	public static boolean startMinecraft(Instance instance, String username, String password) {
-		File mcDir = new File(Constants.getRunDir(), "minecraft");
-		File assets = new File(mcDir, "assets");
-		File versions = new File(mcDir, "versions");
-		File libraries = new File(mcDir, "libraries");
-		File natives = new File(mcDir, "natives");
-		Version versionData = downloadMcVersionData(instance.getManifest().getMinecraftVersion(), versions);
-		File mcJar = new File(versions, instance.getManifest().getMinecraftVersion() + ".jar");
+		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
+		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Attempting authentication with Mojang");
 
 		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
 		auth.setUsername(username);
 		auth.setPassword(password);
-
+		boolean isOffline = false;
 		try {
 			auth.logIn();
 		} catch (AuthenticationException e) {
-			OneClientLogging.logUserError(e, "Failed to login to your minecraft account. Please check your username and password");
-			return false;
+			isOffline = shouldLaunchOffline("Failed to login to your minecraft account. Would you like to launch offline?");
+			if (!isOffline) {
+				return false;
+			}
 		}
 		OneClientLogging.logger.info("Login successful!");
 
 		OneClientLogging.logger.info("Starting minecraft...");
 
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
-
+		final boolean offline = isOffline;
 		new Thread(() -> {
 			try {
 
@@ -198,7 +221,7 @@ public class MinecraftUtil {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
-					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(libraries, instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
+					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 					mainClass = forgeVersionProfile.mainClass;
 					providedArugments = forgeVersionProfile.minecraftArguments;
 
@@ -209,9 +232,9 @@ public class MinecraftUtil {
 
 				for (Version.Library library : versionData.libraries) {
 					//TODO check that forge hasnt allready included the lib, as sometimes forge has a newer version of the lib than mc does. Adding the mc libs after forge is a hacky work around for it
-					if (library.allowed() && library.getFile(libraries) != null) {
+					if (library.allowed() && library.getFile(LIBRARIES) != null) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
-						cpb.append(library.getFile(libraries).getAbsolutePath());
+						cpb.append(library.getFile(LIBRARIES).getAbsolutePath());
 					}
 				}
 
@@ -221,7 +244,7 @@ public class MinecraftUtil {
 				ArrayList<String> arguments = new ArrayList<>();
 				arguments.add("java");
 
-				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
+				arguments.add("-Djava.library.path=" + NATIVES.getAbsolutePath());
 
 				for (String str : SettingsUtil.settings.arguments.split(" ")) {
 					arguments.add(str);
@@ -234,16 +257,24 @@ public class MinecraftUtil {
 				arguments.add(mainClass);
 
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
-
+				//TODO improve parsing of offline/online arguments
 				arguments.add("--accessToken");
-				arguments.add(auth.getAuthenticatedToken());
+				if (!offline) {
+					arguments.add(auth.getAuthenticatedToken());
+				}
 				arguments.add("--uuid");
-				arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
+				if (!offline) {
+					arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
+				}
 				arguments.add("--username");
 				arguments.add(auth.getSelectedProfile().getName());
 				arguments.add("--userType");
-				arguments.add(auth.getUserType().getName());
+				if (!offline) {
+					arguments.add(auth.getUserType().getName());
+				}
+
 				if (providedArugments.contains("${user_properties}")) {
+
 					arguments.add("--userProperties");
 					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
 				}
@@ -255,7 +286,7 @@ public class MinecraftUtil {
 				arguments.add("--version");
 				arguments.add(instance.getManifest().getMinecraftVersion());
 				arguments.add("--assetsDir");
-				arguments.add(assets.toString());
+				arguments.add(ASSETS.toString());
 				arguments.add("--assetIndex");
 				arguments.add(versionData.assetIndex.id);
 				arguments.add("--gameDir");
@@ -264,8 +295,8 @@ public class MinecraftUtil {
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(instance.getDirectory());
 				Platform.runLater(() -> OneClientLogging.logController.minecraftMenu.setDisable(false));
-
 				Process process = processBuilder.start();
+				OneClientLogging.info("{}", arguments);
 				OneClientLogging.logController.processList.add(process);
 				try {
 					BufferedReader reader =
@@ -290,4 +321,13 @@ public class MinecraftUtil {
 		}).start();
 		return true;
 	}
+
+	public static boolean shouldLaunchOffline(String title) {
+		Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.YES, ButtonType.NO);
+		alert.setTitle("Error!");
+		alert.setHeaderText(title);
+		alert.getButtonTypes().addAll();
+		return alert.showAndWait().map(b -> b == ButtonType.YES).orElse(false);
+	}
+
 }

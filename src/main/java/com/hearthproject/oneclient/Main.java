@@ -139,7 +139,7 @@ public class Main extends Application {
 		OneClientLogging.logger.info("Loading Instances");
 		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
-		MinecraftUtil.loadGameVersions();
+		MinecraftUtil.load();
 		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
 		OneClientLogging.logger.info("Loading Curse versions and sorting");
