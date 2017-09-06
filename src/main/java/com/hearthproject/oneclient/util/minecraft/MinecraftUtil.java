@@ -109,8 +109,7 @@ public class MinecraftUtil {
 				}
 				try {
 					File l = library.getFile(libraries);
-					if (l.exists())
-						FileUtils.copyURLToFile(new URL(library.getURL()), l);
+					FileUtils.copyURLToFile(new URL(library.getURL()), l);
 					OneClientLogging.logger.info("Downloading " + library.name + " from " + library.getURL() + " to " + l);
 				} catch (IOException e) {
 					OneClientLogging.error(e);
