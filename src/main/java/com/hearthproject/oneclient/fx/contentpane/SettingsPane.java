@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.curse.CursePackImporter;
@@ -21,7 +22,7 @@ public class SettingsPane extends ContentPane {
 	public SpinnerValueFactory.IntegerSpinnerValueFactory minMemory, maxMemory;
 
 	public SettingsPane() {
-		super("gui/contentpanes/settings.fxml", "Settings", "settings.png");
+		super("gui/contentpanes/settings.fxml", "Settings", "settings.png", ButtonDisplay.BELOW_DIVIDER);
 	}
 
 	@Override

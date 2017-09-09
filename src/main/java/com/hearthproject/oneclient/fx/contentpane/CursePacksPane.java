@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.CurseModpack;
 import com.hearthproject.oneclient.util.MiscUtil;
@@ -43,7 +44,7 @@ public class CursePacksPane extends ContentPane {
 	private Label placeHolderMissing = new Label("No Packs Found"), placeHolderLoading = new Label("Loading Packs");
 
 	public CursePacksPane() {
-		super("gui/contentpanes/curse_packs.fxml", "Get Modpacks", "modpacks.png");
+		super("gui/contentpanes/curse_packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
 	}
 
 	private int page = 1, lastPage = -1;

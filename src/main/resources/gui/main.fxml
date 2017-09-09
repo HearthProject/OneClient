@@ -1,77 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.StatusBar?>
 
 <HBox xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
     <children>
-        <VBox fx:id="sideBox" alignment="TOP_CENTER" minWidth="200.0" style="-fx-background-color: -dark-background-color;">
+        <VBox fx:id="sideBox" alignment="TOP_CENTER" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
             <children>
-                <VBox alignment="CENTER" VBox.vgrow="NEVER">
-                    <children>
-                        <Text fx:id="versionText" fill="#8f96a7" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Raleway', sans-serif; -fx-fill: -text-color; -fx-font-size: 14;" text="[TEXT FILLED IN CODE]">
-                            <font>
-                                <Font name="System Bold" size="18.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets top="6.0" />
-                            </VBox.margin>
-                        </Text>
-                        <StackPane>
-                            <children>
-                                <Rectangle fill="WHITE" height="180.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #262626;" width="180.0">
-                                    <StackPane.margin>
-                                        <Insets />
-                                    </StackPane.margin>
-                                </Rectangle>
-                                <ImageView fx:id="imageBox" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/logo_big.png" />
-                                    </image>
-                                </ImageView>
-                            </children>
-                            <VBox.margin>
-                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-                            </VBox.margin>
-                        </StackPane>
-                    </children>
+                    <ImageView fx:id="imageBox" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/logo_big.png" />
+                        </image>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+                    </ImageView>
+                <VBox fx:id="topButtonBox" alignment="TOP_CENTER" VBox.vgrow="ALWAYS" />
+            <VBox fx:id="aboveDividerButtonBox" />
+            <Region prefHeight="1.0" style="-fx-background-color: #FFFFFF;">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Region>
+                <VBox fx:id="belowDividerButtonBox" alignment="CENTER" VBox.vgrow="NEVER">
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
                 </VBox>
-                <VBox fx:id="buttonBox" VBox.vgrow="ALWAYS" />
-                <VBox alignment="CENTER" VBox.vgrow="NEVER">
-                    <children>
-                        <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="[TEXT FILLED IN CODE]" textAlignment="CENTER" textOrigin="TOP" />
-                        <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openWebsite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf" />
-                    </children>
-                    <VBox.margin>
-                        <Insets bottom="3.0" top="3.0" />
-                    </VBox.margin>
-                </VBox>
+            <VBox alignment="CENTER">
+               <children>
+                  <JFXButton id="oc-panel-button" contentDisplay="CENTER" focusTraversable="false" graphicTextGap="0.0" onAction="#openCreeperHostSite" prefWidth="400.0" ripplerFill="WHITE" text=" ">
+                     <graphic>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16; -fx-font-family: 'Raleway' sans-serif;;" text="Proudly Sponsored By" textAlignment="CENTER" />
+                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 27; -fx-font-family: 'Raleway' sans-serif;;" text="CreeperHost" textAlignment="CENTER">
+                                       <VBox.margin>
+                                          <Insets top="-2.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets right="4.0" />
+                                 </HBox.margin>
+                              </VBox>
+                              <ImageView fitHeight="54.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/creeperhostlogo.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                     </graphic>
+                  </JFXButton>
+                  <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="[TEXT FILLED IN CODE]" textAlignment="CENTER" textOrigin="TOP" />
+                  <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openHearthSite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf" />
+               </children>
+            </VBox>
             </children>
         </VBox>
-        <VBox alignment="TOP_CENTER" style="-fx-background-color: -fill-color;">
+        <VBox alignment="TOP_CENTER" style="-fx-background-color: -oc-medium;">
             <children>
                 <VBox>
                     <children>
-                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" style="-fx-background-color: -dark-background-color;" VBox.vgrow="NEVER">
+                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                             </VBox.margin>
                         </VBox>
                         <HBox prefHeight="100.0" VBox.vgrow="ALWAYS">
                             <children>
-                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" HBox.hgrow="ALWAYS">
+                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -fill-color;" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
                                         <Insets bottom="12.0" left="12.0" right="12.0" />
                                     </HBox.margin>

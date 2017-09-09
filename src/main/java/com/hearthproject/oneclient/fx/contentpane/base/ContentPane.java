@@ -17,8 +17,8 @@ public abstract class ContentPane {
 	private FXMLLoader loader;
 	private String name;
 
-	public ContentPane(String fxmlFile, String name, String imageName) {
-		button = new ContentPaneButton(imageName);
+	public ContentPane(String fxmlFile, String name, String imageName, ButtonDisplay buttonDisplay) {
+		button = new ContentPaneButton(imageName, buttonDisplay);
 		button.setText(name);
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
 		button.setOnAction((actionHandler) -> {
@@ -56,7 +56,7 @@ public abstract class ContentPane {
 		return Thread.currentThread().getContextClassLoader().getResource(fxmlFile);
 	}
 
-	public Button getButton() {
+	public ContentPaneButton getButton() {
 		return button;
 	}
 

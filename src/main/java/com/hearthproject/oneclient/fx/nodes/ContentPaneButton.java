@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
@@ -9,9 +10,9 @@ import javafx.scene.image.ImageView;
 
 public class ContentPaneButton extends JFXButton {
 	private boolean selected = false;
-	private String color;
+	private ButtonDisplay buttonDisplay;
 
-	public ContentPaneButton(String imageName) {
+	public ContentPaneButton(String imageName, ButtonDisplay buttonDisplay) {
 		super("TEST");
 		ImageView imageView = new ImageView();
 		if (imageName != null && !imageName.isEmpty()) {
@@ -20,10 +21,11 @@ public class ContentPaneButton extends JFXButton {
 				imageView.setImage(image);
 			setGraphic(imageView);
 		}
-		this.color = "#3CE0A0";
 		setAlignment(Pos.CENTER_LEFT);
 		setPrefHeight(50);
-		setId("side-panel-button");
+		setFocusTraversable(false);
+		setId("oc-panel-button");
+		this.buttonDisplay = buttonDisplay;
 	}
 
 	@Override
@@ -40,20 +42,15 @@ public class ContentPaneButton extends JFXButton {
 		updateColor();
 	}
 
+	public ButtonDisplay getButtonDisplay() {
+		return buttonDisplay;
+	}
+
 	private void updateColor() {
 		if (selected) {
-			setStyle("-fx-background-color: " + color);
+			setStyle("-fx-background-color: -oc-accent");
 		} else {
 			setStyle(null);
 		}
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-		updateColor();
 	}
 }

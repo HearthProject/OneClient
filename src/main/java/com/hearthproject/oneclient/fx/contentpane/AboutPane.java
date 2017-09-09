@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.fxml.FXML;
@@ -15,7 +16,7 @@ public class AboutPane extends ContentPane {
 	private VBox stuffBox;
 
 	public AboutPane() {
-		super("gui/contentpanes/about.fxml", "About", "about.png");
+		super("gui/contentpanes/about.fxml", "About", "about.png", ButtonDisplay.BELOW_DIVIDER);
 	}
 
 	@Override

@@ -2,74 +2,26 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
 * {
-    -oc-dark: #232927;
-    -oc-medium: #4D5956;
-    -oc-hover: #47504D;
-    -oc-text: #FFFFFF;
-	-oc-accent: #0D9179;
-}
-
-#oc-dark-background {
-    -fx-background-color: -dark-background-color;
-}
-
-#oc-panel-button {
-    -fx-background-color: transparent;
-    -fx-border-width: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-font-weight: bold;
-    -fx-font-size: 22px;
-    -fx-font-family: 'Raleway', sans-serif;
-    -fx-text-fill: -oc-text;
-}
-
-#oc-panel-button:hover {
-    -fx-background-color: -oc-hover;
-}
-
-#oc-panel-button:selected {
-    -fx-background-color: -oc-accent;
-}
-
-#oc-panel-button:focused {
-    -fx-background-color: transparent;
-}
-
-
-/* Scroll Pane */
-
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0, 0, 0;
-    -fx-background-radius: 0, 0, 0;
-}
-
-.scroll-pane:focused {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0, 0, 0;
-    -fx-background-radius: 0, 0, 0;
-}
-
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-
-/* OLD CRAP */
-
-* {
     -light-background-color: #EFEFEF;
-    -dark-background-color: -oc-medium;
-    -fill-color: #353D3B;
-    -fill-color-alt: #464F4C;
-    -dark-color: -oc-dark;
-    -grey-fill-color: #A5A5A5;
-    -hover-color: -oc-hover;
+    -dark-background-color: #494949;
+    -fill-color: #343434;
+    -fill-color-alt: #3F3F3F;
+    -dark-color: #282828;
+    -grey-fill-color: #8E95A6;
+    -hover-color: #686868;
     -medium-color: #545454;
-    -border-color: -oc-dark;
-    -accent-color: -oc-accent;
+    -border-color: #1E1E1E;
+    -accent-color: #3CE0A0;
     -warning-color: #3CE0A0;
-    -text-color: -oc-text;
+    -text-color: #FFFFFF;
+}
+
+.root{
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-font-family: 'Raleway', sans-serif;
+    -fx-background-color: -dark-background-color;
 }
 
 #light-background {
@@ -104,7 +56,7 @@
     Button
 */
 
-.button {
+#oc-button {
     -fx-background-color: -fill-color;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -116,11 +68,11 @@
     -fx-font-size: 12px;
 }
 
-.button:hover {
+#oc-button:hover {
     -fx-background-color: -hover-color;
 }
 
-.button:focused {
+#oc-button:focused {
     -fx-border-color: -accent-color;
 }
 
@@ -174,8 +126,6 @@
     -fx-font-weight: bold;
     -fx-font-size: 18px;
     -fx-font-family: 'Raleway', sans-serif;
-    -fx-text-fill: -text-color;
-    -fx-graphic-text-gap: 8;
 }
 
 #side-panel-button:hover {

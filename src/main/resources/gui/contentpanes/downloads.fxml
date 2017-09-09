@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+      style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 30;" text="WIP">
+            <VBox.margin>
+                <Insets bottom="6.0"/>
+            </VBox.margin>
+        </Text>
+    </children>
+</VBox>

@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.hearth.HearthApi;
 import com.hearthproject.oneclient.hearth.json.ClientPermissions;
@@ -23,7 +24,7 @@ public class PrivatePackPane extends ContentPane {
 	private ClientPermissions clientPermissions;
 
 	public PrivatePackPane() {
-		super("gui/contentpanes/private_pack.fxml", "Private Packs (Alpha)", "modpacks.png");
+		super("gui/contentpanes/private_pack.fxml", "Private Packs (Alpha)", "modpacks.png", ButtonDisplay.TOP);
 	}
 
 	@Override

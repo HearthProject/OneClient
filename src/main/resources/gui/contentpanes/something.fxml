@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab text="One Client Options">
+         <content>
+            <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0">
+               <content>
+                  <VBox alignment="TOP_CENTER" prefHeight="93.0" prefWidth="598.0">
+                     <children>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                              <ScrollBar minHeight="500.0" orientation="VERTICAL" prefHeight="140.0" prefWidth="14.0" />
+                           </children>
+                        </HBox>
+                        <JFXButton buttonType="RAISED" prefHeight="37.0" prefWidth="204.0" style="-fx-background-color: -accent-color;" text="Import Twitch Instances" textFill="WHITE" />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <JFXToggleButton text="Anonymous Tracking" textFill="WHITE" />
+                              <JFXToggleButton text="Show Log Window" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </content>
+      </Tab>
+      <Tab text="Minecraft Game Options" />
+   </tabs>
+</JFXTabPane>

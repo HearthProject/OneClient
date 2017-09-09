@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -20,7 +21,11 @@ import java.util.Calendar;
 
 public class MainController {
 	@FXML
-	public VBox buttonBox;
+	public VBox topButtonBox;
+	@FXML
+	public VBox aboveDividerButtonBox;
+	@FXML
+	public VBox belowDividerButtonBox;
 	@FXML
 	public VBox contentBox;
 	@FXML
@@ -29,8 +34,6 @@ public class MainController {
 	public Text copyrightInfo;
 	@FXML
 	public Hyperlink siteLink;
-	@FXML
-	public Text versionText;
 	@FXML
 	public ImageView imageBox;
 	@FXML
@@ -43,12 +46,18 @@ public class MainController {
 
 	public void onStart(Stage stage) throws IOException {
 		for (ContentPane pane : ContentPanes.panesList) {
-			buttonBox.getChildren().add(pane.getButton());
-		}
-		if (Constants.getVersion() == null) {
-			versionText.setText("One Client");
-		} else {
-			versionText.setText("One Client v" + Constants.getVersion());
+			ContentPaneButton button = pane.getButton();
+			switch (button.getButtonDisplay()) {
+				case TOP:
+					topButtonBox.getChildren().add(button);
+					break;
+				case ABOVE_DIVIDER:
+					aboveDividerButtonBox.getChildren().add(button);
+					break;
+				case BELOW_DIVIDER:
+					belowDividerButtonBox.getChildren().add(button);
+					break;
+			}
 		}
 		String yearString = "2017";
 		int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -85,7 +94,11 @@ public class MainController {
 		}
 	}
 
-	public void openWebsite() {
+	public void openHearthSite() {
 		OperatingSystem.browseURI("http://hearthproject.uk/");
+	}
+
+	public void openCreeperHostSite() {
+		OperatingSystem.browseURI("https://www.creeperhost.net/");
 	}
 }

@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.contentpane.instance;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
@@ -40,7 +41,7 @@ public class InstancePane extends ContentPane {
 	public Instance instance;
 
 	public InstancePane() {
-		super("gui/contentpanes/instance_view.fxml", "InstancePane", "");
+		super("gui/contentpanes/instance_view.fxml", "InstancePane", "", ButtonDisplay.NONE);
 	}
 
 	public static void show(Instance instance) {

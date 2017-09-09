@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
-
 
 <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <content>
@@ -16,19 +15,23 @@
          <children>
             <StackPane>
                <children>
-                  <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
-                  <ImageView pickOnBounds="true" preserveRatio="true" />
+                  <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0" />
                   <VBox alignment="CENTER">
                      <children>
-                        <Button fx:id="newInstanceButton" mnemonicParsing="false" onAction="#onNewInstancePress" text="New Instance" />
+                        <JFXButton fx:id="newInstanceButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" onAction="#onNewInstancePress" prefHeight="192.0" prefWidth="192.0" ripplerFill="#0d9179" style="-fx-border-width: 0; -fx-background-color: -oc-dark;" text=" ">
+                           <graphic>
+                              <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/new_instance.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
                      </children>
                   </VBox>
                </children>
             </StackPane>
          </children>
-         <padding>
-            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-         </padding>
       </TilePane>
    </content>
 </ScrollPane>

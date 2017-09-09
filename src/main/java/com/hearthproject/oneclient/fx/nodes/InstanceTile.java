@@ -30,7 +30,7 @@ public class InstanceTile extends StackPane {
 		background = new Rectangle(192, 192);
 		background.setArcHeight(0);
 		background.setArcWidth(0);
-		background.setFill(Color.web("#262626"));
+		background.setStyle("-fx-fill: -oc-dark;");
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
 		imageView.setImage(ImageUtil.openImage(instance.getManifest().getIcon()));
@@ -63,10 +63,6 @@ public class InstanceTile extends StackPane {
 		this.action = action;
 	}
 
-	public interface Action {
-		void execute();
-	}
-
 	public void setInstalling(boolean installing) {
 		MiscUtil.runLaterIfNeeded(() -> {
 			playButton.setDisable(installing);
@@ -77,6 +73,10 @@ public class InstanceTile extends StackPane {
 				statusLabel.setText(instance.getManifest().getMinecraftVersion());
 			}
 		});
+	}
+
+	public interface Action {
+		void execute();
 	}
 
 }

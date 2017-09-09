@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
@@ -21,7 +22,7 @@ public class InstancesPane extends ContentPane {
 	private StackPane newInstanceTile;
 
 	public InstancesPane() {
-		super("gui/contentpanes/instances.fxml", "Home", "home.png");
+		super("gui/contentpanes/instances.fxml", "Home", "home.png", ButtonDisplay.TOP);
 	}
 
 	@Override

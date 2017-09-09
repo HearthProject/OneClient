@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-      xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.SplashScreenController">
+
+<VBox id="dark-background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.SplashScreenController">
     <children>
         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 30;" text="One Client is Starting">
             <VBox.margin>
-                <Insets bottom="6.0"/>
+                <Insets bottom="6.0" />
             </VBox.margin>
         </Text>
-        <ProgressIndicator prefHeight="65.0">
+        <ProgressIndicator focusTraversable="false">
             <VBox.margin>
-                <Insets bottom="6.0"/>
+                <Insets bottom="6.0" />
             </VBox.margin>
         </ProgressIndicator>
         <Text fx:id="progressText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading ...">
             <VBox.margin>
-                <Insets bottom="6.0"/>
+                <Insets bottom="6.0" />
             </VBox.margin>
         </Text>
-        <ProgressBar fx:id="progressBar" prefWidth="300.0" progress="0.0"/>
+        <ProgressBar fx:id="progressBar" prefWidth="300.0" progress="0.0" />
     </children>
 </VBox>
