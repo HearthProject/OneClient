@@ -15,7 +15,7 @@ import java.util.List;
 
 public class LogController {
 
-	private static final int MAX_CHARS = 50000;
+	private static final int MAX_CHARS = 500000;
 
 	public TabPane root;
 	public TextArea logArea;
