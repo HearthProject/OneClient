@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
@@ -25,7 +26,6 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.io.FileUtils;
@@ -294,23 +294,23 @@ public class MinecraftUtil {
 
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(instance.getDirectory());
-				Platform.runLater(() -> OneClientLogging.logController.minecraftMenu.setDisable(false));
 				Process process = processBuilder.start();
 				OneClientLogging.info("{}", arguments);
-				OneClientLogging.logController.processList.add(process);
+				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(),process);
+
 				try {
 					BufferedReader reader =
 						new BufferedReader(new InputStreamReader(process.getInputStream()));
 					String line;
 					while ((line = reader.readLine()) != null) {
-						OneClientLogging.logger.info(line);
+						tab.append(line + "\n");
 					}
 
 					BufferedReader readerErr =
 						new BufferedReader(new InputStreamReader(process.getErrorStream()));
 					String lineErr;
 					while ((lineErr = readerErr.readLine()) != null) {
-						OneClientLogging.logger.error(lineErr);
+						tab.append(lineErr + "\n");
 					}
 				} catch (IOException ignore) {}
 

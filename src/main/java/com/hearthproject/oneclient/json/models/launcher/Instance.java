@@ -72,6 +72,10 @@ public class Instance {
 		}
 	}
 
+	public String getName() {
+		return manifest.getName();
+	}
+
 	public void setName(String name) {
 		int i = 0;
 		manifest.name = name;

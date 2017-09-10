@@ -80,4 +80,9 @@ public class FileUtil {
 	public static boolean isDirectoryEmpty(File dir) {
 		return dir.isDirectory() && (dir.listFiles() == null || dir.listFiles().length == 0);
 	}
+
+	public static void upload() {
+
+
+	}
 }

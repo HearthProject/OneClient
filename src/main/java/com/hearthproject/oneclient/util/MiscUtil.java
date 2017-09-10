@@ -4,6 +4,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.mashape.unirest.http.Unirest;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -157,4 +158,25 @@ public class MiscUtil {
 
 		}
 	}
+
+	public static String hastebin(String text) {
+
+		try {
+			String key = Unirest.post("https://hastebin.com/documents").body(text).asJson().getBody().getObject().getString("key");
+			String url = "https://hastebin.com/" + key + ".hs";
+			return url;
+
+		} catch (Throwable e) {
+			OneClientLogging.error(e);
+		}
+		return null;
+	}
+
+	public static void uploadLog(String text) {
+		new Thread(() -> {
+			String url = hastebin(text);
+			OperatingSystem.browseURI(url);
+		}).start();
+	}
+
 }
