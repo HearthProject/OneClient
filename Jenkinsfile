@@ -7,7 +7,7 @@ node {
 
    sh "rm -rf build/libs/"
    sh "chmod +x gradlew"
-   sh "./gradlew build awsUpload --refresh-dependencies --stacktrace"
+   sh "./gradlew build crUpload --refresh-dependencies --stacktrace"
 
    stage "Archive artifacts"
 

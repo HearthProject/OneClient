@@ -1,7 +1,6 @@
 import java.security.MessageDigest
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.model.CannedAccessControlList
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTP
 import groovy.json.JsonOutput
 
 buildscript {
@@ -12,7 +11,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'com.amazonaws:aws-java-sdk:1.11.186'
+		classpath 'commons-net:commons-net:3.3'
 	}
 }
 
@@ -25,7 +24,7 @@ apply plugin: 'application'
 apply from: 'https://github.com/HearthProject/OneClient/raw/master/formatter/ideconfig.gradle'
 
 sourceCompatibility = 1.8
-version = '0.0.3'
+version = '0.0.4'
 
 // Fetch build number from Jenkins
 def ENV = System.getenv()
@@ -107,25 +106,29 @@ def calcSha1(file)
 
 build.finalizedBy saveHash
 
-def uploadFileToS3(file, location){
-	project.logger.lifecycle("Uploading " + file + " to aws s3")
-	def s3 = new AmazonS3Client(new BasicAWSCredentials(project.getProperty('aws_access_key'), project.getProperty('aws_secret_key')))
-	s3.putObject("hearthstorage.hearthproject.uk", location + "/" + file.name , file)
-	s3.setObjectAcl("hearthstorage.hearthproject.uk", location + "/" + file.name, CannedAccessControlList.PublicRead)
+def uploadFileToCR(file, location){
+	project.logger.lifecycle("Uploading " + file + " to creeperrepo")
+	def ftp = new FTPClient()
+	def host = project.getProperty('cr_host').toString()
+	ftp.connect(host)
+	ftp.login(project.getProperty('cr_user').toString(), project.getProperty('cr_pass').toString())
+	ftp.setFileType(FTP.BINARY_FILE_TYPE)
+	ftp.enterLocalPassiveMode()
+	ftp.storeFile(location + "/" + file.name, new FileInputStream(file))
 }
 
-task awsUpload(){
+task crUpload(){
 	doLast {
 		if(isPublishBranch()){
-			project.logger.lifecycle("Uploading to aws")
-			uploadFileToS3(jar.archivePath, "oneclient/versions")
-			uploadFileToS3(portableJar.archivePath, "oneclient/versions")
-			uploadFileToS3(new File(jar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
-			uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
-			uploadFileToS3(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
-			uploadFileToS3(new File(project.getBuildDir().getPath() + "/libs/versions.json"), "oneclient")
+			project.logger.lifecycle("Uploading to CR")
+			uploadFileToCR(jar.archivePath, "oneclient/versions")
+			uploadFileToCR(portableJar.archivePath, "oneclient/versions")
+			uploadFileToCR(new File(jar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToCR(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToCR(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
+			uploadFileToCR(new File(project.getBuildDir().getPath() + "/libs/versions.json"), "oneclient")
 		} else {
-			project.logger.lifecycle("Skipping AWS push as not release branch!")
+			project.logger.lifecycle("Skipping CR push as not release branch!")
 		}
 	}
 }
@@ -134,8 +137,8 @@ task buildInfo() {
 	doLast {
 		def buildInfo = new TreeMap<String,Object>()
 		buildInfo['latestVersion'] = project.version
-		buildInfo['downloadUrl'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions/" + jar.archivePath.name
-		buildInfo['portableDownloadUrl'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions/" + portableJar.archivePath.name
+		buildInfo['downloadUrl'] = "http://fdn.redstone.tech/theoneclient/oneclient/versions/" + jar.archivePath.name
+		buildInfo['portableDownloadUrl'] = "http://fdn.redstone.tech/theoneclient/oneclient/versions/" + portableJar.archivePath.name
 		buildInfo['required'] = "false"
 
 		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/versions.json")

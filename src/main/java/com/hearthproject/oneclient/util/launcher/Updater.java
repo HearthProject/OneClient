@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public class Updater {
 
-	public static final String updateURL = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions.json";
+	public static final String updateURL = "http://fdn.redstone.tech/theoneclient/oneclient/versions.json";
 
 	public static Optional<String> checkForUpdate() throws IOException {
 		File oldJar = new File(new File(FileSystemView.getFileSystemView().getDefaultDirectory(), "OneClient"), "temp_update.jar");
