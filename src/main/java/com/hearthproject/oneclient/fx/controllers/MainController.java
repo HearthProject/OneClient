@@ -99,6 +99,6 @@ public class MainController {
 	}
 
 	public void openCreeperHostSite() {
-		OperatingSystem.browseURI("https://www.creeperhost.net/");
+		OperatingSystem.browseURI("http://partners.creeper.host/r/theoneclientxae");
 	}
 }
