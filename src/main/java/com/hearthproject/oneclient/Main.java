@@ -136,6 +136,7 @@ public class Main extends Application {
 	}
 
 	public void loadData() throws Exception {
+		System.setProperty("http.agent", "OneClient/1.0");
 		OneClientLogging.logger.info("Loading Instances");
 		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
