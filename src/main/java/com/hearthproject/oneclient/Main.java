@@ -144,7 +144,9 @@ public class Main extends Application {
 		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
 		OneClientLogging.logger.info("Loading Curse versions and sorting");
+		SplashScreen.updateProgess("Loading Curse versions", 50);
 		CurseUtils.findSorting();
+		SplashScreen.updateProgess("Sorting curse data", 75);
 		CurseUtils.findVersions();
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
