@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
@@ -184,30 +185,18 @@ public class MinecraftUtil {
 		NotifyUtil.clear();
 	}
 
-	public static boolean startMinecraft(Instance instance, String username, String password) {
+	public static boolean startMinecraft(Instance instance) {
 		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
 		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Attempting authentication with Mojang");
 
-		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
-		auth.setUsername(username);
-		auth.setPassword(password);
-		boolean isOffline = false;
-		try {
-			auth.logIn();
-		} catch (AuthenticationException e) {
-			isOffline = shouldLaunchOffline("Failed to login to your minecraft account. Would you like to launch offline?");
-			if (!isOffline) {
-				return false;
-			}
-		}
+
 		OneClientLogging.logger.info("Login successful!");
 
 		OneClientLogging.logger.info("Starting minecraft...");
 
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
-		final boolean offline = isOffline;
 		new Thread(() -> {
 			try {
 
@@ -259,28 +248,28 @@ public class MinecraftUtil {
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 				//TODO improve parsing of offline/online arguments
 				arguments.add("--accessToken");
-				if (!offline) {
-					arguments.add(auth.getAuthenticatedToken());
+				if (!MinecraftAuthController.isOffline) {
+					arguments.add(MinecraftAuthController.getAuthentication().getAuthenticatedToken());
 				}
 				arguments.add("--uuid");
-				if (!offline) {
-					arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
+				if (!MinecraftAuthController.isOffline) {
+					arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", ""));
 				}
 				arguments.add("--username");
-				arguments.add(auth.getSelectedProfile().getName());
+				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getName());
 				arguments.add("--userType");
-				if (!offline) {
-					arguments.add(auth.getUserType().getName());
+				if (!MinecraftAuthController.isOffline) {
+					arguments.add(MinecraftAuthController.getAuthentication().getUserType().getName());
 				}
 
 				if (providedArugments.contains("${user_properties}")) {
 
 					arguments.add("--userProperties");
-					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
 				}
 
 				if (providedArugments.contains("${user_properties_map}")) {
-					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
 				}
 
 				arguments.add("--version");

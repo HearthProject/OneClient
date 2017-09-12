@@ -23,27 +23,19 @@ public class HearthApi {
 
 	private static ClientAuthentication authentication;
 
-	public static boolean login(String username, String password) throws UnirestException {
+	public static void login(YggdrasilUserAuthentication auth) throws Exception {
 		OneClientLogging.logger.info("Logging in to hearth");
-		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
-		auth.setUsername(username);
-		auth.setPassword(password);
-		try {
-			auth.logIn();
-		} catch (AuthenticationException e) {
-			OneClientLogging.logUserError(e, "Failed to login to your minecraft account. Please check your username and password");
-			return false;
+		if(!auth.isLoggedIn()){
+			throw new Exception("You must be logged with with mojang before you can log into hearth");
 		}
 		HttpResponse<String> response = Unirest.get(hearthAPI + "/auth/" + auth.getAuthenticatedToken() + "/" + auth.getAuthenticationService().getClientToken()).asString();
 		if (response.getStatus() == 403) {
-			System.out.println(response.getBody());
-			return false;
+			throw new Exception(response.getBody());
 		}
 		OneClientLogging.logger.info("Successfully logged into hearth");
 		ClientAuthentication authentication = JsonUtil.GSON.fromJson(response.getBody(), ClientAuthentication.class);
 		HearthApi.authentication = authentication;
 		ContentPanes.PRIVATE_PACK_PANE.onLogin();
-		return true;
 	}
 
 	public static ClientPermissions getClientPermissions() throws UnirestException {

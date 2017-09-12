@@ -2,6 +2,8 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
@@ -123,6 +125,7 @@ public class Main extends Application {
 		scene = new Scene(root, 1235, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
+		MinecraftAuthController.load();
 		stage.show();
 		stage.setOnCloseRequest(event -> {
 			OneClientLogging.stage.close();
@@ -148,6 +151,7 @@ public class Main extends Application {
 		CurseUtils.findSorting();
 		SplashScreen.updateProgess("Sorting curse data", 75);
 		CurseUtils.findVersions();
+		SplashScreen.updateProgess("Authenticating with mojang", 90);
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}

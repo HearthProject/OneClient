@@ -10,7 +10,7 @@ import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.launcher.Mod;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
-import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
+import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,7 +68,7 @@ public class InstancePane extends ContentPane {
 
 		buttonOpenFolder.setOnAction(event -> OperatingSystem.openWithSystem(instance.getDirectory()));
 
-		buttonPlay.setOnAction(event -> MinecraftAuth.loginAndPlay(instance));
+		buttonPlay.setOnAction(event -> MinecraftUtil.startMinecraft(instance));
 
 		buttonExportPack.setOnAction(event -> instance.export());
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));

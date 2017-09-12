@@ -3,11 +3,11 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.hearth.HearthApi;
 import com.hearthproject.oneclient.hearth.json.ClientPermissions;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import com.hearthproject.oneclient.util.minecraft.MinecraftAuth;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -30,9 +30,7 @@ public class PrivatePackPane extends ContentPane {
 	@Override
 	protected void onStart() {
 		buttonLogin.setOnAction(event -> {
-			if (HearthApi.enable) {
-				MinecraftAuth.loginAndPlay(null);
-			}
+			MinecraftAuthController.load();
 		});
 		buttonLogin.setDisable(!HearthApi.enable);
 		if (!HearthApi.enable) {
