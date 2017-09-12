@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.api.curse;
 
-import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.json.JsonUtil;
 
 public class FileData {
 	public int projectID;

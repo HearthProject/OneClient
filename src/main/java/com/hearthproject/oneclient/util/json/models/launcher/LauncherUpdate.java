@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.json.models.launcher;
+package com.hearthproject.oneclient.util.json.models.launcher;
 
 public class LauncherUpdate {
 

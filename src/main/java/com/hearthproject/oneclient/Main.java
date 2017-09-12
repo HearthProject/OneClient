@@ -2,9 +2,7 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
-import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.launcher.Updater;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -138,16 +136,16 @@ public class Main extends Application {
 	public void loadData() throws Exception {
 		System.setProperty("http.agent", "OneClient/1.0");
 		OneClientLogging.logger.info("Loading Instances");
-		InstanceManager.load();
+		//		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
 		MinecraftUtil.load();
 		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
 		OneClientLogging.logger.info("Loading Curse versions and sorting");
-		SplashScreen.updateProgess("Loading Curse versions", 50);
-		CurseUtils.findSorting();
-		SplashScreen.updateProgess("Sorting curse data", 75);
-		CurseUtils.findVersions();
+		//		SplashScreen.updateProgess("Loading Curse versions", 50);
+		//		CurseUtils.findSorting();
+		//		SplashScreen.updateProgess("Sorting curse data", 75);
+		//		CurseUtils.findVersions();
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
 	}

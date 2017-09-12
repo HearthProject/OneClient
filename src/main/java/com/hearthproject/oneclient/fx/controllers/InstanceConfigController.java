@@ -1,12 +1,12 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
-import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
-import com.hearthproject.oneclient.json.models.modloader.IModloader;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
+import com.hearthproject.oneclient.util.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.util.json.models.modloader.IModloader;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -18,7 +18,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -34,7 +37,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.stream.Collectors;
 
-public class NewInstanceController {
+public class InstanceConfigController {
 
 	public ObservableList<GameVersion.VersionData> minecraftVersions = FXCollections.observableArrayList();
 	public ObservableList<IModloader> modloaderVersions = FXCollections.observableArrayList();
@@ -56,9 +59,9 @@ public class NewInstanceController {
 	public Button createButton;
 	public File selectedImageFile;
 
-	public Instance instance;
+	public HearthInstance instance;
 
-	public static void start(Instance instance) {
+	public static void start(HearthInstance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/instance_creation.fxml");
@@ -80,7 +83,7 @@ public class NewInstanceController {
 			scene.getStylesheets().add("gui/css/theme.css");
 			stage.setScene(scene);
 			stage.show();
-			NewInstanceController controller = fxmlLoader.getController();
+			InstanceConfigController controller = fxmlLoader.getController();
 			controller.instance = instance;
 			controller.onStart(stage);
 		} catch (Exception e) {
@@ -96,42 +99,43 @@ public class NewInstanceController {
 		mcVersionComboBox.getSelectionModel().selectFirst();
 		modloaderComboBox.getSelectionModel().selectFirst();
 		if (instance != null) {
-			mcVersionComboBox.getSelectionModel().select(instance.getManifest().getGameVersion());
-			modloaderComboBox.getSelectionModel().select(instance.getManifest().getModloader());
-			instanceNameField.setText(instance.getManifest().getName());
-			iconPreview.setImage(ImageUtil.openCachedImage(instance.getManifest().getIcon()));
+
+			mcVersionComboBox.getSelectionModel().select(MinecraftUtil.getVersionData(instance.getGameVersion()));
+			modloaderComboBox.getSelectionModel().select(ForgeUtils.getForgeVersion(instance.getForgeVersion()));
+			instanceNameField.setText(instance.getName());
+			iconPreview.setImage(ImageUtil.openCachedImage(instance.getIcon()));
 			createButton.setText("Update Instance");
 		}
 	}
 
 	public void onCreateButtonPress() {
-		Instance instance = new Instance();
+		HearthInstance instance = new HearthInstance();
 		instance.setName(instanceNameField.getText());
 		boolean newInstance = true;
 		if (this.instance != null) {
 			newInstance = false;
 			instance = this.instance;
 		}
-		if (newInstance && !instance.isValid()) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setTitle("Error");
-			alert.setHeaderText("That isn't a valid instance");
-			alert.setContentText("Do you already have an instance with that name?");
-			alert.showAndWait();
-			return;
-		}
+		//		if (newInstance && !instance.isValid()) {
+		//			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		//			alert.setTitle("Error");
+		//			alert.setHeaderText("That isn't a valid instance");
+		//			alert.setContentText("Do you already have an instance with that name?");
+		//			alert.showAndWait();
+		//			return;
+		//		}
 
 		if (selectedImageFile != null) {
-			instance.getManifest().setIcon(selectedImageFile.getName());
+			instance.setIcon(selectedImageFile.getName());
 			try {
-				FileUtils.copyFile(selectedImageFile, instance.getManifest().getIcon());
+				FileUtils.copyFile(selectedImageFile, instance.getIcon());
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 		}
-		instance.getManifest().setMinecraftVersion(mcVersionComboBox.getValue().id);
+		instance.setGameVersion(mcVersionComboBox.getValue().id);
 		if (modloaderComboBox.getValue() != null)
-			instance.getManifest().setModloader(modloaderComboBox.getValue().toString());
+			instance.setForgeVersion(modloaderComboBox.getValue().toString());
 
 		if (newInstance) {
 			InstanceManager.addInstance(instance);
@@ -145,12 +149,14 @@ public class NewInstanceController {
 			Main.mainController.currentContent.refresh();
 		}
 
-		Instance finalInstance = instance;
+		HearthInstance finalInstance = instance;
 		new Thread(() -> {
 			try {
-				MinecraftUtil.installMinecraft(finalInstance);
-				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getManifest().getName());
+				//				MinecraftUtil.installMinecraft(finalInstance);
+				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getName());
+				//TODO
 				InstanceManager.setInstanceInstalling(finalInstance, false);
+
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
 			}
@@ -176,7 +182,7 @@ public class NewInstanceController {
 
 	public void loadVersions() {
 		try {
-			GameVersion version = MinecraftUtil.getGameVersionData().orElse(null);
+			GameVersion version = MinecraftUtil.getGameVersions();
 			if (version != null) {
 				minecraftVersions = FXCollections.observableArrayList(version.get(v -> v.type.equals("release") || showSnapshotCheckBox.isSelected()).collect(Collectors.toList()));
 				mcVersionComboBox.setItems(minecraftVersions);
@@ -191,7 +197,7 @@ public class NewInstanceController {
 		if (mcVersionComboBox.getValue() != null) {
 			try {
 				modloaderVersions.clear();
-				modloaderVersions.add(new IModloader.None());
+				modloaderVersions.add(IModloader.NONE);
 				modloaderVersions.addAll(ForgeUtils.loadForgeVersions().filterMCVersion(mcVersionComboBox.getValue()));
 				modloaderComboBox.setItems(modloaderVersions);
 			} catch (IOException e) {
@@ -200,7 +206,6 @@ public class NewInstanceController {
 		}
 	}
 
-	public void onModLoaderComboBoxChange() {
+	public void onModLoaderComboBoxChange() {}
 
-	}
 }

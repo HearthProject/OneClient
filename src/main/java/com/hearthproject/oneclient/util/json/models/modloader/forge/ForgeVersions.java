@@ -1,7 +1,7 @@
-package com.hearthproject.oneclient.json.models.modloader.forge;
+package com.hearthproject.oneclient.util.json.models.modloader.forge;
 
-import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
-import com.hearthproject.oneclient.json.models.modloader.IModloader;
+import com.hearthproject.oneclient.util.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.util.json.models.modloader.IModloader;
 
 import java.util.Comparator;
 import java.util.HashMap;

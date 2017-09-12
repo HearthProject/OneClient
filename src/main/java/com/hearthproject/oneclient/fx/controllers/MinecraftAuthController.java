@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.hearth.HearthApi;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
@@ -25,7 +25,7 @@ public class MinecraftAuthController {
 	public TextField username;
 	public PasswordField password;
 
-	public Instance instance;
+	public HearthInstance instance;
 	public Stage stage;
 	public Button buttonLogin;
 	public CheckBox checkboxPasswordSave;
@@ -40,7 +40,7 @@ public class MinecraftAuthController {
 				stage.show();
 				return;
 			}
-			NotifyUtil.setText(Duration.seconds(2), "%s successfully launching!", instance.getManifest().getName());
+			NotifyUtil.setText(Duration.seconds(2), "%s successfully launching!", instance.getName());
 		} else {
 			try {
 				if (!HearthApi.login(username.getText(), password.getText())) {

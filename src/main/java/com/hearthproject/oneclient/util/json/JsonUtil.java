@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.json;
+package com.hearthproject.oneclient.util.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

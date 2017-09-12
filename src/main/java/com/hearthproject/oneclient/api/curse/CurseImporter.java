@@ -2,11 +2,14 @@ package com.hearthproject.oneclient.api.curse;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.api.IImporter;
 import com.hearthproject.oneclient.api.Info;
-import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.json.JsonUtil;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class CurseImporter implements IImporter {
 		String name = data.getName();
 		CurseProject.CurseFile file = getLatestFile();
 		List<String> authors = data.getAuthors();
+
+		new Thread(() -> FileUtil.downloadFromURL(data.getIcon(), new File(Constants.ICONDIR, name + ".png"))).start();
 
 		if (name == null || file == null)
 			return null;

@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.json.models.minecraft;
+package com.hearthproject.oneclient.util.json.models.minecraft;
 
 public class AssetObject {
 	private String hash;

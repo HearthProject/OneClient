@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.util.minecraft;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class MinecraftAuth {
 
-	public static void loginAndPlay(Instance instance) {
+	public static void loginAndPlay(HearthInstance instance) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/mc_auth.fxml");
