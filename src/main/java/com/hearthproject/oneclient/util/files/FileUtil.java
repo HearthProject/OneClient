@@ -1,7 +1,10 @@
 package com.hearthproject.oneclient.util.files;
 
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,20 +54,46 @@ public class FileUtil {
 		return createFile(f);
 	}
 
-	public static void downloadFromURL(String url, File location) {
+	public static File extract(File from, File to) {
+		if (!to.exists()) {
+			try {
+				ZipFile zip = new ZipFile(from);
+				zip.extractAll(to.toString());
+			} catch (ZipException e) {
+				e.printStackTrace();
+			}
+		}
+		return to;
+	}
+
+	public static File extractFromURL(String url, File location) {
+		File zipDownload = new File(location, FilenameUtils.getName(url));
+		File file = downloadFromURL(url, zipDownload);
+		File directory = new File(location, FilenameUtils.getBaseName(url));
+		return extract(file, directory);
+	}
+
+	public static File downloadToName(String url, File location) {
+		String name = FilenameUtils.getName(url);
+		return downloadFromURL(url, new File(location, name));
+	}
+
+	public static File downloadFromURL(String url, File location) {
 		try {
 			downloadFromURL(new URL(url), location);
 		} catch (MalformedURLException e) {
 			OneClientLogging.error(e);
 		}
+		return location;
 	}
 
-	public static void downloadFromURL(URL url, File location) {
+	public static File downloadFromURL(URL url, File location) {
 		try {
 			FileUtils.copyURLToFile(url, location);
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}
+		return location;
 	}
 
 	public static File getResource(String resource) {
@@ -83,6 +112,12 @@ public class FileUtil {
 
 	public static void upload() {
 
+	}
 
+	public static File getSubdirectory(File file, int n) {
+		File[] files = file.listFiles(File::isDirectory);
+		if (files.length > n)
+			return files[n];
+		return null;
 	}
 }
