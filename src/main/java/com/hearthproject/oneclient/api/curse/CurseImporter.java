@@ -2,7 +2,7 @@ package com.hearthproject.oneclient.api.curse;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.hearthproject.oneclient.api.HeathInstance;
+import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.api.IImporter;
 import com.hearthproject.oneclient.api.Info;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -25,14 +25,14 @@ public class CurseImporter implements IImporter {
 	}
 
 	@Override
-	public HeathInstance create() {
+	public HearthInstance create() {
 		String name = data.getName();
 		CurseProject.CurseFile file = getLatestFile();
 		List<String> authors = data.getAuthors();
 
 		if (name == null || file == null)
 			return null;
-		return new HeathInstance(name, file.getFileName(), gameVersion, url.toString(), new CurseInstaller(file), new Info("authors", authors));
+		return new HearthInstance(name, file.getFileName(), gameVersion, url.toString(), new CurseInstaller(file), new Info("authors", authors));
 	}
 
 	public CurseProject.CurseFile getLatestFile() {

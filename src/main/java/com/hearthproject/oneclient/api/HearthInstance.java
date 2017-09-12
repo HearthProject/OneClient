@@ -6,7 +6,7 @@ import com.hearthproject.oneclient.util.files.FileUtil;
 
 import java.io.File;
 
-public class HeathInstance implements Instance {
+public class HearthInstance implements Instance {
 
 	public String name;
 	public String packVersion;
@@ -18,7 +18,7 @@ public class HeathInstance implements Instance {
 
 	public ModInstaller installer;
 
-	public HeathInstance(String name, String packVersion, String gameVersion, String url, ModInstaller installer, Info... info) {
+	public HearthInstance(String name, String packVersion, String gameVersion, String url, ModInstaller installer, Info... info) {
 		this.name = name;
 		this.packVersion = packVersion;
 		this.gameVersion = gameVersion;
