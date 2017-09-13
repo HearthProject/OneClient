@@ -2,19 +2,20 @@ package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
+import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.hearth.HearthApi;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mojang.authlib.Agent;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,6 +23,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -33,36 +37,42 @@ import java.util.Optional;
 
 public class MinecraftAuthController {
 
+	public static boolean isOffline;
+	private static YggdrasilUserAuthentication authentication;
+	private static HBox mainHbox;
+	private static boolean isAtemptingLogin = false;
 	public TextField username;
 	public PasswordField password;
-
 	public Stage stage;
 	public Button buttonLogin;
 	public CheckBox checkboxPasswordSave;
 
-	private static YggdrasilUserAuthentication authentication;
-	public static boolean isOffline;
-
-	public static void load(){
+	public static void load() {
 		authentication = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
 		Optional<AuthStore> authStore = getAuthStore();
-		if(authStore.isPresent()){
+		if (authStore.isPresent()) {
+			isAtemptingLogin = true;
+			updateGui();
 			OneClientLogging.info("Logging in with saved details");
-			authentication.setUsername(authStore.get().username);
-			authentication.setPassword(authStore.get().password);
+			if (authStore.get().authStorage != null) {
+				System.out.println(authStore.get().authStorage);
+				authentication.loadFromStorage(authStore.get().authStorage);
+			}
 			try {
 				doLogin();
 			} catch (Exception e) {
 				//TODO ask if the user wants to go offline, and handle that somehow
-				OneClientLogging.logUserError(e, "Failed to login, please login again");
-				openLoginGui();
+				OneClientLogging.logUserError(e, "Failed to login, you will need to re-log in");
+				isAtemptingLogin = false;
+				updateGui();
 			}
 		} else {
-			openLoginGui();
+			isAtemptingLogin = false;
+			updateGui();
 		}
 	}
 
-	public static void openLoginGui(){
+	public static void openLoginGui() {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/mc_auth.fxml");
@@ -99,54 +109,25 @@ public class MinecraftAuthController {
 		return authentication;
 	}
 
-	public void login(ActionEvent actionEvent) {
-		stage.hide();
-		try {
-			authentication.setUsername(username.getText());
-			authentication.setPassword(password.getText());
-			save(checkboxPasswordSave.isSelected(), username.getText(), password.getText());
-			doLogin();
-			stage.close();
-		} catch (Exception e) {
-			OneClientLogging.logUserError(e, "Failed to log in");
-		}
-	}
-
 	private static void doLogin() throws Exception {
 		try {
 			OneClientLogging.info("Logging into minecraft");
 			authentication.logIn();
-			if(authentication.isLoggedIn()){
+			if (authentication.isLoggedIn()) {
 				OneClientLogging.info("Logged into minecraft successfully");
 			}
 		} catch (AuthenticationException e) {
 			throw e;
 		}
-		if(HearthApi.enable) {
+		if (HearthApi.enable) {
 			OneClientLogging.info("Logging into hearth");
 			HearthApi.login(authentication);
 			HearthApi.getClientPermissions();
 		}
+		updateGui();
 	}
 
-	public void showLoginGui() {
-		try {
-			Optional<AuthStore> authStore = getAuthStore();
-			if(authStore.isPresent()){
-				username.setText(authStore.get().username);
-				password.setText(authStore.get().password);
-				checkboxPasswordSave.setSelected(true);
-			} else {
-				checkboxPasswordSave.setSelected(false);
-			}
-		} catch (Exception e) {
-			OneClientLogging.error(e);
-			checkboxPasswordSave.setSelected(false);
-		}
-		stage.show();
-	}
-
-	private static Optional<AuthStore> getAuthStore(){
+	private static Optional<AuthStore> getAuthStore() {
 		FileInputStream inputStream = null;
 		ObjectInputStream objectInputStream = null;
 		try {
@@ -158,20 +139,20 @@ public class MinecraftAuthController {
 				inputStream.close();
 				return Optional.of(authStore);
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			//10/10 here
 			try {
-				if(objectInputStream != null){
+				if (objectInputStream != null) {
 					objectInputStream.close();
 				}
-				if(inputStream != null){
+				if (inputStream != null) {
 					inputStream.close();
 				}
-			} catch (Exception e2){
+			} catch (Exception e2) {
 				OneClientLogging.error(e2);
 			}
 			//If invalid, delete it
-			if(getAuthStoreFile().exists()){
+			if (getAuthStoreFile().exists()) {
 				getAuthStoreFile().delete();
 			}
 			OneClientLogging.error(e);
@@ -180,17 +161,15 @@ public class MinecraftAuthController {
 		return Optional.empty();
 	}
 
-	public static void save(boolean save, String username, String password) {
+	public static void save(boolean save, String username) {
 		try {
 			if (save) {
 				FileOutputStream fileOutputStream = new FileOutputStream(getAuthStoreFile());
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				AuthStore authStore = new AuthStore();
 				authStore.username = username;
-				authStore.password = password;
-				if(authentication != null && authentication.isLoggedIn()){
-					authStore.accessToken = authentication.getAuthenticatedToken();
-					authStore.clientToken = authentication.getAuthenticationService().getClientToken();
+				if (authentication != null && authentication.isLoggedIn()) {
+					authStore.authStorage = authentication.saveForStorage();
 					authStore.playerName = authentication.getUserID();
 				}
 				objectOutputStream.writeObject(authStore);
@@ -207,16 +186,94 @@ public class MinecraftAuthController {
 
 	}
 
+	public static void loadGuiElements(HBox hBox) {
+		mainHbox = hBox;
+		updateGui();
+	}
+
+	public static void updateGui() {
+		MiscUtil.runLaterIfNeeded(() -> {
+			mainHbox.getChildren().clear();
+			if (authentication != null && authentication.isLoggedIn()) {
+				ImageView imageView = new ImageView();
+				imageView.setFitHeight(64);
+				imageView.setFitWidth(64);
+				try {
+					imageView.setImage(new Image(new URL("https://crafatar.com/renders/head/" + authentication.getSelectedProfile().getId()).openStream()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				mainHbox.getChildren().add(imageView);
+				Text usernameLabel = new Text();
+				usernameLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
+				usernameLabel.setText(authentication.getSelectedProfile().getName());
+				mainHbox.setAlignment(Pos.CENTER);
+				mainHbox.getChildren().add(usernameLabel);
+			} else if (!isAtemptingLogin) {
+				ContentPaneButton loginButton = new ContentPaneButton("", ButtonDisplay.TOP);
+				loginButton.setText("Login");
+				loginButton.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
+				loginButton.setOnAction(event -> {
+					openLoginGui();
+				});
+				mainHbox.getChildren().add(loginButton);
+			} else {
+				Text textLabel = new Text();
+				textLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
+				textLabel.setText("Logging in...");
+				mainHbox.setAlignment(Pos.CENTER);
+				mainHbox.getChildren().add(textLabel);
+			}
+		});
+	}
+
+	public static boolean isUserValid() {
+		return authentication.isLoggedIn();
+	}
+
+	public static File getAuthStoreFile() {
+		return new File(Constants.getRunDir(), "authstore.dat");
+	}
+
+	public void login(ActionEvent actionEvent) {
+		stage.hide();
+		try {
+			isAtemptingLogin = true;
+			updateGui();
+			authentication.setUsername(username.getText());
+			authentication.setPassword(password.getText());
+			doLogin();
+			save(checkboxPasswordSave.isSelected(), username.getText());
+			stage.close();
+		} catch (Exception e) {
+			isAtemptingLogin = false;
+			updateGui();
+			OneClientLogging.logUserError(e, "Failed to log in");
+		}
+	}
+
+	public void showLoginGui() {
+		try {
+			Optional<AuthStore> authStore = getAuthStore();
+			if (authStore.isPresent()) {
+				username.setText(authStore.get().username);
+				checkboxPasswordSave.setSelected(true);
+			} else {
+				checkboxPasswordSave.setSelected(false);
+			}
+		} catch (Exception e) {
+			OneClientLogging.error(e);
+			checkboxPasswordSave.setSelected(false);
+		}
+		stage.show();
+	}
+
 	public void onLinkClick() {
 		try {
 			Desktop.getDesktop().browse(new URL("https://github.com/HearthProject/OneClient").toURI());
 		} catch (Exception e) {
 			OneClientLogging.error(e);
 		}
-	}
-
-	public static File getAuthStoreFile() {
-		return new File(Constants.getRunDir(), "authstore.dat");
 	}
 
 }

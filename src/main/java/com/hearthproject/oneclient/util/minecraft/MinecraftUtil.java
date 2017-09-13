@@ -186,16 +186,14 @@ public class MinecraftUtil {
 	}
 
 	public static boolean startMinecraft(Instance instance) {
+		if(!MinecraftAuthController.isUserValid()){
+			MinecraftAuthController.updateGui();
+			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to play the game!"), "You are not logged in!");
+			return false;
+		}
 		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
 		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
-
-		OneClientLogging.logger.info("Attempting authentication with Mojang");
-
-
-		OneClientLogging.logger.info("Login successful!");
-
 		OneClientLogging.logger.info("Starting minecraft...");
-
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
 		new Thread(() -> {
 			try {

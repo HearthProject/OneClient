@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
@@ -32,11 +33,15 @@ public class MainController {
 	public StatusBar statusBar;
 
 	public Label labelProgress;
+	public HBox profileBox;
 
 	public ContentPane currentContent = null;
 	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
 
 	public void onStart(Stage stage) throws IOException {
+		profileBox = new HBox();
+		MinecraftAuthController.loadGuiElements(profileBox);
+		topButtonBox.getChildren().add(profileBox);
 		for (ContentPane pane : ContentPanes.panesList) {
 			ContentPaneButton button = pane.getButton();
 			switch (button.getButtonDisplay()) {

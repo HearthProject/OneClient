@@ -59,6 +59,11 @@ public class NewInstanceController {
 	public Instance instance;
 
 	public static void start(Instance instance) {
+		if(!MinecraftAuthController.isUserValid()){
+			MinecraftAuthController.updateGui();
+			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to install the game!"), "You are not logged in!");
+			return;
+		}
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/instance_creation.fxml");
