@@ -52,33 +52,18 @@ public class MinecraftUtil {
 	public static File VERSIONS;
 	public static File LIBRARIES;
 	public static File NATIVES;
-	public static File VERSION_MANIFEST;
 
 	public static void load() {
 		ASSETS = new File(Constants.MINECRAFTDIR, "assets");
 		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
 		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");
 		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
-		VERSION_MANIFEST = new File(VERSIONS, "version_manifest.json");
 		parseGameVersions();
 	}
 
-	private static String parseVersionManifest() throws UnknownHostException {
-		if (!VERSION_MANIFEST.exists()) {
-			SplashScreen.updateProgess("Downloading minecraft version json", 20);
-			try {
-				FileUtil.downloadFromURL(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), VERSION_MANIFEST);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			return IOUtils.toString(VERSION_MANIFEST.toURI(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		SplashScreen.updateProgess("Reading version json", 25);
-		return null;
+	private static String parseVersionManifest() throws IOException {
+		SplashScreen.updateProgess("Downloading minecraft version json", 20);
+		return IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
 	}
 
 	private static void parseGameVersions() {
@@ -86,7 +71,7 @@ public class MinecraftUtil {
 			String data = null;
 			try {
 				data = parseVersionManifest();
-			} catch (UnknownHostException e) {
+			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 			if (data != null)
