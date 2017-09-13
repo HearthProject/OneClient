@@ -28,7 +28,13 @@ public class InstanceManager {
 
 	public static void addInstance(Instance instance) {
 		//TODO check its unique
-		instances.put(instance.getManifest().getName(), instance);
+		for (Instance i : instances.values()) {
+			int j = 2;
+			while (instance.getName().equals(i.getName())) {
+				instance.setName(instance.getName() + "i" + j);
+			}
+		}
+		instances.put(instance.getName(), instance);
 		save();
 		init(instance);
 	}

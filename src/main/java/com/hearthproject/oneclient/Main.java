@@ -120,7 +120,7 @@ public class Main extends Application {
 			stage.setTitle("One Client " + Constants.getVersion());
 		}
 		stage.getIcons().add(new Image("images/icon.png"));
-		scene = new Scene(root, 1235, 800);
+		scene = new Scene(root, 1288, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
 		stage.show();

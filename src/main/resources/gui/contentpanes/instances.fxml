@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 
 <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <content>
@@ -15,7 +14,6 @@
          <children>
             <StackPane>
                <children>
-                  <Rectangle fill="#262626" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0" />
                   <VBox alignment="CENTER">
                      <children>
                         <JFXButton fx:id="newInstanceButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" onAction="#onNewInstancePress" prefHeight="192.0" prefWidth="192.0" ripplerFill="#0d9179" style="-fx-border-width: 0; -fx-background-color: -oc-dark;" text=" ">

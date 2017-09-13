@@ -59,7 +59,7 @@ public class InstancesPane extends ContentPane {
 
 			for (InstanceTile tile : instanceTiles) {
 				tile.setAction(() -> {
-					Instance instance = InstanceManager.getInstance(tile.nameLabel.getText());
+					Instance instance = InstanceManager.getInstance(tile.displayButton.getText());
 					MinecraftAuth.loginAndPlay(instance);
 				});
 			}
