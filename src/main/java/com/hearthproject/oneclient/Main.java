@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
@@ -22,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -140,6 +142,7 @@ public class Main extends Application {
 
 	public void loadData() throws Exception {
 		System.setProperty("http.agent", "OneClient/1.0");
+		checkModpackIcon();
 		OneClientLogging.logger.info("Loading Instances");
 		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
@@ -154,5 +157,15 @@ public class Main extends Application {
 		SplashScreen.updateProgess("Authenticating with mojang", 90);
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
+	}
+
+	private static void checkModpackIcon(){
+		if(!Constants.MODPACKICON.exists()){
+			try {
+				FileUtils.copyInputStreamToFile(FileUtil.getResource("images/modpack.png"), Constants.MODPACKICON);
+			} catch (IOException e) {
+				OneClientLogging.error(e);
+			}
+		}
 	}
 }

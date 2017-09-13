@@ -78,7 +78,7 @@ public class Manifest {
 
 	public File getIcon() {
 		if (icon == null || icon.isEmpty()) {
-			return FileUtil.getResource("images/modpack.png");
+			return Constants.MODPACKICON;
 		}
 		return new File(getDirectory(), icon);
 	}
