@@ -5,9 +5,11 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.hearth.HearthApi;
+import com.hearthproject.oneclient.hearth.json.User;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
@@ -30,6 +32,7 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Optional;
@@ -56,7 +59,7 @@ public class MinecraftAuthController {
 				authentication.loadFromStorage(authStore.get().authStorage);
 			}
 			try {
-				doLogin();
+				doLogin(true);
 			} catch (Exception e) {
 				if(authentication.isLoggedIn() && !authentication.canPlayOnline()){
 					OneClientLogging.error(e);
@@ -122,7 +125,7 @@ public class MinecraftAuthController {
 		return authentication;
 	}
 
-	private static void doLogin() throws Exception {
+	private static void doLogin(boolean save) throws Exception {
 		try {
 			OneClientLogging.info("Logging into minecraft");
 			authentication.logIn();
@@ -135,7 +138,7 @@ public class MinecraftAuthController {
 		if (HearthApi.enable) {
 			OneClientLogging.info("Logging into hearth");
 			HearthApi.login(authentication);
-			HearthApi.getClientPermissions();
+			save(save, authentication.getSelectedProfile().getName());
 		}
 		updateGui();
 	}
@@ -188,7 +191,7 @@ public class MinecraftAuthController {
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				AuthStore authStore = new AuthStore();
 				authStore.username = username;
-				if (authentication != null && authentication.isLoggedIn()) {
+				if (authentication != null) {
 					authStore.authStorage = authentication.saveForStorage();
 					authStore.playerName = authentication.getUserID();
 				}
@@ -229,6 +232,18 @@ public class MinecraftAuthController {
 				usernameLabel.setText(authentication.getSelectedProfile().getName());
 				mainHbox.setAlignment(Pos.CENTER);
 				mainHbox.getChildren().add(usernameLabel);
+				if(HearthApi.enable && HearthApi.getAuthentication() != null){
+					try {
+						User user = HearthApi.getUser();
+						Text label = new Text();
+						label.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
+						label.setText("hearth");
+						mainHbox.getChildren().add(label);
+						//TODO show roles
+					} catch (UnirestException e) {
+						e.printStackTrace();
+					}
+				}
 			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 				Text textLabel = new Text();
 				textLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
@@ -272,7 +287,7 @@ public class MinecraftAuthController {
 			updateGui();
 			authentication.setUsername(username.getText());
 			authentication.setPassword(password.getText());
-			doLogin();
+			doLogin(checkboxPasswordSave.isSelected());
 			save(checkboxPasswordSave.isSelected(), username.getText());
 			stage.close();
 		} catch (Exception e) {
@@ -305,5 +320,12 @@ public class MinecraftAuthController {
 			OneClientLogging.error(e);
 		}
 	}
+
+	public static void setAccessToken(YggdrasilUserAuthentication authentication, String newToken) throws NoSuchFieldException, IllegalAccessException {
+		Field field = authentication.getClass().getDeclaredField("accessToken");
+		field.setAccessible(true);
+		field.set(authentication, newToken);
+	}
+
 
 }

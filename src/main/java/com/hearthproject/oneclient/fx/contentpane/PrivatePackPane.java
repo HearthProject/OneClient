@@ -5,7 +5,8 @@ import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.hearth.HearthApi;
-import com.hearthproject.oneclient.hearth.json.ClientPermissions;
+import com.hearthproject.oneclient.hearth.json.Role;
+import com.hearthproject.oneclient.hearth.json.User;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -21,7 +22,7 @@ public class PrivatePackPane extends ContentPane {
 	public Text infoText;
 	public Button buttonLogin;
 
-	private ClientPermissions clientPermissions;
+	private User userData;
 
 	public PrivatePackPane() {
 		super("gui/contentpanes/private_pack.fxml", "Private Packs (Alpha)", "modpacks.png", ButtonDisplay.TOP);
@@ -41,24 +42,19 @@ public class PrivatePackPane extends ContentPane {
 	public void onLogin() {
 		MiscUtil.runLaterIfNeeded(() -> {
 			try {
-				clientPermissions = HearthApi.getClientPermissions();
+				userData = HearthApi.getUser();
 			} catch (UnirestException e) {
 				OneClientLogging.logger.error(e);
 			}
 			String text = "Welcome " + HearthApi.getAuthentication().username;
-			if (clientPermissions == null) {
+			if (userData == null) {
 				text = text + "   Failed to load client permissions information";
-			} else if (clientPermissions.privatePackCreation) {
+			} else if (Role.ALPHATESTER.doesUserHaveRole(userData)) {
 				text = text + "   Private packs are enabled for you!";
 			} else {
 				text = text + "   You do not currently have permission to manage private packs!";
 			}
 			infoText.setText(text);
-			try {
-				Main.mainController.imageBox.setImage(new Image(new URL("https://crafatar.com/avatars/" + HearthApi.getAuthentication().id).openStream()));
-			} catch (IOException e) {
-				OneClientLogging.error(e);
-			}
 			buttonLogin.setVisible(false);
 		});
 	}
