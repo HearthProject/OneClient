@@ -18,9 +18,8 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,7 +36,6 @@ import java.util.Optional;
 
 public class MinecraftAuthController {
 
-	public static boolean isOffline;
 	private static YggdrasilUserAuthentication authentication;
 	private static HBox mainHbox;
 	private static boolean isAtemptingLogin = false;
@@ -55,14 +53,29 @@ public class MinecraftAuthController {
 			updateGui();
 			OneClientLogging.info("Logging in with saved details");
 			if (authStore.get().authStorage != null) {
-				System.out.println(authStore.get().authStorage);
 				authentication.loadFromStorage(authStore.get().authStorage);
 			}
 			try {
 				doLogin();
 			} catch (Exception e) {
-				//TODO ask if the user wants to go offline, and handle that somehow
-				OneClientLogging.logUserError(e, "Failed to login, you will need to re-log in");
+				if(authentication.isLoggedIn() && !authentication.canPlayOnline()){
+					OneClientLogging.error(e);
+
+					Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+					alert.setTitle("Failed to re-authenticate");
+					alert.setHeaderText("Failed to re-authenticate");
+					alert.setContentText("Do you want to run in offline mode?");
+
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.get() == ButtonType.OK){
+						OneClientLogging.info("Launching in offline mode");
+					} else {
+						doLogout();
+					}
+				} else {
+					OneClientLogging.logUserError(e, "Failed to login, you will need to re-log in");
+				}
+
 				isAtemptingLogin = false;
 				updateGui();
 			}
@@ -123,6 +136,13 @@ public class MinecraftAuthController {
 			OneClientLogging.info("Logging into hearth");
 			HearthApi.login(authentication);
 			HearthApi.getClientPermissions();
+		}
+		updateGui();
+	}
+
+	public static void doLogout(){
+		if(authentication != null){
+			authentication.logOut();
 		}
 		updateGui();
 	}
@@ -194,7 +214,7 @@ public class MinecraftAuthController {
 	public static void updateGui() {
 		MiscUtil.runLaterIfNeeded(() -> {
 			mainHbox.getChildren().clear();
-			if (authentication != null && authentication.isLoggedIn()) {
+			if (authentication != null && authentication.canPlayOnline()) {
 				ImageView imageView = new ImageView();
 				imageView.setFitHeight(64);
 				imageView.setFitWidth(64);
@@ -209,6 +229,12 @@ public class MinecraftAuthController {
 				usernameLabel.setText(authentication.getSelectedProfile().getName());
 				mainHbox.setAlignment(Pos.CENTER);
 				mainHbox.getChildren().add(usernameLabel);
+			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
+				Text textLabel = new Text();
+				textLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
+				textLabel.setText("Offline mode");
+				mainHbox.setAlignment(Pos.CENTER);
+				mainHbox.getChildren().add(textLabel);
 			} else if (!isAtemptingLogin) {
 				ContentPaneButton loginButton = new ContentPaneButton("", ButtonDisplay.TOP);
 				loginButton.setText("Login");
@@ -229,6 +255,10 @@ public class MinecraftAuthController {
 
 	public static boolean isUserValid() {
 		return authentication.isLoggedIn();
+	}
+
+	public static boolean isUserOnline(){
+		return authentication.canPlayOnline();
 	}
 
 	public static File getAuthStoreFile() {

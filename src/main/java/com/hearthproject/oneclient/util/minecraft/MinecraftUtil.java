@@ -191,6 +191,9 @@ public class MinecraftUtil {
 			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to play the game!"), "You are not logged in!");
 			return false;
 		}
+		if(!MinecraftAuthController.isUserOnline()){
+			OneClientLogging.info("Launching in offline mode!");
+		}
 		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
 		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 		OneClientLogging.logger.info("Starting minecraft...");
@@ -246,22 +249,14 @@ public class MinecraftUtil {
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 				//TODO improve parsing of offline/online arguments
 				arguments.add("--accessToken");
-				if (!MinecraftAuthController.isOffline) {
-					arguments.add(MinecraftAuthController.getAuthentication().getAuthenticatedToken());
-				}
+				arguments.add(MinecraftAuthController.getAuthentication().getAuthenticatedToken());
 				arguments.add("--uuid");
-				if (!MinecraftAuthController.isOffline) {
-					arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", ""));
-				}
+				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", ""));
 				arguments.add("--username");
 				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getName());
 				arguments.add("--userType");
-				if (!MinecraftAuthController.isOffline) {
-					arguments.add(MinecraftAuthController.getAuthentication().getUserType().getName());
-				}
-
+				arguments.add(MinecraftAuthController.getAuthentication().getUserType().getName());
 				if (providedArugments.contains("${user_properties}")) {
-
 					arguments.add("--userProperties");
 					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
 				}
@@ -308,13 +303,4 @@ public class MinecraftUtil {
 		}).start();
 		return true;
 	}
-
-	public static boolean shouldLaunchOffline(String title) {
-		Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Error!");
-		alert.setHeaderText(title);
-		alert.getButtonTypes().addAll();
-		return alert.showAndWait().map(b -> b == ButtonType.YES).orElse(false);
-	}
-
 }
