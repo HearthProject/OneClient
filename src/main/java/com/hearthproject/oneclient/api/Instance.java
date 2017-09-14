@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.api;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public class Instance {
 	public String url;
 	public String icon;
 	public Info[] info;
+
+	public transient Image image;
 
 	public ModInstaller installer;
 
@@ -92,6 +95,14 @@ public class Instance {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
 	}
 
 	public void install() {

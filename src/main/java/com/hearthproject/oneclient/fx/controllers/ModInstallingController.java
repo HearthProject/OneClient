@@ -3,7 +3,6 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.fx.contentpane.CursePacksPane;
-import com.hearthproject.oneclient.fx.nodes.CurseMod;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -16,7 +15,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,17 +22,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ModInstallingController {
 
 	private volatile CursePacksPane.ViewType type = CursePacksPane.ViewType.FILTER;
 
 	public Instance instance;
-	public ObservableList<CurseMod> tiles = FXCollections.observableArrayList();
 	public ObservableList<CurseUtils.Filter> sorting;
 
-	public ListView<CurseMod> listTiles;
 	public ComboBox<CurseUtils.Filter> filterSort;
 	public Button buttonSearch;
 	public TextField textSearch;
@@ -71,7 +66,6 @@ public class ModInstallingController {
 			controller.sorting = FXCollections.observableArrayList(CurseUtils.getSorting());
 			controller.instance = instance;
 
-			controller.listTiles.setItems(controller.tiles);
 
 			controller.filterSort.setItems(controller.sorting);
 			controller.filterSort.valueProperty().addListener((observableValue, s, t1) -> controller.refreshFilters());
@@ -104,11 +98,9 @@ public class ModInstallingController {
 
 	public void loadModPage(int page, String sorting) {
 		List<CurseElement> elementList = CurseUtils.getMods(page, instance.getGameVersion(), sorting);
-		controller.tiles.addAll(elementList.stream().map(element -> new CurseMod(instance, element)).collect(Collectors.toList()));
 	}
 
 	public void refreshFilters() {
-		tiles.clear();
 		page = 1;
 		loadModPage(page, getFilter());
 	}
@@ -120,14 +112,7 @@ public class ModInstallingController {
 	}
 
 	public void search() {
-		new Thread(() -> {
-			type = CursePacksPane.ViewType.SEARCH;
-			List<CurseElement> packs = CurseUtils.searchCurse(textSearch.getText(), "mods");
-			Platform.runLater(() -> {
-				tiles.clear();
-				tiles.addAll(packs.stream().map(p -> new CurseMod(instance, p)).collect(Collectors.toList()));
-			});
-		}).start();
+
 	}
 
 }

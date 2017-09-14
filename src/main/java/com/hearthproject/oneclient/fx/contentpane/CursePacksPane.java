@@ -1,40 +1,29 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
-import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.nodes.CurseModpack;
-import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Collectors;
 
 public class CursePacksPane extends ContentPane {
 
 	public String URL;
 
-	public ObservableList<CurseModpack> tiles = FXCollections.observableArrayList();
+	//	public ObservableList<CurseModpack> tiles = FXCollections.observableArrayList();
 	public ObservableList<String> versions;
 	public ObservableList<CurseUtils.Filter> sorting;
 
-	public ListView<CurseModpack> listTiles;
+	//	public ListView<CurseModpack> listTiles;
 	public ComboBox<String> filterVersion;
 	public ComboBox<CurseUtils.Filter> filterSort;
 	public Button buttonSearch;
@@ -82,46 +71,46 @@ public class CursePacksPane extends ContentPane {
 		filterVersion.setConverter(new CurseUtils.VersionConverter());
 		filterSort.setConverter(new CurseUtils.FilterConverter());
 
-		listTiles.setItems(tiles);
-		VBox.setVgrow(box, Priority.ALWAYS);
-		HBox.setHgrow(listTiles, Priority.ALWAYS);
-		HBox.setHgrow(box, Priority.ALWAYS);
-		box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
-		listTiles.prefWidthProperty().bind(box.widthProperty());
-		listTiles.prefHeightProperty().bind(box.heightProperty());
-
-		placeHolderMissing.setTextFill(Color.web("#FFFFFF"));
-		placeHolderLoading.setTextFill(Color.web("#FFFFFF"));
-		listTiles.setPlaceholder(placeHolderLoading);
-
-		if (type == ViewType.FILTER) {
-			loadPacks(page, getVersion(), getFilter());
-
-			listTiles.setOnScroll(event -> MiscUtil.runLaterIfNeeded(() -> {
-				if (pageDelay > 0)
-					return;
-				if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
-					int old = Math.max(listTiles.getItems().size() - 8, 0);
-					page++;
-					loadPacks(page, getVersion(), getFilter());
-					listTiles.scrollTo(old);
-					pageDelay = 3;
-				}
-			}));
-		}
-
-		buttonSearch.setOnAction(event -> search());
-		textSearch.setOnKeyPressed(keyEvent -> {
-			if (keyEvent.getCode() == KeyCode.ENTER)
-				search();
-		});
+		//		listTiles.setItems(tiles);
+		//		VBox.setVgrow(box, Priority.ALWAYS);
+		//		HBox.setHgrow(listTiles, Priority.ALWAYS);
+		//		HBox.setHgrow(box, Priority.ALWAYS);
+		//		box.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
+		//		listTiles.prefWidthProperty().bind(box.widthProperty());
+		//		listTiles.prefHeightProperty().bind(box.heightProperty());
+		//
+		//		placeHolderMissing.setTextFill(Color.web("#FFFFFF"));
+		//		placeHolderLoading.setTextFill(Color.web("#FFFFFF"));
+		//		listTiles.setPlaceholder(placeHolderLoading);
+		//
+		//		if (type == ViewType.FILTER) {
+		//			loadPacks(page, getVersion(), getFilter());
+		//
+		//			listTiles.setOnScroll(event -> MiscUtil.runLaterIfNeeded(() -> {
+		//				if (pageDelay > 0)
+		//					return;
+		//				if (type == ViewType.FILTER && event.getDeltaY() < 0 && page != lastPage) {
+		//					int old = Math.max(listTiles.getItems().size() - 8, 0);
+		//					page++;
+		//					loadPacks(page, getVersion(), getFilter());
+		//					listTiles.scrollTo(old);
+		//					pageDelay = 3;
+		//				}
+		//			}));
+		//		}
+		//
+		//		buttonSearch.setOnAction(event -> search());
+		//		textSearch.setOnKeyPressed(keyEvent -> {
+		//			if (keyEvent.getCode() == KeyCode.ENTER)
+		//				search();
+		//		});
 	}
 
 	public void refreshFilters() {
-		type = ViewType.FILTER;
-		tiles.clear();
-		page = 1;
-		loadPacks(page, getVersion(), getFilter());
+		//		type = ViewType.FILTER;
+		//		tiles.clear();
+		//		page = 1;
+		//		loadPacks(page, getVersion(), getFilter());
 	}
 
 	private String getVersion() {
@@ -137,41 +126,41 @@ public class CursePacksPane extends ContentPane {
 	}
 
 	public void loadPacks(int page, String version, String sorting) {
-		new Thread(() -> {
-			try {
-				if (pageLoading.get())
-					return;
-				pageLoading.set(true);
-				List<CurseElement> packs = CurseUtils.getPacks(page, version, sorting);
-				if (packs != null) {
-					if (!packs.isEmpty()) {
-						while (!packs.isEmpty()) {
-							CurseElement pack = packs.remove(0);
-							Platform.runLater(() -> tiles.add(new CurseModpack(pack)));
-						}
-					} else {
-						lastPage = page;
-					}
-				} else {
-					Platform.runLater(() -> listTiles.setPlaceholder(placeHolderMissing));
-				}
-				pageLoading.set(false);
-			} catch (Exception e) {
-				OneClientLogging.error(e);
-			}
-		}).start();
+		//		new Thread(() -> {
+		//			try {
+		//				if (pageLoading.get())
+		//					return;
+		//				pageLoading.set(true);
+		//				List<CurseElement> packs = CurseUtils.getPacks(page, version, sorting);
+		//				if (packs != null) {
+		//					if (!packs.isEmpty()) {
+		//						while (!packs.isEmpty()) {
+		//							CurseElement pack = packs.remove(0);
+		//							Platform.runLater(() -> tiles.add(new CurseModpack(pack)));
+		//						}
+		//					} else {
+		//						lastPage = page;
+		//					}
+		//				} else {
+		//					Platform.runLater(() -> listTiles.setPlaceholder(placeHolderMissing));
+		//				}
+		//				pageLoading.set(false);
+		//			} catch (Exception e) {
+		//				OneClientLogging.error(e);
+		//			}
+		//		}).start();
 	}
 
 	public void search() {
-		new Thread(() -> {
-			type = ViewType.SEARCH;
-
-			List<CurseElement> packs = CurseUtils.searchCurse(textSearch.getText(), "modpacks");
-			Platform.runLater(() -> {
-				tiles.clear();
-				tiles.addAll(packs.stream().map(p -> new CurseModpack(p)).collect(Collectors.toList()));
-			});
-		}).start();
+		//		new Thread(() -> {
+		//			type = ViewType.SEARCH;
+		//
+		//			List<CurseElement> packs = CurseUtils.searchCurse(textSearch.getText(), "modpacks");
+		//			Platform.runLater(() -> {
+		//				tiles.clear();
+		//				tiles.addAll(packs.stream().map(p -> new CurseModpack(p)).collect(Collectors.toList()));
+		//			});
+		//		}).start();
 	}
 
 	@Override
@@ -181,7 +170,7 @@ public class CursePacksPane extends ContentPane {
 
 	@Override
 	public void close() {
-		this.tiles.clear();
+		//		this.tiles.clear();
 	}
 
 	public enum ViewType {

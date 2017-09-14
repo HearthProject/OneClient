@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.animation.PauseTransition;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import org.controlsfx.control.StatusBar;
 
@@ -51,5 +52,9 @@ public class NotifyUtil {
 
 	public static void setProgressText(String value) {
 		MiscUtil.runLaterIfNeeded(() -> Main.mainController.labelProgress.setText(value));
+	}
+
+	public static ImageView loadingIcon() {
+		return Main.mainController.loadingIcon;
 	}
 }

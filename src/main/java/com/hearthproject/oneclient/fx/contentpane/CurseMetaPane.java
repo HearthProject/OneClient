@@ -7,60 +7,80 @@ import com.hearthproject.oneclient.api.curse.CurseImporter;
 import com.hearthproject.oneclient.api.curse.data.CurseModpacks;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.nodes.InstallTile;
 import com.hearthproject.oneclient.util.MiscUtil;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.input.ScrollEvent;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CurseMetaPane extends ContentPane {
-
-	public ObservableList<Instance> instances = FXCollections.observableArrayList();
-	public TableView<Instance> tablePacks;
+	public Label placeholder;
+	public ObservableList<InstallTile> tiles = FXCollections.observableArrayList();
+	public ListView<InstallTile> listPacks;
+	private int loadPerScroll = 10;
 
 	public CurseMetaPane() {
 		super("gui/contentpanes/curse_packs.fxml", "Get Modpacks2", "modpacks.png", ButtonDisplay.TOP);
 	}
 
-	public Button createButton(Instance instance) {
-		Button button = new Button("Install");
-		button.setOnAction(e -> new Thread(instance::install).start());
-		return button;
-	}
+	public final EventHandler<ScrollEvent> scroll = event -> {
+		if (event.getDeltaY() < 0) {
+			loadPacks(loadPerScroll);
+		}
+	};
+
+	private static List<Map.Entry<String, CurseModpacks.CurseModpack>> entries;
+
+	private volatile SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
 
 	@Override
 	protected void onStart() {
+		CurseModpacks packs = Curse.getModpacks();
+		if (packs != null) {
+			entries = Lists.newArrayList(packs.entrySet());
+			entries.sort(Comparator.comparing(e -> e.getValue().Name));
+		}
+		listPacks.setPlaceholder(placeholder = new Label("Loading..."));
+		NotifyUtil.loadingIcon().visibleProperty().bind(loading);
+		listPacks.setOnScroll(scroll);
+		listPacks.setItems(tiles);
+		loadPacks(loadPerScroll);
+	}
 
-		TableColumn<Instance, String> name = new TableColumn<>("name");
-		name.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
-
-		TableColumn<Instance, Button> install = new TableColumn<>("install");
-		install.setCellValueFactory(cell -> new SimpleObjectProperty<>(createButton(cell.getValue())));
-		tablePacks.setItems(instances);
-		tablePacks.setFixedCellSize(30);
+	public void loadPacks(int count) {
+		if (loading.get()) {
+			OneClientLogging.info("already loading");
+			return;
+		}
 		new Thread(() -> {
-			//TODO idk scrolling shit
-			CurseModpacks packs = Curse.getModpacks();
-			System.out.println(tablePacks.getHeight() / 30d);
-			for (int i = 0; i < tablePacks.getHeight() / 30d; i++) {
-				Map.Entry<String, CurseModpacks.CurseModpack> entry = Lists.newArrayList(packs.entrySet()).get(i);
+			loading.setValue(true);
+			OneClientLogging.info("Loading more");
+			List<Instance> instances = Lists.newArrayList();
+			for (int i = 0; i < count; i++) {
+				Map.Entry<String, CurseModpacks.CurseModpack> entry = entries.remove(0);
+				//TODO game version filtering
 				Instance instance = new CurseImporter(entry.getKey(), "1.12").create();
-				System.out.println(instance.getName());
 				instances.add(instance);
 			}
-			MiscUtil.runLaterIfNeeded(() -> tablePacks.setItems(instances));
+			MiscUtil.runLaterIfNeeded(() -> tiles.addAll(instances.stream().map(InstallTile::new).collect(Collectors.toList())));
+			loading.setValue(false);
 		}).start();
-
-		tablePacks.getColumns().addAll(install, name);
 	}
 
 	@Override
 	public void refresh() {
-
+		tiles.clear();
 	}
+
 }

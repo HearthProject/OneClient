@@ -2,6 +2,8 @@ package com.hearthproject.oneclient.api.curse.data;
 
 import org.apache.commons.io.FilenameUtils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +11,7 @@ public class CurseProject {
 	private String Name;
 	private List<CurseFile> LatestFiles;
 	private List<Author> Authors;
+	private List<Attachment> Attachments;
 
 	public String getName() {
 		return Name;
@@ -20,6 +23,17 @@ public class CurseProject {
 
 	public List<String> getAuthors() {
 		return Authors.stream().map(a -> a.Name).collect(Collectors.toList());
+	}
+
+	public URL getIcon() {
+		String icon = Attachments.stream().filter(a -> a.IsDefault).map(a -> a.Url).findFirst().orElse(null);
+		if (icon != null)
+			try {
+				return new URL(icon);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		return null;
 	}
 
 	public static class CurseFile {
@@ -51,5 +65,13 @@ public class CurseProject {
 
 	private class Author {
 		private String Name, Url;
+	}
+
+	private class Attachment {
+		private String Description;
+		private boolean IsDefault;
+		private String ThumbnailUrl;
+		private String Title;
+		private String Url;
 	}
 }

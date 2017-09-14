@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane fx:id="box" minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox fx:id="vbox" minHeight="-Infinity" minWidth="-Infinity" style=" -fx-border-color:black; -fx-border-width: 1; -fx-border-style: solid;" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <HBox prefHeight="40.0" prefWidth="200.0">
                     <VBox.margin>
@@ -36,11 +37,7 @@
                 </HBox>
                 <HBox fx:id="hBox" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <TableView fx:id="tablePacks" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets/>
-                            </HBox.margin>
-                        </TableView>
+                        <ListView fx:id="listPacks" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </children>

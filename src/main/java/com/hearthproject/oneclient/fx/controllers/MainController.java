@@ -4,6 +4,8 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -32,7 +34,10 @@ public class MainController {
 	@FXML
 	public StatusBar statusBar;
 
+	public ImageView loadingIcon;
+
 	public Label labelProgress;
+
 	public HBox profileBox;
 
 	public ContentPane currentContent = null;
@@ -60,7 +65,12 @@ public class MainController {
 		onSceneResize(stage.getScene());
 		statusBar.setText("");
 		labelProgress = new Label();
-		statusBar.getRightItems().add(labelProgress);
+		loadingIcon = new ImageView(ImageUtil.openImage(FileUtil.getResource("images/loading.gif")));
+		loadingIcon.setFitHeight(32);
+		loadingIcon.setFitWidth(32);
+		loadingIcon.setVisible(false);
+		statusBar.getRightItems().addAll(labelProgress, loadingIcon);
+
 	}
 
 	public void onSceneResize(Scene scene) {

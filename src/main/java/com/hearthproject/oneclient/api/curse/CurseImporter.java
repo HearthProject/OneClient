@@ -2,12 +2,17 @@ package com.hearthproject.oneclient.api.curse;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.IImporter;
 import com.hearthproject.oneclient.api.Info;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
+import javafx.scene.image.Image;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -33,12 +38,23 @@ public class CurseImporter implements IImporter {
 
 		if (name == null || file == null)
 			return null;
-		return new Instance(name, file.getFileName(), gameVersion, url.toString(), new CurseInstaller(file), new Info("authors", authors));
+		Instance instance = new Instance(name, file.getFileName(), gameVersion, url.toString(), new CurseInstaller(file), new Info("authors", authors));
+		instance.setImage(getImage());
+		return instance;
+	}
+
+	private Image getImage() {
+		URL url = data.getIcon();
+		File file = new File(Constants.ICONDIR, data.getName() + ".png");
+		FileUtil.downloadFromURL(url, file);
+		return ImageUtil.openCachedImage(file);
 	}
 
 	public CurseProject.CurseFile getLatestFile() {
 		CurseProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectID), CurseProject.CurseFile[].class);
-		return Iterables.getLast(Lists.newArrayList(files), null);
+		if (files != null)
+			return Iterables.getLast(Lists.newArrayList(files), null);
+		return null;
 	}
 
 }
