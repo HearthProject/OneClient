@@ -1,5 +1,6 @@
-package com.hearthproject.oneclient.api.curse;
+package com.hearthproject.oneclient.api.curse.data;
 
+import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.json.JsonUtil;
 
 public class FileData {

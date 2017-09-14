@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.api.IImporter;
 import com.hearthproject.oneclient.api.Info;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.json.JsonUtil;
 
 import java.net.URL;

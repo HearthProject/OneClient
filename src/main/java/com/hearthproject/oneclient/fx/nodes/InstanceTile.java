@@ -1,7 +1,7 @@
 package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.fx.contentpane.instance.InstancePane;
+import com.hearthproject.oneclient.fx.contentpane.InstancePane;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;

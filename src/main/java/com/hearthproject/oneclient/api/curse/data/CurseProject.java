@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.api.curse;
+package com.hearthproject.oneclient.api.curse.data;
 
 import org.apache.commons.io.FilenameUtils;
 

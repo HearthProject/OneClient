@@ -10,14 +10,15 @@ import java.util.ArrayList;
 
 public class ContentPanes {
 	public static ArrayList<ContentPane> panesList = new ArrayList<>();
-	public static final InstancesPane INSTANCES_PANE = (InstancesPane) getPane(InstancesPane.class);
-	public static final CursePacksPane CURSE_PACKS_PANE = (CursePacksPane) getPane(CursePacksPane.class);
-	public static final DownloadsPane DOWNLOADS_PANE = (DownloadsPane) getPane(DownloadsPane.class);
-	public static final SettingsPane SETTINGS_PANE = (SettingsPane) getPane(SettingsPane.class);
-	public static final AboutPane ABOUT_PANE = (AboutPane) getPane(AboutPane.class);
-	public static final PrivatePackPane PRIVATE_PACK_PANE = (PrivatePackPane) getPane(PrivatePackPane.class);
+	public static final InstancesPane INSTANCES_PANE = getPane(InstancesPane.class);
+	public static final CursePacksPane CURSE_PACKS_PANE = getPane(CursePacksPane.class);
+	public static final DownloadsPane DOWNLOADS_PANE = getPane(DownloadsPane.class);
+	public static final SettingsPane SETTINGS_PANE = getPane(SettingsPane.class);
+	public static final AboutPane ABOUT_PANE = getPane(AboutPane.class);
+	public static final PrivatePackPane PRIVATE_PACK_PANE = getPane(PrivatePackPane.class);
+	public static final CurseMetaPane TEST = getPane(CurseMetaPane.class);
 
-	public static ContentPane getPane(Class<? extends ContentPane> clazz) {
+	public static <T extends ContentPane> T getPane(Class<T> clazz) {
 		try {
 			ContentPane pane = clazz.newInstance();
 			URL fxmlUrl = pane.getFXMLUrl();

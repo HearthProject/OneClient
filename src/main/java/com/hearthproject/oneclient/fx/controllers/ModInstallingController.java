@@ -59,7 +59,7 @@ public class ModInstallingController {
 			Parent root = fxmlLoader.load(fxmlUrl.openStream());
 
 			stage = new Stage();
-			stage.setTitle("Modpack List");
+			stage.setTitle("CurseModpack List");
 			stage.setResizable(false);
 			stage.initOwner(Main.stage);
 			stage.initModality(Modality.WINDOW_MODAL);
