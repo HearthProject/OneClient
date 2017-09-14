@@ -1,7 +1,7 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.fx.contentpane.instance.InstancePane;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
@@ -47,9 +47,9 @@ public class InstanceTile extends StackPane {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		imageView.setImage(ImageUtil.openImage(instance.getManifest().getIcon()));
-		displayButton.setText(instance.getManifest().getName());
-		statusText.setText(instance.getManifest().getMinecraftVersion()); // Value is changed
+		imageView.setImage(ImageUtil.openImage(instance.getIcon()));
+		displayButton.setText(instance.getName());
+		statusText.setText(instance.getGameVersion());
 		statusText.setFill(Color.web("#FFFFFF"));
 		playButton.setOnAction(event -> {
 			if (action != null)
@@ -87,7 +87,7 @@ public class InstanceTile extends StackPane {
 			if (installing) {
 				statusText.setText("Installing...");
 			} else {
-				statusText.setText(instance.getManifest().getMinecraftVersion());
+				statusText.setText(instance.getGameVersion());
 			}
 		});
 	}

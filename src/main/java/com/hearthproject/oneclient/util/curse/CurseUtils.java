@@ -1,10 +1,7 @@
 package com.hearthproject.oneclient.util.curse;
 
 import com.google.common.collect.Lists;
-import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.launcher.Manifest;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,8 +11,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.*;
 import java.util.HashMap;
@@ -234,16 +229,16 @@ public class CurseUtils {
 		}
 	}
 
-	public static Manifest getManifest(File dir) throws IOException {
-		NotifyUtil.setText("Parsing Manifest");
-		File f = new File(dir, "manifest.json");
-		if (!f.exists())
-			throw new IllegalArgumentException("This modpack has no manifest");
-
-		Manifest manifest = JsonUtil.GSON.fromJson(new FileReader(f), Manifest.class);
-
-		return manifest;
-	}
+	//	public static Manifest getManifest(File dir) throws IOException {
+	//		NotifyUtil.setText("Parsing Manifest");
+	//		File f = new File(dir, "manifest.json");
+	//		if (!f.exists())
+	//			throw new IllegalArgumentException("This modpack has no manifest");
+	//
+	//		Manifest manifest = JsonUtil.GSON.fromJson(new FileReader(f), Manifest.class);
+	//
+	//		return manifest;
+	//	}
 
 	public static String getZipURL(String url, String version) throws IOException, URISyntaxException {
 		if (url.endsWith("/"))

@@ -1,13 +1,12 @@
 package com.hearthproject.oneclient;
 
+import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
-import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.launcher.Updater;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;

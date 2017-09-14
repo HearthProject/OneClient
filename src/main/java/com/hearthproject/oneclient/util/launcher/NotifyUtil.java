@@ -16,6 +16,7 @@ public class NotifyUtil {
 		MiscUtil.runLaterIfNeeded(() -> {
 			getStatus().setText(null);
 			getStatus().setProgress(-1);
+			setProgressText("");
 		});
 	}
 

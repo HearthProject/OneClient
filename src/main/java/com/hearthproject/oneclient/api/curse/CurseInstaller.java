@@ -29,9 +29,10 @@ public class CurseInstaller extends ModInstaller {
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
 		//TODO instance.setForgeVersion
-		getMods().forEach(i -> i.install(instance));
 
+		getMods().forEach(i -> i.install(instance));
 		installOverrides(pack, directory);
+		//TODO get icon
 	}
 
 	private void installOverrides(File pack, File instance) {

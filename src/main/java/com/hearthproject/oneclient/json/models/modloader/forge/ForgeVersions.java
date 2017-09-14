@@ -33,6 +33,11 @@ public class ForgeVersions {
 		public String toString() {
 			return "forge-" + version;
 		}
+
+		@Override
+		public String getVersion() {
+			return version;
+		}
 	}
 
 	public List<ForgeVersion> get(Predicate<ForgeVersion> filter) {

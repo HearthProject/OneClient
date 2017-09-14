@@ -1,12 +1,12 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;

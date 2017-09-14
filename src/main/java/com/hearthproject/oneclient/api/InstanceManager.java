@@ -1,10 +1,10 @@
-package com.hearthproject.oneclient.util.launcher;
+package com.hearthproject.oneclient.api;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 
@@ -54,17 +54,24 @@ public class InstanceManager {
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
 		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
-			Instance instance = Instance.load(dir);
+			Instance instance = load(dir);
 			if (instance != null)
-				instances.put(instance.getManifest().getName(), instance);
+				instances.put(instance.getName(), instance);
 		});
+	}
+
+	private static Instance load(File dir) {
+
+		//Todo legacy loading??? probably a lot of work this time around.
+
+		return JsonUtil.read(new File(dir, "instance.json"), Instance.class);
 	}
 
 	public static void setInstanceInstalling(Instance instance, boolean installing) {
 		MiscUtil.runLaterIfNeeded(() -> {
 			ContentPanes.INSTANCES_PANE.refresh();
 			for (InstanceTile tile : ContentPanes.INSTANCES_PANE.instanceTiles) {
-				if (tile.instance.getManifest().getName().equals(instance.getManifest().getName())) {
+				if (tile.instance.getName().equals(instance.getName())) {
 					tile.setInstalling(installing);
 				}
 			}

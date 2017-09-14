@@ -3,7 +3,6 @@ package com.hearthproject.oneclient.util.curse;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.launcher.FileData;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -63,9 +62,9 @@ public class CurseMetaUtils {
 			return builder.toString();
 		}
 
-		public FileData getFileData(int projectID) {
-			return new FileData(projectID, Id);
-		}
+		//		public FileData getFileData(int projectID) {
+		//			return new FileData(projectID, Id);
+		//		}
 
 		public Date date() {
 			try {

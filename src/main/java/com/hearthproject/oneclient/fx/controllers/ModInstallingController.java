@@ -1,9 +1,9 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.fx.contentpane.CursePacksPane;
 import com.hearthproject.oneclient.fx.nodes.CurseMod;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -103,7 +103,7 @@ public class ModInstallingController {
 	}
 
 	public void loadModPage(int page, String sorting) {
-		List<CurseElement> elementList = CurseUtils.getMods(page, instance.getManifest().getMinecraftVersion(), sorting);
+		List<CurseElement> elementList = CurseUtils.getMods(page, instance.getGameVersion(), sorting);
 		controller.tiles.addAll(elementList.stream().map(element -> new CurseMod(instance, element)).collect(Collectors.toList()));
 	}
 

@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.api.multimc;
 
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.api.IImporter;
+import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 
@@ -29,11 +29,11 @@ public class MMCImporter implements IImporter {
 	}
 
 	@Override
-	public HearthInstance create() {
+	public Instance create() {
 		String name = config.getProperty("name");
 		String gameVersion = config.getProperty("IntendedVersion");
 
-		HearthInstance instance = new HearthInstance(name, "", gameVersion, "", new MMCInstaller(pack));
+		Instance instance = new Instance(name, "", gameVersion, "", new MMCInstaller(pack));
 		instance.setForgeVersion(config.getProperty("ForgeVersion"));
 		return instance;
 	}

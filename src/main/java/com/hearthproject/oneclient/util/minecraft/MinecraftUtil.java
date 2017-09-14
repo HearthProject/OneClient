@@ -3,11 +3,12 @@ package com.hearthproject.oneclient.util.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
 import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
@@ -15,29 +16,18 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -79,26 +69,32 @@ public class MinecraftUtil {
 		}
 	}
 
-	public static Optional<GameVersion> getGameVersionData() {
+	public static GameVersion getGameVersionData() {
 		if (version == null)
 			parseGameVersions();
-		return Optional.of(version);
+		return version;
 	}
 
-	public static Version parseVersionData(String minecraftVersion) {
-		Optional<GameVersion.VersionData> versionData = getGameVersionData().map(v -> v.get(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst()).orElse(Optional.empty());
-		return versionData.map(GameVersion.VersionData::getData).orElse(null);
+	public static GameVersion.VersionData getVersionData(String version) {
+		return getGameVersionData().get(versions -> versions.id.equalsIgnoreCase(version)).findFirst().orElse(null);
+	}
+
+	public static Version getVersion(String version) {
+		GameVersion.VersionData versionData = getVersionData(version);
+		if (versionData != null)
+			return versionData.getData();
+		return null;
 	}
 
 	public static int i = 0, count;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		InstanceManager.setInstanceInstalling(instance, true);
-		NotifyUtil.setText("Installing minecraft for " + instance.getManifest().getName());
-		OneClientTracking.sendRequest("minecraft/install/" + instance.getManifest().getMinecraftVersion());
+		NotifyUtil.setText("Installing minecraft for " + instance.getName());
+		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
 
-		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
-		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
+		Version versionData = getVersion(instance.getGameVersion());
+		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 
 		OneClientLogging.logger.info("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
@@ -137,8 +133,8 @@ public class MinecraftUtil {
 				ZipUtil.unpack(file, NATIVES);
 		});
 
-		if (!instance.getManifest().getForge().isEmpty())
-			ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
+		if (!instance.getForgeVersion().isEmpty())
+			ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion());
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
 		File assetsInfo = new File(ASSETS, "indexes" + File.separator + assetIndex.id + ".json");
@@ -171,18 +167,19 @@ public class MinecraftUtil {
 	}
 
 	public static boolean startMinecraft(Instance instance) {
-		if(!MinecraftAuthController.isUserValid()){
+		if (!MinecraftAuthController.isUserValid()) {
 			MinecraftAuthController.updateGui();
-			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to play the game!"), "You are not logged in!");
+			//TODO replace with a login request
+			OneClientLogging.alert("You must log into minecraft to play the game!", "You are not logged in!");
 			return false;
 		}
-		if(!MinecraftAuthController.isUserOnline()){
+		if (!MinecraftAuthController.isUserOnline()) {
 			OneClientLogging.info("Launching in offline mode!");
 		}
-		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
-		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
+		Version versionData = getVersion(instance.getGameVersion());
+		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		OneClientLogging.logger.info("Starting minecraft...");
-		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
+		OneClientTracking.sendRequest("minecraft/play/" + instance.getGameVersion());
 		new Thread(() -> {
 			try {
 
@@ -191,12 +188,12 @@ public class MinecraftUtil {
 				String providedArugments = versionData.minecraftArguments;
 				Optional<String> tweakClass = Optional.empty();
 
-				if (!instance.getManifest().getForge().isEmpty()) {
-					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge())) {
+				if (!instance.getForgeVersion().isEmpty()) {
+					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion())) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
-					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
+					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getGameVersion(), instance.getForgeVersion());
 					mainClass = forgeVersionProfile.mainClass;
 					providedArugments = forgeVersionProfile.minecraftArguments;
 
@@ -251,7 +248,7 @@ public class MinecraftUtil {
 				}
 
 				arguments.add("--version");
-				arguments.add(instance.getManifest().getMinecraftVersion());
+				arguments.add(instance.getGameVersion());
 				arguments.add("--assetsDir");
 				arguments.add(ASSETS.toString());
 				arguments.add("--assetIndex");
@@ -263,7 +260,7 @@ public class MinecraftUtil {
 				processBuilder.directory(instance.getDirectory());
 				Process process = processBuilder.start();
 				OneClientLogging.info("{}", arguments);
-				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(),process);
+				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(), process);
 
 				try {
 					BufferedReader reader =

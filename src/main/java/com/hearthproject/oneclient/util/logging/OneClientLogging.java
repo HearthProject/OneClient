@@ -8,7 +8,6 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -37,9 +36,20 @@ public class OneClientLogging {
 	public static void error(Throwable error) {
 		logger.error("An Error has occurred:", error);
 	}
+
 	public static void init() {
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);
 		context.reconfigure();
+	}
+
+	public static void alert(String message, String title) {
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle(title);
+			alert.setHeaderText(title);
+			alert.setContentText(message);
+			alert.showAndWait();
+		});
 	}
 
 	public static void logUserError(Throwable throwable, String title) {

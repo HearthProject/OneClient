@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util.forge;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.modloader.IModloader;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersions;
 import com.hearthproject.oneclient.util.MiscUtil;
@@ -25,6 +26,13 @@ public class ForgeUtils {
 
 	private static ForgeVersions forgeVersions = null;
 
+	public static IModloader getModloader(String version) {
+		ForgeVersions.ForgeVersion forge = getForgeVersion(version);
+		if (forge == null)
+			return IModloader.NONE;
+		return forge;
+	}
+
 	public static ForgeVersions.ForgeVersion getForgeVersion(String version) {
 		for (ForgeVersions.ForgeVersion forgeVersion : forgeVersions.number.values()) {
 			if (forgeVersion.version.equalsIgnoreCase(version)) {
@@ -41,7 +49,7 @@ public class ForgeUtils {
 		File libraries = new File(mcDir, "libraries");
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, mcVer, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
-		OneClientLogging.logger.info("Resolving " + forgeVersionProfile.libraries.size() + " Forge Libraries");
+		NotifyUtil.setText("Resolving %s ForgeLibraries", forgeVersionProfile.libraries.size());
 		count = 0;
 		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
 			NotifyUtil.setProgressAscend(count++, forgeVersionProfile.libraries.size());
@@ -106,7 +114,7 @@ public class ForgeUtils {
 			String jsonStr = IOUtils.toString(new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/json"), Charset.defaultCharset());
 			SplashScreen.updateProgess("Reading forge version json", 35);
 			forgeVersions = JsonUtil.GSON.fromJson(jsonStr, ForgeVersions.class);
-		} catch(UnknownHostException e) {
+		} catch (UnknownHostException e) {
 			OneClientLogging.error(e);
 		}
 		return forgeVersions;

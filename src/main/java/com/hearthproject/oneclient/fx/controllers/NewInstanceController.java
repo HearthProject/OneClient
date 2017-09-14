@@ -1,13 +1,13 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.modloader.IModloader;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
@@ -59,9 +59,11 @@ public class NewInstanceController {
 	public Instance instance;
 
 	public static void start(Instance instance) {
-		if(!MinecraftAuthController.isUserValid()){
+		//TODO DEDUPLICATE THIS
+		if (!MinecraftAuthController.isUserValid()) {
 			MinecraftAuthController.updateGui();
-			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to install the game!"), "You are not logged in!");
+			//TODO replace with a login request
+			OneClientLogging.alert("You must log into minecraft to play the game!", "You are not logged in!");
 			return;
 		}
 		try {
@@ -101,11 +103,14 @@ public class NewInstanceController {
 		mcVersionComboBox.getSelectionModel().selectFirst();
 		modloaderComboBox.getSelectionModel().selectFirst();
 		if (instance != null) {
-			mcVersionComboBox.getSelectionModel().select(instance.getManifest().getGameVersion());
-			modloaderComboBox.getSelectionModel().select(instance.getManifest().getModloader());
-			instanceNameField.setText(instance.getManifest().getName());
-			iconPreview.setImage(ImageUtil.openCachedImage(instance.getManifest().getIcon()));
+			mcVersionComboBox.getSelectionModel().select(MinecraftUtil.getVersionData(instance.getGameVersion()));
+			modloaderComboBox.getSelectionModel().select(ForgeUtils.getModloader(instance.getForgeVersion()));
+			instanceNameField.setText(instance.getName());
+			iconPreview.setImage(ImageUtil.openCachedImage(instance.getIcon()));
 			createButton.setText("Update Instance");
+		} else {
+			mcVersionComboBox.getSelectionModel().selectFirst();
+			modloaderComboBox.getSelectionModel().selectFirst();
 		}
 	}
 
@@ -117,7 +122,7 @@ public class NewInstanceController {
 			newInstance = false;
 			instance = this.instance;
 		}
-		if (newInstance && !instance.isValid()) {
+		if (newInstance && instance.getDirectory().exists()) {
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setTitle("Error");
 			alert.setHeaderText("That isn't a valid instance");
@@ -127,16 +132,16 @@ public class NewInstanceController {
 		}
 
 		if (selectedImageFile != null) {
-			instance.getManifest().setIcon(selectedImageFile.getName());
+			instance.setIcon(selectedImageFile.getName());
 			try {
-				FileUtils.copyFile(selectedImageFile, instance.getManifest().getIcon());
+				FileUtils.copyFile(selectedImageFile, instance.getIcon());
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 		}
-		instance.getManifest().setMinecraftVersion(mcVersionComboBox.getValue().id);
-		if (modloaderComboBox.getValue() != null)
-			instance.getManifest().setModloader(modloaderComboBox.getValue().toString());
+
+		instance.setGameVersion(mcVersionComboBox.getValue().id);
+		instance.setForgeVersion(modloaderComboBox.getValue().getVersion());
 
 		if (newInstance) {
 			InstanceManager.addInstance(instance);
@@ -154,7 +159,7 @@ public class NewInstanceController {
 		new Thread(() -> {
 			try {
 				MinecraftUtil.installMinecraft(finalInstance);
-				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getManifest().getName());
+				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getName());
 				InstanceManager.setInstanceInstalling(finalInstance, false);
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
@@ -181,7 +186,7 @@ public class NewInstanceController {
 
 	public void loadVersions() {
 		try {
-			GameVersion version = MinecraftUtil.getGameVersionData().orElse(null);
+			GameVersion version = MinecraftUtil.getGameVersionData();
 			if (version != null) {
 				minecraftVersions = FXCollections.observableArrayList(version.get(v -> v.type.equals("release") || showSnapshotCheckBox.isSelected()).collect(Collectors.toList()));
 				mcVersionComboBox.setItems(minecraftVersions);
@@ -196,7 +201,7 @@ public class NewInstanceController {
 		if (mcVersionComboBox.getValue() != null) {
 			try {
 				modloaderVersions.clear();
-				modloaderVersions.add(new IModloader.None());
+				modloaderVersions.add(IModloader.NONE);
 				modloaderVersions.addAll(ForgeUtils.loadForgeVersions().filterMCVersion(mcVersionComboBox.getValue()));
 				modloaderComboBox.setItems(modloaderVersions);
 			} catch (IOException e) {
