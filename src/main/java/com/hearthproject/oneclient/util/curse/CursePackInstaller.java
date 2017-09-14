@@ -30,9 +30,9 @@ import static com.hearthproject.oneclient.util.curse.CurseUtils.getLocationHeade
 
 //Taken from: https://github.com/Vazkii/CMPDL/tree/master/src/vazkii/cmpdl + changed a bit
 public class CursePackInstaller {
-	private static boolean busy = false;
-
 	public static final Pattern FILE_NAME_URL_PATTERN = Pattern.compile(".*?/([^/]*)$");
+	private static boolean busy = false;
+	private static int current;
 
 	public static Instance downloadFromURL(String url, String version) throws Exception {
 		Instance instance = null;
@@ -119,15 +119,12 @@ public class CursePackInstaller {
 		return getTempPackDir(zipFile.getName());
 	}
 
-	private static int current;
-
 	public static File downloadModpackFromManifest(File outputDir, Manifest manifest) throws IOException, URISyntaxException {
 		int total = manifest.files.size();
 		NotifyUtil.setText("Downloading modpack from manifest");
 		NotifyUtil.setText("Manifest contains %s files to download", total);
 
 		File modsDir = FileUtil.findDirectory(outputDir, "mods");
-
 
 		manifest.files.parallelStream().forEach(f -> {
 			current++;

@@ -2,7 +2,6 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -35,38 +34,32 @@
                         <Insets />
                     </VBox.margin>
                 </VBox>
-            <VBox alignment="CENTER">
-               <children>
-                  <JFXButton id="oc-panel-button" contentDisplay="CENTER" focusTraversable="false" graphicTextGap="0.0" onAction="#openCreeperHostSite" prefWidth="400.0" ripplerFill="WHITE" text=" ">
-                     <graphic>
-                        <HBox alignment="CENTER">
+            <JFXButton id="oc-panel-button" contentDisplay="CENTER" focusTraversable="false" graphicTextGap="0.0" onAction="#openCreeperHostSite" prefWidth="400.0" ripplerFill="WHITE" text=" ">
+               <graphic>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <VBox alignment="CENTER">
                            <children>
-                              <VBox alignment="CENTER">
-                                 <children>
-                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16; -fx-font-family: 'Raleway' sans-serif;;" text="Proudly Sponsored By" textAlignment="CENTER" />
-                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 27; -fx-font-family: 'Raleway' sans-serif;;" text="CreeperHost" textAlignment="CENTER">
-                                       <VBox.margin>
-                                          <Insets top="-2.0" />
-                                       </VBox.margin>
-                                    </Text>
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets right="4.0" />
-                                 </HBox.margin>
-                              </VBox>
-                              <ImageView fitHeight="54.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/creeperhostlogo.png" />
-                                 </image>
-                              </ImageView>
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16; -fx-font-family: 'Raleway' sans-serif;;" text="Proudly Sponsored By" textAlignment="CENTER" />
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 27; -fx-font-family: 'Raleway' sans-serif;;" text="CreeperHost" textAlignment="CENTER">
+                                 <VBox.margin>
+                                    <Insets top="-2.0" />
+                                 </VBox.margin>
+                              </Text>
                            </children>
-                        </HBox>
-                     </graphic>
-                  </JFXButton>
-                  <Text fx:id="copyrightInfo" fill="#bfbfbf" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="[TEXT FILLED IN CODE]" textAlignment="CENTER" textOrigin="TOP" />
-                  <Hyperlink fx:id="siteLink" alignment="CENTER" focusTraversable="false" onAction="#openHearthSite" style="-fx-font-family: 'Lato', sans-serif; -fx-font-size: 12;" text="http://hearthproject.uk/" textAlignment="CENTER" textFill="#bfbfbf" />
-               </children>
-            </VBox>
+                           <HBox.margin>
+                              <Insets right="4.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <ImageView fitHeight="54.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/creeperhostlogo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </graphic>
+            </JFXButton>
             </children>
         </VBox>
         <VBox alignment="TOP_CENTER" style="-fx-background-color: -oc-medium;">
@@ -75,14 +68,14 @@
                     <children>
                         <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" VBox.vgrow="NEVER">
                             <VBox.margin>
-                                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                             </VBox.margin>
                         </VBox>
                         <HBox prefHeight="100.0" VBox.vgrow="ALWAYS">
                             <children>
-                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -fill-color;" HBox.hgrow="ALWAYS">
+                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -oc-dark;" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
-                                        <Insets bottom="12.0" left="12.0" right="12.0" />
+                                        <Insets bottom="6.0" left="6.0" right="6.0" />
                                     </HBox.margin>
                                 </StatusBar>
                             </children>

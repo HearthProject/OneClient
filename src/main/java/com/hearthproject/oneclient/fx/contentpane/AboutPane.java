@@ -9,6 +9,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.util.Calendar;
+
 public class AboutPane extends ContentPane {
 	@FXML
 	private VBox credits;
@@ -24,14 +26,19 @@ public class AboutPane extends ContentPane {
 		stuffBox.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		stuffBox.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 		if (credits.getChildren().isEmpty()) {
-			Text text = new Text(Main.mainController.copyrightInfo.getText());
-			text.setStyle("-fx-fill: #FFFFFF; " + Main.mainController.copyrightInfo.getStyle());
-			Hyperlink hyperlink = new Hyperlink(Main.mainController.siteLink.getText());
-			hyperlink.setStyle("-fx-text-fill: #FFFFFF; " + Main.mainController.siteLink.getStyle());
-			hyperlink.setOnAction(Main.mainController.siteLink.getOnAction());
+			String yearString = "2017";
+			int year = Calendar.getInstance().get(Calendar.YEAR);
+			if (year > 2017) {
+				yearString += "-" + year;
+			}
+			Text text = new Text("©" + yearString + " - HEARTH PROJECT");
+			text.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
+			Hyperlink hyperlink = new Hyperlink("http://hearthproject.uk/");
+			hyperlink.setStyle("-fx-text-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
+			hyperlink.setOnAction(e -> openHearthSite());
 			hyperlink.focusTraversableProperty().setValue(false);
 			Text creditsText = new Text("\nCredits:");
-			creditsText.setStyle("-fx-fill: #FFFFFF; " + Main.mainController.copyrightInfo.getStyle() + "; -fx-font-size: 14; -fx-font-weight: bold");
+			creditsText.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 14; -fx-font-weight: bold");
 			credits.getChildren().addAll(text, hyperlink, creditsText);
 			addCredit("modmuss50 - Lead Developer", "https://twitter.com/modmuss50");
 			addCredit("Prospector - UX Manager", "https://twitter.com/ProfProspector");
@@ -45,10 +52,14 @@ public class AboutPane extends ContentPane {
 
 	public void addCredit(String credit, String url) {
 		Hyperlink hyperlink = new Hyperlink(credit);
-		hyperlink.setStyle("-fx-text-fill: #FFFFFF; " + Main.mainController.siteLink.getStyle());
+		hyperlink.setStyle("-fx-text-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
 		hyperlink.setOnAction((actionEvent) -> OperatingSystem.browseURI(url));
 		hyperlink.focusTraversableProperty().setValue(false);
 		credits.getChildren().add(hyperlink);
+	}
+
+	public void openHearthSite() {
+		OperatingSystem.browseURI("http://hearthproject.uk/");
 	}
 
 	@Override

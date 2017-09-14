@@ -1,9 +1,10 @@
 package com.hearthproject.oneclient.util.minecraft;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class AuthStore implements Serializable {
 	public String username;
-	public String password;
-	//TODO store the auth token for offline launches
+	public String playerName;
+	public Map<String, Object> authStorage;
 }

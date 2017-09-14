@@ -1,23 +1,20 @@
 package com.hearthproject.oneclient.fx.controllers;
 
-import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainController {
 	@FXML
@@ -31,20 +28,20 @@ public class MainController {
 	@FXML
 	public VBox sideBox;
 	@FXML
-	public Text copyrightInfo;
-	@FXML
-	public Hyperlink siteLink;
-	@FXML
 	public ImageView imageBox;
 	@FXML
 	public StatusBar statusBar;
 
 	public Label labelProgress;
+	public HBox profileBox;
 
 	public ContentPane currentContent = null;
 	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
 
 	public void onStart(Stage stage) throws IOException {
+		profileBox = new HBox();
+		MinecraftAuthController.loadGuiElements(profileBox);
+		topButtonBox.getChildren().add(profileBox);
 		for (ContentPane pane : ContentPanes.panesList) {
 			ContentPaneButton button = pane.getButton();
 			switch (button.getButtonDisplay()) {
@@ -59,12 +56,6 @@ public class MainController {
 					break;
 			}
 		}
-		String yearString = "2017";
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		if (year > 2017) {
-			yearString += "-" + year;
-		}
-		copyrightInfo.setText("©" + yearString + " - HEARTH PROJECT");
 		setContent(ContentPanes.INSTANCES_PANE);
 		onSceneResize(stage.getScene());
 		statusBar.setText("");
@@ -92,10 +83,6 @@ public class MainController {
 				currentContent = null;
 			}
 		}
-	}
-
-	public void openHearthSite() {
-		OperatingSystem.browseURI("http://hearthproject.uk/");
 	}
 
 	public void openCreeperHostSite() {

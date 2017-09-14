@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
@@ -51,33 +52,18 @@ public class MinecraftUtil {
 	public static File VERSIONS;
 	public static File LIBRARIES;
 	public static File NATIVES;
-	public static File VERSION_MANIFEST;
 
 	public static void load() {
 		ASSETS = new File(Constants.MINECRAFTDIR, "assets");
 		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
 		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");
 		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
-		VERSION_MANIFEST = new File(VERSIONS, "version_manifest.json");
 		parseGameVersions();
 	}
 
-	private static String parseVersionManifest() throws UnknownHostException {
-		if (!VERSION_MANIFEST.exists()) {
-			SplashScreen.updateProgess("Downloading minecraft version json", 20);
-			try {
-				FileUtil.downloadFromURL(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), VERSION_MANIFEST);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			return IOUtils.toString(VERSION_MANIFEST.toURI(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		SplashScreen.updateProgess("Reading version json", 25);
-		return null;
+	private static String parseVersionManifest() throws IOException {
+		SplashScreen.updateProgess("Downloading minecraft version json", 20);
+		return IOUtils.toString(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), StandardCharsets.UTF_8);
 	}
 
 	private static void parseGameVersions() {
@@ -85,7 +71,7 @@ public class MinecraftUtil {
 			String data = null;
 			try {
 				data = parseVersionManifest();
-			} catch (UnknownHostException e) {
+			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
 			if (data != null)
@@ -184,30 +170,19 @@ public class MinecraftUtil {
 		NotifyUtil.clear();
 	}
 
-	public static boolean startMinecraft(Instance instance, String username, String password) {
+	public static boolean startMinecraft(Instance instance) {
+		if(!MinecraftAuthController.isUserValid()){
+			MinecraftAuthController.updateGui();
+			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to play the game!"), "You are not logged in!");
+			return false;
+		}
+		if(!MinecraftAuthController.isUserOnline()){
+			OneClientLogging.info("Launching in offline mode!");
+		}
 		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
 		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
-
-		OneClientLogging.logger.info("Attempting authentication with Mojang");
-
-		YggdrasilUserAuthentication auth = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
-		auth.setUsername(username);
-		auth.setPassword(password);
-		boolean isOffline = false;
-		try {
-			auth.logIn();
-		} catch (AuthenticationException e) {
-			isOffline = shouldLaunchOffline("Failed to login to your minecraft account. Would you like to launch offline?");
-			if (!isOffline) {
-				return false;
-			}
-		}
-		OneClientLogging.logger.info("Login successful!");
-
 		OneClientLogging.logger.info("Starting minecraft...");
-
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
-		final boolean offline = isOffline;
 		new Thread(() -> {
 			try {
 
@@ -259,28 +234,20 @@ public class MinecraftUtil {
 				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
 				//TODO improve parsing of offline/online arguments
 				arguments.add("--accessToken");
-				if (!offline) {
-					arguments.add(auth.getAuthenticatedToken());
-				}
+				arguments.add(MinecraftAuthController.getAuthentication().getAuthenticatedToken());
 				arguments.add("--uuid");
-				if (!offline) {
-					arguments.add(auth.getSelectedProfile().getId().toString().replace("-", ""));
-				}
+				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", ""));
 				arguments.add("--username");
-				arguments.add(auth.getSelectedProfile().getName());
+				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getName());
 				arguments.add("--userType");
-				if (!offline) {
-					arguments.add(auth.getUserType().getName());
-				}
-
+				arguments.add(MinecraftAuthController.getAuthentication().getUserType().getName());
 				if (providedArugments.contains("${user_properties}")) {
-
 					arguments.add("--userProperties");
-					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
 				}
 
 				if (providedArugments.contains("${user_properties_map}")) {
-					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(auth.getUserProperties()));
+					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
 				}
 
 				arguments.add("--version");
@@ -321,13 +288,4 @@ public class MinecraftUtil {
 		}).start();
 		return true;
 	}
-
-	public static boolean shouldLaunchOffline(String title) {
-		Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Error!");
-		alert.setHeaderText(title);
-		alert.getButtonTypes().addAll();
-		return alert.showAndWait().map(b -> b == ButtonType.YES).orElse(false);
-	}
-
 }

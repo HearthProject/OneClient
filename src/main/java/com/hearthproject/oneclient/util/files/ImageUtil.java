@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImageUtil {
@@ -27,6 +28,10 @@ public class ImageUtil {
 		return image;
 	}
 
+	public static Image openImage(InputStream stream) {
+		return new Image(stream);
+	}
+
 	public static Image openCachedImage(File file) {
 		OneClientLogging.logger.debug("Opening Image : {}", file);
 		if (file == null || !file.exists()) {
@@ -42,6 +47,16 @@ public class ImageUtil {
 			if (image == null)
 				return null;
 			IMAGE_CACHE.put(file.getName(), image);
+		}
+		return image;
+	}
+
+	public static Image openCachedImage(InputStream inputStream, String name) {
+		OneClientLogging.logger.debug("Opening Image : {}", name);
+		Image image = IMAGE_CACHE.getIfPresent(name);
+		if (image == null) {
+			image = new Image(inputStream);
+			IMAGE_CACHE.put(name, image);
 		}
 		return image;
 	}

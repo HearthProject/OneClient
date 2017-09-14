@@ -2,11 +2,16 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
 * {
-    -oc-dark: #232927;
-    -oc-medium: #4D5956;
-    -oc-hover: #47504D;
+    -oc-dark: #282828;
+    -oc-medium: #3D3D3D;
+    -oc-hover: #4F4F4F;
     -oc-text: #FFFFFF;
 	-oc-accent: #0D9179;
+	-oc-accent-darker: #0A7763;
+}
+
+.text{
+    -fx-font-smoothing-type: gray;
 }
 
 #oc-dark-background {
@@ -36,6 +41,31 @@
     -fx-background-color: transparent;
 }
 
+/* Instance Buttons */
+
+#oc-instance-button {
+    -fx-background-color: -oc-accent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+    -fx-font-size: 22px;
+    -fx-font-family: 'Raleway', sans-serif;
+    -fx-text-fill: -oc-text;
+}
+
+#oc-instance-button:hover {
+    -fx-background-color: -oc-accent-darker;
+}
+
+#oc-instance-button:selected {
+    -fx-background-color: -oc-accent-darker;
+}
+
+#oc-instance-button:focused {
+    -fx-background-color: -oc-accent;
+}
+
 
 /* Scroll Pane */
 
@@ -55,13 +85,65 @@
     -fx-background-color: transparent;
 }
 
+
+
+/* Scroll Bar */
+
+.scroll-bar {
+    -fx-background-color: #424242;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-padding: 0 0 0 0;
+}
+
+.scroll-bar > .thumb {
+    -fx-background-color: #5B5B5B;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar:hover > .thumb {
+    -fx-background-color: #5B5B5B;
+}
+
+.scroll-bar > .increment-button,
+.scroll-bar > .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 5;
+}
+
+.scroll-bar > .increment-button:hover,
+.scroll-bar > .decrement-button:hover,
+.scroll-bar > .increment-button:pressed,
+.scroll-bar > .decrement-button:pressed {
+    -fx-background-color: transparent;
+    -fx-background-insets: 5;
+
+}
+
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-background-color: -text-color;
+}
+
+.scroll-bar > .increment-button:hover > .increment-arrow,
+.scroll-bar > .decrement-button:hover > .decrement-arrow {
+    -fx-background-color: -text-color;
+}
+
+.scroll-bar > .increment-button:pressed > .increment-arrow,
+.scroll-bar > .decrement-button:pressed > .decrement-arrow {
+    -fx-background-color: -text-color;
+}
+
+
 /* OLD CRAP */
 
 * {
-    -light-background-color: #EFEFEF;
     -dark-background-color: -oc-medium;
-    -fill-color: #353D3B;
-    -fill-color-alt: #464F4C;
+    -fill-color: #3A3A3A;
+    -fill-color-alt: #4C4C4C;
     -dark-color: -oc-dark;
     -grey-fill-color: #A5A5A5;
     -hover-color: -oc-hover;
@@ -72,32 +154,8 @@
     -text-color: -oc-text;
 }
 
-#light-background {
-    -fx-background-color: -light-background-color;
-}
-
 #dark-background {
     -fx-background-color: -dark-background-color;
-}
-
-/*
-    Scroll Pane
-*/
-
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0, 0, 0;
-    -fx-background-radius: 0, 0, 0;
-}
-
-.scroll-pane:focused {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0, 0, 0;
-    -fx-background-radius: 0, 0, 0;
-}
-
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
 }
 
 /*
@@ -447,55 +505,6 @@
 .context-menu {
     -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
     -fx-background-color: -fill-color;
-}
-
-/*
-    Scroll Bar
-*/
-
-.scroll-bar {
-    -fx-background-color: -fill-color;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-padding: 0 0 0 0;
-}
-
-.scroll-bar > .thumb {
-    -fx-background-color: -medium-color;
-    -fx-background-insets: 1;
-    -fx-background-radius: 0;
-}
-
-.scroll-bar:hover > .thumb {
-    -fx-background-color: -hover-color;
-}
-
-.scroll-bar > .increment-button,
-.scroll-bar > .decrement-button {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar > .increment-button:hover,
-.scroll-bar > .decrement-button:hover,
-.scroll-bar > .increment-button:pressed,
-.scroll-bar > .decrement-button:pressed {
-    -fx-background-color: -hover-color;
-}
-
-.scroll-bar > .increment-button > .increment-arrow,
-.scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: -text-color;
-}
-
-.scroll-bar > .increment-button:hover > .increment-arrow,
-.scroll-bar > .decrement-button:hover > .decrement-arrow {
-    -fx-background-color: -text-color;
-}
-
-.scroll-bar > .increment-button:pressed > .increment-arrow,
-.scroll-bar > .decrement-button:pressed > .decrement-arrow {
-    -fx-background-color: -text-color;
 }
 
 .list-view {

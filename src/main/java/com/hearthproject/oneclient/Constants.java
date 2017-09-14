@@ -19,6 +19,7 @@ public class Constants {
 	public static File INSTANCEDIR;
 	public static File LOGFILE;
 	public static File ICONDIR;
+	public static File MODPACKICON;
 	public static File MINECRAFTDIR;
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
@@ -71,6 +72,7 @@ public class Constants {
 		LOGFILE = FileUtil.findDirectory(getRunDir(), "logs");
 		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "images");
 		MINECRAFTDIR = FileUtil.findDirectory(getRunDir(), "minecraft");
+		MODPACKICON = new File(getRunDir(), "modpack.png");
 		ThreadContext.put("logs", LOGFILE.toString());
 		OneClientLogging.init();
 	}

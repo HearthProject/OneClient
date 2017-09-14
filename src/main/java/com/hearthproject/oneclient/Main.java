@@ -2,7 +2,10 @@ package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.curse.CurseUtils;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
@@ -20,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -120,7 +124,7 @@ public class Main extends Application {
 			stage.setTitle("One Client " + Constants.getVersion());
 		}
 		stage.getIcons().add(new Image("images/icon.png"));
-		scene = new Scene(root, 1235, 800);
+		scene = new Scene(root, 1288, 800);
 		scene.getStylesheets().add("gui/css/theme.css");
 		stage.setScene(scene);
 		stage.show();
@@ -133,10 +137,12 @@ public class Main extends Application {
 		scene.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		scene.heightProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> mainController.onSceneResize(scene));
 		mainController.onStart(stage);
+		MinecraftAuthController.load();
 	}
 
 	public void loadData() throws Exception {
 		System.setProperty("http.agent", "OneClient/1.0");
+		checkModpackIcon();
 		OneClientLogging.logger.info("Loading Instances");
 		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
@@ -148,7 +154,18 @@ public class Main extends Application {
 		CurseUtils.findSorting();
 		SplashScreen.updateProgess("Sorting curse data", 75);
 		CurseUtils.findVersions();
+		SplashScreen.updateProgess("Authenticating with mojang", 90);
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);
+	}
+
+	private static void checkModpackIcon(){
+		if(!Constants.MODPACKICON.exists()){
+			try {
+				FileUtils.copyInputStreamToFile(FileUtil.getResource("images/modpack.png"), Constants.MODPACKICON);
+			} catch (IOException e) {
+				OneClientLogging.error(e);
+			}
+		}
 	}
 }

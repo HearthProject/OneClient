@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
@@ -23,6 +24,11 @@ public class CurseModpack extends CurseTile {
 
 	@Override
 	public void install() {
+		if(!MinecraftAuthController.isUserValid()){
+			MinecraftAuthController.updateGui();
+			OneClientLogging.logUserError(new RuntimeException("You must log into minecraft to install the game!"), "You are not logged in!");
+			return;
+		}
 		NotifyUtil.setText("Installing %s", element.getTitle());
 
 		new Thread(() -> {

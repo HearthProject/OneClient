@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -96,14 +97,11 @@ public class FileUtil {
 		return location;
 	}
 
-	public static File getResource(String resource) {
+	public static InputStream getResource(String resource) {
 		if (resource == null)
 			return null;
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		URL path = classLoader.getResource(resource);
-		if (path == null)
-			return null;
-		return new File(path.getFile());
+		return classLoader.getResourceAsStream(resource);
 	}
 
 	public static boolean isDirectoryEmpty(File dir) {
