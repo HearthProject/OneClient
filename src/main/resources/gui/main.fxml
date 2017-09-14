@@ -28,12 +28,8 @@
                <children>
                   <HBox fx:id="userInfoBox" alignment="CENTER">
                      <children>
-                        <ImageView fx:id="userAvatar" fitHeight="32.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../../Pictures/9927b75a-89d9-4ff7-8bac-58aaed08911a.png" />
-                           </image>
-                        </ImageView>
-                        <Text fx:id="usernameText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif; -fx-font-size: 18;" text="ProfProspector">
+                        <ImageView fx:id="userAvatar" fitHeight="32.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                        <Text fx:id="usernameText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif; -fx-font-size: 18;" text="Username">
                            <HBox.margin>
                               <Insets left="6.0" />
                            </HBox.margin>
