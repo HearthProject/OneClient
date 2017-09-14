@@ -21,7 +21,7 @@
                             <Image url="@../images/logo_big.png" />
                         </image>
                <VBox.margin>
-                  <Insets bottom="6.0" top="20.0" />
+                  <Insets bottom="6.0" top="6.0" />
                </VBox.margin>
                     </ImageView>
             <VBox fx:id="userBox" alignment="CENTER">
