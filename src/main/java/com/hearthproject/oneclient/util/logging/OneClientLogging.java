@@ -8,6 +8,7 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -69,7 +70,7 @@ public class OneClientLogging {
 			stage.getIcons().add(new Image("images/icon.png"));
 			stage.setResizable(true);
 			stage.initOwner(Main.stage);
-			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initModality(Modality.NONE);
 			Scene scene = new Scene(root, 600, 300);
 			scene.getStylesheets().add("gui/css/theme.css");
 			stage.setScene(scene);

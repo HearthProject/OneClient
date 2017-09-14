@@ -1,9 +1,9 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.fx.controllers.InstallLocation;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.application.Platform;
 import org.apache.logging.log4j.ThreadContext;

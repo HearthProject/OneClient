@@ -2,9 +2,9 @@ package com.hearthproject.oneclient.util.launcher;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.launcher.LauncherUpdate;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.json.JsonUtil;
-import com.hearthproject.oneclient.util.json.models.launcher.LauncherUpdate;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

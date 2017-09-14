@@ -9,7 +9,6 @@ public class CurseProject {
 	private String Name;
 	private List<CurseFile> LatestFiles;
 	private List<Author> Authors;
-	private List<Attachment> Attachments;
 
 	public String getName() {
 		return Name;
@@ -21,10 +20,6 @@ public class CurseProject {
 
 	public List<String> getAuthors() {
 		return Authors.stream().map(a -> a.Name).collect(Collectors.toList());
-	}
-
-	public String getIcon() {
-		return Attachments.get(0).Url;
 	}
 
 	public static class CurseFile {
@@ -56,9 +51,5 @@ public class CurseProject {
 
 	private class Author {
 		private String Name, Url;
-	}
-
-	private class Attachment {
-		private String Url;
 	}
 }

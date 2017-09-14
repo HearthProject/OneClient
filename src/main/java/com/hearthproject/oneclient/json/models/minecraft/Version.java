@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.util.json.models.minecraft;
+package com.hearthproject.oneclient.json.models.minecraft;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

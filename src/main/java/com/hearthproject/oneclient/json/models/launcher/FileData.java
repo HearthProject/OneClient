@@ -1,6 +1,4 @@
-package com.hearthproject.oneclient.api.curse;
-
-import com.hearthproject.oneclient.json.JsonUtil;
+package com.hearthproject.oneclient.json.models.launcher;
 
 public class FileData {
 	public int projectID;
@@ -10,12 +8,6 @@ public class FileData {
 	public FileData(int projectID, int fileID) {
 		this.projectID = projectID;
 		this.fileID = fileID;
-	}
-
-	public String getURL() {
-
-		CurseProject.CurseFile file = JsonUtil.read(Curse.getFileURL(projectID, fileID), CurseProject.CurseFile.class);
-		return file.getDownloadURL();
 	}
 
 	@Override

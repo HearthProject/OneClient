@@ -3,7 +3,7 @@ package com.hearthproject.oneclient.hearth;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.hearth.json.ClientAuthentication;
 import com.hearthproject.oneclient.hearth.json.ClientPermissions;
-import com.hearthproject.oneclient.util.json.JsonUtil;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;

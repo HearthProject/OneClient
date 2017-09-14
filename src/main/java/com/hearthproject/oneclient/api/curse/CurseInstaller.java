@@ -5,8 +5,8 @@ import com.hearthproject.oneclient.api.IInstallable;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.json.JsonUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -30,12 +30,8 @@ public class CurseInstaller extends ModInstaller {
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
 		//TODO instance.setForgeVersion
 		getMods().forEach(i -> i.install(instance));
+
 		installOverrides(pack, directory);
-		try {
-			FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void installOverrides(File pack, File instance) {

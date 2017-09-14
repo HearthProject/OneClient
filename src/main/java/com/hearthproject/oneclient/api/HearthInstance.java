@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.api;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.json.JsonUtil;
 
 import java.io.File;
 
@@ -25,26 +25,10 @@ public class HearthInstance implements Instance {
 		this.url = url;
 		this.installer = installer;
 		this.info = info;
-		this.icon = "icon.png";
-	}
-
-	public HearthInstance() {
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setPackVersion(String packVersion) {
-		this.packVersion = packVersion;
-	}
-
-	public void setGameVersion(String gameVersion) {
-		this.gameVersion = gameVersion;
 	}
 
 	public String getPackVersion() {
@@ -68,31 +52,12 @@ public class HearthInstance implements Instance {
 	}
 
 	public File getDirectory() {
-		return new File(Constants.INSTANCEDIR, getName());
-	}
-
-	public File getIcon() {
-		return new File(getDirectory(), icon);
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
+		return FileUtil.findDirectory(Constants.INSTANCEDIR, getName());
 	}
 
 	public void install() {
-		FileUtil.createDirectory(getDirectory());
-		if (installer != null)
-			installer.install(this);
-	}
-
-	@Override
-	public void delete() {
-		getDirectory().delete();
-	}
-
-	@Override
-	public void update() {
-		//TODO
+		JsonUtil.save(new File(getDirectory(), "instance.json"), toString());
+		installer.install(this);
 	}
 
 	@Override

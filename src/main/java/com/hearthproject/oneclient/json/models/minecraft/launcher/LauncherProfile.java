@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.util.json.models.minecraft.launcher;
+package com.hearthproject.oneclient.json.models.minecraft.launcher;
 
 import java.util.Map;
 

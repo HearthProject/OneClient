@@ -1,6 +1,7 @@
-package com.hearthproject.oneclient.fx.contentpane;
+package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.api.HearthInstance;
+import com.hearthproject.oneclient.fx.contentpane.instance.InstancePane;
+import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.geometry.Pos;
@@ -14,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class InstanceTile extends StackPane {
-	public final HearthInstance instance;
+	public final Instance instance;
 	public Rectangle background;
 	public ImageView imageView;
 	public VBox nodeBox;
@@ -24,7 +25,7 @@ public class InstanceTile extends StackPane {
 	public Button editButton;
 	private Action action;
 
-	public InstanceTile(HearthInstance instance) {
+	public InstanceTile(Instance instance) {
 		this.instance = instance;
 		background = new Rectangle(192, 192);
 		background.setArcHeight(0);
@@ -32,13 +33,13 @@ public class InstanceTile extends StackPane {
 		background.setStyle("-fx-fill: -oc-dark;");
 		background.setStrokeWidth(0);
 		imageView = new ImageView();
-		imageView.setImage(ImageUtil.openImage(instance.getIcon()));
+		imageView.setImage(ImageUtil.openImage(instance.getManifest().getIcon()));
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);
-		nameLabel = new Text(instance.getName());
+		nameLabel = new Text(instance.getManifest().getName());
 		nameLabel.setFill(Color.web("#FFFFFF"));
 		nameLabel.setFont(javafx.scene.text.Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));
-		statusLabel = new Text(instance.getGameVersion());
+		statusLabel = new Text(instance.getManifest().getMinecraftVersion());
 		statusLabel.setFill(Color.web("#FFFFFF"));
 		playButton = new Button("Play");
 		playButton.setOnAction(event -> {
@@ -46,8 +47,7 @@ public class InstanceTile extends StackPane {
 				action.execute();
 		});
 		editButton = new Button("Edit");
-		//TODO
-		//		editButton.setOnAction(event -> InstancePane.show(instance));
+		editButton.setOnAction(event -> InstancePane.show(instance));
 		nodeBox = new VBox(nameLabel, statusLabel, imageView, playButton, editButton);
 		nodeBox.setAlignment(Pos.CENTER);
 		nodeBox.setSpacing(6);
@@ -70,7 +70,7 @@ public class InstanceTile extends StackPane {
 			if (installing) {
 				statusLabel.setText("Installing...");
 			} else {
-				statusLabel.setText(instance.getGameVersion());
+				statusLabel.setText(instance.getManifest().getMinecraftVersion());
 			}
 		});
 	}

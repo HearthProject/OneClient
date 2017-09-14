@@ -3,19 +3,20 @@ package com.hearthproject.oneclient.util.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.HearthInstance;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
+import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.launcher.Instance;
+import com.hearthproject.oneclient.json.models.minecraft.AssetIndex;
+import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
+import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
+import com.hearthproject.oneclient.json.models.minecraft.Version;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
-import com.hearthproject.oneclient.util.json.JsonUtil;
-import com.hearthproject.oneclient.util.json.models.minecraft.AssetIndex;
-import com.hearthproject.oneclient.util.json.models.minecraft.AssetObject;
-import com.hearthproject.oneclient.util.json.models.minecraft.GameVersion;
-import com.hearthproject.oneclient.util.json.models.minecraft.Version;
-import com.hearthproject.oneclient.util.json.models.modloader.forge.ForgeVersionProfile;
+import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -92,30 +93,26 @@ public class MinecraftUtil {
 		}
 	}
 
-	public static GameVersion getGameVersions() {
+	public static Optional<GameVersion> getGameVersionData() {
 		if (version == null)
 			parseGameVersions();
-		return version;
-	}
-
-	public static GameVersion.VersionData getVersionData(String minecraftVersion) {
-		return version.get(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst().orElse(null);
+		return Optional.of(version);
 	}
 
 	public static Version parseVersionData(String minecraftVersion) {
-		return getVersionData(minecraftVersion).getData();
+		Optional<GameVersion.VersionData> versionData = getGameVersionData().map(v -> v.get(versions -> versions.id.equalsIgnoreCase(minecraftVersion)).findFirst()).orElse(Optional.empty());
+		return versionData.map(GameVersion.VersionData::getData).orElse(null);
 	}
 
 	public static int i = 0, count;
 
-	public static void installMinecraft(HearthInstance instance) throws Throwable {
-		//TODO
-		//InstanceManager.setInstanceInstalling(instance, true);
-		NotifyUtil.setText("Installing minecraft for " + instance.getName());
-		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
+	public static void installMinecraft(Instance instance) throws Throwable {
+		InstanceManager.setInstanceInstalling(instance, true);
+		NotifyUtil.setText("Installing minecraft for " + instance.getManifest().getName());
+		OneClientTracking.sendRequest("minecraft/install/" + instance.getManifest().getMinecraftVersion());
 
-		Version versionData = parseVersionData(instance.getGameVersion());
-		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
+		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Downloading Minecraft jar");
 		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
@@ -154,8 +151,8 @@ public class MinecraftUtil {
 				ZipUtil.unpack(file, NATIVES);
 		});
 
-		if (!instance.getForgeVersion().isEmpty())
-			ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion());
+		if (!instance.getManifest().getForge().isEmpty())
+			ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 
 		Version.AssetIndex assetIndex = versionData.assetIndex;
 		File assetsInfo = new File(ASSETS, "indexes" + File.separator + assetIndex.id + ".json");
@@ -183,15 +180,13 @@ public class MinecraftUtil {
 			}
 		});
 		OneClientLogging.logger.info("Done minecraft files are all downloaded");
-		//TODO
-		//		InstanceManager.setInstanceInstalling(instance, false);
+		InstanceManager.setInstanceInstalling(instance, false);
 		NotifyUtil.clear();
 	}
 
-	//functionalize this more.
-	public static boolean startMinecraft(HearthInstance instance, String username, String password) {
-		Version versionData = parseVersionData(instance.getGameVersion());
-		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+	public static boolean startMinecraft(Instance instance, String username, String password) {
+		Version versionData = parseVersionData(instance.getManifest().getMinecraftVersion());
+		File mcJar = new File(VERSIONS, instance.getManifest().getMinecraftVersion() + ".jar");
 
 		OneClientLogging.logger.info("Attempting authentication with Mojang");
 
@@ -211,7 +206,7 @@ public class MinecraftUtil {
 
 		OneClientLogging.logger.info("Starting minecraft...");
 
-		OneClientTracking.sendRequest("minecraft/play/" + instance.getGameVersion());
+		OneClientTracking.sendRequest("minecraft/play/" + instance.getManifest().getMinecraftVersion());
 		final boolean offline = isOffline;
 		new Thread(() -> {
 			try {
@@ -221,12 +216,12 @@ public class MinecraftUtil {
 				String providedArugments = versionData.minecraftArguments;
 				Optional<String> tweakClass = Optional.empty();
 
-				if (!instance.getForgeVersion().isEmpty()) {
-					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion())) {
+				if (!instance.getManifest().getForge().isEmpty()) {
+					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge())) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getAbsolutePath());
 					}
-					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getGameVersion(), instance.getForgeVersion());
+					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getManifest().getMinecraftVersion(), instance.getManifest().getForge());
 					mainClass = forgeVersionProfile.mainClass;
 					providedArugments = forgeVersionProfile.minecraftArguments;
 
@@ -289,7 +284,7 @@ public class MinecraftUtil {
 				}
 
 				arguments.add("--version");
-				arguments.add(instance.getGameVersion());
+				arguments.add(instance.getManifest().getMinecraftVersion());
 				arguments.add("--assetsDir");
 				arguments.add(ASSETS.toString());
 				arguments.add("--assetIndex");
@@ -301,7 +296,7 @@ public class MinecraftUtil {
 				processBuilder.directory(instance.getDirectory());
 				Process process = processBuilder.start();
 				OneClientLogging.info("{}", arguments);
-				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(), process);
+				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(),process);
 
 				try {
 					BufferedReader reader =

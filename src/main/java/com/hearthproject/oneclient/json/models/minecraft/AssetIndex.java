@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.util.json.models.minecraft;
+package com.hearthproject.oneclient.json.models.minecraft;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;

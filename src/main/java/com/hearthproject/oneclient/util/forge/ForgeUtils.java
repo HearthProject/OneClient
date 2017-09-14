@@ -2,10 +2,10 @@ package com.hearthproject.oneclient.util.forge;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
+import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersions;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.json.JsonUtil;
-import com.hearthproject.oneclient.util.json.models.modloader.forge.ForgeVersionProfile;
-import com.hearthproject.oneclient.util.json.models.modloader.forge.ForgeVersions;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
@@ -77,7 +77,7 @@ public class ForgeUtils {
 	}
 
 	public static JarFile downloadForgeJar(File versionsDir, String mcVer, String forgeVer) throws IOException {
-		ForgeVersions.ForgeVersion version = (ForgeVersions.ForgeVersion) getForgeVersion(forgeVer);
+		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
 		String jarName = getForgeJar(mcVer, forgeVer, null);
 		File forgeJar = new File(Constants.TEMPDIR, jarName);
 		OneClientLogging.logger.info("Downloading forge jar to " + versionsDir.getAbsolutePath());
