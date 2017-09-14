@@ -14,36 +14,32 @@
             <children>
                 <JFXButton fx:id="displayButton" alignment="CENTER" contentDisplay="BOTTOM" focusTraversable="false" graphicTextGap="6.0" maxHeight="192.0" maxWidth="192.0" prefHeight="192.0" prefWidth="192.0" ripplerFill="#0d9179" style="-fx-border-width: 0; -fx-background-color: -oc-dark; -fx-font-family: 'Raleway' sans-serif;" text="Modpack Name" textAlignment="CENTER" VBox.vgrow="NEVER">
                <graphic>
-                  <VBox alignment="CENTER">
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <StackPane prefHeight="150.0" prefWidth="200.0">
-                           <children>
-                                    <ImageView fx:id="imageView" fitHeight="140.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" />
-                                  <StackPane alignment="BOTTOM_CENTER" prefWidth="200.0">
-                                      <children>
-                                          <Rectangle fill="#1b1b1b" height="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="92.0" />
-                                    <Text fx:id="statusText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text;" text="Status Text">
-                                       <StackPane.margin>
-                                          <Insets bottom="2.0" />
-                                       </StackPane.margin>
-                                    </Text>
-                                      </children>
+                              <ImageView fx:id="imageView" fitHeight="140.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" />
+                            <StackPane alignment="BOTTOM_CENTER" prefWidth="200.0">
+                                <children>
+                                    <Rectangle fill="#1b1b1b" height="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="92.0" />
+                              <Text fx:id="statusText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text;" text="Status Text">
                                  <StackPane.margin>
-                                    <Insets top="140.0" />
+                                    <Insets bottom="2.0" />
                                  </StackPane.margin>
-                                  </StackPane>
-                           </children>
-                        </StackPane>
+                              </Text>
+                                </children>
+                           <StackPane.margin>
+                              <Insets top="140.0" />
+                           </StackPane.margin>
+                            </StackPane>
                      </children>
-                  </VBox>
+                  </StackPane>
                </graphic>
                 </JFXButton>
             </children>
         </VBox>
         <VBox fx:id="nodeBox" alignment="CENTER" pickOnBounds="false" StackPane.alignment="CENTER">
             <children>
-                <JFXButton id="oc-instance-button" fx:id="playButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefWidth="70.0" text="Play" />
-                <JFXButton id="oc-instance-button" fx:id="editButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefWidth="70.0" text="Edit">
+                <JFXButton id="oc-raised-button" fx:id="playButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="PLAY" />
+                <JFXButton id="oc-raised-button" fx:id="editButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="EDIT">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>

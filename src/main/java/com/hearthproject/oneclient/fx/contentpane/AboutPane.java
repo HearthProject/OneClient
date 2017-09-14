@@ -47,6 +47,7 @@ public class AboutPane extends ContentPane {
 			addCredit("Yannick - Home, About, Download, and Update icons", "https://www.flaticon.com/authors/yannick");
 			addCredit("Gregor Cresnar - Package icon", "https://www.flaticon.com/authors/gregor-cresnar");
 			addCredit("Egor Rumyantsev - Settings icon", "https://www.flaticon.com/authors/egor-rumyantsev");
+			addCredit("Icomoon - Log Out icon", "https://www.flaticon.com/authors/icomoon");
 		}
 	}
 

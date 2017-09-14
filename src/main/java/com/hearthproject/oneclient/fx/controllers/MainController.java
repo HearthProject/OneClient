@@ -4,14 +4,19 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRippler;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 
@@ -30,9 +35,23 @@ public class MainController {
 	@FXML
 	public VBox sideBox;
 	@FXML
+	public VBox userBox;
+	@FXML
+	public HBox userInfoBox;
+	@FXML
+	public JFXButton signInButton;
+	@FXML
+	public AnchorPane logoutPane;
+	@FXML
 	public ImageView imageBox;
 	@FXML
+	public ImageView userAvatar;
+	@FXML
+	public Text usernameText;
+	@FXML
 	public StatusBar statusBar;
+	@FXML
+	public ImageView logoutImageView;
 
 	public ImageView loadingIcon;
 
@@ -45,7 +64,7 @@ public class MainController {
 
 	public void onStart(Stage stage) throws IOException {
 		profileBox = new HBox();
-		MinecraftAuthController.loadGuiElements(profileBox);
+		MinecraftAuthController.updateGui();
 		topButtonBox.getChildren().add(profileBox);
 		for (ContentPane pane : ContentPanes.panesList) {
 			ContentPaneButton button = pane.getButton();
@@ -65,6 +84,13 @@ public class MainController {
 		onSceneResize(stage.getScene());
 		statusBar.setText("");
 		labelProgress = new Label();
+		statusBar.getRightItems().add(labelProgress);
+
+		JFXRippler rippler = new JFXRippler(logoutPane);
+		rippler.setMaskType(JFXRippler.RipplerMask.CIRCLE);
+		rippler.setRipplerFill(Paint.valueOf("#FFFFFF"));
+		userInfoBox.getChildren().add(rippler);
+		userBox.getChildren().clear();
 		loadingIcon = new ImageView(ImageUtil.openImage(FileUtil.getResource("images/loading.gif")));
 		loadingIcon.setFitHeight(32);
 		loadingIcon.setFitWidth(32);
@@ -97,5 +123,13 @@ public class MainController {
 
 	public void openCreeperHostSite() {
 		OperatingSystem.browseURI("http://partners.creeper.host/r/theoneclientxae");
+	}
+
+	public void onLogoutPress() {
+		MinecraftAuthController.doLogout();
+	}
+
+	public void onSignInPress() {
+		MinecraftAuthController.openLoginGui();
 	}
 }

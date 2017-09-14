@@ -4,9 +4,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.StatusBar?>
 
@@ -14,14 +16,45 @@
     <children>
         <VBox fx:id="sideBox" alignment="TOP_CENTER" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
             <children>
-                    <ImageView fx:id="imageBox" fitHeight="160.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
+                    <ImageView fx:id="imageBox" fitHeight="105.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@../images/logo_big.png" />
                         </image>
                <VBox.margin>
-                  <Insets bottom="20.0" top="20.0" />
+                  <Insets bottom="6.0" top="6.0" />
                </VBox.margin>
                     </ImageView>
+            <VBox fx:id="userBox" alignment="CENTER">
+               <children>
+                  <HBox fx:id="userInfoBox" alignment="CENTER">
+                     <children>
+                        <ImageView fx:id="userAvatar" fitHeight="32.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                        <Text fx:id="usernameText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif; -fx-font-size: 18;" text="Username">
+                           <HBox.margin>
+                              <Insets left="6.0" />
+                           </HBox.margin>
+                        </Text>
+                        <AnchorPane fx:id="logoutPane" onMouseClicked="#onLogoutPress">
+                           <children>
+                              <Rectangle fill="#ffffff00" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="33.0" />
+                              <ImageView fx:id="logoutImageView" fitHeight="24.0" fitWidth="58.0" layoutX="3.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/logout.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="2.0" />
+                           </HBox.margin>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <JFXButton id="oc-raised-button" fx:id="signInButton" buttonType="RAISED" focusTraversable="false" onAction="#onSignInPress" onMouseClicked="#onSignInPress" prefHeight="35.0" prefWidth="94.0" text="SIGN IN" textAlignment="CENTER" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="6.0" />
+               </VBox.margin>
+            </VBox>
                 <VBox fx:id="topButtonBox" alignment="TOP_CENTER" VBox.vgrow="ALWAYS" />
             <VBox fx:id="aboveDividerButtonBox" />
             <Region prefHeight="1.0" style="-fx-background-color: #FFFFFF;">
@@ -40,8 +73,8 @@
                      <children>
                         <VBox alignment="CENTER">
                            <children>
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 16; -fx-font-family: 'Raleway' sans-serif;;" text="Proudly Sponsored By" textAlignment="CENTER" />
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 27; -fx-font-family: 'Raleway' sans-serif;;" text="CreeperHost" textAlignment="CENTER">
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 15; -fx-font-family: 'Roboto' sans-serif;" text="PROUDLY SPONSORED BY:" textAlignment="CENTER" />
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 27; -fx-font-family: 'Roboto' sans-serif;" text="CREEPERHOST" textAlignment="CENTER">
                                  <VBox.margin>
                                     <Insets top="-2.0" />
                                  </VBox.margin>

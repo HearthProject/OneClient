@@ -2,8 +2,6 @@ package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
-import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.hearth.HearthApi;
 import com.hearthproject.oneclient.hearth.json.User;
 import com.hearthproject.oneclient.util.MiscUtil;
@@ -17,16 +15,12 @@ import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -40,7 +34,6 @@ import java.util.Optional;
 public class MinecraftAuthController {
 
 	private static YggdrasilUserAuthentication authentication;
-	private static HBox mainHbox;
 	private static boolean isAtemptingLogin = false;
 	public TextField username;
 	public PasswordField password;
@@ -61,7 +54,7 @@ public class MinecraftAuthController {
 			try {
 				doLogin(true);
 			} catch (Exception e) {
-				if(authentication.isLoggedIn() && !authentication.canPlayOnline()){
+				if (authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 					OneClientLogging.error(e);
 
 					Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -70,7 +63,7 @@ public class MinecraftAuthController {
 					alert.setContentText("Do you want to run in offline mode?");
 
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.get() == ButtonType.OK){
+					if (result.get() == ButtonType.OK) {
 						OneClientLogging.info("Launching in offline mode");
 					} else {
 						doLogout();
@@ -143,8 +136,8 @@ public class MinecraftAuthController {
 		updateGui();
 	}
 
-	public static void doLogout(){
-		if(authentication != null){
+	public static void doLogout() {
+		if (authentication != null) {
 			authentication.logOut();
 		}
 		updateGui();
@@ -209,61 +202,40 @@ public class MinecraftAuthController {
 
 	}
 
-	public static void loadGuiElements(HBox hBox) {
-		mainHbox = hBox;
-		updateGui();
-	}
-
 	public static void updateGui() {
 		MiscUtil.runLaterIfNeeded(() -> {
-			mainHbox.getChildren().clear();
+			Main.mainController.userBox.getChildren().clear();
+			Main.mainController.userAvatar.setImage(null);
+			Main.mainController.usernameText.setText("");
+			Main.mainController.logoutPane.setVisible(false);
 			if (authentication != null && authentication.canPlayOnline()) {
-				ImageView imageView = new ImageView();
-				imageView.setFitHeight(64);
-				imageView.setFitWidth(64);
 				try {
-					imageView.setImage(new Image(new URL("https://crafatar.com/renders/head/" + authentication.getSelectedProfile().getId()).openStream()));
+					Main.mainController.userAvatar.setImage(new Image(new URL("https://crafatar.com/avatars/" + authentication.getSelectedProfile().getId()).openStream()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				mainHbox.getChildren().add(imageView);
-				Text usernameLabel = new Text();
-				usernameLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
-				usernameLabel.setText(authentication.getSelectedProfile().getName());
-				mainHbox.setAlignment(Pos.CENTER);
-				mainHbox.getChildren().add(usernameLabel);
-				if(HearthApi.enable && HearthApi.getAuthentication() != null){
+				Main.mainController.usernameText.setText(authentication.getSelectedProfile().getName());
+				if (HearthApi.enable && HearthApi.getAuthentication() != null) {
 					try {
 						User user = HearthApi.getUser();
-						Text label = new Text();
-						label.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
-						label.setText("hearth");
-						mainHbox.getChildren().add(label);
+						// Text label = new Text();
+						// label.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
+						// label.setText("hearth";
 						//TODO show roles
 					} catch (UnirestException e) {
 						e.printStackTrace();
 					}
 				}
+				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
+				Main.mainController.logoutPane.setVisible(true);
 			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
-				Text textLabel = new Text();
-				textLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
-				textLabel.setText("Offline mode");
-				mainHbox.setAlignment(Pos.CENTER);
-				mainHbox.getChildren().add(textLabel);
+				Main.mainController.usernameText.setText("OFFLINE MODE");
+				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
 			} else if (!isAtemptingLogin) {
-				ContentPaneButton loginButton = new ContentPaneButton("", ButtonDisplay.TOP);
-				loginButton.setText("Login");
-				loginButton.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
-				loginButton.setOnAction(event -> {
-					openLoginGui();
-				});
-				mainHbox.getChildren().add(loginButton);
+				Main.mainController.userBox.getChildren().add(Main.mainController.signInButton);
 			} else {
-				Text textLabel = new Text();
-				textLabel.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 20;");
-				textLabel.setText("Logging in...");
-				mainHbox.setAlignment(Pos.CENTER);
-				mainHbox.getChildren().add(textLabel);
+				Main.mainController.usernameText.setText("LOGGING IN...");
+				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
 			}
 		});
 	}
@@ -272,12 +244,18 @@ public class MinecraftAuthController {
 		return authentication.isLoggedIn();
 	}
 
-	public static boolean isUserOnline(){
+	public static boolean isUserOnline() {
 		return authentication.canPlayOnline();
 	}
 
 	public static File getAuthStoreFile() {
 		return new File(Constants.getRunDir(), "authstore.dat");
+	}
+
+	public static void setAccessToken(YggdrasilUserAuthentication authentication, String newToken) throws NoSuchFieldException, IllegalAccessException {
+		Field field = authentication.getClass().getDeclaredField("accessToken");
+		field.setAccessible(true);
+		field.set(authentication, newToken);
 	}
 
 	public void login(ActionEvent actionEvent) {
@@ -320,12 +298,4 @@ public class MinecraftAuthController {
 			OneClientLogging.error(e);
 		}
 	}
-
-	public static void setAccessToken(YggdrasilUserAuthentication authentication, String newToken) throws NoSuchFieldException, IllegalAccessException {
-		Field field = authentication.getClass().getDeclaredField("accessToken");
-		field.setAccessible(true);
-		field.set(authentication, newToken);
-	}
-
-
 }
