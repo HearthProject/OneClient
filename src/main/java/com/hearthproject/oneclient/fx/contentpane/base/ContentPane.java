@@ -5,7 +5,6 @@ import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +18,7 @@ public abstract class ContentPane {
 
 	public ContentPane(String fxmlFile, String name, String imageName, ButtonDisplay buttonDisplay) {
 		button = new ContentPaneButton(imageName, buttonDisplay);
-		button.setText(name);
+		button.setText(name.toUpperCase());
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
 		button.setOnAction((actionHandler) -> {
 			Main.mainController.contentPanes.stream().filter(s -> s != this).forEach(ContentPane::close);

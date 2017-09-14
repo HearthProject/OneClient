@@ -25,7 +25,7 @@
     -fx-background-radius: 0;
     -fx-font-weight: bold;
     -fx-font-size: 22px;
-    -fx-font-family: 'Raleway', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -oc-text;
 }
 
@@ -43,26 +43,26 @@
 
 /* Instance Buttons */
 
-#oc-instance-button {
+#oc-raised-button {
     -fx-background-color: -oc-accent;
     -fx-border-width: 0;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-font-weight: bold;
-    -fx-font-size: 22px;
-    -fx-font-family: 'Raleway', sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -oc-text;
 }
 
-#oc-instance-button:hover {
+#oc-raised-button:hover {
     -fx-background-color: -oc-accent-darker;
 }
 
-#oc-instance-button:selected {
+#oc-raised-button:selected {
     -fx-background-color: -oc-accent-darker;
 }
 
-#oc-instance-button:focused {
+#oc-raised-button:focused {
     -fx-background-color: -oc-accent;
 }
 
@@ -231,7 +231,7 @@
     -fx-background-radius: 0;
     -fx-font-weight: bold;
     -fx-font-size: 18px;
-    -fx-font-family: 'Raleway', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -text-color;
     -fx-graphic-text-gap: 8;
 }
@@ -262,7 +262,7 @@
     -fx-text-fill: -text-color;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-font-family: 'Lato', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
 }
 
 .text-field:focused {
@@ -320,7 +320,7 @@
     -fx-text-fill: -text-color;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-font-family: 'Lato', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
 }
 
 .text-area .content {
@@ -333,7 +333,7 @@
     -fx-text-fill: -text-color;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-font-family: 'Lato', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
 }
 
 .text-area:focused .content {
@@ -398,7 +398,7 @@
     -fx-text-fill: -text-color;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-font-family: 'Lato', sans-serif;
+    -fx-font-family: 'Roboto', sans-serif;
 
 }
 
