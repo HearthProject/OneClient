@@ -4,8 +4,9 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
-import com.hearthproject.oneclient.hearth.HearthApi;
-import com.hearthproject.oneclient.hearth.json.User;
+import com.hearthproject.oneclient.hearth.api.HearthApi;
+import com.hearthproject.oneclient.hearth.api.json.Role;
+import com.hearthproject.oneclient.hearth.api.json.User;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
@@ -137,7 +138,7 @@ public class MinecraftAuthController {
 		}
 		if (HearthApi.enable) {
 			OneClientLogging.info("Logging into hearth");
-			HearthApi.login(authentication);
+			HearthApi.getHearthAuthentication().login(authentication);
 			save(save, authentication.getSelectedProfile().getName());
 		}
 		updateGui();
@@ -217,6 +218,7 @@ public class MinecraftAuthController {
 	public static void updateGui() {
 		MiscUtil.runLaterIfNeeded(() -> {
 			mainHbox.getChildren().clear();
+			mainHbox.setSpacing(3);
 			if (authentication != null && authentication.canPlayOnline()) {
 				ImageView imageView = new ImageView();
 				imageView.setFitHeight(64);
@@ -232,14 +234,22 @@ public class MinecraftAuthController {
 				usernameLabel.setText(authentication.getSelectedProfile().getName());
 				mainHbox.setAlignment(Pos.CENTER);
 				mainHbox.getChildren().add(usernameLabel);
-				if(HearthApi.enable && HearthApi.getAuthentication() != null){
+				if(HearthApi.enable && HearthApi.getHearthAuthentication().getAuthentication() != null){
 					try {
-						User user = HearthApi.getUser();
-						Text label = new Text();
-						label.setStyle("-fx-fill: #FFFFFF; -fx-font-family:  'Lato', sans-serif; -fx-font-size: 12;");
-						label.setText("hearth");
-						mainHbox.getChildren().add(label);
-						//TODO show roles
+						User user = HearthApi.getHearthAuthentication().getUser();
+						if(user.roles != null){
+							for(Role role : user.roles){
+								ImageView roleImage = new ImageView();
+								roleImage.setFitHeight(16);
+								roleImage.setFitWidth(32);
+								mainHbox.getChildren().add(roleImage);
+								try {
+									roleImage.setImage(new Image(new URL(role.iconUrl).openStream()));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						}
 					} catch (UnirestException e) {
 						e.printStackTrace();
 					}
