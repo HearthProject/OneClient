@@ -4,7 +4,6 @@ import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
-import com.hearthproject.oneclient.util.curse.CurseUtils;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
@@ -149,10 +148,6 @@ public class Main extends Application {
 		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
 		OneClientLogging.logger.info("Loading Curse versions and sorting");
-		SplashScreen.updateProgess("Loading Curse versions", 50);
-		CurseUtils.findSorting();
-		SplashScreen.updateProgess("Sorting curse data", 75);
-		CurseUtils.findVersions();
 		SplashScreen.updateProgess("Authenticating with mojang", 90);
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);

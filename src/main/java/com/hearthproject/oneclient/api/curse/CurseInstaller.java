@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.api.curse;
 
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.IInstallable;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.Mod;
 import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CurseInstaller extends ModInstaller {
@@ -50,23 +51,24 @@ public class CurseInstaller extends ModInstaller {
 			e.printStackTrace();
 		}
 
-		NotifyUtil.setText("Downloading {}", instance.getName());
+		NotifyUtil.setText("Downloading %s", instance.getName());
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		NotifyUtil.setText("Installing {}", instance.getName());
+		NotifyUtil.setText("Installing %s", instance.getName());
 		instance.setGameVersion(manifest.minecraft.version);
 		instance.setForgeVersion(manifest.minecraft.getModloader());
-		List<IInstallable> mods = getMods();
-		int count = 0;
-		for (IInstallable mod : mods) {
-			NotifyUtil.setProgressText(count + "/" + mods.size());
-			NotifyUtil.setProgress(((double) count) / mods.size());
+		List<Mod> mods = getMods();
+		AtomicInteger counter = new AtomicInteger(0);
+		mods.parallelStream().forEach(mod -> {
+			NotifyUtil.setProgressText(counter.get() + "/" + mods.size());
+			NotifyUtil.setProgress(((double) counter.get()) / mods.size());
 			mod.install(instance);
-			count++;
-		}
+			counter.incrementAndGet();
+		});
 		NotifyUtil.clear();
 		installOverrides(pack, directory);
+		instance.setMods(mods);
 		//TODO get icon
 	}
 
@@ -93,7 +95,7 @@ public class CurseInstaller extends ModInstaller {
 		return PackType.CURSE;
 	}
 
-	public List<IInstallable> getMods() {
+	public List<Mod> getMods() {
 		return manifest.files.stream().map(CurseMod::new).collect(Collectors.toList());
 	}
 }

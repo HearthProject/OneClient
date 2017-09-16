@@ -1,15 +1,21 @@
 package com.hearthproject.oneclient.api;
 
+import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,6 +28,7 @@ public class Instance {
 	public String url;
 	public String icon;
 	public Map<String, Object> info;
+	public List<Mod> mods;
 
 	public transient Image image;
 
@@ -108,6 +115,14 @@ public class Instance {
 		this.image = image;
 	}
 
+	public List<Mod> getMods() {
+		return mods;
+	}
+
+	public void setMods(List<Mod> mods) {
+		this.mods = mods;
+	}
+
 	public void install() {
 		FileUtil.createDirectory(getDirectory());
 		if (installer != null)
@@ -136,5 +151,36 @@ public class Instance {
 
 	public ModInstaller getInstaller() {
 		return installer;
+	}
+
+	private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
+
+	//walks mod directory and creates Mod objects for any not found
+	protected void verifyMods() {
+		new Thread(() -> {
+			File modDir = getModDirectory();
+			File[] mods = modDir.listFiles(MOD_FILTER);
+			List<Mod> newMods = Lists.newArrayList();
+			if (mods != null) {
+				List<File> files = Lists.newArrayList(mods);
+				files.parallelStream().forEach(file -> {
+					System.out.println(file);
+					boolean match = false;
+					for (Mod mod : this.mods) {
+						if (mod.matches(file)) {
+							match = true;
+							break;
+						}
+					}
+					if (!match) {
+						Mod mod = new Mod(PackType.MANUAL, new FileHash(file));
+						newMods.add(mod);
+					}
+				});
+			}
+			this.mods.addAll(newMods);
+			OneClientLogging.info("Finished Verifying {}", this.getName());
+		}).start();
+
 	}
 }

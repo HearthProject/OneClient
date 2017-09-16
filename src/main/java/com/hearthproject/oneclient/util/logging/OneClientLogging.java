@@ -29,6 +29,10 @@ public class OneClientLogging {
 		logger.info(message, params);
 	}
 
+	public static void error(String message, Object... params) {
+		logger.error(message, params);
+	}
+
 	public static void error(UnknownHostException error) {
 		logger.error("Internet connection unavailable, going into offline mod");
 	}

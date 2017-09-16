@@ -1,7 +1,8 @@
 package com.hearthproject.oneclient.api;
 
 public enum PackType {
-	HEATH,
+	MANUAL,
+	HEARTH,
 	CURSE,
 	MULTIMC
 }

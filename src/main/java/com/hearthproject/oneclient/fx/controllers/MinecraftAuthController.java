@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.hearth.HearthApi;
 import com.hearthproject.oneclient.hearth.json.User;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -18,28 +19,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Optional;
+import java.util.UUID;
 
 public class MinecraftAuthController {
 
@@ -88,7 +81,7 @@ public class MinecraftAuthController {
 					alert.getButtonTypes().setAll(buttonOffline, buttonLogin, buttonLogout);
 
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.get() == buttonOffline){
+					if (result.get() == buttonOffline) {
 						OneClientLogging.info("Launching in offline mode");
 					} else if (result.get() == buttonLogin) {
 						openLoginGui();
@@ -170,7 +163,7 @@ public class MinecraftAuthController {
 			authentication.logOut();
 		}
 		authentication = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
-		if(getAuthStoreFile().exists()){
+		if (getAuthStoreFile().exists()) {
 			getAuthStoreFile().delete();
 		}
 		updateGui();
@@ -244,7 +237,11 @@ public class MinecraftAuthController {
 			Main.mainController.logoutPane.setVisible(false);
 			if (authentication != null && authentication.canPlayOnline()) {
 				try {
-					Main.mainController.userAvatar.setImage(new Image(new URL("https://crafatar.com/avatars/" + authentication.getSelectedProfile().getId()).openStream()));
+					UUID id = authentication.getSelectedProfile().getId();
+					URL url = new URL("https://crafatar.com/avatars/" + id.toString());
+					Image image = ImageUtil.openCachedImage(url.openStream(), id.toString());
+					if (image != null)
+						Main.mainController.userAvatar.setImage(image);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -4,7 +4,6 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.controllers.ModInstallingController;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
@@ -67,7 +66,8 @@ public class InstancePane extends ContentPane {
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller(instance));
+		buttonGetCurseMods.setDisable(true);
+		//		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller(instance));
 		buttonDelete.setOnAction(event -> instance.delete());
 		//		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
 		//		columnEnabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));

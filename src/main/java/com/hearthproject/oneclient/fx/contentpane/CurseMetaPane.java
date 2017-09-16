@@ -96,24 +96,25 @@ public class CurseMetaPane extends ContentPane {
 
 	public void loadPacks(int count, boolean reset) {
 		new Thread(() -> {
+			if (loading.get()) {
+				return;
+			}
+			loading.setValue(true);
 			MiscUtil.runLaterIfNeeded(() -> placeholder.setText("Loading..."));
 			if (entries == null || reset) {
+				MiscUtil.runLaterIfNeeded(tiles::clear);
 				try {
-					MiscUtil.runLaterIfNeeded(tiles::clear);
 					entries = packs.get().filter(filterVersion.getValue(), textSearch.getText());
 					packCount = entries.size();
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
 				}
 			}
-			if (entries.isEmpty()) {
+			if (entries == null || entries.isEmpty()) {
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Packs Found"));
 				return;
 			}
-			if (loading.get()) {
-				return;
-			}
-			loading.setValue(true);
+
 			List<Instance> instances = Lists.newArrayList();
 			for (int i = 0; i < count; i++) {
 				if (entries == null || entries.isEmpty())
@@ -130,7 +131,7 @@ public class CurseMetaPane extends ContentPane {
 				else
 					tiles.addAll(newTiles);
 			});
-			NotifyUtil.setText(Duration.seconds(5d), "Loaded %s of %s Modpacks", packCount - entries.size(), packCount);
+			NotifyUtil.setText(Duration.seconds(10d), "Loaded %s of %s Modpacks", packCount - entries.size(), packCount);
 			loading.setValue(false);
 			if (tiles.isEmpty()) {
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Packs Found"));
@@ -151,9 +152,13 @@ public class CurseMetaPane extends ContentPane {
 
 	@Override
 	public void refresh() {
+
+	}
+
+	@Override
+	public void close() {
 		tiles.clear();
 		NotifyUtil.clear();
-		entries = null;
 		NotifyUtil.loadingIcon().visibleProperty().unbind();
 		NotifyUtil.loadingIcon().setVisible(false);
 	}

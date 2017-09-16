@@ -54,11 +54,17 @@ public class InstanceManager {
 	public static void load() {
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
-		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
-			Instance instance = load(dir);
-			if (instance != null)
-				instances.put(instance.getName(), instance);
-		});
+
+		File[] dirs = Constants.INSTANCEDIR.listFiles(File::isDirectory);
+		if (dirs != null) {
+			Arrays.stream(dirs).filter(File::isDirectory).forEach(dir -> {
+				Instance instance = load(dir);
+				if (instance != null) {
+					instance.verifyMods();
+					instances.put(instance.getName(), instance);
+				}
+			});
+		}
 	}
 
 	@Deprecated
@@ -85,6 +91,7 @@ public class InstanceManager {
 		if (instance == null) {
 			instance = loadLegacy(dir);
 		}
+
 		return instance;
 	}
 

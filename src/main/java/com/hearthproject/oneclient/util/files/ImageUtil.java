@@ -5,10 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.image.Image;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 public class ImageUtil {
@@ -57,6 +54,11 @@ public class ImageUtil {
 		if (image == null) {
 			image = new Image(inputStream);
 			IMAGE_CACHE.put(name, image);
+		}
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return image;
 	}
