@@ -25,6 +25,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -33,8 +34,8 @@ import java.util.stream.Collectors;
 
 public class CurseMetaPane extends ContentPane {
 	private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
-
 	public static final ObservableList<String> VERSIONS = MinecraftUtil.getVersions(false);
+	public ComboBox<String> filterSort;
 	public ComboBox<String> filterVersion;
 	public Label placeholder;
 	public ObservableList<InstallTile> tiles = FXCollections.observableArrayList();
@@ -45,6 +46,7 @@ public class CurseMetaPane extends ContentPane {
 
 	private int loadPerScroll = 10;
 	private int packCount;
+
 	public CurseMetaPane() {
 		super("gui/contentpanes/curse_packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
 
@@ -67,19 +69,25 @@ public class CurseMetaPane extends ContentPane {
 		anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
-		NotifyUtil.loadingIcon().visibleProperty().bind(loading);
-		packs = new AsyncTask<>(Curse::getModpacks);
-		service.submit(packs);
-		packs.addListener(this::init, service);
 		filterVersion.setItems(VERSIONS);
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
+
+		filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
+		filterSort.getSelectionModel().selectFirst();
+		filterSort.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
 
 		buttonSearch.setOnAction(action -> loadPacks(loadPerScroll, true));
 
 		listPacks.setPlaceholder(placeholder = new Label("Loading..."));
 		listPacks.setOnScroll(scroll);
 		listPacks.setItems(tiles);
+
+		NotifyUtil.loadingIcon().visibleProperty().bind(loading);
+		packs = new AsyncTask<>(Curse::getModpacks);
+		service.submit(packs);
+		packs.addListener(this::init, service);
+
 	}
 
 	public void init() {
@@ -88,6 +96,7 @@ public class CurseMetaPane extends ContentPane {
 
 	public void loadPacks(int count, boolean reset) {
 		new Thread(() -> {
+			MiscUtil.runLaterIfNeeded(() -> placeholder.setText("Loading..."));
 			if (entries == null || reset) {
 				try {
 					MiscUtil.runLaterIfNeeded(tiles::clear);
@@ -106,7 +115,6 @@ public class CurseMetaPane extends ContentPane {
 				OneClientLogging.info("already loading");
 				return;
 			}
-
 			loading.setValue(true);
 			OneClientLogging.info("Loading more");
 			List<Instance> instances = Lists.newArrayList();
@@ -132,6 +140,16 @@ public class CurseMetaPane extends ContentPane {
 			}
 		}).start();
 
+	}
+
+	private Comparator<InstallTile> getSorting() {
+		switch (filterSort.getValue().toLowerCase()) {
+			case "popularity":
+				return Comparator.comparingDouble(InstallTile::getPopularity).reversed();
+			case "alphabetical":
+				return Comparator.naturalOrder();
+		}
+		return null;
 	}
 
 	@Override

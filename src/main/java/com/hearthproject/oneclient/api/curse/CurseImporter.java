@@ -42,10 +42,11 @@ public class CurseImporter implements IImporter {
 		List<String> authors = data.map(CurseProject::getAuthors);
 
 		List<CurseProject.Category> categories = data.map(CurseProject::getCategories);
+
 		String websiteUrl = data.map(CurseProject::getWebSiteURL);
 		if (name == null)
 			return null;
-		Instance instance = new Instance(name, url.toString(), new CurseInstaller(getFiles()), Pair.of("authors", authors.stream().collect(Collectors.joining("\n"))), Pair.of("websiteUrl", websiteUrl), Pair.of("categories", categories));
+		Instance instance = new Instance(name, url.toString(), new CurseInstaller(getFiles()), Pair.of("popularity", data.map(CurseProject::getPopularityScore)), Pair.of("authors", authors.stream().collect(Collectors.joining("\n"))), Pair.of("websiteUrl", websiteUrl), Pair.of("categories", categories));
 		instance.setImage(getImage());
 		return instance;
 	}

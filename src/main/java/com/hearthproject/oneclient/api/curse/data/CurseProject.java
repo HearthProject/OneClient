@@ -54,6 +54,10 @@ public class CurseProject {
 		return WebSiteURL;
 	}
 
+	public double getPopularityScore() {
+		return PopularityScore;
+	}
+
 	public static class CurseFile implements Comparable<CurseFile> {
 		private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 		private String DownloadURL;

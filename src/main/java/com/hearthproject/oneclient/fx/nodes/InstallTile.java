@@ -20,7 +20,7 @@ import javafx.scene.text.FontWeight;
 import java.io.IOException;
 import java.net.URL;
 
-public class InstallTile extends StackPane {
+public class InstallTile extends StackPane implements Comparable<InstallTile> {
 	@FXML
 	protected ImageView imageView;
 
@@ -62,7 +62,7 @@ public class InstallTile extends StackPane {
 			comboFile.valueProperty().addListener((v, a, b) -> ((CurseInstaller) instance.getInstaller()).setFile(b));
 		}
 		//		left.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
-		middle.getChildren().addAll(info(instance.info.get("authors")));
+		middle.getChildren().addAll(info(getPopularity()), info(instance.info.get("authors")));
 
 		buttonInstall.setOnAction(event -> new Thread(instance::install).start());
 		imageView.setImage(instance.getImage());
@@ -78,5 +78,18 @@ public class InstallTile extends StackPane {
 		Label l = new Label(value);
 		l.setTextFill(Color.web("#FFFFFF"));
 		return l;
+	}
+
+	public double getPopularity() {
+		return (double) instance.info.get("popularity");
+	}
+
+	private String getName() {
+		return instance.name.trim();
+	}
+
+	@Override
+	public int compareTo(InstallTile o) {
+		return getName().compareTo(o.getName());
 	}
 }
