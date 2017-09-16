@@ -51,11 +51,11 @@ public class InstanceManager {
 
 		File[] dirs = Constants.INSTANCEDIR.listFiles(File::isDirectory);
 		if (dirs != null) {
-			Arrays.stream(dirs).filter(File::isDirectory).forEach(dir -> {
+			Arrays.stream(dirs).parallel().filter(File::isDirectory).forEach(dir -> {
 				Instance instance = load(dir);
 				if (instance != null) {
-					instance.verifyMods();
 					instances.put(instance.getName(), instance);
+					instance.verifyMods();
 				}
 			});
 		}

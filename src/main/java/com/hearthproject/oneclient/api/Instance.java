@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
@@ -32,7 +33,7 @@ public class Instance {
 	public String url;
 	public String icon;
 	public Map<String, Object> info;
-	public ObservableList<Mod> mods;
+	public ObservableList<Mod> mods = FXCollections.observableArrayList();
 
 	public transient Image image;
 
@@ -185,7 +186,7 @@ public class Instance {
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<Mod> newMods = Lists.newArrayList();
 
-			if (mods != null && mods.length > 0) {
+			if (this.mods != null && mods != null && mods.length > 0) {
 
 				List<File> files = Lists.newArrayList(mods);
 				List<Mod> removal = Lists.newArrayList();
