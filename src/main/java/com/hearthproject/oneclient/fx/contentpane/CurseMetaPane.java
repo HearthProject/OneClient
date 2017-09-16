@@ -162,4 +162,9 @@ public class CurseMetaPane extends ContentPane {
 		NotifyUtil.loadingIcon().visibleProperty().unbind();
 		NotifyUtil.loadingIcon().setVisible(false);
 	}
+
+	@Override
+	public boolean showInSideBar() {
+		return false;
+	}
 }

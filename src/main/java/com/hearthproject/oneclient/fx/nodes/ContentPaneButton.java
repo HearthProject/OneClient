@@ -13,7 +13,7 @@ public class ContentPaneButton extends JFXButton {
 	private ButtonDisplay buttonDisplay;
 
 	public ContentPaneButton(String imageName, ButtonDisplay buttonDisplay) {
-		super("TEST");
+		super("CURSE_META_PANE");
 		ImageView imageView = new ImageView();
 		if (imageName != null && !imageName.isEmpty()) {
 			Image image = ImageUtil.openCachedImage(FileUtil.getResource("images/" + imageName), imageName);

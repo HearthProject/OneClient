@@ -132,6 +132,11 @@ public class Instance {
 	}
 
 	public void install() {
+		if (InstanceManager.installing.get()) {
+			OneClientLogging.info("Already Busy");
+			return;
+		}
+		InstanceManager.installing.set(true);
 		InstanceManager.setInstanceInstalling(this, true);
 		FileUtil.createDirectory(getDirectory());
 		if (installer != null)
@@ -145,6 +150,7 @@ public class Instance {
 		}).start();
 		save();
 		InstanceManager.setInstanceInstalling(this, false);
+		InstanceManager.installing.set(false);
 	}
 
 	public void delete() {

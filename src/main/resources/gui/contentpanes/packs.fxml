@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" prefWidth="192.0"/>
+        <ColumnConstraints hgrow="ALWAYS" prefWidth="192.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints prefHeight="192.0" vgrow="ALWAYS"/>
+        <RowConstraints prefHeight="192.0" vgrow="ALWAYS"/>
+        <RowConstraints prefHeight="192.0" vgrow="ALWAYS"/>
+    </rowConstraints>
+    <children>
+        <JFXButton fx:id="buttonCurse" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="CurseForge" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
+                   GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS"/>
+        <JFXButton fx:id="buttonMMC" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="MultiMC" GridPane.columnIndex="1"/>
+    </children>
+</GridPane>

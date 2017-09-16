@@ -13,8 +13,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InstanceManager {
+
+	public static AtomicBoolean installing = new AtomicBoolean(false);
 
 	protected static Map<String, Instance> instances = new HashMap<>();
 
