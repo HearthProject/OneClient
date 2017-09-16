@@ -163,14 +163,36 @@ public class Instance {
 			File modDir = getModDirectory();
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<Mod> newMods = Lists.newArrayList();
+
 			if (mods != null) {
+
 				List<File> files = Lists.newArrayList(mods);
+				List<Mod> removal = Lists.newArrayList();
+				for (Mod mod : this.mods) {
+					Collection<File> sorted = Collections2.filter(files, f -> {
+						if (f != null) {
+							return f.equals(mod.file.getFile());
+						}
+						return false;
+					});
+
+					boolean match = false;
+					for (File file : sorted) {
+						if (mod.matches(file))
+							match = true;
+					}
+					if (!match) {
+						removal.add(mod);
+					}
+				}
+				this.mods.removeAll(removal);
+
 				files.parallelStream().forEach(file -> {
 					System.out.println(file);
 					boolean match = false;
 					Collection<Mod> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {
-							return m.file.getFile().compareTo(file.toString()) == 0;
+							return m.file.getFile().equals(file.toString());
 						}
 						return false;
 					});
@@ -188,6 +210,7 @@ public class Instance {
 			}
 			this.mods.addAll(newMods);
 			OneClientLogging.info("Finished Verifying {}", this.getName());
+			this.save();
 		}).start();
 
 	}
