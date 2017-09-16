@@ -150,10 +150,10 @@ task buildInfo() {
 }
 
 def buildDownloadJson(versionData) {
-		def nativeInfoJson = versionData.getText()
+		def nativeInfoJson = new URL("http://fdn.redstone.tech/theoneclient/oneclient/launcher/prelauncher_versions.json").getText()
 		def njson = new JsonSlurper().parseText(nativeInfoJson)
 		def nativeJson = new URL(njson.versionJsonURL).getText()
-		def jarJson = new URL("http://fdn.redstone.tech/theoneclient/oneclient/versions.json").getText()
+		def jarJson = versionData.getText().getText()
 
 		def downloadInfo = new TreeMap<String,Object>()
 		downloadInfo["downloads"] = getDownloads(jarJson, nativeJson)
