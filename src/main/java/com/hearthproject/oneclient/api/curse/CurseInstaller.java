@@ -44,11 +44,16 @@ public class CurseInstaller extends ModInstaller {
 			return;
 		}
 
+		try {
+			FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		NotifyUtil.setText("Downloading {}", instance.getName());
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		instance.setName(manifest.name);
 		NotifyUtil.setText("Installing {}", instance.getName());
 		instance.setGameVersion(manifest.minecraft.version);
 		instance.setForgeVersion(manifest.minecraft.getModloader());

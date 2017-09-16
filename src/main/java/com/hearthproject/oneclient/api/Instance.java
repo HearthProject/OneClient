@@ -116,8 +116,9 @@ public class Instance {
 	}
 
 	public void delete() {
-
+		System.out.println("wat");
 		getDirectory().delete();
+		InstanceManager.removeInstance(this);
 	}
 
 	public void update() {

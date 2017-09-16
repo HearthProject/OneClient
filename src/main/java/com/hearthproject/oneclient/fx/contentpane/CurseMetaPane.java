@@ -14,7 +14,6 @@ import com.hearthproject.oneclient.fx.nodes.InstallTile;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -108,19 +107,16 @@ public class CurseMetaPane extends ContentPane {
 				}
 			}
 			if (entries.isEmpty()) {
-				OneClientLogging.info("Empty :(");
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Packs Found"));
 				return;
 			}
 			if (loading.get()) {
-				OneClientLogging.info("already loading");
 				return;
 			}
 			loading.setValue(true);
-			OneClientLogging.info("Loading more");
 			List<Instance> instances = Lists.newArrayList();
 			for (int i = 0; i < count; i++) {
-				if (entries.isEmpty())
+				if (entries == null || entries.isEmpty())
 					break;
 				Map.Entry<String, CurseModpacks.CurseModpack> entry = entries.remove(0);
 				Instance instance = new CurseImporter(entry.getKey()).create();
@@ -158,6 +154,7 @@ public class CurseMetaPane extends ContentPane {
 		tiles.clear();
 		NotifyUtil.clear();
 		entries = null;
+		NotifyUtil.loadingIcon().visibleProperty().unbind();
+		NotifyUtil.loadingIcon().setVisible(false);
 	}
-
 }
