@@ -73,7 +73,7 @@ public class CurseMetaPane extends ContentPane {
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
 
-		filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
+		filterSort.setItems(FXCollections.observableArrayList("Alphabetical"));
 		filterSort.getSelectionModel().selectFirst();
 		filterSort.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
 

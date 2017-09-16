@@ -16,6 +16,7 @@ import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.forge.ForgeUtils;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
@@ -28,7 +29,9 @@ import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
