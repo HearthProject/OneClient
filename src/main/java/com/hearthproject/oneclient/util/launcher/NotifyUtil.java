@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import org.controlsfx.control.StatusBar;
@@ -16,7 +17,7 @@ public class NotifyUtil {
 	public static void clear() {
 		MiscUtil.runLaterIfNeeded(() -> {
 			getStatus().setText(null);
-			getStatus().setProgress(-1);
+			getStatus().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 			setProgressText("");
 		});
 	}

@@ -30,7 +30,11 @@ public class FileHash {
 		return false;
 	}
 
-	public String getFile() {
+	public File getFile() {
+		return new File(file);
+	}
+
+	public String getFilePath() {
 		return file;
 	}
 

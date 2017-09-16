@@ -2,22 +2,29 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.Mod;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 
 public class InstancePane extends ContentPane {
-	//	public ObservableList<Mod> mods;
+
+	public TableView<Mod> tableMods;
 
 	public Label textPackName;
 	public Label textMinecraftVersion;
@@ -29,7 +36,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
 	public Button buttonDelete;
-	//	public TableView<Mod> tableMods;
+
 	public Instance instance;
 
 	public InstancePane() {
@@ -48,7 +55,7 @@ public class InstancePane extends ContentPane {
 		Main.mainController.setContent(pane);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "ResultOfMethodCallIgnored" })
 	public void setupPane(Instance instance) {
 		this.instance = instance;
 		textPackName.setText(instance.getName());
@@ -72,37 +79,38 @@ public class InstancePane extends ContentPane {
 			instance.delete();
 			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
 		});
-		//		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
-		//		columnEnabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
-		//
-		//		tableMods.setPlaceholder(new Label("No Mods installed"));
-		//		TableColumn<Mod, String> columnMods = new TableColumn<>("Mods");
-		//		tableMods.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-		//		columnMods.setCellValueFactory(new PropertyValueFactory<>("name"));
-		//		tableMods.setRowFactory(table -> {
-		//			TableRow<Mod> row = new TableRow<>();
-		//			final ContextMenu rowMenu = new ContextMenu();
-		//			MenuItem open = new MenuItem("Open");
-		//			open.setOnAction(event -> OperatingSystem.openWithSystem(row.getItem().file));
-		//
-		//			MenuItem disable = new MenuItem("Enable/Disable");
-		//			disable.setOnAction(event -> row.getItem().file.renameTo(new File(row.getItem().file.toString() + ".disabled")));
-		//
-		//			MenuItem delete = new MenuItem("Delete");
-		//			delete.setOnAction(event -> {
-		//				row.getItem().file.delete();
-		//				mods.remove(row.getItem());
-		//			});
-		//
-		//			rowMenu.getItems().addAll(open, delete);
-		//			row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(rowMenu).otherwise((ContextMenu) null));
-		//
-		//			return row;
-		//		});
-		//		mods = FXCollections.observableArrayList(instance.getMods());
-		//		tableMods.setItems(mods);
-		//
-		//		tableMods.getColumns().addAll(columnMods, columnEnabled);
+
+		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
+		columnEnabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
+
+		tableMods.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		tableMods.setPlaceholder(new Label("No Mods installed"));
+		TableColumn<Mod, String> columnMods = new TableColumn<>("Mods");
+
+		columnMods.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
+		tableMods.setRowFactory(table -> {
+			TableRow<Mod> row = new TableRow<>();
+			final ContextMenu rowMenu = new ContextMenu();
+			MenuItem open = new MenuItem("Open");
+
+			open.setOnAction(event -> OperatingSystem.openWithSystem(row.getItem().getHash().getFile()));
+
+			MenuItem disable = new MenuItem("Enable/Disable");
+			disable.setOnAction(event -> row.getItem().getHash().getFile().renameTo(new File(row.getItem().getHash().getFile().toString() + ".disabled")));
+
+			MenuItem delete = new MenuItem("Delete");
+			delete.setOnAction(event -> {
+				FileUtils.deleteQuietly(row.getItem().getHash().getFile());
+				instance.mods.remove(row.getItem());
+			});
+			rowMenu.getItems().addAll(open, disable, delete);
+			row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(rowMenu).otherwise((ContextMenu) null));
+			return row;
+		});
+
+		tableMods.setItems(instance.getMods());
+		tableMods.sort();
+		tableMods.getColumns().addAll(columnMods);
 	}
 
 	@Override

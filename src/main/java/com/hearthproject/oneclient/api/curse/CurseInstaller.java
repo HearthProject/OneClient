@@ -13,6 +13,7 @@ import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
 import org.apache.commons.io.FileUtils;
 
@@ -93,7 +94,7 @@ public class CurseInstaller extends ModInstaller {
 
 		NotifyUtil.setText("Copying Overrides");
 		installOverrides(pack, instance.getDirectory());
-		instance.setMods(mods);
+		instance.setMods(FXCollections.observableArrayList(mods));
 		NotifyUtil.clear();
 	}
 

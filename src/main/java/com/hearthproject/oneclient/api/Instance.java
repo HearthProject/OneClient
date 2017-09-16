@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -31,7 +32,7 @@ public class Instance {
 	public String url;
 	public String icon;
 	public Map<String, Object> info;
-	public List<Mod> mods;
+	public ObservableList<Mod> mods;
 
 	public transient Image image;
 
@@ -122,11 +123,11 @@ public class Instance {
 		this.image = image;
 	}
 
-	public List<Mod> getMods() {
+	public ObservableList<Mod> getMods() {
 		return mods;
 	}
 
-	public void setMods(List<Mod> mods) {
+	public void setMods(ObservableList<Mod> mods) {
 		this.mods = mods;
 	}
 
@@ -191,7 +192,7 @@ public class Instance {
 				for (Mod mod : this.mods) {
 					Collection<File> sorted = Collections2.filter(files, f -> {
 						if (f != null) {
-							return f.equals(mod.file.getFile());
+							return f.equals(mod.file.getFilePath());
 						}
 						return false;
 					});
@@ -211,7 +212,7 @@ public class Instance {
 					boolean match = false;
 					Collection<Mod> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {
-							return m.file.getFile().equals(file.toString());
+							return m.file.getFilePath().equals(file.toString());
 						}
 						return false;
 					});

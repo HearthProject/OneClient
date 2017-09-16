@@ -1,11 +1,13 @@
 package com.hearthproject.oneclient.json;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import io.gsonfire.GsonFireBuilder;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class JsonUtil {
 
@@ -23,7 +26,19 @@ public class JsonUtil {
 			return CurseInstaller.class;
 		}
 		return ModInstaller.class;
-	}).createGsonBuilder().setPrettyPrinting().create();
+	}).createGsonBuilder().registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
+
+	static class ObservableListDeserializer<T> implements JsonDeserializer<ObservableList<T>> {
+
+		@Override
+		public ObservableList<T> deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+			throws JsonParseException {
+			Gson gson = new Gson();
+			List<T> tasks = gson.fromJson(json.getAsJsonArray().toString(), type);
+			return FXCollections.observableArrayList(tasks);
+		}
+
+	}
 
 	public static void save(File file, String json) {
 		try {

@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.api;
 
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -29,6 +30,14 @@ public class Mod implements IInstallable {
 
 	public boolean matches(File file) {
 		return this.file.matches(file);
+	}
+
+	public String getName() {
+		return FilenameUtils.getBaseName(file.getFilePath());
+	}
+
+	public FileHash getHash() {
+		return file;
 	}
 
 	@Override
