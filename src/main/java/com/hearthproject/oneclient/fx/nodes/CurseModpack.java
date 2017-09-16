@@ -6,7 +6,6 @@ import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.models.launcher.Instance;
 import com.hearthproject.oneclient.util.curse.CurseElement;
 import com.hearthproject.oneclient.util.curse.CursePackInstaller;
-import com.hearthproject.oneclient.util.launcher.InstanceManager;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
@@ -45,7 +44,6 @@ public class CurseModpack extends CurseTile {
 			}
 			final Instance i = instance;
 			Platform.runLater(() -> {
-				InstanceManager.addInstance(i);
 				if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
 					Main.mainController.currentContent.refresh();
 				}
