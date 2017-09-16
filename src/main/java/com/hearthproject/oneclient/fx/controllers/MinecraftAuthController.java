@@ -165,8 +165,13 @@ public class MinecraftAuthController {
 	}
 
 	public static void doLogout() {
+		isAtemptingLogin = false;
 		if (authentication != null) {
 			authentication.logOut();
+		}
+		authentication = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
+		if(getAuthStoreFile().exists()){
+			getAuthStoreFile().delete();
 		}
 		updateGui();
 	}
@@ -212,7 +217,6 @@ public class MinecraftAuthController {
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				AuthStore authStore = new AuthStore();
 				authStore.username = getUsername(authentication);
-				System.out.println(getUsername(authentication));
 				authStore.password = getPassword(authentication);
 				if (authentication != null) {
 					authStore.authStorage = authentication.saveForStorage();
@@ -261,6 +265,7 @@ public class MinecraftAuthController {
 			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 				Main.mainController.usernameText.setText("OFFLINE MODE");
 				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
+				Main.mainController.userBox.getChildren().add(Main.mainController.signInButton);
 			} else if (!isAtemptingLogin) {
 				Main.mainController.userBox.getChildren().add(Main.mainController.signInButton);
 			} else {
@@ -298,6 +303,7 @@ public class MinecraftAuthController {
 			doLogin(checkboxPasswordSave.isSelected());
 			save(checkboxPasswordSave.isSelected());
 			stage.close();
+			isAtemptingLogin = false;
 		} catch (Exception e) {
 			isAtemptingLogin = false;
 			updateGui();
@@ -327,12 +333,6 @@ public class MinecraftAuthController {
 		} catch (Exception e) {
 			OneClientLogging.error(e);
 		}
-	}
-
-	public static void setAccessToken(YggdrasilUserAuthentication authentication, String newToken) throws NoSuchFieldException, IllegalAccessException {
-		Field field = authentication.getClass().getDeclaredField("accessToken");
-		field.setAccessible(true);
-		field.set(authentication, newToken);
 	}
 
 	public static String getUsername(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {

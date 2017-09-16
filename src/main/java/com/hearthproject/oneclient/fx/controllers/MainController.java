@@ -6,6 +6,8 @@ import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRippler;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -86,6 +88,7 @@ public class MainController {
 		rippler.setRipplerFill(Paint.valueOf("#FFFFFF"));
 		userInfoBox.getChildren().add(rippler);
 		userBox.getChildren().clear();
+		signInButton.setOnAction(event -> MinecraftAuthController.openLoginGui());
 	}
 
 	public void onSceneResize(Scene scene) {
@@ -119,6 +122,6 @@ public class MainController {
 	}
 
 	public void onSignInPress() {
-		MinecraftAuthController.openLoginGui();
+
 	}
 }
