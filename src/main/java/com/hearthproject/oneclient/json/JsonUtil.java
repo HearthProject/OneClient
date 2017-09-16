@@ -1,8 +1,11 @@
 package com.hearthproject.oneclient.json;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.hearthproject.oneclient.api.ModInstaller;
+import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import io.gsonfire.GsonFireBuilder;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -14,7 +17,13 @@ import java.nio.charset.StandardCharsets;
 
 public class JsonUtil {
 
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	public static final Gson GSON = new GsonFireBuilder().registerTypeSelector(ModInstaller.class, readElement -> {
+		String type = readElement.getAsJsonObject().get("type").getAsString();
+		if (type.equals(PackType.CURSE.name())) {
+			return CurseInstaller.class;
+		}
+		return ModInstaller.class;
+	}).createGsonBuilder().setPrettyPrinting().create();
 
 	public static void save(File file, String json) {
 		try {

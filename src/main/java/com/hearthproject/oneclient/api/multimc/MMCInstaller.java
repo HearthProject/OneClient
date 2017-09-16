@@ -12,6 +12,7 @@ public class MMCInstaller extends ModInstaller {
 	private File dir;
 
 	public MMCInstaller(File dir) {
+		super(PackType.MULTIMC);
 		this.dir = dir;
 	}
 

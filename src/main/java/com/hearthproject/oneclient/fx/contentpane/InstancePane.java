@@ -24,7 +24,7 @@ public class InstancePane extends ContentPane {
 	public ImageView packIcon;
 	public Button buttonPlay;
 	public Button buttonOpenFolder;
-	public Button buttonExportPack;
+	public Button buttonUpdate;
 	public Button buttonEditVersion;
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
@@ -62,7 +62,7 @@ public class InstancePane extends ContentPane {
 
 		buttonPlay.setOnAction(event -> MinecraftUtil.startMinecraft(instance));
 
-		//		buttonExportPack.setOnAction(event -> instance.export());
+		buttonUpdate.setOnAction(event -> instance.update());
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());

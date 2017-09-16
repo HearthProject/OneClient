@@ -7,7 +7,6 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.files.FileUtil;
 
 import java.io.File;
 import java.util.Arrays;
@@ -37,18 +36,10 @@ public class InstanceManager {
 		}
 		instances.put(instance.getName(), instance);
 		save();
-		init(instance);
 	}
 
 	public static void save() {
 		instances.values().forEach(Instance::save);
-	}
-
-	public static void init(Instance instance) {
-		File instanceDir = instance.getDirectory();
-		for (String dir : Constants.INITIALIZE_DIRS) {
-			FileUtil.findDirectory(instanceDir, dir);
-		}
 	}
 
 	public static void load() {

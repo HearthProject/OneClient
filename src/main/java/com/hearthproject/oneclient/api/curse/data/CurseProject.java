@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.api.curse.data;
 
+import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.scene.control.Hyperlink;
 import org.apache.commons.io.FilenameUtils;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CurseProject {
+	public String Id;
 	private String Name;
 	private String WebSiteURL;
 	private List<CurseFile> LatestFiles;
@@ -56,6 +58,10 @@ public class CurseProject {
 
 	public double getPopularityScore() {
 		return PopularityScore;
+	}
+
+	public List<CurseFile> getFiles(String gameVersion) {
+		return Curse.getFiles(Id, gameVersion);
 	}
 
 	public static class CurseFile implements Comparable<CurseFile> {

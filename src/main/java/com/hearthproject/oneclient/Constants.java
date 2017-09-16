@@ -26,8 +26,6 @@ public class Constants {
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
 	public static final String MAVEN_CENTRAL_BASE = "http://central.maven.org/maven2/";
 
-	public static String[] INITIALIZE_DIRS = new String[] { "config", "mods" };
-
 	public static boolean PORTABLE = false;
 
 	private static File RUN_DIR = null;

@@ -34,7 +34,7 @@ public class Instance {
 
 	public transient Image image;
 
-	public transient ModInstaller installer;
+	public ModInstaller installer;
 
 	public Instance(String name, String url, ModInstaller installer, Pair<String, Object>... info) {
 		this();
@@ -93,6 +93,10 @@ public class Instance {
 		return FileUtil.findDirectory(getDirectory(), "mods");
 	}
 
+	public File getConfigDirectory() {
+		return FileUtil.findDirectory(getDirectory(), "config");
+	}
+
 	public File getIcon() {
 		File file = new File(getDirectory(), icon);
 		if (!file.exists()) {
@@ -133,13 +137,17 @@ public class Instance {
 	}
 
 	public void delete() {
-		System.out.println("wat");
-		getDirectory().delete();
-		InstanceManager.removeInstance(this);
+		try {
+			FileUtils.deleteDirectory(getDirectory());
+			InstanceManager.removeInstance(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void update() {
-
+		if (installer != null)
+			installer.update(this);
 	}
 
 	public void save() {
@@ -160,6 +168,7 @@ public class Instance {
 	//walks mod directory and creates Mod objects for any not found
 	protected void verifyMods() {
 		new Thread(() -> {
+			OneClientLogging.info("Verifying {} Mods", getName());
 			File modDir = getModDirectory();
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<Mod> newMods = Lists.newArrayList();
@@ -188,7 +197,6 @@ public class Instance {
 				this.mods.removeAll(removal);
 
 				files.parallelStream().forEach(file -> {
-					System.out.println(file);
 					boolean match = false;
 					Collection<Mod> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {

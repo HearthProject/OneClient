@@ -1,6 +1,5 @@
 package com.hearthproject.oneclient.api.curse;
 
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.Constants;
@@ -16,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -42,11 +40,10 @@ public class CurseImporter implements IImporter {
 		List<String> authors = data.map(CurseProject::getAuthors);
 
 		List<CurseProject.Category> categories = data.map(CurseProject::getCategories);
-
 		String websiteUrl = data.map(CurseProject::getWebSiteURL);
 		if (name == null)
 			return null;
-		Instance instance = new Instance(name, url.toString(), new CurseInstaller(getFiles()), Pair.of("popularity", data.map(CurseProject::getPopularityScore)), Pair.of("authors", authors.stream().collect(Collectors.joining("\n"))), Pair.of("websiteUrl", websiteUrl), Pair.of("categories", categories));
+		Instance instance = new Instance(name, url.toString(), new CurseInstaller(data.getIfPresent()), Pair.of("popularity", data.map(CurseProject::getPopularityScore)), Pair.of("authors", authors.stream().collect(Collectors.joining("\n"))), Pair.of("websiteUrl", websiteUrl), Pair.of("categories", categories));
 		instance.setImage(getImage());
 		return instance;
 	}
@@ -56,16 +53,6 @@ public class CurseImporter implements IImporter {
 		File file = new File(Constants.ICONDIR, data.map(CurseProject::getName) + ".png");
 		FileUtil.downloadFromURL(url, file);
 		return ImageUtil.openCachedImage(file);
-	}
-
-	public List<CurseProject.CurseFile> getFiles() {
-		CurseProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectID), CurseProject.CurseFile[].class);
-		if (files != null) {
-			List<CurseProject.CurseFile> list = Lists.newArrayList(files);
-			Collections.sort(list);
-			return list;
-		}
-		return null;
 	}
 
 }
