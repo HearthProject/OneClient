@@ -2,6 +2,7 @@ import java.security.MessageDigest
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTP
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 buildscript {
 	repositories {
@@ -127,6 +128,8 @@ task crUpload(){
 			uploadFileToCR(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
 			uploadFileToCR(new File(portableJar.archivePath.getAbsolutePath() + ".sha1"), "oneclient/versions")
 			uploadFileToCR(new File(project.getBuildDir().getPath() + "/libs/versions.json"), "oneclient")
+			buildDownloadJson(new File(project.getBuildDir().getPath() + "/libs/versions.json"))
+			uploadFileToCR(new File(project.getBuildDir().getPath() + "/libs/downloadInfo.json"), "oneclient")
 		} else {
 			project.logger.lifecycle("Skipping CR push as not release branch!")
 		}
@@ -144,6 +147,67 @@ task buildInfo() {
 		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/versions.json")
 		jsonFile.write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
 	}
+}
+
+def buildDownloadJson(versionData) {
+		def nativeInfoJson = versionData.getText()
+		def njson = new JsonSlurper().parseText(nativeInfoJson)
+		def nativeJson = new URL(njson.versionJsonURL).getText()
+		def jarJson = new URL("http://fdn.redstone.tech/theoneclient/oneclient/versions.json").getText()
+
+		def downloadInfo = new TreeMap<String,Object>()
+		downloadInfo["downloads"] = getDownloads(jarJson, nativeJson)
+
+		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/downloadInfo.json")
+		jsonFile.write JsonOutput.prettyPrint(JsonOutput.toJson(downloadInfo))
+}
+
+//doube ee as native is a keyword in groovy, groovy isnt it!
+def getDownloads(jar, nativee){
+
+	def platformNameMap = new TreeMap<String,String>()
+	def platformDescMap = new TreeMap<String,String>()
+
+	platformNameMap["linux-amd64"] = "Linux 64 Bit"
+	platformDescMap["linux-amd64"] = "For use on 64 bit linux (you may need to allow perssion to execute it)"
+
+	platformNameMap["linux-linux-386"] = "Linux 32 Bit"
+	platformDescMap["linux-linux-386"] = "For use on 32 bit linux (you may need to allow perssion to execute it)"
+
+	platformNameMap["windows-386"] = "Windows 32 Bit"
+	platformDescMap["windows-386"] = "If the 64bit version doesnt work, try this one."
+
+	platformNameMap["windows-amd64"] = "Windows 64 Bit"
+	platformDescMap["windows-amd64"] = "If you are using windows, this is the version that you will most likey need."
+
+	platformNameMap["darwin-amd64"] = "Mac OS"
+	platformDescMap["darwin-amd64"] = "If you are using Apple Mac OS, use this one."
+
+	def jarJson = new JsonSlurper().parseText(jar)
+	def nativeJson = new JsonSlurper().parseText(nativee)
+	def data = new TreeMap<String,Object>()
+
+	nativeJson.files.each { key, value ->
+		if(nativeJson.files.get(key).platform == "darwin-amd64"){
+			nativeJson.files.get(key).url = nativeJson.files.get(key).url.replace("-darwin-amd64", "-osx.zip")
+		}
+		data[nativeJson.files.get(key).platform] = getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[nativeJson.files.get(key).platform], platformDescMap[nativeJson.files.get(key).platform], nativeJson.files.get(key).version)
+	}
+
+	data["jar"] = getFileDownloadInfo(jarJson.downloadUrl, "Cross Platform (jar)", "This will run on any system that java 8 supports. Recommended only if you know what you are doing.", jarJson.latestVersion)
+	data["jar_portable"] = getFileDownloadInfo(jarJson.portableDownloadUrl, "Portable (jar)", "The portable jar keeps all files it uses in the same directory as the jar. This is great for running from a USB stick.", jarJson.latestVersion)
+
+	return data
+}
+
+def getFileDownloadInfo(url, name, description, version){
+	def fileInfo = new TreeMap<String,Object>()
+	fileInfo["name"] = name
+	fileInfo["url"] = url
+	fileInfo["description"] = description
+	fileInfo["version"] = version
+
+	return fileInfo
 }
 
 def isPublishBranch(){
