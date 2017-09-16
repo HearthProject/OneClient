@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:700');
 @import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
 
 * {
     -oc-dark: #282828;
@@ -27,6 +28,7 @@
     -fx-font-size: 22px;
     -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -oc-text;
+    -fx-focus-traversable: false;
 }
 
 #oc-panel-button:hover {
@@ -65,7 +67,7 @@
     -fx-background-color: transparent;
 }
 
-/* Instance Buttons */
+/* Raised Buttons */
 
 #oc-raised-button {
     -fx-background-color: -oc-accent;
@@ -76,6 +78,7 @@
     -fx-font-size: 14px;
     -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -oc-text;
+    -fx-focus-traversable: false;
 }
 
 #oc-raised-button:hover {
@@ -148,21 +151,22 @@
 
 .scroll-bar > .increment-button > .increment-arrow,
 .scroll-bar > .decrement-button > .decrement-arrow {
-    -fx-background-color: -text-color;
+    -fx-background-color: -oc-text;
 }
 
 .scroll-bar > .increment-button:hover > .increment-arrow,
 .scroll-bar > .decrement-button:hover > .decrement-arrow {
-    -fx-background-color: -text-color;
+    -fx-background-color: -oc-text;
 }
 
 .scroll-bar > .increment-button:pressed > .increment-arrow,
 .scroll-bar > .decrement-button:pressed > .decrement-arrow {
-    -fx-background-color: -text-color;
+    -fx-background-color: -oc-text;
 }
 
 
 /* OLD CRAP */
+
 
 * {
     -dark-background-color: -oc-medium;
@@ -182,9 +186,6 @@
     -fx-background-color: -dark-background-color;
 }
 
-/*
-    Button
-*/
 
 .button {
     -fx-background-color: -fill-color;
@@ -205,10 +206,6 @@
 .button:focused {
     -fx-border-color: -accent-color;
 }
-
-/*
-    Slider
-*/
 
 .slider .track {
     -fx-background-color: -fill-color;
@@ -244,9 +241,7 @@
     -fx-background-color: -hover-color;
 }
 
-/*
-    Side Panel Button
-*/
+
 
 #side-panel-button {
     -fx-background-color: transparent;
@@ -268,9 +263,7 @@
     -fx-background-color: -accent-color;
 }
 
-/*
-    Text Field
-*/
+
 
 .text-field:hover {
     -fx-background-color: -hover-color;
@@ -293,9 +286,7 @@
     -fx-border-color: -accent-color;
 }
 
-/*
-	Progress Indicator
-*/
+
 
 .progress-indicator:indeterminate > .spinner {
     -fx-background-color: transparent;
@@ -305,9 +296,6 @@
     -fx-background-color: -accent-color;
 }
 
-/*
-	Progress Bar
-*/
 
 
 .progress-bar {
@@ -333,9 +321,6 @@
     -fx-border-width: 1;
 }
 
-/*
-	Text Area
-*/
 
 .text-area {
     -fx-background-color: -fill-color;
@@ -366,9 +351,6 @@
     -fx-background-radius: 0;
 }
 
-/*
-    Check Box
-*/
 
 .check-box {
     -fx-text-fill: -text-color;
@@ -408,9 +390,7 @@
     -fx-background-color: -text-color;
 }
 
-/*
-    Combo Box
-*/
+
 
 .combo-box-base {
     -fx-background-color: -fill-color;
@@ -451,7 +431,6 @@
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-padding: 4 0 4 5;
 
-    /* No alternate highlighting */
 
     -fx-background: -fill-color;
 }
@@ -472,9 +451,6 @@
     -fx-text-fill: text-color;
 }
 
-/*
-    Menu
-*/
 
 .menu-bar{
     -fx-background-color: -dark-color;
@@ -505,7 +481,7 @@
 
 .menu-item {
     -fx-background-color: transparent;
-    -fx-padding: 0.333333em 0.41777em 0.333333em 0.41777em;  /* 4 5 4 5 */
+    -fx-padding: 0.333333em 0.41777em 0.333333em 0.41777em;
     -fx-text-fill:  -text-color;
 }
 .menu-item > .left-container {
