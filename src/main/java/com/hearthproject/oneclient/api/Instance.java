@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.api;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -166,7 +168,13 @@ public class Instance {
 				files.parallelStream().forEach(file -> {
 					System.out.println(file);
 					boolean match = false;
-					for (Mod mod : this.mods) {
+					Collection<Mod> sorted = Collections2.filter(this.mods, m -> {
+						if (m != null) {
+							return m.file.getFile().compareTo(file.toString()) == 0;
+						}
+						return false;
+					});
+					for (Mod mod : sorted) {
 						if (mod.matches(file)) {
 							match = true;
 							break;
