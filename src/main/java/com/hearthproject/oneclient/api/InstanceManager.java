@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.api;
 
+import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
@@ -62,9 +63,23 @@ public class InstanceManager {
 
 	private static Instance load(File dir) {
 
-		//Todo legacy loading??? probably a lot of work this time around.
-
-		return JsonUtil.read(new File(dir, "instance.json"), Instance.class);
+		File instanceJson = new File(dir, "instance.json");
+		Instance instance = JsonUtil.read(instanceJson, Instance.class);
+		if (instance == null) {
+			//Loads old instances
+			File manifestJson = new File(dir, "manifest.json");
+			if (manifestJson.exists()) {
+				JsonObject jsonObject = JsonUtil.read(manifestJson, JsonObject.class);
+				Instance newInstance = new Instance();
+				newInstance.name = jsonObject.get("name").getAsString();
+				newInstance.icon = jsonObject.get("icon").getAsString();
+				newInstance.gameVersion = jsonObject.get("minecraft").getAsJsonObject().get("version").getAsString();
+				String forgeVersion = jsonObject.get("minecraft").getAsJsonObject().get("modLoaders").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+				newInstance.forgeVersion = forgeVersion.split("-")[1];
+				return newInstance;
+			}
+		}
+		return instance;
 	}
 
 	public static void setInstanceInstalling(Instance instance, boolean installing) {
