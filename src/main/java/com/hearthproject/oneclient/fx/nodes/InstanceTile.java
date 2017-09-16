@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.fx.contentpane.InstancePane;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
@@ -33,7 +34,6 @@ public class InstanceTile extends StackPane {
 	@FXML
 	public VBox nodeBox;
 	public boolean buttonVisibility = false;
-	private Action action;
 
 	public InstanceTile(Instance instance) {
 		this.instance = instance;
@@ -51,10 +51,7 @@ public class InstanceTile extends StackPane {
 		displayButton.setText(instance.getName());
 		statusText.setText(instance.getGameVersion());
 		statusText.setFill(Color.web("#FFFFFF"));
-		playButton.setOnAction(event -> {
-			if (action != null)
-				action.execute();
-		});
+		playButton.setOnAction(event -> MinecraftUtil.startMinecraft(this.instance));
 		nodeBox.setOpacity(0F);
 		editButton.setOnAction(event -> InstancePane.show(instance));
 		displayButton.setOnAction(editButton.getOnAction());
@@ -68,14 +65,6 @@ public class InstanceTile extends StackPane {
 			updateButtons();
 		});
 
-	}
-
-	public Action getAction() {
-		return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
 	}
 
 	public void setInstalling(boolean installing) {
@@ -104,10 +93,6 @@ public class InstanceTile extends StackPane {
 			fadeTransition.play();
 			nodeBox.setOpacity(0F);
 		}
-	}
-
-	public interface Action {
-		void execute();
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
+import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.InstanceManager;
@@ -7,13 +8,14 @@ import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
-import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class InstancesPane extends ContentPane {
 	public TilePane instancePane;
@@ -48,20 +50,16 @@ public class InstancesPane extends ContentPane {
 	}
 
 	private void refreshInstances() {
-		Platform.runLater(() -> {
+		new Thread(() -> {
 			InstanceManager.load();
-			instancePane.getChildren().clear();
+			List<InstanceTile> panes = Lists.newArrayList();
 			for (Instance instance : InstanceManager.getInstances()) {
-				InstanceTile tile = new InstanceTile(instance);
-				instanceTiles.add(tile);
-				instancePane.getChildren().add(tile);
+				Platform.runLater(() -> panes.add(new InstanceTile(instance)));
 			}
-			instancePane.getChildren().add(newInstanceTile);
-
-			for (InstanceTile tile : instanceTiles) {
-				tile.setAction(() -> MinecraftUtil.startMinecraft(tile.instance));
-			}
-		});
+			panes.sort(Comparator.comparing(i -> i.instance.getName()));
+			instanceTiles.addAll(panes);
+			Platform.runLater(() -> instancePane.getChildren().setAll(panes));
+		}).start();
 	}
 
 }
