@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
+import com.hearthproject.oneclient.fx.nodes.PackUpdateDialog;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
@@ -82,12 +83,12 @@ public class CurseInstaller extends ModInstaller {
 
 		List<Mod> mods = getMods();
 		AtomicInteger counter = new AtomicInteger(0);
-		mods.parallelStream().forEach(mod -> {
+		for (Mod mod : mods) {
 			NotifyUtil.setProgressText(counter.get() + "/" + mods.size());
 			NotifyUtil.setProgress(((double) counter.get()) / mods.size());
 			mod.install(instance);
 			counter.incrementAndGet();
-		});
+		}
 
 		NotifyUtil.setText("Copying Overrides");
 		installOverrides(pack, instance.getDirectory());
@@ -124,20 +125,18 @@ public class CurseInstaller extends ModInstaller {
 
 	public CurseProject.CurseFile findUpdate(Instance instance) {
 		NotifyUtil.setText("%s Checking for updates", instance.getName());
-		this.files = Curse.getFiles(projectId, instance.gameVersion);
-		if (this.file != null) {
+		this.files = Curse.getFiles(projectId, "");
+		if (this.files != null) {
 			List<CurseProject.CurseFile> updates = Lists.newArrayList();
 			for (CurseProject.CurseFile file : files) {
-				if (file.compareTo(this.file) <= 0) {
+				if (file.compareTo(this.file) < 0) {
 					updates.add(file);
 				}
 			}
 
-			//TODO select update file
-			CurseProject.CurseFile file = updates.stream().findFirst().orElse(null);
-
+			CurseProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);
+			this.file = file;
 			return file;
-
 		}
 		return null;
 	}
@@ -145,7 +144,11 @@ public class CurseInstaller extends ModInstaller {
 	@Override
 	public void update(Instance instance) {
 		CurseProject.CurseFile update = findUpdate(instance);
-		setFile(update);
-		install(instance);
+		if (update != null) {
+			setFile(update);
+			install(instance);
+			instance.save();
+			NotifyUtil.clear();
+		}
 	}
 }

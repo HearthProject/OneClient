@@ -97,7 +97,7 @@ public class CurseProject {
 			return FileName;
 		}
 
-		private Date getDate() {
+		public Date getDate() {
 			try {
 				return DATE_FORMAT.parse(FileDate);
 			} catch (ParseException e) {
