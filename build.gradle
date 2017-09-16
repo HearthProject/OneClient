@@ -149,6 +149,12 @@ task buildInfo() {
 	}
 }
 
+task testDownloadJson(){
+	doLast{
+		buildDownloadJson(new File(project.getBuildDir().getPath() + "/libs/versions.json"))
+	}
+}
+
 def buildDownloadJson(versionData) {
 		def nativeInfoJson = new URL("http://fdn.redstone.tech/theoneclient/oneclient/launcher/prelauncher_versions.json").getText()
 		def njson = new JsonSlurper().parseText(nativeInfoJson)
@@ -191,7 +197,7 @@ def getDownloads(jar, nativee){
 		if(nativeJson.files.get(key).platform == "darwin-amd64"){
 			nativeJson.files.get(key).url = nativeJson.files.get(key).url.replace("-darwin-amd64", "-osx.zip")
 		}
-		data[nativeJson.files.get(key).platform] = getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[nativeJson.files.get(key).platform], platformDescMap[nativeJson.files.get(key).platform], nativeJson.files.get(key).version)
+		data[key] = getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version)
 	}
 
 	data["jar"] = getFileDownloadInfo(jarJson.downloadUrl, "Cross Platform (jar)", "This will run on any system that java 8 supports. Recommended only if you know what you are doing.", jarJson.latestVersion)
