@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.StatusBar?>
-
-<HBox xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
     <children>
-        <VBox fx:id="sideBox" alignment="TOP_CENTER" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
+        <VBox fx:id="sideBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
             <children>
                     <ImageView fx:id="imageBox" fitHeight="105.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -95,16 +91,16 @@
             </JFXButton>
             </children>
         </VBox>
-        <VBox alignment="TOP_CENTER" style="-fx-background-color: -oc-medium;">
+        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: -oc-medium;">
             <children>
-                <VBox>
+                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                     <children>
-                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="700.0" prefWidth="500.0" VBox.vgrow="NEVER">
+                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                             </VBox.margin>
                         </VBox>
-                        <HBox prefHeight="100.0" VBox.vgrow="ALWAYS">
+                        <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" VBox.vgrow="ALWAYS">
                             <children>
                                 <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -oc-dark;" HBox.hgrow="ALWAYS">
                                     <HBox.margin>

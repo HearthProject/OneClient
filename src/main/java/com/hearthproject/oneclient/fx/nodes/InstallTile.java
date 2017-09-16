@@ -1,11 +1,16 @@
 package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -23,17 +28,19 @@ public class InstallTile extends StackPane {
 	protected Hyperlink title;
 
 	@FXML
-	protected VBox info, authors;
+	protected VBox left, middle, right;
 
 	@FXML
 	protected Button buttonInstall;
 
 	protected Instance instance;
 
+	protected ComboBox<CurseProject.CurseFile> comboFile;
+
 	public InstallTile(Instance instance) {
 		this.instance = instance;
 
-		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/curse_tile.fxml");
+		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/install_tile.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(loc);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
@@ -45,31 +52,31 @@ public class InstallTile extends StackPane {
 		title.setText(instance.getName());
 		title.setTextFill(Color.web("#FFFFFF"));
 		title.setFont(javafx.scene.text.Font.font(title.getFont().getFamily(), FontWeight.BOLD, title.getFont().getSize()));
-		title.setOnAction(event -> OperatingSystem.browseURI(instance.getUrl()));
+		title.setOnAction(event -> OperatingSystem.browseURI(instance.info.get("websiteUrl").toString()));
 
-		//		Label average = new Label(element.getAverageDownloads());
-		//		Label total = new Label(element.getTotalDownloads());
-		//		Label date = new Label(element.getCreatedDate());
-		//		Label updated = new Label(element.getLastUpdated());
-		//		Label version = new Label(element.getVersion());
-		//		average.setTextFill(Color.web("#FFFFFF"));
-		//		total.setTextFill(Color.web("#FFFFFF"));
-		//		date.setTextFill(Color.web("#FFFFFF"));
-		//		updated.setTextFill(Color.web("#FFFFFF"));
-		//		version.setTextFill(Color.web("#FFFFFF"));
-		//
-		//		info.getChildren().addAll(average, total, updated, date, version);
-		//		element.getAuthors().stream().map(a -> {
-		//			Label author = new Label(a);
-		//			author.setTextFill(Color.web("#FFFFFF"));
-		//			return author;
-		//		}).forEach(authors.getChildren()::add);
+		if (instance.getInstaller() instanceof CurseInstaller) {
+			comboFile = new ComboBox<>(FXCollections.observableArrayList(((CurseInstaller) instance.getInstaller()).getFiles()));
+			comboFile.getSelectionModel().selectFirst();
+			right.getChildren().add(comboFile);
+			((CurseInstaller) instance.getInstaller()).setFile(comboFile.getValue());
+			comboFile.valueProperty().addListener((v, a, b) -> ((CurseInstaller) instance.getInstaller()).setFile(b));
+		}
+		//		left.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
+		middle.getChildren().addAll(info(instance.info.get("authors")));
 
-		buttonInstall.setOnAction(event -> instance.install());
+		buttonInstall.setOnAction(event -> new Thread(instance::install).start());
 		imageView.setImage(instance.getImage());
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);
 	}
 
+	public Label info(Object value) {
+		return info(value.toString());
+	}
 
+	public Label info(String value) {
+		Label l = new Label(value);
+		l.setTextFill(Color.web("#FFFFFF"));
+		return l;
+	}
 }

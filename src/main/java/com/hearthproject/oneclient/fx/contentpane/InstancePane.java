@@ -38,7 +38,7 @@ public class InstancePane extends ContentPane {
 	}
 
 	public static void show(Instance instance) {
-		InstancePane pane = (InstancePane) ContentPanes.getPane(InstancePane.class);
+		InstancePane pane = ContentPanes.getPane(InstancePane.class);
 		pane.setupPane(instance);
 		AnchorPane node = (AnchorPane) pane.getNode();
 		node.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());

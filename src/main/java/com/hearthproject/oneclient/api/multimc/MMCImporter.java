@@ -32,8 +32,8 @@ public class MMCImporter implements IImporter {
 	public Instance create() {
 		String name = config.getProperty("name");
 		String gameVersion = config.getProperty("IntendedVersion");
-
-		Instance instance = new Instance(name, "", gameVersion, "", new MMCInstaller(pack));
+		Instance instance = new Instance(name, "", new MMCInstaller(pack));
+		instance.setGameVersion(gameVersion);
 		instance.setForgeVersion(config.getProperty("ForgeVersion"));
 		return instance;
 	}

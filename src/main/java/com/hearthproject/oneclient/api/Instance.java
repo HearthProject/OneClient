@@ -5,9 +5,13 @@ import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Instance {
 
@@ -17,24 +21,23 @@ public class Instance {
 	public String forgeVersion;
 	public String url;
 	public String icon;
-	public Info[] info;
+	public Map<String, Object> info;
 
 	public transient Image image;
 
-	public ModInstaller installer;
+	public transient ModInstaller installer;
 
-	public Instance(String name, String packVersion, String gameVersion, String url, ModInstaller installer, Info... info) {
+	public Instance(String name, String url, ModInstaller installer, Pair<String, Object>... info) {
+		this();
 		this.name = name;
-		this.packVersion = packVersion;
-		this.gameVersion = gameVersion;
 		this.url = url;
 		this.installer = installer;
-		this.info = info;
-		this.icon = "icon.png";
+		this.info = Arrays.stream(info).collect(Collectors.toMap(Pair::getKey, Pair::getValue));
 	}
 
 	public Instance() {
 		this.icon = "icon.png";
+		this.forgeVersion = "";
 	}
 
 	public String getName() {
@@ -109,9 +112,11 @@ public class Instance {
 		FileUtil.createDirectory(getDirectory());
 		if (installer != null)
 			installer.install(this);
+		save();
 	}
 
 	public void delete() {
+
 		getDirectory().delete();
 	}
 
@@ -126,5 +131,9 @@ public class Instance {
 	@Override
 	public String toString() {
 		return JsonUtil.GSON.toJson(this);
+	}
+
+	public ModInstaller getInstaller() {
+		return installer;
 	}
 }

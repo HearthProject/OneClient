@@ -10,6 +10,7 @@ import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -19,20 +20,38 @@ import java.util.stream.Collectors;
 
 public class CurseInstaller extends ModInstaller {
 
-	private CurseProject.CurseFile file;
+	private List<CurseProject.CurseFile> files;
 	private Manifest manifest;
 
-	public CurseInstaller(CurseProject.CurseFile file) {
+	private CurseProject.CurseFile file = null;
+
+	public CurseInstaller(List<CurseProject.CurseFile> file) {
+		this.files = file;
+	}
+
+	public void setFile(CurseProject.CurseFile file) {
 		this.file = file;
+	}
+
+	public List<CurseProject.CurseFile> getFiles() {
+		return files;
 	}
 
 	@Override
 	public void install(Instance instance) {
+		if (file == null) {
+			OneClientLogging.error(new NullPointerException("No Curse File Selected"));
+			return;
+		}
+
+		NotifyUtil.setText("Downloading {}", instance.getName());
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		//TODO instance.setForgeVersion
-
+		instance.setName(manifest.name);
+		NotifyUtil.setText("Installing {}", instance.getName());
+		instance.setGameVersion(manifest.minecraft.version);
+		instance.setForgeVersion(manifest.minecraft.getModloader());
 		List<IInstallable> mods = getMods();
 		int count = 0;
 		for (IInstallable mod : mods) {

@@ -4,10 +4,10 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXRippler;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRippler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -82,19 +82,21 @@ public class MainController {
 		}
 		setContent(ContentPanes.INSTANCES_PANE);
 		onSceneResize(stage.getScene());
-		statusBar.setText("");
-		labelProgress = new Label();
-		statusBar.getRightItems().add(labelProgress);
 
 		JFXRippler rippler = new JFXRippler(logoutPane);
 		rippler.setMaskType(JFXRippler.RipplerMask.CIRCLE);
 		rippler.setRipplerFill(Paint.valueOf("#FFFFFF"));
 		userInfoBox.getChildren().add(rippler);
 		userBox.getChildren().clear();
+
+		statusBar.setText("");
+		labelProgress = new Label();
+
 		loadingIcon = new ImageView(ImageUtil.openImage(FileUtil.getResource("images/loading.gif")));
 		loadingIcon.setFitHeight(32);
 		loadingIcon.setFitWidth(32);
 		loadingIcon.setVisible(false);
+
 		statusBar.getRightItems().addAll(labelProgress, loadingIcon);
 
 	}

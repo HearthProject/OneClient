@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class ContentPanes {
 	public static ArrayList<ContentPane> panesList = new ArrayList<>();
 	public static final InstancesPane INSTANCES_PANE = getPane(InstancesPane.class);
-	public static final CursePacksPane CURSE_PACKS_PANE = getPane(CursePacksPane.class);
 	public static final DownloadsPane DOWNLOADS_PANE = getPane(DownloadsPane.class);
 	public static final SettingsPane SETTINGS_PANE = getPane(SettingsPane.class);
 	public static final AboutPane ABOUT_PANE = getPane(AboutPane.class);

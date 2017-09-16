@@ -22,6 +22,7 @@ import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.tracking.OneClientTracking;
 import com.mojang.authlib.properties.PropertyMap;
+import javafx.collections.ObservableList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
@@ -84,6 +85,10 @@ public class MinecraftUtil {
 		if (versionData != null)
 			return versionData.getData();
 		return null;
+	}
+
+	public static ObservableList<String> getVersions(final boolean snapshots) {
+		return getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(MiscUtil.toObservableList());
 	}
 
 	public static int i = 0, count;

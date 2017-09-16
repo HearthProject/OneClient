@@ -41,6 +41,14 @@ public class GameVersion {
 			}
 			return JsonUtil.read(v, Version.class);
 		}
+
+		public String getId() {
+			return id;
+		}
+
+		public boolean isRelease() {
+			return type.equalsIgnoreCase("release");
+		}
 	}
 
 	public Stream<VersionData> get(Predicate<VersionData> filter) {
