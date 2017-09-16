@@ -53,10 +53,11 @@ public class InstancesPane extends ContentPane {
 		new Thread(() -> {
 			InstanceManager.load();
 			List<InstanceTile> panes = Lists.newArrayList();
-			for (Instance instance : InstanceManager.getInstances()) {
+			List<Instance> instances = Lists.newArrayList(InstanceManager.getInstances());
+			instances.sort(Comparator.comparing(Instance::getName));
+			for (Instance instance : instances) {
 				Platform.runLater(() -> panes.add(new InstanceTile(instance)));
 			}
-			panes.sort(Comparator.comparing(i -> i.instance.getName()));
 			instanceTiles.addAll(panes);
 			Platform.runLater(() -> instancePane.getChildren().setAll(panes));
 		}).start();
