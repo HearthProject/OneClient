@@ -68,7 +68,10 @@ public class InstancePane extends ContentPane {
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
 		buttonGetCurseMods.setDisable(true);
 		//		buttonGetCurseMods.setOnAction(event -> ModInstallingController.showInstaller(instance));
-		buttonDelete.setOnAction(event -> instance.delete());
+		buttonDelete.setOnAction(event -> {
+			instance.delete();
+			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
+		});
 		//		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
 		//		columnEnabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
 		//

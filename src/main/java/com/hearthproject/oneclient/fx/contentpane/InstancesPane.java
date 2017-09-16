@@ -58,9 +58,7 @@ public class InstancesPane extends ContentPane {
 			instancePane.getChildren().add(newInstanceTile);
 
 			for (InstanceTile tile : instanceTiles) {
-				tile.setAction(() -> {
-					MinecraftUtil.startMinecraft(tile.instance);
-				});
+				tile.setAction(() -> MinecraftUtil.startMinecraft(tile.instance));
 			}
 		}
 	}

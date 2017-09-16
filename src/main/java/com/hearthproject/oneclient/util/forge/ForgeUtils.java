@@ -42,7 +42,7 @@ public class ForgeUtils {
 		return null;
 	}
 
-	public static int count = 0;
+	public static int count = 1;
 
 	public static List<File> resolveForgeLibrarys(String mcVer, String forgeVer) throws IOException {
 		File mcDir = new File(Constants.getRunDir(), "minecraft");
@@ -50,7 +50,7 @@ public class ForgeUtils {
 		ForgeVersionProfile forgeVersionProfile = downloadForgeVersion(libraries, mcVer, forgeVer);
 		ArrayList<File> librarys = new ArrayList<>();
 		NotifyUtil.setText("Resolving %s ForgeLibraries", forgeVersionProfile.libraries.size());
-		count = 0;
+		count = 1;
 		forgeVersionProfile.libraries.parallelStream().forEach(library -> {
 			NotifyUtil.setProgressAscend(count++, forgeVersionProfile.libraries.size());
 			if ((library.checksums == null && library.getFile(libraries).exists()) || (library.checksums != null && !library.checksums.isEmpty() && MiscUtil.checksumEquals(library.getFile(libraries), library.checksums))) {

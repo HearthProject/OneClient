@@ -98,7 +98,7 @@ public class InstanceManager {
 	}
 
 	public static void removeInstance(Instance instance) {
-		save();
+		instances.remove(instance.getName());
 	}
 
 }

@@ -13,6 +13,7 @@ import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.scene.control.Alert;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -82,7 +83,7 @@ public class CurseInstaller extends ModInstaller {
 		instance.setForgeVersion(manifest.minecraft.getModloader());
 
 		List<Mod> mods = getMods();
-		AtomicInteger counter = new AtomicInteger(0);
+		AtomicInteger counter = new AtomicInteger(1);
 		for (Mod mod : mods) {
 			NotifyUtil.setProgressText(counter.get() + "/" + mods.size());
 			NotifyUtil.setProgress(((double) counter.get()) / mods.size());
@@ -132,6 +133,14 @@ public class CurseInstaller extends ModInstaller {
 				if (file.compareTo(this.file) < 0) {
 					updates.add(file);
 				}
+			}
+			if (updates.isEmpty()) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("No Updates Available");
+				alert.setHeaderText("No Updates Available");
+				alert.setGraphic(null);
+				alert.showAndWait();
+				return null;
 			}
 
 			CurseProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);

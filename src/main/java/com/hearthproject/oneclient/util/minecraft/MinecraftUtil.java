@@ -111,7 +111,7 @@ public class MinecraftUtil {
 		return getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(MiscUtil.toObservableList());
 	}
 
-	public static int i = 0, count;
+	public static int i = 1, count;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
 		InstanceManager.setInstanceInstalling(instance, true);
@@ -126,11 +126,11 @@ public class MinecraftUtil {
 			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
 		}
 
-		i = 0;
+		i = 1;
 		count = versionData.libraries.size();
 		NotifyUtil.setText("Resolving %s Libraries", count);
 		OneClientLogging.info("{}", versionData.libraries);
-		versionData.libraries.stream().forEach(library -> {
+		versionData.libraries.forEach(library -> {
 			NotifyUtil.setProgressAscend(i++, count);
 			if (library.allowed() && library.getFile(LIBRARIES) != null) {
 
@@ -201,6 +201,7 @@ public class MinecraftUtil {
 		if (!MinecraftAuthController.isUserOnline()) {
 			OneClientLogging.info("Launching in offline mode!");
 		}
+
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		OneClientLogging.logger.info("Starting minecraft...");

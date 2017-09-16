@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -130,15 +131,25 @@ public class Instance {
 	}
 
 	public void install() {
+		InstanceManager.setInstanceInstalling(this, true);
 		FileUtil.createDirectory(getDirectory());
 		if (installer != null)
 			installer.install(this);
+		new Thread(() -> {
+			try {
+				MinecraftUtil.installMinecraft(this);
+			} catch (Throwable throwable) {
+				throwable.printStackTrace();
+			}
+		}).start();
 		save();
+		InstanceManager.setInstanceInstalling(this, false);
 	}
 
 	public void delete() {
 		try {
 			FileUtils.deleteDirectory(getDirectory());
+			getDirectory().delete();
 			InstanceManager.removeInstance(this);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -173,7 +184,7 @@ public class Instance {
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<Mod> newMods = Lists.newArrayList();
 
-			if (mods != null) {
+			if (mods != null && mods.length > 0) {
 
 				List<File> files = Lists.newArrayList(mods);
 				List<Mod> removal = Lists.newArrayList();

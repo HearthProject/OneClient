@@ -66,6 +66,11 @@ public class MiscUtil {
 	}
 
 	@FunctionalInterface
+	public interface ThrowingRunnable {
+		void run() throws Exception;
+	}
+
+	@FunctionalInterface
 	public interface ThrowingConsumer<T> {
 		void accept(T t) throws Exception;
 	}

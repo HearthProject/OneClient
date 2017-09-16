@@ -62,7 +62,6 @@ public class InstanceTile extends StackPane {
 		setOnMouseEntered(e -> {
 			buttonVisibility = true;
 			updateButtons();
-
 		});
 		setOnMouseExited(e -> {
 			buttonVisibility = false;
