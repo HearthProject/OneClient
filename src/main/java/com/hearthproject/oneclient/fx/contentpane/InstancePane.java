@@ -86,7 +86,6 @@ public class InstancePane extends ContentPane {
 		tableMods.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		tableMods.setPlaceholder(new Label("No Mods installed"));
 		TableColumn<Mod, String> columnMods = new TableColumn<>("Mods");
-
 		columnMods.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
 		tableMods.setRowFactory(table -> {
 			TableRow<Mod> row = new TableRow<>();

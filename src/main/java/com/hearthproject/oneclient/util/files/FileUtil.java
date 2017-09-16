@@ -76,7 +76,7 @@ public class FileUtil {
 
 	public static File downloadToName(String url, File location) {
 		String name = FilenameUtils.getName(url);
-		return downloadFromURL(url, new File(location, name));
+		return downloadFromURL(url.replace(" ", "%20"), new File(location, name));
 	}
 
 	public static File downloadFromURL(String url, File location) {

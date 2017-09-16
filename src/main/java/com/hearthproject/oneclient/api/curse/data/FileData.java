@@ -17,7 +17,7 @@ public class FileData {
 
 		CurseProject.CurseFile file = JsonUtil.read(Curse.getFileURL(projectID, fileID), CurseProject.CurseFile.class);
 		if (file != null) {
-			return file.getDownloadURL().replace(" ", "%20");
+			return file.getDownloadURL();
 		}
 		return null;
 	}
