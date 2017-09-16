@@ -29,10 +29,12 @@ public class CurseModpacks extends HashMap<String, CurseModpacks.CurseModpack> {
 		public String Id;
 
 		public boolean matchesName(String name) {
-			return Name.contains(name);
+			return Name.toLowerCase().contains(name.toLowerCase());
 		}
 
 		public boolean matchesVersion(String version) {
+			if (version.equals("All"))
+				return true;
 			return GameVersionLatestFiles.stream().map(f -> f.GameVesion).anyMatch(v -> v.equals(version));
 		}
 

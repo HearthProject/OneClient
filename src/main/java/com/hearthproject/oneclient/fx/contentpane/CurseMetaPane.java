@@ -69,6 +69,7 @@ public class CurseMetaPane extends ContentPane {
 		anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
+		VERSIONS.add(0, "All");
 		filterVersion.setItems(VERSIONS);
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
