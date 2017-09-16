@@ -8,6 +8,8 @@ import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRippler;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -99,6 +101,7 @@ public class MainController {
 
 		statusBar.getRightItems().addAll(labelProgress, loadingIcon);
 
+		signInButton.setOnAction(event -> MinecraftAuthController.openLoginGui());
 	}
 
 	public void onSceneResize(Scene scene) {
@@ -132,6 +135,6 @@ public class MainController {
 	}
 
 	public void onSignInPress() {
-		MinecraftAuthController.openLoginGui();
+
 	}
 }

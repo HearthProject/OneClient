@@ -9,6 +9,7 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.AuthStore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mojang.authlib.Agent;
+import com.mojang.authlib.BaseUserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
@@ -17,15 +18,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.Proxy;
 import java.net.URL;
@@ -48,26 +58,44 @@ public class MinecraftAuthController {
 			isAtemptingLogin = true;
 			updateGui();
 			OneClientLogging.info("Logging in with saved details");
-			if (authStore.get().authStorage != null) {
-				authentication.loadFromStorage(authStore.get().authStorage);
-			}
+			//Disabled as it doesnt seem to work great
+			//			if (authStore.get().authStorage != null) {
+			//				authentication.loadFromStorage(authStore.get().authStorage);
+			//			}
+			authentication.setPassword(authStore.get().password);
+			authentication.setUsername(authStore.get().username);
 			try {
 				doLogin(true);
 			} catch (Exception e) {
+				if (authStore.get().authStorage != null) {
+					authentication.loadFromStorage(authStore.get().authStorage);
+				}
 				if (authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 					OneClientLogging.error(e);
-
 					Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-					alert.setTitle("Failed to re-authenticate");
-					alert.setHeaderText("Failed to re-authenticate");
-					alert.setContentText("Do you want to run in offline mode?");
+					alert.setTitle("Failed to login");
+					alert.setHeaderText("Failed to login");
+					alert.setContentText("The OneClient could not log you into minecraft. "
+						+ "\n You select a few options"
+						+ "\n - Offline mode (Single Player only)"
+						+ "\n - Login again"
+						+ "\n - Logout, you can relogin at anytime");
+
+					ButtonType buttonOffline = new ButtonType("Play Offline");
+					ButtonType buttonLogin = new ButtonType("Login Again");
+					ButtonType buttonLogout = new ButtonType("Logout", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+					alert.getButtonTypes().setAll(buttonOffline, buttonLogin, buttonLogout);
 
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.get() == ButtonType.OK) {
+					if (result.get() == buttonOffline){
 						OneClientLogging.info("Launching in offline mode");
+					} else if (result.get() == buttonLogin) {
+						openLoginGui();
 					} else {
 						doLogout();
 					}
+
 				} else {
 					OneClientLogging.logUserError(e, "Failed to login, you will need to re-log in");
 				}
@@ -131,14 +159,19 @@ public class MinecraftAuthController {
 		if (HearthApi.enable) {
 			OneClientLogging.info("Logging into hearth");
 			HearthApi.login(authentication);
-			save(save, authentication.getSelectedProfile().getName());
+			save(save);
 		}
 		updateGui();
 	}
 
 	public static void doLogout() {
+		isAtemptingLogin = false;
 		if (authentication != null) {
 			authentication.logOut();
+		}
+		authentication = (YggdrasilUserAuthentication) (new YggdrasilAuthenticationService(Proxy.NO_PROXY, "1")).createUserAuthentication(Agent.MINECRAFT);
+		if(getAuthStoreFile().exists()){
+			getAuthStoreFile().delete();
 		}
 		updateGui();
 	}
@@ -177,13 +210,14 @@ public class MinecraftAuthController {
 		return Optional.empty();
 	}
 
-	public static void save(boolean save, String username) {
+	public static void save(boolean save) {
 		try {
 			if (save) {
 				FileOutputStream fileOutputStream = new FileOutputStream(getAuthStoreFile());
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				AuthStore authStore = new AuthStore();
-				authStore.username = username;
+				authStore.username = getUsername(authentication);
+				authStore.password = getPassword(authentication);
 				if (authentication != null) {
 					authStore.authStorage = authentication.saveForStorage();
 					authStore.playerName = authentication.getUserID();
@@ -231,6 +265,7 @@ public class MinecraftAuthController {
 			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 				Main.mainController.usernameText.setText("OFFLINE MODE");
 				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
+				Main.mainController.userBox.getChildren().add(Main.mainController.signInButton);
 			} else if (!isAtemptingLogin) {
 				Main.mainController.userBox.getChildren().add(Main.mainController.signInButton);
 			} else {
@@ -266,8 +301,9 @@ public class MinecraftAuthController {
 			authentication.setUsername(username.getText());
 			authentication.setPassword(password.getText());
 			doLogin(checkboxPasswordSave.isSelected());
-			save(checkboxPasswordSave.isSelected(), username.getText());
+			save(checkboxPasswordSave.isSelected());
 			stage.close();
+			isAtemptingLogin = false;
 		} catch (Exception e) {
 			isAtemptingLogin = false;
 			updateGui();
@@ -298,4 +334,17 @@ public class MinecraftAuthController {
 			OneClientLogging.error(e);
 		}
 	}
+
+	public static String getUsername(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
+		Field field = BaseUserAuthentication.class.getDeclaredField("username");
+		field.setAccessible(true);
+		return (String) field.get(authentication);
+	}
+
+	public static String getPassword(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
+		Field field = BaseUserAuthentication.class.getDeclaredField("password");
+		field.setAccessible(true);
+		return (String) field.get(authentication);
+	}
+
 }
