@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -47,7 +48,7 @@ public class InstancesPane extends ContentPane {
 	}
 
 	private void refreshInstances() {
-		if (Main.mainController.currentContent == ContentPanes.INSTANCES_PANE) {
+		Platform.runLater(() -> {
 			InstanceManager.load();
 			instancePane.getChildren().clear();
 			for (Instance instance : InstanceManager.getInstances()) {
@@ -60,7 +61,7 @@ public class InstancesPane extends ContentPane {
 			for (InstanceTile tile : instanceTiles) {
 				tile.setAction(() -> MinecraftUtil.startMinecraft(tile.instance));
 			}
-		}
+		});
 	}
 
 }
