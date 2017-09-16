@@ -28,7 +28,7 @@ public class CurseInstaller extends ModInstaller {
 	private transient List<CurseProject.CurseFile> files;
 	private transient Manifest manifest;
 	private CurseProject.CurseFile file;
-	private String projectId;
+	public String projectId;
 
 	public CurseInstaller(CurseProject project) {
 		super(PackType.CURSE);

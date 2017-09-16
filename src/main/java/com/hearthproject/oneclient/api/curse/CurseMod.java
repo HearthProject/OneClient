@@ -26,4 +26,7 @@ public class CurseMod extends Mod {
 		this.file = new FileHash(mod);
 	}
 
+	public FileData getFileData() {
+		return fileData;
+	}
 }

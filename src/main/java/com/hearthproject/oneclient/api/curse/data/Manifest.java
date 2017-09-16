@@ -11,7 +11,7 @@ public class Manifest {
 	public String name;
 	public String version;
 	public String author;
-	public int projectID;
+	public String projectID;
 	public List<FileData> files;
 	public String overrides;
 	public String icon;
@@ -21,13 +21,18 @@ public class Manifest {
 		files = Lists.newArrayList();
 	}
 
-	public class Minecraft {
+	public static class Minecraft {
 		public String version;
-		public List<Modloader> modLoaders;
+		public List<Modloader> modLoaders = Lists.newArrayList();
 
-		public class Modloader {
+		public static class Modloader {
 			public String id;
 			public boolean primary;
+
+			public Modloader(String forgeVersion) {
+				this.id = "forge-" + forgeVersion;
+				this.primary = true;
+			}
 		}
 
 		public String getModloader() {
