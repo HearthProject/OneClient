@@ -191,12 +191,11 @@ public class Instance {
 				List<Mod> removal = Lists.newArrayList();
 				for (Mod mod : this.mods) {
 					Collection<File> sorted = Collections2.filter(files, f -> {
-						if (f != null) {
-							return f.equals(mod.file.getFilePath());
+						if (f != null && mod != null) {
+							return f.toString().equals(mod.file.getFilePath());
 						}
 						return false;
 					});
-
 					boolean match = false;
 					for (File file : sorted) {
 						if (mod.matches(file))
