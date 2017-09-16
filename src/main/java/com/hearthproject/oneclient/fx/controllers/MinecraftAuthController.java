@@ -234,7 +234,7 @@ public class MinecraftAuthController {
 			Main.mainController.userBox.getChildren().clear();
 			Main.mainController.userAvatar.setImage(null);
 			Main.mainController.usernameText.setText("");
-			Main.mainController.logoutPane.setVisible(false);
+			Main.mainController.signOutButton.setVisible(false);
 			if (authentication != null && authentication.canPlayOnline()) {
 				try {
 					UUID id = authentication.getSelectedProfile().getId();
@@ -258,7 +258,7 @@ public class MinecraftAuthController {
 					}
 				}
 				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
-				Main.mainController.logoutPane.setVisible(true);
+				Main.mainController.signOutButton.setVisible(true);
 			} else if (authentication != null && authentication.isLoggedIn() && !authentication.canPlayOnline()) {
 				Main.mainController.usernameText.setText("OFFLINE MODE");
 				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);
@@ -288,6 +288,18 @@ public class MinecraftAuthController {
 		Field field = authentication.getClass().getDeclaredField("accessToken");
 		field.setAccessible(true);
 		field.set(authentication, newToken);
+	}
+
+	public static String getUsername(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
+		Field field = BaseUserAuthentication.class.getDeclaredField("username");
+		field.setAccessible(true);
+		return (String) field.get(authentication);
+	}
+
+	public static String getPassword(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
+		Field field = BaseUserAuthentication.class.getDeclaredField("password");
+		field.setAccessible(true);
+		return (String) field.get(authentication);
 	}
 
 	public void login(ActionEvent actionEvent) {
@@ -330,18 +342,6 @@ public class MinecraftAuthController {
 		} catch (Exception e) {
 			OneClientLogging.error(e);
 		}
-	}
-
-	public static String getUsername(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
-		Field field = BaseUserAuthentication.class.getDeclaredField("username");
-		field.setAccessible(true);
-		return (String) field.get(authentication);
-	}
-
-	public static String getPassword(YggdrasilUserAuthentication authentication) throws NoSuchFieldException, IllegalAccessException {
-		Field field = BaseUserAuthentication.class.getDeclaredField("password");
-		field.setAccessible(true);
-		return (String) field.get(authentication);
 	}
 
 }

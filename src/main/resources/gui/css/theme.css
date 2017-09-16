@@ -41,6 +41,30 @@
     -fx-background-color: transparent;
 }
 
+#oc-circle-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 100;
+    -fx-font-weight: bold;
+    -fx-text-fill: -oc-text;
+    -fx-padding: 4 6 4 6;
+    -fx-focus-traversable: false;
+
+}
+
+#oc-circle-button:hover {
+    -fx-background-color: transparent;
+}
+
+#oc-circle-button:selected {
+    -fx-background-color: -oc-accent;
+}
+
+#oc-circle-button:focused {
+    -fx-background-color: transparent;
+}
+
 /* Instance Buttons */
 
 #oc-raised-button {
