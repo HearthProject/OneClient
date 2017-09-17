@@ -3,55 +3,47 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
-
 <fx:root maxHeight="192.0" maxWidth="192.0" prefHeight="192.0" prefWidth="192.0" type="javafx.scene.layout.StackPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-      <Rectangle fill="DODGERBLUE" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0" />
-            <ImageView fx:id="imageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true" />
-      <StackPane fx:id="nodePane">
-         <children>
-            <ImageView fx:id="blurredImageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true">
-               <effect>
-                  <GaussianBlur radius="25.0" />
-               </effect>
-            </ImageView>
-              <VBox alignment="CENTER" pickOnBounds="false" StackPane.alignment="CENTER">
-                  <children>
-                  <Text fx:id="modpackText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="MODPACK NAME">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </Text>
-                      <JFXButton id="oc-raised-button" fx:id="playButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="PLAY">
-                     <VBox.margin>
-                        <Insets top="6.0" />
-                     </VBox.margin>
-                  </JFXButton>
-                      <JFXButton id="oc-raised-button" fx:id="editButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="EDIT">
-                          <VBox.margin>
-                              <Insets top="6.0" />
-                          </VBox.margin>
-                      </JFXButton>
-                  <Text fx:id="statusText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="STATUS TEXT">
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                     <VBox.margin>
-                        <Insets top="6.0" />
-                     </VBox.margin>
-                  </Text>
-                  </children>
-              </VBox>
-         </children>
-      </StackPane>
+        <Rectangle fill="DODGERBLUE" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0"/>
+        <ImageView fx:id="imageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true"/>
+        <StackPane fx:id="nodePane">
+            <children>
+                <VBox alignment="CENTER" pickOnBounds="false" StackPane.alignment="CENTER">
+                    <children>
+                        <Text fx:id="modpackText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="MODPACK NAME">
+                            <VBox.margin>
+                                <Insets/>
+                            </VBox.margin>
+                            <effect>
+                                <DropShadow/>
+                            </effect>
+                        </Text>
+                        <JFXButton id="oc-raised-button" fx:id="playButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="PLAY">
+                            <VBox.margin>
+                                <Insets top="6.0"/>
+                            </VBox.margin>
+                        </JFXButton>
+                        <JFXButton id="oc-raised-button" fx:id="editButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="EDIT">
+                            <VBox.margin>
+                                <Insets top="6.0"/>
+                            </VBox.margin>
+                        </JFXButton>
+                        <Text fx:id="statusText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="STATUS TEXT">
+                            <effect>
+                                <DropShadow/>
+                            </effect>
+                            <VBox.margin>
+                                <Insets top="6.0"/>
+                            </VBox.margin>
+                        </Text>
+                    </children>
+                </VBox>
+            </children>
+        </StackPane>
     </children>
 </fx:root>

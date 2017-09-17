@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public class InstanceTile extends StackPane {
-	public static GaussianBlur blurEffect = new GaussianBlur(18);
+	public GaussianBlur blurEffect = new GaussianBlur(0);
 	public final Instance instance;
 	@FXML
 	public Text modpackText;
@@ -34,10 +34,7 @@ public class InstanceTile extends StackPane {
 	public JFXButton editButton;
 	@FXML
 	public StackPane nodePane;
-	@FXML
-	public ImageView blurredImageView;
-	public boolean buttonVisibility = false;
-
+	
 	public InstanceTile(Instance instance) {
 		this.instance = instance;
 
@@ -51,8 +48,7 @@ public class InstanceTile extends StackPane {
 			throw new RuntimeException(exception);
 		}
 		imageView.setImage(ImageUtil.openImage(instance.getIcon()));
-		blurredImageView.setImage(imageView.getImage());
-		blurredImageView.setEffect(blurEffect);
+		imageView.setEffect(blurEffect);
 		modpackText.setText(instance.getName());
 		statusText.setText(instance.getGameVersion());
 		statusText.setFill(Color.web("#FFFFFF"));
@@ -60,14 +56,24 @@ public class InstanceTile extends StackPane {
 		playButton.setOnAction(event -> MinecraftUtil.startMinecraft(this.instance));
 		editButton.setOnAction(event -> InstancePane.show(instance));
 
-		setOnMouseEntered(e -> {
-			buttonVisibility = true;
-			updateButtons();
+		nodePane.hoverProperty().addListener((observable, oldValue, newValue) -> {
+			FadeTransition fadeTransition = new FadeTransition(new Duration(800), nodePane);
+			if (newValue) {
+				fadeTransition.setFromValue(0F);
+				fadeTransition.setToValue(1F);
+				fadeTransition.play();
+				nodePane.setOpacity(1F);
+			} else {
+				fadeTransition.setFromValue(1F);
+				fadeTransition.setToValue(0F);
+				fadeTransition.play();
+				nodePane.setOpacity(0F);
+			}
 		});
-		setOnMouseExited(e -> {
-			buttonVisibility = false;
-			updateButtons();
-		});
+
+		playButton.visibleProperty().bind(nodePane.hoverProperty());
+		editButton.visibleProperty().bind(nodePane.hoverProperty());
+		blurEffect.radiusProperty().bind(nodePane.opacityProperty().multiply(18));
 	}
 
 	public void setInstalling(boolean installing) {
@@ -81,21 +87,8 @@ public class InstanceTile extends StackPane {
 				statusText.setText(instance.getGameVersion());
 			}
 		});
+
 	}
 
-	public void updateButtons() {
-		FadeTransition fadeTransition = new FadeTransition(new Duration(200), nodePane);
-		if (buttonVisibility || playButton.hoverProperty().get() || editButton.hoverProperty().get()) {
-			fadeTransition.setFromValue(0F);
-			fadeTransition.setToValue(1F);
-			fadeTransition.play();
-			nodePane.setOpacity(1F);
-		} else {
-			fadeTransition.setFromValue(1F);
-			fadeTransition.setToValue(0F);
-			fadeTransition.play();
-			nodePane.setOpacity(0F);
-		}
-	}
 
 }

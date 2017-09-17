@@ -1,6 +1,5 @@
 package com.hearthproject.oneclient;
 
-import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -141,8 +140,6 @@ public class Main extends Application {
 	public void loadData() throws Exception {
 		System.setProperty("http.agent", "OneClient/1.0");
 		checkModpackIcon();
-		OneClientLogging.logger.info("Loading Instances");
-		InstanceManager.load();
 		OneClientLogging.logger.info("Loading Minecraft versions");
 		MinecraftUtil.load();
 		OneClientLogging.logger.info("Loading Forge versions");
