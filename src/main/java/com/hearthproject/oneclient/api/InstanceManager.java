@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.io.File;
 import java.util.Arrays;
@@ -46,12 +47,12 @@ public class InstanceManager {
 	}
 
 	public static void load() {
+		OneClientLogging.logger.info("Loading Instances");
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
-
 		File[] dirs = Constants.INSTANCEDIR.listFiles(File::isDirectory);
 		if (dirs != null) {
-			Arrays.stream(dirs).parallel().filter(File::isDirectory).forEach(dir -> {
+			Arrays.stream(dirs).filter(File::isDirectory).forEach(dir -> {
 				Instance instance = load(dir);
 				if (instance != null) {
 					instances.put(instance.getName(), instance);
@@ -83,13 +84,11 @@ public class InstanceManager {
 	}
 
 	private static Instance load(File dir) {
-
 		File instanceJson = new File(dir, "instance.json");
 		Instance instance = JsonUtil.read(instanceJson, Instance.class);
 		if (instance == null) {
 			instance = loadLegacy(dir);
 		}
-
 		return instance;
 	}
 

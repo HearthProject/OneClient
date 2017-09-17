@@ -7,7 +7,7 @@ import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
-import javafx.application.Platform;
+import com.hearthproject.oneclient.util.MiscUtil;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 
@@ -20,7 +20,6 @@ public class InstancesPane extends ContentPane {
 	public ScrollPane scrollPane;
 
 	public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
-	private boolean newButtonVisibility = false;
 
 	public InstancesPane() {
 		super("gui/contentpanes/instances.fxml", "Home", "home.png", ButtonDisplay.TOP);
@@ -30,29 +29,27 @@ public class InstancesPane extends ContentPane {
 	public void onStart() {
 		scrollPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		scrollPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
-		scrollPane.setContent(instancePane);
 		instancePane.prefWidthProperty().bind(scrollPane.widthProperty());
+
 	}
 
 	@Override
 	public void refresh() {
-		refreshInstances();
+		instancePane.getChildren().clear();
+		new Thread(this::refreshInstances).start();
 	}
 
 	private void refreshInstances() {
-		new Thread(() -> {
-			InstanceManager.load();
-			List<InstanceTile> panes = Lists.newArrayList();
-			List<Instance> instances = Lists.newArrayList(InstanceManager.getInstances());
-			instances.sort(Comparator.comparing(Instance::getName));
-			for (Instance instance : instances) {
-				Platform.runLater(() -> panes.add(new InstanceTile(instance)));
-			}
-			instanceTiles.addAll(panes);
-			Platform.runLater(() -> {
-				instancePane.getChildren().setAll(panes);
+		InstanceManager.load();
+		List<Instance> instances = Lists.newArrayList(InstanceManager.getInstances());
+		instances.sort(Comparator.comparing(Instance::getName));
+		for (Instance instance : instances) {
+			MiscUtil.runLaterIfNeeded(() -> {
+				InstanceTile tile = new InstanceTile(instance);
+				instancePane.getChildren().add(tile);
+				instanceTiles.add(tile);
 			});
-		}).start();
+		}
 	}
 
 }

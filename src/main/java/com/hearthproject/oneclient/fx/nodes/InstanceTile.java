@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.net.URL;
 
 public class InstanceTile extends StackPane {
-	public GaussianBlur blurEffect = new GaussianBlur(0);
+	public final GaussianBlur blurEffect = new GaussianBlur(0);
+
 	public final Instance instance;
+
 	@FXML
 	public Text modpackText;
 	@FXML
@@ -34,10 +36,9 @@ public class InstanceTile extends StackPane {
 	public JFXButton editButton;
 	@FXML
 	public StackPane nodePane;
-	
+
 	public InstanceTile(Instance instance) {
 		this.instance = instance;
-
 		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/instance_tile.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(loc);
 		fxmlLoader.setRoot(this);
@@ -47,7 +48,9 @@ public class InstanceTile extends StackPane {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		imageView.setImage(ImageUtil.openImage(instance.getIcon()));
+
+		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(ImageUtil.openCachedImage(instance.getIcon(), instance.getName())))).start();
+
 		imageView.setEffect(blurEffect);
 		modpackText.setText(instance.getName());
 		statusText.setText(instance.getGameVersion());
@@ -57,7 +60,7 @@ public class InstanceTile extends StackPane {
 		editButton.setOnAction(event -> InstancePane.show(instance));
 
 		nodePane.hoverProperty().addListener((observable, oldValue, newValue) -> {
-			FadeTransition fadeTransition = new FadeTransition(new Duration(800), nodePane);
+			FadeTransition fadeTransition = new FadeTransition(new Duration(400), nodePane);
 			if (newValue) {
 				fadeTransition.setFromValue(0F);
 				fadeTransition.setToValue(1F);
@@ -89,6 +92,5 @@ public class InstanceTile extends StackPane {
 		});
 
 	}
-
 
 }

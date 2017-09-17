@@ -179,6 +179,7 @@ public class Instance {
 	private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
 
 	//walks mod directory and creates Mod objects for any not found
+	//Remove Mod entries for files that are no longer available.
 	protected void verifyMods() {
 		new Thread(() -> {
 			OneClientLogging.info("Verifying {} Mods", getName());
@@ -187,7 +188,6 @@ public class Instance {
 			List<Mod> newMods = Lists.newArrayList();
 
 			if (this.mods != null && mods != null && mods.length > 0) {
-
 				List<File> files = Lists.newArrayList(mods);
 				List<Mod> removal = Lists.newArrayList();
 				for (Mod mod : this.mods) {
@@ -227,11 +227,10 @@ public class Instance {
 						newMods.add(mod);
 					}
 				});
+				this.mods.addAll(newMods);
 			}
-			this.mods.addAll(newMods);
 			OneClientLogging.info("Finished Verifying {}", this.getName());
 			this.save();
 		}).start();
-
 	}
 }

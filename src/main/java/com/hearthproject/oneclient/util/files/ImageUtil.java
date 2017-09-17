@@ -29,7 +29,7 @@ public class ImageUtil {
 		return new Image(stream);
 	}
 
-	public static Image openCachedImage(File file) {
+	public static Image openCachedImage(File file, String name) {
 		OneClientLogging.logger.debug("Opening Image : {}", file);
 		if (file == null || !file.exists()) {
 			return null;
@@ -43,9 +43,15 @@ public class ImageUtil {
 			}
 			if (image == null)
 				return null;
-			IMAGE_CACHE.put(file.getName(), image);
+			IMAGE_CACHE.put(name, image);
 		}
 		return image;
+	}
+
+
+
+	public static Image openCachedImage(File file) {
+		return openCachedImage(file, file.getName());
 	}
 
 	public static Image openCachedImage(InputStream inputStream, String name) {
