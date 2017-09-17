@@ -2,10 +2,7 @@ package com.hearthproject.oneclient.api.curse;
 
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.Mod;
-import com.hearthproject.oneclient.api.ModInstaller;
-import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.api.*;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.fx.nodes.PackUpdateDialog;
@@ -73,26 +70,22 @@ public class CurseInstaller extends ModInstaller {
 				e.printStackTrace();
 			}
 		}
-
-		NotifyUtil.setText("Downloading %s", instance.getName());
+		DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
-		NotifyUtil.setText("Extracting %s", instance.getName());
+		DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		NotifyUtil.setText("Installing %s", instance.getName());
+		DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
 		instance.setGameVersion(manifest.minecraft.version);
 		instance.setForgeVersion(manifest.minecraft.getModloader());
 
 		List<Mod> mods = getMods();
 		AtomicInteger counter = new AtomicInteger(1);
 		for (Mod mod : mods) {
-			NotifyUtil.setProgressText(counter.get() + "/" + mods.size());
-			NotifyUtil.setProgress(((double) counter.get()) / mods.size());
+			DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 			mod.install(instance);
-			counter.incrementAndGet();
 		}
-
-		NotifyUtil.setText("Copying Overrides");
+		DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
 		installOverrides(pack, instance.getDirectory());
 		instance.setMods(FXCollections.observableArrayList(mods));
 		NotifyUtil.clear();

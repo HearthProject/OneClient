@@ -1,13 +1,11 @@
 package com.hearthproject.oneclient.api.curse.data;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.json.JsonUtil;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -65,11 +63,9 @@ public class CurseModpacks extends HashMap<String, CurseModpacks.CurseModpack> {
 	}
 
 	private List<Map.Entry<String, CurseModpacks.CurseModpack>> filter(Predicate<CurseModpack> version, Predicate<CurseModpack> name) {
-
 		Predicate<CurseModpack> filter = pack -> (version == null || version.test(pack)) && (name == null || name.test(pack));
-
-		return getEntries().stream().filter(pack -> filter.test(pack.getValue())).collect(Collectors.toList());
-
+		Collection<Map.Entry<String, CurseModpacks.CurseModpack>> entries = Collections2.filter(getEntries(), e -> filter.test(e.getValue()));
+		return entries.stream().filter(pack -> filter.test(pack.getValue())).collect(Collectors.toList());
 	}
 
 	@Override

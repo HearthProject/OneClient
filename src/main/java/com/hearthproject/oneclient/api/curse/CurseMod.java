@@ -1,12 +1,12 @@
 package com.hearthproject.oneclient.api.curse;
 
+import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.Mod;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.FileData;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public class CurseMod extends Mod {
 
 	@Override
 	public void install(Instance instance) {
-		NotifyUtil.setText("Installing %s", FilenameUtils.getBaseName(fileData.getURL()));
+		DownloadManager.updateMessage(instance.getName(), "Installing %s", FilenameUtils.getBaseName(fileData.getURL()));
 		File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 		this.file = new FileHash(mod);
 	}
