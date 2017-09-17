@@ -66,14 +66,18 @@ public class InstanceManager {
 		//Loads old instances
 		File manifestJson = new File(dir, "manifest.json");
 		if (manifestJson.exists()) {
-			JsonObject jsonObject = JsonUtil.read(manifestJson, JsonObject.class);
-			Instance newInstance = new Instance();
-			newInstance.name = jsonObject.get("name").getAsString();
-			newInstance.icon = jsonObject.get("icon").getAsString();
-			newInstance.gameVersion = jsonObject.get("minecraft").getAsJsonObject().get("version").getAsString();
-			String forgeVersion = jsonObject.get("minecraft").getAsJsonObject().get("modLoaders").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
-			newInstance.forgeVersion = forgeVersion.split("-")[1];
-			return newInstance;
+			try {
+				JsonObject jsonObject = JsonUtil.read(manifestJson, JsonObject.class);
+				Instance newInstance = new Instance();
+				newInstance.name = jsonObject.get("name").getAsString();
+				newInstance.icon = jsonObject.get("icon").getAsString();
+				newInstance.gameVersion = jsonObject.get("minecraft").getAsJsonObject().get("version").getAsString();
+				String forgeVersion = jsonObject.get("minecraft").getAsJsonObject().get("modLoaders").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+				newInstance.forgeVersion = forgeVersion.split("-")[1];
+				return newInstance;
+			} catch (Exception e) {
+				//TODO let the user know it could not be imported?
+			}
 		}
 		return null;
 	}

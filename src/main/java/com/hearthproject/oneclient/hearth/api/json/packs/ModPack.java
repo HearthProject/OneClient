@@ -22,7 +22,6 @@ public class ModPack {
 		public String downloadURL;
 	}
 
-
 	public void save(File file) throws IOException {
 		FileUtils.writeStringToFile(file, HearthApi.GSON.toJson(this), StandardCharsets.UTF_8);
 	}

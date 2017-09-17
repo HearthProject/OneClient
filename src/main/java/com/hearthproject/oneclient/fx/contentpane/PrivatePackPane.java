@@ -6,20 +6,26 @@ import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.hearth.api.HearthApi;
 import com.hearthproject.oneclient.hearth.api.json.Role;
 import com.hearthproject.oneclient.hearth.api.json.User;
+import com.hearthproject.oneclient.hearth.api.json.packs.ModPack;
 import com.hearthproject.oneclient.hearth.fx.HearthPanes;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class PrivatePackPane extends ContentPane {
 
 	public Text infoText;
 	public Button buttonLogin;
 	public Button buttonNewPack;
+	public Button buttonInstall;
+	public Button buttonEdit;
+	public ChoiceBox packList;
+	public ChoiceBox adminPackList;
 
 	private User userData;
 
@@ -61,7 +67,27 @@ public class PrivatePackPane extends ContentPane {
 
 	@Override
 	public void refresh() {
+		packList.getItems().clear();
+		adminPackList.getItems().clear();
+		try {
+			List<ModPack> packs = HearthApi.getHearthPrivatePacks().getPacks();
+			if (!packs.isEmpty()) {
+				for (ModPack modPack : packs) {
+					packList.getItems().add(modPack.name);
+				}
+				packList.getSelectionModel().select(0);
+			}
 
+			List<ModPack> admin = HearthApi.getHearthPrivatePacks().getAdminPacks();
+			if (!admin.isEmpty()) {
+				for (ModPack modPack : admin) {
+					adminPackList.getItems().add(modPack.name);
+				}
+				adminPackList.getSelectionModel().select(0);
+			}
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

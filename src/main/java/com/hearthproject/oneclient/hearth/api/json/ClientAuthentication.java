@@ -1,7 +1,6 @@
 package com.hearthproject.oneclient.hearth.api.json;
 
-public class ClientAuthentication
-{
+public class ClientAuthentication {
 	public String username;
 	public String id;
 	public String accessToken;

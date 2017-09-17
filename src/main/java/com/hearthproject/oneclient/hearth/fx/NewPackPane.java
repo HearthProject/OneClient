@@ -1,18 +1,16 @@
 package com.hearthproject.oneclient.hearth.fx;
 
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.hearth.api.HearthApi;
 import com.hearthproject.oneclient.hearth.api.json.packs.ModPack;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-
 
 public class NewPackPane extends ContentPane {
 
@@ -38,7 +36,7 @@ public class NewPackPane extends ContentPane {
 			public void handle(ActionEvent event) {
 				try {
 					ModPack modPack = HearthApi.getHearthPrivatePacks().createNewPack(textPackName.getText(), "Testing mod pack");
-					System.out.println(modPack);
+					ContentPanes.PRIVATE_PACK_PANE.button.fire();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

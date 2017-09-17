@@ -2,10 +2,6 @@ package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.hearth.HearthApi;
-import com.hearthproject.oneclient.hearth.json.User;
-import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
-import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.hearth.api.HearthApi;
 import com.hearthproject.oneclient.hearth.api.json.Role;
 import com.hearthproject.oneclient.hearth.api.json.User;
@@ -28,6 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -156,8 +153,12 @@ public class MinecraftAuthController {
 		}
 		if (HearthApi.enable) {
 			OneClientLogging.info("Logging into hearth");
-			HearthApi.getHearthAuthentication().login(authentication);
-			save(save, authentication.getSelectedProfile().getName());
+			try {
+				HearthApi.getHearthAuthentication().login(authentication);
+				save(save);
+			} catch (Exception e) {
+				OneClientLogging.logUserError(e, "Failed to log into hearth");
+			}
 		}
 		updateGui();
 	}
@@ -251,15 +252,15 @@ public class MinecraftAuthController {
 					e.printStackTrace();
 				}
 				Main.mainController.usernameText.setText(authentication.getSelectedProfile().getName());
-				if (HearthApi.enable && HearthApi.getAuthentication() != null) {
+				if (HearthApi.enable && HearthApi.getHearthAuthentication().getAuthentication() != null) {
 					try {
 						User user = HearthApi.getHearthAuthentication().getUser();
-						if(user.roles != null){
-							for(Role role : user.roles){
+						if (user.roles != null) {
+							for (Role role : user.roles) {
 								ImageView roleImage = new ImageView();
 								roleImage.setFitHeight(16);
 								roleImage.setFitWidth(32);
-								mainHbox.getChildren().add(roleImage);
+								Main.mainController.userBox.getChildren().add(roleImage);
 								try {
 									roleImage.setImage(new Image(new URL(role.iconUrl).openStream()));
 								} catch (IOException e) {

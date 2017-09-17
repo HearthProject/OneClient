@@ -15,10 +15,10 @@ public class Role {
 		this.description = description;
 	}
 
-	public boolean doesUserHaveRole(User user){
-		if(user.roles != null){
-			for(Role role : user.roles){
-				if(role.name.equals(this.name)){
+	public boolean doesUserHaveRole(User user) {
+		if (user.roles != null) {
+			for (Role role : user.roles) {
+				if (role.name.equals(this.name)) {
 					return true;
 				}
 			}

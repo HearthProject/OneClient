@@ -40,7 +40,6 @@ public class HearthAuthentication {
 			OneClientLogging.logger.error("Failed to get client permissions");
 			return null;
 		}
-		System.out.println(response.getBody());
 		User user = JsonUtil.GSON.fromJson(response.getBody(), User.class);
 		return user;
 	}
