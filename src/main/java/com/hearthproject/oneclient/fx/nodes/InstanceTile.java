@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public class InstanceTile extends StackPane {
-	public static GaussianBlur blurEffect = new GaussianBlur(25);
+	public static GaussianBlur blurEffect = new GaussianBlur(18);
 	public final Instance instance;
 	@FXML
 	public Text modpackText;

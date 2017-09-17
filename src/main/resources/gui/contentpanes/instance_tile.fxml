@@ -14,7 +14,6 @@
     <children>
       <Rectangle fill="DODGERBLUE" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0" />
             <ImageView fx:id="imageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true" />
-        <VBox alignment="BOTTOM_CENTER" />
       <StackPane fx:id="nodePane">
          <children>
             <ImageView fx:id="blurredImageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true">

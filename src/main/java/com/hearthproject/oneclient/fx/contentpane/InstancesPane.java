@@ -6,11 +6,9 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ public class InstancesPane extends ContentPane {
 	public ScrollPane scrollPane;
 
 	public ArrayList<InstanceTile> instanceTiles = new ArrayList<>();
-	private StackPane newInstanceTile;
+	private boolean newButtonVisibility = false;
 
 	public InstancesPane() {
 		super("gui/contentpanes/instances.fxml", "Home", "home.png", ButtonDisplay.TOP);
@@ -30,9 +28,6 @@ public class InstancesPane extends ContentPane {
 
 	@Override
 	public void onStart() {
-		if (newInstanceTile == null) {
-			newInstanceTile = (StackPane) instancePane.getChildren().get(0);
-		}
 		scrollPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		scrollPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 		scrollPane.setContent(instancePane);
@@ -42,11 +37,6 @@ public class InstancesPane extends ContentPane {
 	@Override
 	public void refresh() {
 		refreshInstances();
-	}
-
-	@SuppressWarnings("unused")
-	public void onNewInstancePress() {
-		NewInstanceController.start(null);
 	}
 
 	private void refreshInstances() {
@@ -59,7 +49,9 @@ public class InstancesPane extends ContentPane {
 				Platform.runLater(() -> panes.add(new InstanceTile(instance)));
 			}
 			instanceTiles.addAll(panes);
-			Platform.runLater(() -> instancePane.getChildren().setAll(panes));
+			Platform.runLater(() -> {
+				instancePane.getChildren().setAll(panes);
+			});
 		}).start();
 	}
 

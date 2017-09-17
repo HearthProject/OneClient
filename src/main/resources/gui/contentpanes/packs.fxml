@@ -9,6 +9,16 @@
 
 <VBox alignment="CENTER" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Roboto'; -fx-fill: -oc-text; -fx-font-weight: bold; -fx-font-size: 18;" text="Create..." />
+      <JFXButton id="oc-raised-button" fx:id="buttonCustom" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="Custom">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/custom.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </JFXButton>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Roboto'; -fx-fill: -oc-text; -fx-font-weight: bold; -fx-font-size: 18;" text="Install from..." />
       <JFXButton id="oc-raised-button" fx:id="buttonCurse" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="CurseForge">
          <graphic>

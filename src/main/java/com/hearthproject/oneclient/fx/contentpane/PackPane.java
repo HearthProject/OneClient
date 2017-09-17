@@ -5,6 +5,7 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.multimc.MMCImporter;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.jfoenix.controls.JFXButton;
 import javafx.stage.FileChooser;
 
@@ -12,7 +13,7 @@ import java.io.File;
 
 public class PackPane extends ContentPane {
 
-	public JFXButton buttonCurse, buttonMMC;
+	public JFXButton buttonCustom, buttonCurse, buttonMMC;
 
 	public PackPane() {
 		super("gui/contentpanes/packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
@@ -20,6 +21,8 @@ public class PackPane extends ContentPane {
 
 	@Override
 	protected void onStart() {
+		buttonCustom.setOnAction(event -> NewInstanceController.start(null));
+
 		buttonCurse.setOnAction(event -> {
 			Main.mainController.currentContent.button.setSelected(false);
 			Main.mainController.setContent(ContentPanes.CURSE_META_PANE);

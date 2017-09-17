@@ -1,35 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
-<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" prefHeight="227.0" prefWidth="399.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <TilePane fx:id="instancePane" hgap="6.0" styleClass="background" vgap="6.0">
-         <children>
-            <StackPane>
-               <children>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <JFXButton fx:id="newInstanceButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" onAction="#onNewInstancePress" prefHeight="192.0" prefWidth="192.0" ripplerFill="#0d9179" style="-fx-border-width: 0; -fx-background-color: -oc-dark;" text=" ">
-                           <graphic>
-                              <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../images/new_instance.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </JFXButton>
-                     </children>
-                  </VBox>
-               </children>
-            </StackPane>
-         </children>
-      </TilePane>
+      <TilePane fx:id="instancePane" hgap="6.0" styleClass="background" vgap="6.0" />
    </content>
 </ScrollPane>
