@@ -10,17 +10,15 @@ import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.commons.io.FileUtils;
-
-import java.io.File;
 
 public class InstancePane extends ContentPane {
 
@@ -80,7 +78,7 @@ public class InstancePane extends ContentPane {
 		});
 
 		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
-		columnEnabled.setCellValueFactory(new PropertyValueFactory<>("enabled"));
+		columnEnabled.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isEnabled()));
 
 		tableMods.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		tableMods.setPlaceholder(new Label("No Mods installed"));
@@ -94,21 +92,25 @@ public class InstancePane extends ContentPane {
 			open.setOnAction(event -> OperatingSystem.openWithSystem(row.getItem().getHash().getFile()));
 
 			MenuItem disable = new MenuItem("Enable/Disable");
-			disable.setOnAction(event -> row.getItem().getHash().getFile().renameTo(new File(row.getItem().getHash().getFile().toString() + ".disabled")));
+			disable.setOnAction(event -> {
+				row.getItem().toggleEnabled();
+				instance.verifyMods();
+				tableMods.sort();
+			});
 
 			MenuItem delete = new MenuItem("Delete");
 			delete.setOnAction(event -> {
 				FileUtils.deleteQuietly(row.getItem().getHash().getFile());
 				instance.mods.remove(row.getItem());
 			});
-			rowMenu.getItems().addAll(open, disable, delete);
+			rowMenu.getItems().addAll(disable, delete);
 			row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(rowMenu).otherwise((ContextMenu) null));
 			return row;
 		});
 
 		tableMods.setItems(instance.getMods());
 		tableMods.sort();
-		tableMods.getColumns().addAll(columnMods);
+		tableMods.getColumns().addAll(columnMods, columnEnabled);
 	}
 
 	@Override

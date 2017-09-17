@@ -44,4 +44,16 @@ public class Mod implements IInstallable {
 	public String toString() {
 		return JsonUtil.GSON.toJson(this);
 	}
+
+	public void toggleEnabled() {
+		if (isEnabled()) {
+			getHash().getFile().renameTo(new File(getHash().getFilePath() + ".disabled"));
+		} else {
+			getHash().getFile().renameTo(new File(getHash().getFilePath().replace(".disabled", "")));
+		}
+	}
+
+	public boolean isEnabled() {
+		return !FilenameUtils.isExtension(getHash().getFilePath(), "disabled");
+	}
 }

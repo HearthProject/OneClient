@@ -6,7 +6,6 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -176,13 +175,12 @@ public class Instance {
 		return installer;
 	}
 
-	private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
+	private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar.disabled"), FileFilterUtils.suffixFileFilter(".zip.disabled"), FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
 
 	//walks mod directory and creates Mod objects for any not found
 	//Remove Mod entries for files that are no longer available.
-	protected void verifyMods() {
+	public void verifyMods() {
 		new Thread(() -> {
-			OneClientLogging.info("Verifying {} Mods", getName());
 			File modDir = getModDirectory();
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<Mod> newMods = Lists.newArrayList();
@@ -229,7 +227,6 @@ public class Instance {
 				});
 				this.mods.addAll(newMods);
 			}
-			OneClientLogging.info("Finished Verifying {}", this.getName());
 			this.save();
 		}).start();
 	}
