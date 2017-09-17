@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox alignment="CENTER" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Roboto'; -fx-fill: -oc-text; -fx-font-weight: bold; -fx-font-size: 18;" text="Install from..." />
+      <JFXButton id="oc-raised-button" fx:id="buttonCurse" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="CurseForge">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/curseforge.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </JFXButton>
+      <JFXButton id="oc-raised-button" disable="true" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="Hearth">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/hearth.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </JFXButton>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: 'Roboto'; -fx-fill: -oc-text; -fx-font-weight: bold; -fx-font-size: 18;" text="Import from..." />
+      <JFXButton id="oc-raised-button" fx:id="buttonMMC" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="MultiMC">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/multimc.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </JFXButton>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

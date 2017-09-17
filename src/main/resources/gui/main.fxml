@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.StatusBar?>
-<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
+
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
     <children>
         <VBox fx:id="sideBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
             <children>
@@ -30,22 +32,21 @@
                               <Insets left="6.0" />
                            </HBox.margin>
                         </Text>
-                        <AnchorPane fx:id="logoutPane" onMouseClicked="#onLogoutPress">
-                           <children>
-                              <Rectangle fill="#ffffff00" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="33.0" />
-                              <ImageView fx:id="logoutImageView" fitHeight="24.0" fitWidth="58.0" layoutX="3.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                        <JFXButton id="oc-circle-button" fx:id="signOutButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#onSignOutPress" prefHeight="33.0" prefWidth="33.0" ripplerFill="WHITE" text="Sign Out">
+                           <graphic>
+                              <ImageView fx:id="signOutIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/logout.png" />
                                  </image>
                               </ImageView>
-                           </children>
+                           </graphic>
                            <HBox.margin>
-                              <Insets left="2.0" />
+                              <Insets />
                            </HBox.margin>
-                        </AnchorPane>
+                        </JFXButton>
                      </children>
                   </HBox>
-                  <JFXButton id="oc-raised-button" fx:id="signInButton" buttonType="RAISED" focusTraversable="false" onAction="#onSignInPress" onMouseClicked="#onSignInPress" prefHeight="35.0" prefWidth="94.0" text="SIGN IN" textAlignment="CENTER" />
+                  <JFXButton id="oc-raised-button" fx:id="signInButton" buttonType="RAISED" focusTraversable="false" onAction="#onSignInPress" prefHeight="35.0" prefWidth="94.0" text="SIGN IN" textAlignment="CENTER" />
                </children>
                <VBox.margin>
                   <Insets bottom="6.0" />
@@ -102,7 +103,7 @@
                         </VBox>
                         <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" VBox.vgrow="ALWAYS">
                             <children>
-                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -oc-dark;" HBox.hgrow="ALWAYS">
+                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -oc-dark; -fx-font-family: 'Roboto' -sans-serif;; -fx-text-fill: -oc-text;" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
                                         <Insets bottom="6.0" left="6.0" right="6.0" />
                                     </HBox.margin>

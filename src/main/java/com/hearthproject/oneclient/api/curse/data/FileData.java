@@ -16,7 +16,10 @@ public class FileData {
 	public String getURL() {
 
 		CurseProject.CurseFile file = JsonUtil.read(Curse.getFileURL(projectID, fileID), CurseProject.CurseFile.class);
-		return file.getDownloadURL();
+		if (file != null) {
+			return file.getDownloadURL();
+		}
+		return null;
 	}
 
 	@Override

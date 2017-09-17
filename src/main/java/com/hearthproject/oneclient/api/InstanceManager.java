@@ -7,15 +7,17 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.files.FileUtil;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InstanceManager {
+
+	public static AtomicBoolean installing = new AtomicBoolean(false);
 
 	protected static Map<String, Instance> instances = new HashMap<>();
 
@@ -37,28 +39,26 @@ public class InstanceManager {
 		}
 		instances.put(instance.getName(), instance);
 		save();
-		init(instance);
 	}
 
 	public static void save() {
 		instances.values().forEach(Instance::save);
 	}
 
-	public static void init(Instance instance) {
-		File instanceDir = instance.getDirectory();
-		for (String dir : Constants.INITIALIZE_DIRS) {
-			FileUtil.findDirectory(instanceDir, dir);
-		}
-	}
-
 	public static void load() {
 		SplashScreen.updateProgess("Loading instances", 10);
 		instances.clear();
-		Arrays.stream(Constants.INSTANCEDIR.listFiles()).filter(File::isDirectory).forEach(dir -> {
-			Instance instance = load(dir);
-			if (instance != null)
-				instances.put(instance.getName(), instance);
-		});
+
+		File[] dirs = Constants.INSTANCEDIR.listFiles(File::isDirectory);
+		if (dirs != null) {
+			Arrays.stream(dirs).parallel().filter(File::isDirectory).forEach(dir -> {
+				Instance instance = load(dir);
+				if (instance != null) {
+					instances.put(instance.getName(), instance);
+					instance.verifyMods();
+				}
+			});
+		}
 	}
 
 	@Deprecated
@@ -85,6 +85,7 @@ public class InstanceManager {
 		if (instance == null) {
 			instance = loadLegacy(dir);
 		}
+
 		return instance;
 	}
 
@@ -100,7 +101,7 @@ public class InstanceManager {
 	}
 
 	public static void removeInstance(Instance instance) {
-		save();
+		instances.remove(instance.getName());
 	}
 
 }

@@ -8,13 +8,10 @@ import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRippler;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -43,7 +40,7 @@ public class MainController {
 	@FXML
 	public JFXButton signInButton;
 	@FXML
-	public AnchorPane logoutPane;
+	public JFXButton signOutButton;
 	@FXML
 	public ImageView imageBox;
 	@FXML
@@ -53,7 +50,7 @@ public class MainController {
 	@FXML
 	public StatusBar statusBar;
 	@FXML
-	public ImageView logoutImageView;
+	public ImageView signOutIcon;
 
 	public ImageView loadingIcon;
 
@@ -85,12 +82,7 @@ public class MainController {
 		setContent(ContentPanes.INSTANCES_PANE);
 		onSceneResize(stage.getScene());
 
-		JFXRippler rippler = new JFXRippler(logoutPane);
-		rippler.setMaskType(JFXRippler.RipplerMask.CIRCLE);
-		rippler.setRipplerFill(Paint.valueOf("#FFFFFF"));
-		userInfoBox.getChildren().add(rippler);
 		userBox.getChildren().clear();
-
 		statusBar.setText("");
 		labelProgress = new Label();
 
@@ -100,8 +92,6 @@ public class MainController {
 		loadingIcon.setVisible(false);
 
 		statusBar.getRightItems().addAll(labelProgress, loadingIcon);
-
-		signInButton.setOnAction(event -> MinecraftAuthController.openLoginGui());
 	}
 
 	public void onSceneResize(Scene scene) {
@@ -130,11 +120,11 @@ public class MainController {
 		OperatingSystem.browseURI("http://partners.creeper.host/r/theoneclientxae");
 	}
 
-	public void onLogoutPress() {
+	public void onSignOutPress() {
 		MinecraftAuthController.doLogout();
 	}
 
 	public void onSignInPress() {
-
+		MinecraftAuthController.openLoginGui();
 	}
 }

@@ -1,32 +1,37 @@
 package com.hearthproject.oneclient.api.curse;
 
+import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.IInstallable;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.ModInstaller;
-import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.api.*;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
+import com.hearthproject.oneclient.fx.nodes.PackUpdateDialog;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CurseInstaller extends ModInstaller {
+	private transient CurseProject project;
+	private transient List<CurseProject.CurseFile> files;
+	private transient Manifest manifest;
+	private CurseProject.CurseFile file;
+	public String projectId;
 
-	private List<CurseProject.CurseFile> files;
-	private Manifest manifest;
-
-	private CurseProject.CurseFile file = null;
-
-	public CurseInstaller(List<CurseProject.CurseFile> file) {
-		this.files = file;
+	public CurseInstaller(CurseProject project) {
+		super(PackType.CURSE);
+		this.project = project;
+		this.files = project.getFiles("");
+		this.projectId = project.Id;
 	}
 
 	public void setFile(CurseProject.CurseFile file) {
@@ -49,25 +54,41 @@ public class CurseInstaller extends ModInstaller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		NotifyUtil.setText("Downloading {}", instance.getName());
+		//TODO more precise
+		if (instance.getModDirectory().exists()) {
+			try {
+				FileUtils.deleteDirectory(instance.getModDirectory());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		//TODO more precise
+		if (instance.getConfigDirectory().exists()) {
+			try {
+				FileUtils.deleteDirectory(instance.getConfigDirectory());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
+		DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		NotifyUtil.setText("Installing {}", instance.getName());
+		DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
 		instance.setGameVersion(manifest.minecraft.version);
 		instance.setForgeVersion(manifest.minecraft.getModloader());
-		List<IInstallable> mods = getMods();
-		int count = 0;
-		for (IInstallable mod : mods) {
-			NotifyUtil.setProgressText(count + "/" + mods.size());
-			NotifyUtil.setProgress(((double) count) / mods.size());
+
+		List<Mod> mods = getMods();
+		AtomicInteger counter = new AtomicInteger(1);
+		for (Mod mod : mods) {
+			DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 			mod.install(instance);
-			count++;
 		}
+		DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
+		installOverrides(pack, instance.getDirectory());
+		instance.setMods(FXCollections.observableArrayList(mods));
 		NotifyUtil.clear();
-		installOverrides(pack, directory);
-		//TODO get icon
 	}
 
 	private void installOverrides(File pack, File instance) {
@@ -88,12 +109,49 @@ public class CurseInstaller extends ModInstaller {
 		}
 	}
 
-	@Override
-	public PackType getType() {
-		return PackType.CURSE;
+	public List<Mod> getMods() {
+		return manifest.files.stream().map(CurseMod::new).collect(Collectors.toList());
 	}
 
-	public List<IInstallable> getMods() {
-		return manifest.files.stream().map(CurseMod::new).collect(Collectors.toList());
+	@Override
+	public String toString() {
+		return JsonUtil.GSON.toJson(this);
+	}
+
+	public CurseProject.CurseFile findUpdate(Instance instance) {
+		NotifyUtil.setText("%s Checking for updates", instance.getName());
+		this.files = Curse.getFiles(projectId, "");
+		if (this.files != null) {
+			List<CurseProject.CurseFile> updates = Lists.newArrayList();
+			for (CurseProject.CurseFile file : files) {
+				if (file.compareTo(this.file) < 0) {
+					updates.add(file);
+				}
+			}
+			if (updates.isEmpty()) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("No Updates Available");
+				alert.setHeaderText("No Updates Available");
+				alert.setGraphic(null);
+				alert.showAndWait();
+				return null;
+			}
+
+			CurseProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);
+			this.file = file;
+			return file;
+		}
+		return null;
+	}
+
+	@Override
+	public void update(Instance instance) {
+		CurseProject.CurseFile update = findUpdate(instance);
+		if (update != null) {
+			setFile(update);
+			install(instance);
+			instance.save();
+			NotifyUtil.clear();
+		}
 	}
 }

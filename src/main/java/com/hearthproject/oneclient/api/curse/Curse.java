@@ -1,11 +1,15 @@
 package com.hearthproject.oneclient.api.curse;
 
+import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.api.curse.data.CurseModpacks;
+import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Curse {
 	private static final String CURSE_META_BASE = "https://cursemeta.dries007.net/";
@@ -49,4 +53,13 @@ public class Curse {
 		}
 		return null;
 	}
+
+	public static List<CurseProject.CurseFile> getFiles(String projectId, String gameVersion) {
+		CurseProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseProject.CurseFile[].class);
+		if (files != null) {
+			return Lists.newArrayList(files).stream().sorted().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
+		}
+		return null;
+	}
+
 }

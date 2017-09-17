@@ -1,7 +1,18 @@
 package com.hearthproject.oneclient.api;
 
 public enum PackType {
-	HEATH,
+	MANUAL,
+	HEARTH,
 	CURSE,
-	MULTIMC
+	MULTIMC;
+
+	public static final PackType[] VALUES = values();
+
+	public static PackType byName(String name) {
+		for (PackType value : VALUES) {
+			if (value.name().equalsIgnoreCase(name))
+				return value;
+		}
+		return MANUAL;
+	}
 }

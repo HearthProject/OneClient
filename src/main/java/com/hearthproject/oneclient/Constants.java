@@ -21,12 +21,11 @@ public class Constants {
 	public static File ICONDIR;
 	public static File MODPACKICON;
 	public static File MINECRAFTDIR;
+	public static File EXPORTS;
 
 	public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
 	public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
 	public static final String MAVEN_CENTRAL_BASE = "http://central.maven.org/maven2/";
-
-	public static String[] INITIALIZE_DIRS = new String[] { "config", "mods" };
 
 	public static boolean PORTABLE = false;
 
@@ -72,6 +71,7 @@ public class Constants {
 		LOGFILE = FileUtil.findDirectory(getRunDir(), "logs");
 		ICONDIR = FileUtil.findDirectory(Constants.TEMPDIR, "images");
 		MINECRAFTDIR = FileUtil.findDirectory(getRunDir(), "minecraft");
+		EXPORTS = FileUtil.findDirectory(getRunDir(), "exports");
 		MODPACKICON = new File(getRunDir(), "modpack.png");
 		ThreadContext.put("logs", LOGFILE.toString());
 		OneClientLogging.init();

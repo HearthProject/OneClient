@@ -30,6 +30,16 @@ public class AsyncTask<T> implements ListenableFuture<T>, Runnable {
 		return task.isDone();
 	}
 
+	public T getIfPresent() {
+		try {
+			T t = get();
+			return t;
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	public T get() throws InterruptedException, ExecutionException {
 		if (t != null)

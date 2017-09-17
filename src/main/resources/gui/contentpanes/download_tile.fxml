@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.*?>
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" type="VBox" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox>
+            <children>
+                <Label fx:id="title" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS"/>
+                <Pane maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <MenuButton alignment="TOP_LEFT" mnemonicParsing="false">
+                    <items>
+                        <MenuItem fx:id="cancel" mnemonicParsing="false" text="Cancel"/>
+                    </items>
+                </MenuButton>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </HBox.margin>
+                    <children>
+                        <Label fx:id="info" maxWidth="1.7976931348623157E308" prefHeight="30.0" text="Label" VBox.vgrow="ALWAYS"/>
+                        <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+                        <JFXProgressBar fx:id="progress" maxHeight="30.0" maxWidth="1.7976931348623157E308">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </VBox.margin>
+                        </JFXProgressBar>
+                        <Pane maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</fx:root>
