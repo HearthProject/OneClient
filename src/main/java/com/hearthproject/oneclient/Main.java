@@ -79,7 +79,7 @@ public class Main extends Application {
 				Platform.runLater(() -> {
 					try {
 						startLauncher();
-						Optional<String> latestVersion = Optional.empty(); //Updater.checkForUpdate();
+						Optional<String> latestVersion = Updater.checkForUpdate();
 						if (latestVersion.isPresent() && !nativeLaunch) {
 							Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 							alert.setTitle("Update?");
