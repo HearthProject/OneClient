@@ -10,7 +10,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 public class HearthApi {
 
 	//Use this to enable it
-	public static boolean enable = true;
+	public static boolean enable = false;
 	public static String API_URL = "http://localhost:4567/v1";
 
 	public static Gson GSON = new Gson();
