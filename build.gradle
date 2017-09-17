@@ -161,7 +161,7 @@ def buildDownloadJson(versionData) {
 		def nativeJson = new URL(njson.versionJsonURL).getText()
 		def jarJson = versionData.getText()
 
-		def downloadInfo = new TreeMap<String,Object>()
+		def downloadInfo = new LinkedHashMap<String,Object>()
 		downloadInfo["downloads"] = getDownloads(jarJson, nativeJson)
 
 		def jsonFile = new File(project.getBuildDir().getPath() + "/libs/downloadInfo.json")
@@ -177,8 +177,8 @@ def getDownloads(jar, nativee){
 	platformNameMap["linux-amd64"] = "Linux 64 Bit"
 	platformDescMap["linux-amd64"] = "For use on 64 bit linux (you may need to allow perssion to execute it)"
 
-	platformNameMap["linux-linux-386"] = "Linux 32 Bit"
-	platformDescMap["linux-linux-386"] = "For use on 32 bit linux (you may need to allow perssion to execute it)"
+	platformNameMap["linux-386"] = "Linux 32 Bit"
+	platformDescMap["linux-386"] = "For use on 32 bit linux (you may need to allow perssion to execute it)"
 
 	platformNameMap["windows-386"] = "Windows 32 Bit"
 	platformDescMap["windows-386"] = "If the 64bit version doesnt work, try this one."
@@ -191,17 +191,24 @@ def getDownloads(jar, nativee){
 
 	def jarJson = new JsonSlurper().parseText(jar)
 	def nativeJson = new JsonSlurper().parseText(nativee)
-	def data = new TreeMap<String,Object>()
+	def data = new LinkedHashMap<String,Object>()
 
-	nativeJson.files.each { key, value ->
-		if(nativeJson.files.get(key).platform == "darwin-amd64"){
-			nativeJson.files.get(key).url = nativeJson.files.get(key).url.replace("-darwin-amd64", "-osx.zip")
-		}
-		data[key] = getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version)
-	}
+	nativeJson.files.get("darwin-amd64").url = nativeJson.files.get("darwin-amd64").url.replace("-darwin-amd64", "-osx.zip")
 
-	data["jar"] = getFileDownloadInfo(jarJson.downloadUrl, "Cross Platform (jar)", "This will run on any system that java 8 supports. Recommended only if you know what you are doing.", jarJson.latestVersion)
-	data["jar_portable"] = getFileDownloadInfo(jarJson.portableDownloadUrl, "Portable (jar)", "The portable jar keeps all files it uses in the same directory as the jar. This is great for running from a USB stick.", jarJson.latestVersion)
+	def key = "windows-amd64"
+	data.put(key, getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version))
+	key = "windows-386"
+	data.put(key, getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version))
+	key = "darwin-amd64"
+	data.put(key, getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version))
+	key = "linux-amd64"
+	data.put(key, getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version))
+	key = "linux-386"
+	data.put(key, getFileDownloadInfo(nativeJson.files.get(key).url, platformNameMap[key], platformDescMap[key], nativeJson.files.get(key).version))
+
+
+	data.put("jar", getFileDownloadInfo(jarJson.downloadUrl, "Cross Platform (jar)", "This will run on any system that java 8 supports. Recommended only if you know what you are doing.", jarJson.latestVersion))
+	data.put("jar_portable",  getFileDownloadInfo(jarJson.portableDownloadUrl, "Portable (jar)", "The portable jar keeps all files it uses in the same directory as the jar. This is great for running from a USB stick.", jarJson.latestVersion))
 
 	return data
 }
