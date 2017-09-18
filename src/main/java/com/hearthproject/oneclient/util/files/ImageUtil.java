@@ -47,7 +47,6 @@ public class ImageUtil {
 		graphics.setFont(font);
 		Rectangle rect = getStringBounds(graphics, text, 0, 0);
 		if (rect.getWidth() > INSIDE) {
-			System.out.println(size);
 			findFont(graphics, text, size - 1);
 		}
 	}

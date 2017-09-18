@@ -54,6 +54,8 @@ public class Mod implements IInstallable {
 	}
 
 	public boolean isEnabled() {
-		return !FilenameUtils.isExtension(getHash().getFilePath(), "disabled");
+		if (getHash() != null)
+			return !FilenameUtils.isExtension(getHash().getFilePath(), "disabled");
+		return false;
 	}
 }

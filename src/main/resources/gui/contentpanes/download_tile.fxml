@@ -2,9 +2,7 @@
 
 <?import com.jfoenix.controls.JFXProgressBar?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" type="VBox" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
@@ -12,9 +10,10 @@
             <children>
                 <Label fx:id="title" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS"/>
                 <Pane maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
-                <MenuButton alignment="TOP_LEFT" mnemonicParsing="false">
+                <MenuButton text="Options" alignment="TOP_LEFT" mnemonicParsing="false">
                     <items>
                         <MenuItem fx:id="cancel" mnemonicParsing="false" text="Cancel"/>
+                        <MenuItem fx:id="remove" mnemonicParsing="false" text="Remove"/>
                     </items>
                 </MenuButton>
             </children>

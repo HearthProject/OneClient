@@ -160,7 +160,7 @@ public class NewInstanceController {
 			try {
 				MinecraftUtil.installMinecraft(finalInstance);
 				NotifyUtil.setText(Duration.seconds(10), "%s has been downloaded and installed!", finalInstance.getName());
-				InstanceManager.setInstanceInstalling(finalInstance, false);
+				finalInstance.setInstalling(false);
 			} catch (Throwable throwable) {
 				OneClientLogging.logUserError(throwable, "An error occurred while installing minecraft");
 			}

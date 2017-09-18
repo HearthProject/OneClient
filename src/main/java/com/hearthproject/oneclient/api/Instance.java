@@ -9,6 +9,7 @@ import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -37,7 +38,7 @@ public class Instance {
 	public ObservableList<Mod> mods = FXCollections.observableArrayList();
 
 	public transient Image image;
-
+	public transient SimpleBooleanProperty installing;
 	public ModInstaller installer;
 
 	public Instance(String name, String url, ModInstaller installer, Pair<String, Object>... info) {
@@ -51,6 +52,7 @@ public class Instance {
 	public Instance() {
 		this.icon = "icon.png";
 		this.forgeVersion = "";
+		installing = new SimpleBooleanProperty(false);
 	}
 
 	public String getName() {
@@ -130,19 +132,18 @@ public class Instance {
 	}
 
 	public void install() {
-		InstanceManager.setInstanceInstalling(this, true);
+		setInstalling(true);
 		FileUtil.createDirectory(getDirectory());
 		if (installer != null)
 			installer.install(this);
-		new Thread(() -> {
-			try {
-				MinecraftUtil.installMinecraft(this);
-			} catch (Throwable throwable) {
-				throwable.printStackTrace();
-			}
-		}).start();
+		try {
+			MinecraftUtil.installMinecraft(this);
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
 		save();
-		InstanceManager.setInstanceInstalling(this, false);
+		setInstalling(false);
+		InstanceManager.addInstance(this);
 	}
 
 	public void delete() {
@@ -188,7 +189,7 @@ public class Instance {
 				List<Mod> removal = Lists.newArrayList();
 				for (Mod mod : this.mods) {
 					Collection<File> sorted = Collections2.filter(files, f -> {
-						if (f != null && mod != null) {
+						if (f != null && mod != null && mod.file != null) {
 							return f.toString().equals(mod.file.getFilePath());
 						}
 						return false;
@@ -227,5 +228,17 @@ public class Instance {
 			}
 			this.save();
 		}).start();
+	}
+
+	public boolean isInstalling() {
+		return installing.get();
+	}
+
+	public SimpleBooleanProperty installingProperty() {
+		return installing;
+	}
+
+	public void setInstalling(boolean installing) {
+		this.installing.set(installing);
 	}
 }

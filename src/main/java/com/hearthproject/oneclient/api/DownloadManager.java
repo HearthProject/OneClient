@@ -9,8 +9,10 @@ import javafx.collections.ObservableMap;
 public class DownloadManager {
 	public static ObservableMap<String, DownloadTask> DOWNLOADS = FXCollections.observableHashMap();
 
-	public static void startDownload(String name, Runnable runnable) {
-		DOWNLOADS.put(name, new DownloadTask(name, runnable).start());
+	public static DownloadTask createDownload(String name, Runnable runnable) {
+		if (DOWNLOADS.containsKey(name))
+			return get(name);
+		return new DownloadTask(name, runnable);
 	}
 
 	public static ReadOnlyStringProperty messageProperty(String name) {

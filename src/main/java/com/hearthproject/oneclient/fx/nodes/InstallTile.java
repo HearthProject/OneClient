@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
@@ -65,7 +66,10 @@ public class InstallTile extends StackPane implements Comparable<InstallTile> {
 		//		left.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
 		middle.getChildren().addAll(info(getPopularity()), info(instance.info.get("authors")));
 
-		buttonInstall.setOnAction(event -> DownloadManager.startDownload(instance.getName(), instance::install));
+		DownloadTask task = DownloadManager.createDownload(instance.getName(), instance::install);
+		buttonInstall.disableProperty().bind(task.runningProperty());
+		buttonInstall.setOnAction(event -> task.start());
+
 		imageView.setImage(instance.getImage());
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);

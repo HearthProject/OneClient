@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -114,7 +113,7 @@ public class MinecraftUtil {
 	public static int i = 1, count;
 
 	public static void installMinecraft(Instance instance) throws Throwable {
-		InstanceManager.setInstanceInstalling(instance, true);
+		instance.setInstalling(true);
 		NotifyUtil.setText("Installing minecraft for " + instance.getName());
 		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
 
@@ -187,7 +186,7 @@ public class MinecraftUtil {
 			}
 		});
 		OneClientLogging.logger.info("Done minecraft files are all downloaded");
-		InstanceManager.setInstanceInstalling(instance, false);
+		instance.setInstalling(false);
 		NotifyUtil.clear();
 	}
 

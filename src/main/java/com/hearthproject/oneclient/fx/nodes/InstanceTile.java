@@ -38,6 +38,8 @@ public class InstanceTile extends StackPane {
 	public StackPane nodePane;
 
 	public InstanceTile(Instance instance) {
+		if (instance == null)
+			throw new NullPointerException("Missing Instance!");
 		this.instance = instance;
 		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/instance_tile.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(loc);
@@ -58,7 +60,6 @@ public class InstanceTile extends StackPane {
 		nodePane.setOpacity(0F);
 		playButton.setOnAction(event -> MinecraftUtil.startMinecraft(this.instance));
 		editButton.setOnAction(event -> InstancePane.show(instance));
-
 		nodePane.hoverProperty().addListener((observable, oldValue, newValue) -> {
 			FadeTransition fadeTransition = new FadeTransition(new Duration(400), nodePane);
 			if (newValue) {
@@ -77,20 +78,17 @@ public class InstanceTile extends StackPane {
 		playButton.visibleProperty().bind(nodePane.hoverProperty());
 		editButton.visibleProperty().bind(nodePane.hoverProperty());
 		blurEffect.radiusProperty().bind(nodePane.opacityProperty().multiply(18));
-	}
 
-	public void setInstalling(boolean installing) {
-		MiscUtil.runLaterIfNeeded(() -> {
-			playButton.setDisable(installing);
-			editButton.setDisable(installing);
-			imageView.setDisable(installing);
-			if (installing) {
+		playButton.disableProperty().bind(instance.installingProperty());
+		editButton.disableProperty().bind(instance.installingProperty());
+		imageView.disableProperty().bind(instance.installingProperty());
+		instance.installingProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
 				statusText.setText("Installing...");
 			} else {
 				statusText.setText(instance.getGameVersion());
 			}
 		});
-
 	}
 
 }

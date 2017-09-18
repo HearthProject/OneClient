@@ -1,6 +1,8 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.jfoenix.controls.JFXProgressBar;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,9 +24,12 @@ public class DownloadTile extends VBox {
 	private Label title;
 
 	@FXML
-	private MenuItem cancel;
+	private MenuItem cancel, remove;
+
+	private DownloadTask task;
 
 	public DownloadTile(String name) {
+		task = DownloadManager.get(name);
 		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/download_tile.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(loc);
 		fxmlLoader.setRoot(this);
@@ -34,9 +39,19 @@ public class DownloadTile extends VBox {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+		getStylesheets().add("gui/css/theme.css");
 		title.setText("Downloading " + name);
 		progress.progressProperty().bind(DownloadManager.progressProperty(name));
 		info.textProperty().bind(DownloadManager.messageProperty(name));
-		cancel.setOnAction(event -> DownloadManager.get(name).cancel(true));
+		cancel.setOnAction(event -> task.cancel(true));
+		remove.setOnAction(event -> {
+			task.setRemoved(true);
+			ContentPanes.DOWNLOADS_PANE.downloads.refresh();
+		});
+
+	}
+
+	public boolean isRemoved() {
+		return task.isRemoved();
 	}
 }

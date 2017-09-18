@@ -29,6 +29,7 @@ public class DownloadsPane extends ContentPane {
 				if (newItem != null) {
 					// update cellRoot (or its child nodes' properties) accordingly
 					cell.setGraphic(new DownloadTile(newItem.getName()));
+
 				}
 			});
 			cell.emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {

@@ -3,62 +3,59 @@ package com.hearthproject.oneclient.api;
 import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.fx.SplashScreen;
-import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Iterator;
 
 public class InstanceManager {
+	protected static ObservableMap<String, Instance> INSTANCES_MAP = FXCollections.observableHashMap();
 
-	public static AtomicBoolean installing = new AtomicBoolean(false);
-
-	protected static Map<String, Instance> instances = new HashMap<>();
-
-	public static Collection<Instance> getInstances() {
-		return instances.values();
-	}
-
-	public static Instance getInstance(String name) {
-		return instances.get(name);
+	public static ObservableList<Instance> getInstances() {
+		return FXCollections.observableArrayList(INSTANCES_MAP.values());
 	}
 
 	public static void addInstance(Instance instance) {
-		//TODO check its unique
-		for (Instance i : instances.values()) {
-			int j = 2;
-			while (instance.getName().equals(i.getName())) {
-				instance.setName(instance.getName() + "i" + j);
-			}
+		if (!INSTANCES_MAP.containsKey(instance.getName())) {
+			INSTANCES_MAP.put(instance.getName(), instance);
+			instance.verifyMods();
+			save();
 		}
-		instances.put(instance.getName(), instance);
-		save();
 	}
 
 	public static void save() {
-		instances.values().forEach(Instance::save);
+		INSTANCES_MAP.values().forEach(Instance::save);
+	}
+
+	public static void verify() {
+		OneClientLogging.logger.info("Verifying Instances");
+		SplashScreen.updateProgess("Verifying instances", 10);
+		for (Iterator<Instance> iterator = INSTANCES_MAP.values().iterator(); iterator.hasNext(); ) {
+			Instance instance = iterator.next();
+			if (!instance.getDirectory().exists()) {
+				INSTANCES_MAP.remove(instance.getName());
+			} else {
+				instance.verifyMods();
+			}
+		}
 	}
 
 	public static void load() {
 		OneClientLogging.logger.info("Loading Instances");
 		SplashScreen.updateProgess("Loading instances", 10);
-		instances.clear();
+		INSTANCES_MAP.clear();
 		File[] dirs = Constants.INSTANCEDIR.listFiles(File::isDirectory);
 		if (dirs != null) {
-			Arrays.stream(dirs).filter(File::isDirectory).forEach(dir -> {
+			for (File dir : dirs) {
 				Instance instance = load(dir);
 				if (instance != null) {
-					instances.put(instance.getName(), instance);
-					instance.verifyMods();
+					addInstance(instance);
 				}
-			});
+			}
 		}
 	}
 
@@ -92,19 +89,8 @@ public class InstanceManager {
 		return instance;
 	}
 
-	public static void setInstanceInstalling(Instance instance, boolean installing) {
-		MiscUtil.runLaterIfNeeded(() -> {
-			ContentPanes.INSTANCES_PANE.refresh();
-			for (InstanceTile tile : ContentPanes.INSTANCES_PANE.instanceTiles) {
-				if (tile.instance.getName().equals(instance.getName())) {
-					tile.setInstalling(installing);
-				}
-			}
-		});
-	}
-
 	public static void removeInstance(Instance instance) {
-		instances.remove(instance.getName());
+		INSTANCES_MAP.remove(instance.getName());
 	}
 
 }

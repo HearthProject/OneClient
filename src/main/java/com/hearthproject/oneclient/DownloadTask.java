@@ -1,24 +1,26 @@
 package com.hearthproject.oneclient;
 
+import com.hearthproject.oneclient.api.DownloadManager;
 import javafx.concurrent.Task;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DownloadTask extends Task<Void> {
-	private ExecutorService service = Executors.newSingleThreadExecutor();
+	private static final ExecutorService service = Executors.newSingleThreadExecutor();
 
 	private String name;
 	private Runnable runnable;
+	private boolean removed;
 
 	public DownloadTask(String name, Runnable runnable) {
 		this.name = name;
 		this.runnable = runnable;
 	}
 
-	public DownloadTask start() {
+	public void start() {
+		DownloadManager.DOWNLOADS.put(name, this);
 		service.submit(this);
-		return this;
 	}
 
 	@Override
@@ -37,7 +39,23 @@ public class DownloadTask extends Task<Void> {
 		return null;
 	}
 
+	@Override
+	protected void done() {
+		updateMessage("Finished Installed!");
+		updateProgress(1, 1);
+		super.done();
+	}
+
 	public String getName() {
 		return name;
 	}
+
+	public boolean isRemoved() {
+		return removed;
+	}
+
+	public void setRemoved(boolean removed) {
+		this.removed = removed;
+	}
+
 }

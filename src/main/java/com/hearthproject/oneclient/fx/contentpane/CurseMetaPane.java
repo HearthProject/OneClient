@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class CurseMetaPane extends ContentPane {
 	private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -115,21 +114,22 @@ public class CurseMetaPane extends ContentPane {
 				return;
 			}
 
-			List<Instance> instances = Lists.newArrayList();
+			List<InstallTile> instances = Lists.newArrayList();
 			for (int i = 0; i < count; i++) {
 				if (entries == null || entries.isEmpty())
 					break;
 				Map.Entry<String, CurseModpacks.CurseModpack> entry = entries.remove(0);
 				Instance instance = new CurseImporter(entry.getKey()).create();
-				if (instance != null)
-					instances.add(instance);
+				if (instance != null) {
+					MiscUtil.runLaterIfNeeded(() -> instances.add(new InstallTile(instance)));
+				}
 			}
-			List<InstallTile> newTiles = instances.stream().map(InstallTile::new).collect(Collectors.toList());
+
 			MiscUtil.runLaterIfNeeded(() -> {
 				if (reset)
-					tiles.setAll(newTiles);
+					tiles.setAll(instances);
 				else
-					tiles.addAll(newTiles);
+					tiles.addAll(instances);
 			});
 			NotifyUtil.setText(Duration.seconds(10d), "Loaded %s of %s Modpacks", packCount - entries.size(), packCount);
 			loading.setValue(false);
