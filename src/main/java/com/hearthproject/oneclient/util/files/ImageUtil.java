@@ -18,22 +18,28 @@ public class ImageUtil {
 	private static final Font font = new Font("Arial Black", Font.BOLD, 80);
 	public static final Cache<String, Image> IMAGE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 
-	public static int SIZE = 192;
+	public static int SIZE = 256;
 
 	public static void createIcon(String text, File image) {
-		BufferedImage bufferedImage = new BufferedImage(SIZE, SIZE,
-			BufferedImage.TYPE_INT_RGB);
-		Graphics graphics = bufferedImage.getGraphics();
-		graphics.setColor(new Color(0x28, 0x28, 0x28));
-		graphics.fillRect(0, 0, SIZE, SIZE);
-		graphics.setColor(Color.WHITE);
-		graphics.setFont(font);
-		Rectangle rect = getStringBounds(graphics, text, 0, 0);
-		graphics.drawString(text, SIZE / 2 - (int) (rect.getWidth() / 2), SIZE / 2 + ((int) rect.getHeight() / 2));
+		BufferedImage bufferedImage = null;
 		try {
-			ImageIO.write(bufferedImage, "png", image);
+			bufferedImage = ImageIO.read(FileUtil.getResource("images/modpack-template.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		if (bufferedImage != null) {
+			Graphics graphics = bufferedImage.getGraphics();
+			graphics.setColor(new Color(0, 0, 0, 0));
+			graphics.fillRect(0, 0, SIZE, SIZE);
+			graphics.setColor(new Color(0x63, 0x63, 0x63));
+			graphics.setFont(font);
+			Rectangle rect = getStringBounds(graphics, text, 0, 0);
+			graphics.drawString(text, SIZE / 2 - (int) (rect.getWidth() / 2), SIZE / 2 + ((int) rect.getHeight() / 2));
+			try {
+				ImageIO.write(bufferedImage, "png", image);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
