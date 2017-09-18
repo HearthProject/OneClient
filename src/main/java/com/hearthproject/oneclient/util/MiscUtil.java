@@ -12,6 +12,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,13 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 public class MiscUtil {
+
+	public static String parseLetters(String name) {
+		if (StringUtils.containsWhitespace(name)) {
+			return WordUtils.initials(name);
+		}
+		return name.substring(0, Math.min(3, name.length()));
+	}
 
 	public static boolean checksumEquals(File file, String checksum) {
 		if (file == null || !file.exists()) {

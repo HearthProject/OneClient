@@ -4,6 +4,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
@@ -103,7 +104,7 @@ public class Instance {
 	public File getIcon() {
 		File file = new File(getDirectory(), icon);
 		if (!file.exists()) {
-			ImageUtil.createIcon(getName().substring(0, 1), file);
+			ImageUtil.createIcon(MiscUtil.parseLetters(getName()), file);
 		}
 		return file;
 	}
