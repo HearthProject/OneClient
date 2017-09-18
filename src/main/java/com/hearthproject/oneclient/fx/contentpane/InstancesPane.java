@@ -25,6 +25,8 @@ public class InstancesPane extends ContentPane {
 		super("gui/contentpanes/instances.fxml", "Home", "home.png", ButtonDisplay.TOP);
 	}
 
+	public static volatile boolean refreshing;
+
 	@Override
 	public void onStart() {
 		scrollPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
@@ -35,11 +37,15 @@ public class InstancesPane extends ContentPane {
 
 	@Override
 	public void refresh() {
-		instancePane.getChildren().clear();
-		new Thread(this::refreshInstances).start();
+
+		if (!refreshing) {
+			instancePane.getChildren().clear();
+			new Thread(this::refreshInstances).start();
+		}
 	}
 
 	private void refreshInstances() {
+		refreshing = true;
 		InstanceManager.load();
 		List<Instance> instances = Lists.newArrayList(InstanceManager.getInstances());
 		instances.sort(Comparator.comparing(Instance::getName));
@@ -50,6 +56,7 @@ public class InstancesPane extends ContentPane {
 				instanceTiles.add(tile);
 			});
 		}
+		refreshing = false;
 	}
 
 }

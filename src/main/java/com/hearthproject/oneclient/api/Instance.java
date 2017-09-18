@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -102,11 +103,7 @@ public class Instance {
 	public File getIcon() {
 		File file = new File(getDirectory(), icon);
 		if (!file.exists()) {
-			try {
-				FileUtils.copyInputStreamToFile(FileUtil.getResource("images/modpack.png"), file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			ImageUtil.createIcon(getName().substring(0, 1), file);
 		}
 		return file;
 	}
