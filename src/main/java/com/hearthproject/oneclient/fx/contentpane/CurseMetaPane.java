@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
+import com.hearthproject.oneclient.api.curse.data.CurseModpack;
 import com.hearthproject.oneclient.api.curse.data.CurseModpacks;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
@@ -14,7 +15,6 @@ import com.hearthproject.oneclient.fx.nodes.InstallTile;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
-import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,9 +31,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static com.hearthproject.oneclient.util.minecraft.MinecraftUtil.MINECRAFT_VERSIONS;
+
 public class CurseMetaPane extends ContentPane {
 	private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
-	public static final ObservableList<String> VERSIONS = MinecraftUtil.getVersions(false);
+
 	public ComboBox<String> filterSort;
 	public ComboBox<String> filterVersion;
 	public Label placeholder;
@@ -59,7 +61,7 @@ public class CurseMetaPane extends ContentPane {
 
 	private static AsyncTask<CurseModpacks> packs;
 
-	private static List<Map.Entry<String, CurseModpacks.CurseModpack>> entries;
+	private static List<Map.Entry<String, CurseModpack>> entries;
 
 	private volatile SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
 
@@ -68,8 +70,7 @@ public class CurseMetaPane extends ContentPane {
 		anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
-		VERSIONS.add(0, "All");
-		filterVersion.setItems(VERSIONS);
+		filterVersion.setItems(MINECRAFT_VERSIONS);
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
 
@@ -119,7 +120,7 @@ public class CurseMetaPane extends ContentPane {
 			for (int i = 0; i < count; i++) {
 				if (entries == null || entries.isEmpty())
 					break;
-				Map.Entry<String, CurseModpacks.CurseModpack> entry = entries.remove(0);
+				Map.Entry<String, CurseModpack> entry = entries.remove(0);
 				Instance instance = new CurseImporter(entry.getKey()).create();
 				if (instance != null)
 					instances.add(instance);

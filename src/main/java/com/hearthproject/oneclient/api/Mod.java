@@ -9,19 +9,21 @@ import java.io.File;
 public class Mod implements IInstallable {
 	private PackType type;
 
-	protected FileHash file;
+	protected FileHash hash;
 
 	public Mod(PackType type) {
 		this.type = type;
 	}
 
-	public Mod(PackType type, FileHash file) {
+	public Mod(PackType type, FileHash hash) {
 		this.type = type;
-		this.file = file;
+		this.hash = hash;
 	}
 
 	@Override
-	public void install(Instance instance) {}
+	public void install(Instance instance) {
+		instance.mods.add(this);
+	}
 
 	@Override
 	public PackType getType() {
@@ -29,15 +31,15 @@ public class Mod implements IInstallable {
 	}
 
 	public boolean matches(File file) {
-		return this.file.matches(file);
+		return this.hash.matches(file);
 	}
 
 	public String getName() {
-		return FilenameUtils.getBaseName(file.getFilePath());
+		return FilenameUtils.getBaseName(hash.getFilePath());
 	}
 
 	public FileHash getHash() {
-		return file;
+		return hash;
 	}
 
 	@Override
@@ -56,4 +58,5 @@ public class Mod implements IInstallable {
 	public boolean isEnabled() {
 		return !FilenameUtils.isExtension(getHash().getFilePath(), "disabled");
 	}
+
 }

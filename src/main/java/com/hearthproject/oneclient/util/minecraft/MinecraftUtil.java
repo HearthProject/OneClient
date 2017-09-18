@@ -40,6 +40,7 @@ public class MinecraftUtil {
 	// http://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
 	// https://launcher.mojang.com/download/MinecraftInstaller.msi
 
+	public static ObservableList<String> MINECRAFT_VERSIONS;
 	private static GameVersion version = null;
 
 	public static File ASSETS;
@@ -55,6 +56,7 @@ public class MinecraftUtil {
 		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
 		VERSION_MANIFEST = new File(VERSIONS, "version_manifest.json");
 		parseGameVersions();
+		MINECRAFT_VERSIONS = getVersions(false);
 	}
 
 	private static String parseVersionManifest() throws UnknownHostException {
@@ -65,7 +67,7 @@ public class MinecraftUtil {
 			e.printStackTrace();
 		}
 		try {
-			if(!VERSION_MANIFEST.exists()){
+			if (!VERSION_MANIFEST.exists()) {
 				OneClientLogging.logUserError(new FileNotFoundException("Minecraft version manifest was not found. "
 					+ "\nIf playing in offline mode try starting the game with an internet connection."), "Error playing minecraft");
 			}
@@ -108,7 +110,9 @@ public class MinecraftUtil {
 	}
 
 	public static ObservableList<String> getVersions(final boolean snapshots) {
-		return getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(MiscUtil.toObservableList());
+		ObservableList<String> versions = getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(MiscUtil.toObservableList());
+		versions.add(0, "All");
+		return versions;
 	}
 
 	public static int i = 1, count;
