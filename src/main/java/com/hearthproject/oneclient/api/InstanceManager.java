@@ -118,10 +118,10 @@ public class InstanceManager {
 	public static void addRecent(Instance instance) {
 		loadRecent();
 		if (RECENT_INSTANCES.size() > MAX_RECENT) {
-			RECENT_INSTANCES.remove(0);
+			RECENT_INSTANCES.remove(RECENT_INSTANCES.size() - 1);
 		}
 		if (!RECENT_INSTANCES.contains(instance.getName()))
-			RECENT_INSTANCES.add(instance.getName());
+			RECENT_INSTANCES.add(0, instance.getName());
 		saveRecent();
 	}
 
