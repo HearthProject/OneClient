@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.controllers;
 
+import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
@@ -7,14 +8,12 @@ import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXRippler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
@@ -79,7 +78,7 @@ public class MainController {
 					break;
 			}
 		}
-		setContent(ContentPanes.INSTANCES_PANE);
+		setContent(ContentPanes.HOME_PANE);
 		onSceneResize(stage.getScene());
 
 		userBox.getChildren().clear();
@@ -100,6 +99,8 @@ public class MainController {
 	}
 
 	public void setContent(ContentPane content) {
+		if (Main.mainController.currentContent != null)
+			Main.mainController.currentContent.button.setSelected(false);
 		if (content == null) {
 			contentBox.getChildren().clear();
 		} else if (content == currentContent) {
@@ -110,10 +111,12 @@ public class MainController {
 				contentBox.getChildren().setAll(content.getNode());
 				currentContent = content;
 				currentContent.start();
+				currentContent.button.setSelected(true);
 			} else {
 				currentContent = null;
 			}
 		}
+
 	}
 
 	public void openCreeperHostSite() {

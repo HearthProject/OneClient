@@ -17,7 +17,7 @@ public class InstancesPane extends ContentPane {
 	public StackPane root;
 
 	public InstancesPane() {
-		super("gui/contentpanes/instances.fxml", "Home", "home.png", ButtonDisplay.TOP);
+		super("gui/contentpanes/instances.fxml", "Instances", "home.png", ButtonDisplay.TOP);
 	}
 
 	@Override

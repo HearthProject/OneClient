@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -200,7 +201,7 @@ public class MinecraftUtil {
 		if (!MinecraftAuthController.isUserOnline()) {
 			OneClientLogging.info("Launching in offline mode!");
 		}
-
+		InstanceManager.addRecent(instance);
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		OneClientLogging.logger.info("Starting minecraft...");

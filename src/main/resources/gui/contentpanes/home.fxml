@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.GridView?>
+<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0" xmlns="http://javafx.com/javafx/8.0.111"
+           xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <children>
+                <Label maxWidth="1.7976931348623157E308" text="Recent Instances">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+                <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="192.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <GridView fx:id="recent" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="216.0" HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </GridView>
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="216.0">
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                            <children>
+                                <JFXButton id="oc-panel-button" fx:id="viewInstances" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity"
+                                           style="-fx-background-color: -oc-accent;" nodeOrientation="LEFT_TO_RIGHT" prefHeight="60.0" text="View All..." textAlignment="CENTER">
+                                    <VBox.margin>
+                                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                                    </VBox.margin>
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                                    </padding>
+                                </JFXButton>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <Label maxWidth="1.7976931348623157E308" text="Featured Modpacks" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+                <HBox maxHeight="216.0" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <children>
+                        <GridView fx:id="featured" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="216.0" HBox.hgrow="ALWAYS"/>
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="216.0">
+                            <children>
+                                <JFXButton id="oc-panel-button" fx:id="viewModpacks" alignment="CENTER" contentDisplay="TOP" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT"
+                                           prefHeight="60.0" style="-fx-background-color: -oc-accent;" text="View All..." textAlignment="CENTER">
+                                    <VBox.margin>
+                                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                                    </VBox.margin>
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                                    </padding>
+                                </JFXButton>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</StackPane>

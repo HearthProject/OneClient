@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class ContentPanes {
 	public static ArrayList<ContentPane> panesList = new ArrayList<>();
+	public static final HomePane HOME_PANE = getPane(HomePane.class);
 	public static final InstancesPane INSTANCES_PANE = getPane(InstancesPane.class);
 	public static final DownloadsPane DOWNLOADS_PANE = getPane(DownloadsPane.class);
 	public static final SettingsPane SETTINGS_PANE = getPane(SettingsPane.class);

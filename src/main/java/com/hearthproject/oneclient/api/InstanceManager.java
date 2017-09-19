@@ -1,7 +1,9 @@
 package com.hearthproject.oneclient.api;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -11,6 +13,7 @@ import javafx.collections.ObservableMap;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 public class InstanceManager {
 	protected static ObservableMap<String, Instance> INSTANCES_MAP = FXCollections.observableHashMap();
@@ -93,4 +96,50 @@ public class InstanceManager {
 		INSTANCES_MAP.remove(instance.getName());
 	}
 
+	private static List<String> RECENT_INSTANCES = Lists.newArrayList();
+	private static final int MAX_RECENT = 4;
+
+	private static void loadRecent() {
+		String[] instances = JsonUtil.read(new File(Constants.INSTANCEDIR, "recent.json"), String[].class);
+		if (instances != null) {
+			RECENT_INSTANCES = Lists.newArrayList(instances);
+		}
+	}
+
+	private static void saveRecent() {
+		JsonUtil.save(new File(Constants.INSTANCEDIR, "recent.json"), JsonUtil.GSON.toJson(RECENT_INSTANCES));
+	}
+
+	public static void addRecent(Instance instance) {
+		loadRecent();
+		if (RECENT_INSTANCES.size() > MAX_RECENT) {
+			RECENT_INSTANCES.remove(0);
+		}
+		RECENT_INSTANCES.add(instance.getName());
+		saveRecent();
+	}
+
+	public static ObservableList<Instance> getFeaturedInstances() {
+		ObservableList<Instance> list = FXCollections.observableArrayList();
+
+		list.add(new CurseImporter("263897").create());
+
+		return list;
+	}
+
+	public static ObservableList<Instance> getRecentInstances() {
+		loadRecent();
+		if (getInstances().isEmpty())
+			return FXCollections.emptyObservableList();
+		List<Instance> recent = Lists.newArrayList();
+		for (String name : RECENT_INSTANCES) {
+			if (INSTANCES_MAP.containsKey(name))
+				recent.add(INSTANCES_MAP.get(name));
+		}
+		if (recent.isEmpty()) {
+			int size = getInstances().size();
+			return FXCollections.observableArrayList(getInstances().subList(0, Math.min(size, MAX_RECENT)));
+		}
+		return FXCollections.observableArrayList(recent);
+	}
 }
