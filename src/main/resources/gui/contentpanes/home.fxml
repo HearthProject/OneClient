@@ -3,11 +3,12 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.GridView?>
-<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0" xmlns="http://javafx.com/javafx/8.0.111"
-           xmlns:fx="http://javafx.com/fxml/1">
+<StackPane stylesheets="/gui/css/theme.css" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0"
+           xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <children>
@@ -29,7 +30,7 @@
                             </HBox.margin>
                             <children>
                                 <JFXButton id="oc-panel-button" fx:id="viewInstances" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity"
-                                           style="-fx-background-color: -oc-accent;" nodeOrientation="LEFT_TO_RIGHT" prefHeight="60.0" text="View All..." textAlignment="CENTER">
+                                           nodeOrientation="LEFT_TO_RIGHT" prefHeight="60.0" style="-fx-background-color: -oc-accent;" text="View All..." textAlignment="CENTER">
                                     <VBox.margin>
                                         <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                                     </VBox.margin>
@@ -46,9 +47,13 @@
                         <Font size="24.0"/>
                     </font>
                 </Label>
-                <HBox maxHeight="216.0" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                <HBox maxHeight="224" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
-                        <GridView fx:id="featured" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="216.0" HBox.hgrow="ALWAYS"/>
+                        <ListView styleClass="oc-featured" fx:id="featured" fixedCellSize="200" maxHeight="-Infinity" orientation="HORIZONTAL" prefHeight="224" HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </ListView>
                         <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="216.0">
                             <children>
                                 <JFXButton id="oc-panel-button" fx:id="viewModpacks" alignment="CENTER" contentDisplay="TOP" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT"

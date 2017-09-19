@@ -1,6 +1,8 @@
 package com.hearthproject.oneclient.api;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
@@ -12,6 +14,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -119,10 +123,20 @@ public class InstanceManager {
 		saveRecent();
 	}
 
+	//TODO replace with real url
+	public static String FEATURED_URL = "https://gist.githubusercontent.com/primetoxinz/c331a7e87952861fc0a37f68bee82a15/raw";
+
 	public static ObservableList<Instance> getFeaturedInstances() {
 		ObservableList<Instance> list = FXCollections.observableArrayList();
 
-		list.add(new CurseImporter("263897").create());
+		try {
+			JsonArray array = JsonUtil.read(new URL(FEATURED_URL), JsonArray.class);
+			for (JsonElement e : array) {
+				list.add(new CurseImporter(e.getAsString()).create());
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 
 		return list;
 	}

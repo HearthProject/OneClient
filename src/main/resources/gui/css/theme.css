@@ -510,13 +510,8 @@
 .list-view {
     -fx-background-color: -dark-background-color;
 }
-.list-view .list-cell:even {
+.list-view .list-cell {
     -fx-background-color: -fill-color;
-    -fx-text-fill: -text-color;
-}
-
-.list-view .list-cell:odd {
-    -fx-background-color: -fill-color-alt;
     -fx-text-fill: -text-color;
 }
 

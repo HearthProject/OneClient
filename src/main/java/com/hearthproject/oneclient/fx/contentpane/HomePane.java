@@ -10,6 +10,8 @@ import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
@@ -22,7 +24,7 @@ public class HomePane extends ContentPane {
 	@FXML
 	public GridView<Instance> recent;
 	@FXML
-	public GridView<Instance> featured;
+	public ListView<Instance> featured;
 
 	@FXML
 	public JFXButton viewInstances, viewModpacks;
@@ -57,14 +59,8 @@ public class HomePane extends ContentPane {
 			return cell;
 		});
 		recent.setItems(InstanceManager.getRecentInstances());
-
-		featured.setCellHeight(192);
-		featured.setCellWidth(192);
-		featured.setHorizontalCellSpacing(6);
-		featured.setVerticalCellSpacing(6);
-
 		featured.setCellFactory(param -> {
-			GridCell<Instance> cell = new GridCell<>();
+			ListCell<Instance> cell = new ListCell<>();
 			cell.itemProperty().addListener((obs, oldItem, newItem) -> {
 				if (newItem != null) {
 					cell.setGraphic(new FeaturedTile(newItem));
