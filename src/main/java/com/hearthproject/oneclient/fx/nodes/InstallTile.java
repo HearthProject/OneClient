@@ -67,9 +67,13 @@ public class InstallTile extends StackPane implements Comparable<InstallTile> {
 		middle.getChildren().addAll(info(getPopularity()), info(instance.info.get("authors")));
 
 		DownloadTask task = DownloadManager.createDownload(instance.getName(), instance::install);
-		buttonInstall.disableProperty().bind(task.runningProperty());
-		buttonInstall.setOnAction(event -> task.start());
 
+		buttonInstall.setOnAction(event -> {
+			task.start();
+			buttonInstall.setDisable(true);
+		});
+
+		task.setOnSucceeded(event -> buttonInstall.setDisable(false));
 		imageView.setImage(instance.getImage());
 		imageView.setFitHeight(75);
 		imageView.setFitWidth(75);

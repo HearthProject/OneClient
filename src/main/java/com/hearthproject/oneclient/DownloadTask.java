@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.api.DownloadManager;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import javafx.concurrent.Task;
 
 import java.util.concurrent.ExecutorService;
@@ -18,8 +19,8 @@ public class DownloadTask extends Task<Void> {
 
 	public void start() {
 		DownloadManager.DOWNLOADS.put(getTitle(), this);
+		ContentPanes.DOWNLOADS_PANE.flashButton();
 		service.submit(this);
-
 	}
 
 	@Override

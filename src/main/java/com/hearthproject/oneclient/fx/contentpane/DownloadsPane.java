@@ -6,12 +6,14 @@ import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.skins.TaskSkin;
+import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.controlsfx.control.TaskProgressView;
 
 import java.util.Comparator;
@@ -40,5 +42,12 @@ public class DownloadsPane extends ContentPane {
 	@Override
 	public void refresh() {
 
+	}
+
+	public void flashButton() {
+		button.setSelected(true);
+		PauseTransition delay = new PauseTransition(Duration.seconds(1));
+		delay.setOnFinished(e -> button.setSelected(false));
+		delay.play();
 	}
 }
