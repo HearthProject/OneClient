@@ -132,9 +132,10 @@ public class Instance {
 	}
 
 	public void install() {
-		InstanceManager.addInstance(this);
 		setInstalling(true);
 		FileUtil.createDirectory(getDirectory());
+		if (getDirectory().exists())
+			InstanceManager.addInstance(this);
 		if (checkCancel())
 			return;
 		if (installer != null)

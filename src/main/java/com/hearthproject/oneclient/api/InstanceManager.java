@@ -107,11 +107,7 @@ public class InstanceManager {
 		String[] instances = JsonUtil.read(new File(Constants.INSTANCEDIR, "recent.json"), String[].class);
 		if (instances != null) {
 			RECENT_INSTANCES = Lists.newArrayList(instances);
-			for (String instance : RECENT_INSTANCES) {
-				if (!INSTANCES_MAP.containsKey(instance)) {
-					RECENT_INSTANCES.remove(instance);
-				}
-			}
+			RECENT_INSTANCES.removeIf(instance -> !INSTANCES_MAP.containsKey(instance));
 		}
 	}
 
@@ -163,7 +159,8 @@ public class InstanceManager {
 				recent.add(INSTANCES_MAP.get(name));
 		}
 		if (recent.isEmpty()) {
-			return getInstances();
+			int size = getInstances().size();
+			return FXCollections.observableArrayList(getInstances().subList(0, Math.min(size, MAX_RECENT)));
 		}
 		return FXCollections.observableArrayList(recent);
 	}

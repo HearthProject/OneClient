@@ -25,6 +25,7 @@ public class CurseModpacks extends HashMap<String, CurseModpacks.CurseModpack> {
 		public String Summary;
 		public String WebSiteURL;
 		public String Id;
+		public double PopularityScore;
 
 		public boolean matchesName(String name) {
 			return Name.toLowerCase().contains(name.toLowerCase());
@@ -44,6 +45,10 @@ public class CurseModpacks extends HashMap<String, CurseModpacks.CurseModpack> {
 		public String toString() {
 			return Name;
 		}
+
+		public double getPopularityScore() {
+			return PopularityScore;
+		}
 	}
 
 	public class LatestFile {
@@ -58,8 +63,13 @@ public class CurseModpacks extends HashMap<String, CurseModpacks.CurseModpack> {
 		return entries;
 	}
 
-	public List<Map.Entry<String, CurseModpacks.CurseModpack>> filter(String version, String name) {
-		return filter(pack -> pack.matchesVersion(version), pack -> pack.matchesName(name));
+	public List<Map.Entry<String, CurseModpacks.CurseModpack>> filter(boolean reverse, String sorting, String version, String name) {
+		List<Map.Entry<String, CurseModpacks.CurseModpack>> list = filter(pack -> pack.matchesVersion(version), pack -> pack.matchesName(name));
+		if (sorting.equalsIgnoreCase("Popularity"))
+			list.sort((o1, o2) -> reverse ? 1 : -1 * Double.compare(o1.getValue().getPopularityScore(), o2.getValue().getPopularityScore()));
+		if (sorting.equalsIgnoreCase("Alphabetical"))
+			list.sort((o1, o2) -> reverse ? 1 : -1 * o1.getValue().Name.compareTo(o2.getValue().Name));
+		return list;
 	}
 
 	private List<Map.Entry<String, CurseModpacks.CurseModpack>> filter(Predicate<CurseModpack> version, Predicate<CurseModpack> name) {

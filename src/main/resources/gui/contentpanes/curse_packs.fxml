@@ -2,6 +2,7 @@
 
 <!--style=" -fx-border-color:black; -fx-border-width: 1; -fx-border-style: solid;"-->
 
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
@@ -42,6 +43,11 @@
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </ComboBox>
+                        <JFXToggleButton unToggleColor="#282828" unToggleLineColor="#4F4F4F" fx:id="toggleSort" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="Reverse">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </JFXToggleButton>
                     </children>
                 </HBox>
                 <HBox fx:id="hBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">

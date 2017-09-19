@@ -639,3 +639,8 @@
 	-fx-background-color: -fill-color;
 	-fx-text-fill: -text-color;
 }
+
+.jfx-toggle-button {
+	-fx-background-color: -dark-background-color;
+	-fx-text-fill: -text-color;
+}

@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient;
 
 import com.hearthproject.oneclient.api.InstanceManager;
+import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.MainController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -146,7 +147,8 @@ public class Main extends Application {
 		MinecraftUtil.load();
 		OneClientLogging.logger.info("Loading Forge versions");
 		ForgeUtils.loadForgeVersions();
-		OneClientLogging.logger.info("Loading Curse versions and sorting");
+		OneClientLogging.logger.info("Loading Curse Modpacks");
+		Curse.init();
 		SplashScreen.updateProgess("Authenticating with mojang", 90);
 		OneClientLogging.logger.info("Done!");
 		SplashScreen.updateProgess("Done!", 100);

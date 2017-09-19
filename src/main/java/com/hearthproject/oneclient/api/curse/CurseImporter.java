@@ -14,7 +14,9 @@ import javafx.scene.image.Image;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -50,7 +52,13 @@ public class CurseImporter implements IImporter {
 
 	private Image getImage() {
 		URL url = data.map(CurseProject::getIcon);
-		File file = new File(Constants.ICONDIR, data.map(CurseProject::getName) + ".png");
+		String name = null;
+		try {
+			name = URLEncoder.encode(data.map(CurseProject::getName), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		File file = new File(Constants.ICONDIR, name + ".png");
 		FileUtil.downloadFromURL(url, file);
 		return ImageUtil.openCachedImage(file);
 	}

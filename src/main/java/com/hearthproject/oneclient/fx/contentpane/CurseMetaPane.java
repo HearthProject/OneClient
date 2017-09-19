@@ -17,6 +17,7 @@ import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
+import com.jfoenix.controls.JFXToggleButton;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +27,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +35,12 @@ import java.util.concurrent.Executors;
 public class CurseMetaPane extends ContentPane {
 	private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 	public static final ObservableList<String> VERSIONS = MinecraftUtil.getVersions(false);
+
+	static {
+		VERSIONS.add(0, "All");
+	}
+
+	public JFXToggleButton toggleSort;
 	public ComboBox<String> filterSort;
 	public ComboBox<String> filterVersion;
 	public Label placeholder;
@@ -76,21 +82,21 @@ public class CurseMetaPane extends ContentPane {
 		loadingIcon.setFitWidth(32);
 		loadingIcon.visibleProperty().bind(loading);
 
-		VERSIONS.add(0, "All");
 		filterVersion.setItems(VERSIONS);
 		filterVersion.getSelectionModel().selectFirst();
 		filterVersion.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
 
-		filterSort.setItems(FXCollections.observableArrayList("Alphabetical"));
+		filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
 		filterSort.getSelectionModel().selectFirst();
 		filterSort.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
+
+		toggleSort.selectedProperty().addListener(v -> loadPacks(loadPerScroll, true));
 
 		buttonSearch.setOnAction(action -> loadPacks(loadPerScroll, true));
 
 		listPacks.setPlaceholder(placeholder = new Label("Loading..."));
 		listPacks.setOnScroll(scroll);
 		listPacks.setItems(tiles);
-
 
 		packs = new AsyncTask<>(Curse::getModpacks);
 		service.submit(packs);
@@ -112,7 +118,7 @@ public class CurseMetaPane extends ContentPane {
 			if (entries == null || reset) {
 				MiscUtil.runLaterIfNeeded(tiles::clear);
 				try {
-					entries = packs.get().filter(filterVersion.getValue(), textSearch.getText());
+					entries = packs.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), filterVersion.getValue(), textSearch.getText());
 					packCount = entries.size();
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
@@ -147,16 +153,6 @@ public class CurseMetaPane extends ContentPane {
 			}
 		}).start();
 
-	}
-
-	private Comparator<InstallTile> getSorting() {
-		switch (filterSort.getValue().toLowerCase()) {
-			case "popularity":
-				return Comparator.comparingDouble(InstallTile::getPopularity).reversed();
-			case "alphabetical":
-				return Comparator.naturalOrder();
-		}
-		return null;
 	}
 
 	@Override

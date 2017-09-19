@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.jfoenix.controls.JFXButton;
 import javafx.stage.FileChooser;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -30,11 +31,13 @@ public class PackPane extends ContentPane {
 
 		buttonMMC.setOnAction(event -> {
 			FileChooser chooser = new FileChooser();
-			chooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Zip File", ".zip"));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip"));
 			File file = chooser.showOpenDialog(null);
-			Instance instance = new MMCImporter(file).create();
-			if (instance != null) {
-				instance.install();
+			if (file != null && FilenameUtils.isExtension(file.toString(), ".zip")) {
+				Instance instance = new MMCImporter(file).create();
+				if (instance != null) {
+					instance.install();
+				}
 			}
 		});
 	}
