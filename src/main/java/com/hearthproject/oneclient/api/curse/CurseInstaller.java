@@ -44,16 +44,21 @@ public class CurseInstaller extends ModInstaller {
 
 	@Override
 	public void install(Instance instance) {
+		if (instance.checkCancel())
+			return;
 		if (file == null) {
 			OneClientLogging.error(new NullPointerException("No Curse File Selected"));
 			return;
 		}
-
+		if (instance.checkCancel())
+			return;
 		try {
 			FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		if (instance.checkCancel())
+			return;
 		//TODO more precise
 		if (instance.getModDirectory().exists()) {
 			try {
@@ -62,6 +67,8 @@ public class CurseInstaller extends ModInstaller {
 				e.printStackTrace();
 			}
 		}
+		if (instance.checkCancel())
+			return;
 		//TODO more precise
 		if (instance.getConfigDirectory().exists()) {
 			try {
@@ -70,25 +77,40 @@ public class CurseInstaller extends ModInstaller {
 				e.printStackTrace();
 			}
 		}
+		if (instance.checkCancel())
+			return;
 		DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
+		if (instance.checkCancel())
+			return;
 		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 		DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
+		if (instance.checkCancel())
+			return;
 		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
 		DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
+		if (instance.checkCancel())
+			return;
 		instance.setGameVersion(manifest.minecraft.version);
 		instance.setForgeVersion(manifest.minecraft.getModloader());
-
+		if (instance.checkCancel())
+			return;
 		List<Mod> mods = getMods();
 		AtomicInteger counter = new AtomicInteger(1);
 		for (Mod mod : mods) {
 			DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 			mod.install(instance);
+			if (instance.checkCancel())
+				return;
 		}
+		if (instance.checkCancel())
+			return;
 		DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
 		installOverrides(pack, instance.getDirectory());
 		instance.setMods(FXCollections.observableArrayList(mods));
 		NotifyUtil.clear();
+		if (instance.checkCancel())
+			return;
 	}
 
 	private void installOverrides(File pack, File instance) {

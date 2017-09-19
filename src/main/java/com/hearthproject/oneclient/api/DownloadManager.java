@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.api;
 
 import com.hearthproject.oneclient.DownloadTask;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.collections.FXCollections;
@@ -21,6 +22,7 @@ public class DownloadManager {
 
 	public static void updateMessage(String name, String message, Object... params) {
 		get(name).updateMessage(String.format(message, params));
+		OneClientLogging.info(String.format(message, params));
 	}
 
 	public static ReadOnlyDoubleProperty progressProperty(String name) {

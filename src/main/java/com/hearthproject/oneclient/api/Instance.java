@@ -132,18 +132,25 @@ public class Instance {
 	}
 
 	public void install() {
+		InstanceManager.addInstance(this);
 		setInstalling(true);
 		FileUtil.createDirectory(getDirectory());
+		if (checkCancel())
+			return;
 		if (installer != null)
 			installer.install(this);
+		if (checkCancel())
+			return;
 		try {
 			MinecraftUtil.installMinecraft(this);
+			if (checkCancel())
+				return;
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
 		}
 		save();
 		setInstalling(false);
-		InstanceManager.addInstance(this);
+
 	}
 
 	public void delete() {
@@ -240,5 +247,13 @@ public class Instance {
 
 	public void setInstalling(boolean installing) {
 		this.installing.set(installing);
+	}
+
+	public boolean checkCancel() {
+		if (Thread.currentThread().isInterrupted()) {
+			DownloadManager.updateMessage(getName(), "Cancelling!");
+			return true;
+		}
+		return false;
 	}
 }

@@ -628,3 +628,7 @@
     -fx-background-color: transparent;
 }
 
+.task-progress-view {
+	-fx-background-color: -fill-color;
+	-fx-text-fill: -text-color;
+}
