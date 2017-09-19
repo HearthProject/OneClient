@@ -194,8 +194,7 @@ public class MinecraftUtil {
 	public static boolean startMinecraft(Instance instance) {
 		if (!MinecraftAuthController.isUserValid()) {
 			MinecraftAuthController.updateGui();
-			//TODO replace with a login request
-			OneClientLogging.alert("You must log into minecraft to play the game!", "You are not logged in!");
+			MinecraftAuthController.openLoginGui();
 			return false;
 		}
 		if (!MinecraftAuthController.isUserOnline()) {
