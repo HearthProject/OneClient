@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import org.controlsfx.control.StatusBar?>
-
 <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hearthproject.oneclient.fx.controllers.MainController">
     <children>
         <VBox fx:id="sideBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
@@ -98,18 +93,9 @@
                     <children>
                         <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" VBox.vgrow="NEVER">
                             <VBox.margin>
-                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                                <Insets bottom="6.0" top="6.0"/>
                             </VBox.margin>
                         </VBox>
-                        <HBox maxWidth="1.7976931348623157E308" prefHeight="100.0" VBox.vgrow="ALWAYS">
-                            <children>
-                                <StatusBar fx:id="statusBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" style="-fx-background-color: -oc-dark; -fx-font-family: 'Roboto' -sans-serif;; -fx-text-fill: -oc-text;" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                        <Insets bottom="6.0" left="6.0" right="6.0" />
-                                    </HBox.margin>
-                                </StatusBar>
-                            </children>
-                        </HBox>
                     </children>
                 </VBox>
             </children>

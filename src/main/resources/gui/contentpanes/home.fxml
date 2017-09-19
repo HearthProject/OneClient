@@ -5,16 +5,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0"
-           xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <children>
-                <Label style=" -fx-font-family: 'Roboto', sans-serif;" maxWidth="1.7976931348623157E308" text="RECENT INSTANCES">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
+                <Label id="oc-label" maxWidth="1.7976931348623157E308" text="RECENT INSTANCES">
+                    <padding>
+                        <Insets left="6.0" right="6.0"/>
+                    </padding>
                 </Label>
                 <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="224" VBox.vgrow="ALWAYS">
                     <children>
@@ -40,11 +38,14 @@
                             </children>
                         </VBox>
                     </children>
+                    <VBox.margin>
+                        <Insets bottom="6.0" top="6.0"/>
+                    </VBox.margin>
                 </HBox>
-                <Label style=" -fx-font-family: 'Roboto', sans-serif;" maxWidth="1.7976931348623157E308" text="FEATURED MODPACKS" VBox.vgrow="ALWAYS">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
+                <Label id="oc-label" maxWidth="1.7976931348623157E308" text="FEATURED MODPACKS" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets left="6.0" right="6.0"/>
+                    </padding>
                 </Label>
                 <HBox maxHeight="224" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
@@ -67,6 +68,9 @@
                             </children>
                         </VBox>
                     </children>
+                    <VBox.margin>
+                        <Insets bottom="6.0" top="6.0"/>
+                    </VBox.margin>
                 </HBox>
             </children>
         </VBox>

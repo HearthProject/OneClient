@@ -5,18 +5,14 @@ import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ContentPaneButton;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.controlsfx.control.StatusBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,13 +43,7 @@ public class MainController {
 	@FXML
 	public Text usernameText;
 	@FXML
-	public StatusBar statusBar;
-	@FXML
 	public ImageView signOutIcon;
-
-	public ImageView loadingIcon;
-
-	public Label labelProgress;
 
 	public HBox profileBox;
 
@@ -80,17 +70,7 @@ public class MainController {
 		}
 		setContent(ContentPanes.HOME_PANE);
 		onSceneResize(stage.getScene());
-
 		userBox.getChildren().clear();
-		statusBar.setText("");
-		labelProgress = new Label();
-
-		loadingIcon = new ImageView(ImageUtil.openImage(FileUtil.getResource("images/loading.gif")));
-		loadingIcon.setFitHeight(32);
-		loadingIcon.setFitWidth(32);
-		loadingIcon.setVisible(false);
-
-		statusBar.getRightItems().addAll(labelProgress, loadingIcon);
 	}
 
 	public void onSceneResize(Scene scene) {

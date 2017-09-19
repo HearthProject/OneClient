@@ -44,7 +44,7 @@ public class AboutPane extends ContentPane {
 			addCredit("Prospector - UX Manager", "https://twitter.com/ProfProspector");
 			addCredit("primetoxinz - Various Contributions", "https://github.com/primetoxinz");
 			addCredit("loading.io - Splash Loading .gif", "https://loading.io/");
-			addCredit("Yannick - Home, About, Download, and Update icons", "https://www.flaticon.com/authors/yannick");
+			addCredit("Yannick - Home, About, Download, Instances, and Update icons", "https://www.flaticon.com/authors/yannick");
 			addCredit("Gregor Cresnar - Package icon", "https://www.flaticon.com/authors/gregor-cresnar");
 			addCredit("Egor Rumyantsev - Settings icon", "https://www.flaticon.com/authors/egor-rumyantsev");
 			addCredit("Icomoon - Log Out icon", "https://www.flaticon.com/authors/icomoon");

@@ -23,7 +23,7 @@ public class TaskSkin<T extends Task<?>> extends
 		// list view
 		ListView<T> listView = new ListView<>();
 		listView.setPrefSize(500, 400);
-		listView.setPlaceholder(new Label("No tasks running"));
+		listView.setPlaceholder(new Label("No Downloads Currently"));
 		listView.setCellFactory(param -> new TaskCell());
 		listView.setFocusTraversable(false);
 

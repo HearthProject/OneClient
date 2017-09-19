@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 <fx:root maxHeight="192.0" maxWidth="192.0" prefHeight="192.0" prefWidth="192.0" type="javafx.scene.layout.StackPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Rectangle fill="DODGERBLUE" height="192.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0"/>
+        <Rectangle height="192.0" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: -oc-dark;" width="192.0"/>
         <ImageView fx:id="imageView" fitHeight="184.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true"/>
         <StackPane fx:id="nodePane">
             <children>

@@ -13,16 +13,18 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.InstallTile;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.launcher.NotifyUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Duration;
 
 import java.util.Comparator;
 import java.util.List;
@@ -41,6 +43,8 @@ public class CurseMetaPane extends ContentPane {
 	public Button buttonSearch;
 	public TextField textSearch;
 	public AnchorPane anchorPane;
+
+	public ImageView loadingIcon;
 
 	private int loadPerScroll = 10;
 	private int packCount;
@@ -67,6 +71,11 @@ public class CurseMetaPane extends ContentPane {
 		anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
+		loadingIcon.setImage(ImageUtil.openCachedImage(FileUtil.getResource("images/loading.gif"), "loading"));
+		loadingIcon.setFitHeight(32);
+		loadingIcon.setFitWidth(32);
+		loadingIcon.visibleProperty().bind(loading);
+
 		VERSIONS.add(0, "All");
 		filterVersion.setItems(VERSIONS);
 		filterVersion.getSelectionModel().selectFirst();
@@ -82,7 +91,7 @@ public class CurseMetaPane extends ContentPane {
 		listPacks.setOnScroll(scroll);
 		listPacks.setItems(tiles);
 
-		NotifyUtil.loadingIcon().visibleProperty().bind(loading);
+
 		packs = new AsyncTask<>(Curse::getModpacks);
 		service.submit(packs);
 		packs.addListener(this::init, service);
@@ -131,7 +140,7 @@ public class CurseMetaPane extends ContentPane {
 				else
 					tiles.addAll(instances);
 			});
-			NotifyUtil.setText(Duration.seconds(10d), "Loaded %s of %s Modpacks", packCount - entries.size(), packCount);
+			OneClientLogging.info("Loaded {} of {} Modpacks", packCount - entries.size(), packCount);
 			loading.setValue(false);
 			if (tiles.isEmpty()) {
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Packs Found"));
@@ -158,9 +167,6 @@ public class CurseMetaPane extends ContentPane {
 	@Override
 	public void close() {
 		tiles.clear();
-		NotifyUtil.clear();
-		NotifyUtil.loadingIcon().visibleProperty().unbind();
-		NotifyUtil.loadingIcon().setVisible(false);
 	}
 
 	@Override
