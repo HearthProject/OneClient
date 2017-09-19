@@ -25,7 +25,7 @@ apply plugin: 'application'
 apply from: 'https://github.com/HearthProject/OneClient/raw/master/formatter/ideconfig.gradle'
 
 sourceCompatibility = 1.8
-version = '0.0.7'
+version = '0.0.8'
 
 // Fetch build number from Jenkins
 def ENV = System.getenv()
