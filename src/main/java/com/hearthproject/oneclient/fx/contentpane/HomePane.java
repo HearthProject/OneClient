@@ -7,14 +7,15 @@ import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.FeaturedTile;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.jfoenix.controls.JFXButton;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
-import org.controlsfx.control.GridCell;
-import org.controlsfx.control.GridView;
 
 public class HomePane extends ContentPane {
 
@@ -22,9 +23,7 @@ public class HomePane extends ContentPane {
 	public StackPane root;
 
 	@FXML
-	public GridView<Instance> recent;
-	@FXML
-	public ListView<Instance> featured;
+	public ListView<Instance> recent, featured;
 
 	@FXML
 	public JFXButton viewInstances, viewModpacks;
@@ -37,14 +36,9 @@ public class HomePane extends ContentPane {
 	protected void onStart() {
 		root.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		root.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
-
-		recent.setCellHeight(192);
-		recent.setCellWidth(192);
-		recent.setHorizontalCellSpacing(6);
-		recent.setVerticalCellSpacing(6);
-
+		recent.setPlaceholder(new Label("Loading Recent Instances..."));
 		recent.setCellFactory(param -> {
-			GridCell<Instance> cell = new GridCell<>();
+			ListCell<Instance> cell = new ListCell<>();
 			cell.itemProperty().addListener((obs, oldItem, newItem) -> {
 				if (newItem != null) {
 					cell.setGraphic(new InstanceTile(newItem));
@@ -58,7 +52,8 @@ public class HomePane extends ContentPane {
 			cell.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 			return cell;
 		});
-		recent.setItems(InstanceManager.getRecentInstances());
+
+		featured.setPlaceholder(new Label("Loading Featured Modpacks..."));
 		featured.setCellFactory(param -> {
 			ListCell<Instance> cell = new ListCell<>();
 			cell.itemProperty().addListener((obs, oldItem, newItem) -> {
@@ -74,10 +69,18 @@ public class HomePane extends ContentPane {
 			cell.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 			return cell;
 		});
-		featured.setItems(InstanceManager.getFeaturedInstances());
-
 		viewInstances.setOnAction(event -> Main.mainController.setContent(ContentPanes.INSTANCES_PANE));
 		viewModpacks.setOnAction(event -> Main.mainController.setContent(ContentPanes.CURSE_META_PANE));
+
+		new Thread(() -> {
+			ObservableList<Instance> instances = InstanceManager.getRecentInstances();
+			MiscUtil.runLaterIfNeeded(() -> recent.setItems(instances));
+		}).start();
+
+		new Thread(() -> {
+			ObservableList<Instance> instances = InstanceManager.getFeaturedInstances();
+			MiscUtil.runLaterIfNeeded(() -> featured.setItems(instances));
+		}).start();
 	}
 
 	@Override

@@ -99,8 +99,10 @@ public class MainController {
 	}
 
 	public void setContent(ContentPane content) {
-		if (Main.mainController.currentContent != null)
+		if (Main.mainController.currentContent != null) {
 			Main.mainController.currentContent.button.setSelected(false);
+			Main.mainController.currentContent.close();
+		}
 		if (content == null) {
 			contentBox.getChildren().clear();
 		} else if (content == currentContent) {

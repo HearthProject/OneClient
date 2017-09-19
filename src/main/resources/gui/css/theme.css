@@ -511,7 +511,7 @@
     -fx-background-color: -dark-background-color;
 }
 .list-view .list-cell {
-    -fx-background-color: -fill-color;
+    -fx-background-color: -dark-background-color;
     -fx-text-fill: -text-color;
 }
 

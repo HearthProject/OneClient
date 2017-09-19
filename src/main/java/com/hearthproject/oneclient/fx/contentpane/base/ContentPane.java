@@ -20,10 +20,7 @@ public abstract class ContentPane {
 		button = new ContentPaneButton(imageName, buttonDisplay);
 		button.setText(name.toUpperCase());
 		button.prefWidthProperty().bind(Main.mainController.sideBox.widthProperty());
-		button.setOnAction((actionHandler) -> {
-			Main.mainController.contentPanes.stream().filter(s -> s != this).forEach(ContentPane::close);
-			Main.mainController.setContent(this);
-		});
+		button.setOnAction((actionHandler) -> Main.mainController.setContent(this));
 		this.fxmlFile = fxmlFile;
 		this.name = name;
 		Main.mainController.contentPanes.add(this);

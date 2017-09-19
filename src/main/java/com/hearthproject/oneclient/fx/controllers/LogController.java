@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.controllers;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -10,8 +11,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LogController {
 
@@ -20,12 +19,14 @@ public class LogController {
 	public TabPane root;
 	public TextArea logArea;
 
-	public List<Process> processList = new ArrayList<>();
 	private Stage stage;
 
 	public LogTab getTab(String name, Process process) {
 		LogTab tab = new LogTab(name, process);
-		MiscUtil.runLaterIfNeeded(() -> root.getTabs().add(tab));
+		MiscUtil.runLaterIfNeeded(() -> {
+			root.getTabs().add(tab);
+			root.getSelectionModel().selectLast();
+		});
 		return tab;
 	}
 
@@ -44,6 +45,7 @@ public class LogController {
 	public void menuClear(ActionEvent actionEvent) { logArea.clear(); }
 
 	public class LogTab extends Tab {
+
 		@FXML
 		private TextArea textArea;
 		@FXML
@@ -69,11 +71,24 @@ public class LogController {
 			upload.setOnAction(event -> MiscUtil.uploadLog(textArea.getText()));
 			textArea.setTextFormatter(new TextFormatter<String>(change ->
 				change.getControlNewText().length() <= MAX_CHARS ? change : null));
+			setOnCloseRequest(this::close);
 		}
 
 		public void kill() {
 			OneClientLogging.logger.info("{} was forcefully terminated by the user!", this.getText());
 			this.process.destroyForcibly();
+		}
+
+		public void close(Event event) {
+			if (process.isAlive()) {
+				Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to close this Instasnce?", ButtonType.YES, ButtonType.NO);
+				ButtonType button = confirm.showAndWait().orElse(ButtonType.NO);
+				if (button == ButtonType.YES) {
+					kill();
+				} else {
+					event.consume();
+				}
+			}
 		}
 
 		public void append(String message) {
@@ -94,6 +109,7 @@ public class LogController {
 			}
 
 		}
+
 	}
 
 }

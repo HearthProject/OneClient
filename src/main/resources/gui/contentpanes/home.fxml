@@ -6,25 +6,24 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.GridView?>
-<StackPane stylesheets="/gui/css/theme.css" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0"
+<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="515.0" prefWidth="627.0"
            xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <children>
-                <Label maxWidth="1.7976931348623157E308" text="Recent Instances">
+                <Label style=" -fx-font-family: 'Roboto', sans-serif;" maxWidth="1.7976931348623157E308" text="RECENT INSTANCES">
                     <font>
                         <Font size="24.0"/>
                     </font>
                 </Label>
-                <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="192.0" VBox.vgrow="ALWAYS">
+                <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="224" VBox.vgrow="ALWAYS">
                     <children>
-                        <GridView fx:id="recent" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="216.0" HBox.hgrow="ALWAYS">
+                        <ListView fx:id="recent" fixedCellSize="200" maxHeight="-Infinity" orientation="HORIZONTAL" prefHeight="224" HBox.hgrow="ALWAYS">
                             <HBox.margin>
                                 <Insets/>
                             </HBox.margin>
-                        </GridView>
-                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="216.0">
+                        </ListView>
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="224">
                             <HBox.margin>
                                 <Insets/>
                             </HBox.margin>
@@ -42,14 +41,14 @@
                         </VBox>
                     </children>
                 </HBox>
-                <Label maxWidth="1.7976931348623157E308" text="Featured Modpacks" VBox.vgrow="ALWAYS">
+                <Label style=" -fx-font-family: 'Roboto', sans-serif;" maxWidth="1.7976931348623157E308" text="FEATURED MODPACKS" VBox.vgrow="ALWAYS">
                     <font>
                         <Font size="24.0"/>
                     </font>
                 </Label>
                 <HBox maxHeight="224" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
-                        <ListView styleClass="oc-featured" fx:id="featured" fixedCellSize="200" maxHeight="-Infinity" orientation="HORIZONTAL" prefHeight="224" HBox.hgrow="ALWAYS">
+                        <ListView fx:id="featured" fixedCellSize="200" maxHeight="-Infinity" orientation="HORIZONTAL" prefHeight="224" HBox.hgrow="ALWAYS">
                             <HBox.margin>
                                 <Insets/>
                             </HBox.margin>

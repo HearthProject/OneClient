@@ -107,6 +107,11 @@ public class InstanceManager {
 		String[] instances = JsonUtil.read(new File(Constants.INSTANCEDIR, "recent.json"), String[].class);
 		if (instances != null) {
 			RECENT_INSTANCES = Lists.newArrayList(instances);
+			for (String instance : RECENT_INSTANCES) {
+				if (!INSTANCES_MAP.containsKey(instance)) {
+					RECENT_INSTANCES.remove(instance);
+				}
+			}
 		}
 	}
 
@@ -119,7 +124,8 @@ public class InstanceManager {
 		if (RECENT_INSTANCES.size() > MAX_RECENT) {
 			RECENT_INSTANCES.remove(0);
 		}
-		RECENT_INSTANCES.add(instance.getName());
+		if (!RECENT_INSTANCES.contains(instance.getName()))
+			RECENT_INSTANCES.add(instance.getName());
 		saveRecent();
 	}
 
@@ -131,8 +137,14 @@ public class InstanceManager {
 
 		try {
 			JsonArray array = JsonUtil.read(new URL(FEATURED_URL), JsonArray.class);
-			for (JsonElement e : array) {
-				list.add(new CurseImporter(e.getAsString()).create());
+			if (array != null) {
+				for (JsonElement e : array) {
+					Instance instance = new CurseImporter(e.getAsString()).create();
+					if (INSTANCES_MAP.containsKey(instance.getName())) {
+						instance.setInstalling(true);
+					}
+					list.add(instance);
+				}
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -151,8 +163,7 @@ public class InstanceManager {
 				recent.add(INSTANCES_MAP.get(name));
 		}
 		if (recent.isEmpty()) {
-			int size = getInstances().size();
-			return FXCollections.observableArrayList(getInstances().subList(0, Math.min(size, MAX_RECENT)));
+			return getInstances();
 		}
 		return FXCollections.observableArrayList(recent);
 	}

@@ -6,6 +6,8 @@ import com.hearthproject.oneclient.api.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
+import com.hearthproject.oneclient.util.MiscUtil;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.GridCell;
@@ -43,7 +45,12 @@ public class InstancesPane extends ContentPane {
 			cell.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 			return cell;
 		});
-		gridView.setItems(InstanceManager.getInstances());
+
+		new Thread(() -> {
+			ObservableList<Instance> instances = InstanceManager.getInstances();
+			MiscUtil.runLaterIfNeeded(() -> gridView.setItems(instances));
+		}).start();
+
 	}
 
 	@Override
