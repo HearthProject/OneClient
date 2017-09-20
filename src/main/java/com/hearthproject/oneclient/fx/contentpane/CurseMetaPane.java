@@ -94,6 +94,7 @@ public class CurseMetaPane extends ContentPane {
 
 		buttonSearch.setOnAction(action -> loadPacks(loadPerScroll, true));
 
+		listPacks.setFixedCellSize(162);
 		listPacks.setPlaceholder(placeholder = new Label("Loading..."));
 		listPacks.setOnScroll(scroll);
 		listPacks.setItems(tiles);
@@ -101,6 +102,12 @@ public class CurseMetaPane extends ContentPane {
 		packs = new AsyncTask<>(Curse::getModpacks);
 		service.submit(packs);
 		packs.addListener(this::init, service);
+
+		buttonSearch.disableProperty().bind(loading);
+		textSearch.disableProperty().bind(loading);
+		filterSort.disableProperty().bind(loading);
+		filterVersion.disableProperty().bind(loading);
+		toggleSort.disableProperty().bind(loading);
 
 	}
 

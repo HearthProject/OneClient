@@ -12,17 +12,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CurseProject {
 	public String Id;
 	private String Name;
 	private String WebSiteURL;
+	private String Summary;
 	private List<CurseFile> LatestFiles;
 	private List<Author> Authors;
 	private List<Attachment> Attachments;
 	private List<Category> Categories;
-
+	private double DownloadCount;
 	private double PopularityScore;
 
 	public String getName() {
@@ -33,8 +33,8 @@ public class CurseProject {
 		return LatestFiles;
 	}
 
-	public List<String> getAuthors() {
-		return Authors.stream().map(a -> a.Name).collect(Collectors.toList());
+	public List<Author> getAuthors() {
+		return Authors;
 	}
 
 	public URL getIcon() {
@@ -62,6 +62,14 @@ public class CurseProject {
 
 	public List<CurseFile> getFiles(String gameVersion) {
 		return Curse.getFiles(Id, gameVersion);
+	}
+
+	public double getDownloads() {
+		return DownloadCount;
+	}
+
+	public String getSummary() {
+		return Summary;
 	}
 
 	public static class CurseFile implements Comparable<CurseFile> {
@@ -112,8 +120,16 @@ public class CurseProject {
 		}
 	}
 
-	private class Author {
+	public class Author {
 		private String Name, Url;
+
+		public String getName() {
+			return Name;
+		}
+
+		public String getUrl() {
+			return Url;
+		}
 	}
 
 	private class Attachment {

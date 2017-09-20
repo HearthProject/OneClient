@@ -15,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -35,18 +34,20 @@ public class Instance {
 	public String url;
 	public String icon;
 	public Map<String, Object> info;
+	public transient Map<String, Object> tempInfo;
 	public ObservableList<Mod> mods = FXCollections.observableArrayList();
 
 	public transient Image image;
 	public transient SimpleBooleanProperty installing;
 	public ModInstaller installer;
 
-	public Instance(String name, String url, ModInstaller installer, Pair<String, Object>... info) {
+	public Instance(String name, String url, ModInstaller installer, Info... info) {
 		this();
 		this.name = name;
 		this.url = url;
 		this.installer = installer;
-		this.info = Arrays.stream(info).collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+		this.info = Arrays.stream(info).filter(Info::isKept).collect(Collectors.toMap(Info::getKey, Info::getInfo));
+		this.tempInfo = Arrays.stream(info).filter(Info::isTemp).collect(Collectors.toMap(Info::getKey, Info::getInfo));
 	}
 
 	public Instance() {
@@ -256,5 +257,37 @@ public class Instance {
 			return true;
 		}
 		return false;
+	}
+
+	public static class Info {
+		private boolean temp;
+		private transient String key;
+		private Object info;
+
+		public Info(String key, Object info) {
+			this(key, info, true);
+		}
+
+		public Info(String key, Object info, boolean temp) {
+			this.temp = temp;
+			this.key = key;
+			this.info = info;
+		}
+
+		public boolean isKept() {
+			return !isTemp();
+		}
+
+		public boolean isTemp() {
+			return temp;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public Object getInfo() {
+			return info;
+		}
 	}
 }

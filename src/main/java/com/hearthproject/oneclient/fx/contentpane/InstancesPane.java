@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.InstanceManager;
@@ -7,8 +8,11 @@ import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.InstanceTile;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
@@ -50,7 +54,11 @@ public class InstancesPane extends ContentPane {
 			ObservableList<Instance> instances = InstanceManager.getInstances();
 			MiscUtil.runLaterIfNeeded(() -> gridView.setItems(instances));
 		}).start();
-
+		ContextMenu menu = new ContextMenu();
+		MenuItem open = new MenuItem("Open Instance Folder");
+		menu.getItems().addAll(open);
+		open.setOnAction(event -> OperatingSystem.openWithSystem(Constants.INSTANCEDIR));
+		gridView.setContextMenu(menu);
 	}
 
 	@Override

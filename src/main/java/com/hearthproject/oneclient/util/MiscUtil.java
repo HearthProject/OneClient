@@ -12,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Hyperlink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -191,6 +193,30 @@ public class MiscUtil {
 			String url = hastebin(text);
 			OperatingSystem.browseURI(url);
 		}).start();
+	}
+
+	public static Hyperlink setupLink(Hyperlink hyperlink, String text, String url) {
+		hyperlink.setText(text);
+		hyperlink.setOnAction(event -> OperatingSystem.browseURI(url));
+		return hyperlink;
+	}
+
+	public static Hyperlink createLink(String text, String url) {
+		Hyperlink link = new Hyperlink();
+		setupLink(link, text, url);
+		return link;
+	}
+
+	private static String[] suffix = new String[] { "", "k", "m", "b", "t" };
+	private static int MAX_LENGTH = 4;
+
+	public static String formatNumbers(double number) {
+		String r = new DecimalFormat("##0E0").format(number);
+		r = r.replaceAll("E[0-9]", suffix[Character.getNumericValue(r.charAt(r.length() - 1)) / 3]);
+		while (r.length() > MAX_LENGTH || r.matches("[0-9]+\\.[a-z]")) {
+			r = r.substring(0, r.length() - 2) + r.substring(r.length() - 1);
+		}
+		return r;
 	}
 
 }

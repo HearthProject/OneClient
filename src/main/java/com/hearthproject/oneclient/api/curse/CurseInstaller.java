@@ -140,15 +140,19 @@ public class CurseInstaller extends ModInstaller {
 		return JsonUtil.GSON.toJson(this);
 	}
 
-	public CurseProject.CurseFile findUpdate(Instance instance) {
+	public CurseProject.CurseFile findUpdate(Instance instance, boolean onlyNew) {
 		NotifyUtil.setText("%s Checking for updates", instance.getName());
 		this.files = Curse.getFiles(projectId, "");
 		if (this.files != null) {
 			List<CurseProject.CurseFile> updates = Lists.newArrayList();
-			for (CurseProject.CurseFile file : files) {
-				if (file.compareTo(this.file) < 0) {
-					updates.add(file);
+			if (onlyNew) {
+				for (CurseProject.CurseFile file : files) {
+					if (file.compareTo(this.file) < 0) {
+						updates.add(file);
+					}
 				}
+			} else {
+				updates.addAll(files);
 			}
 			if (updates.isEmpty()) {
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -168,7 +172,7 @@ public class CurseInstaller extends ModInstaller {
 
 	@Override
 	public void update(Instance instance) {
-		CurseProject.CurseFile update = findUpdate(instance);
+		CurseProject.CurseFile update = findUpdate(instance, true);
 		if (update != null) {
 			setFile(update);
 			install(instance);

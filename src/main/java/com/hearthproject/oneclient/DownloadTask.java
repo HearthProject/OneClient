@@ -15,6 +15,12 @@ public class DownloadTask extends Task<Void> {
 	public DownloadTask(String title, Runnable runnable) {
 		updateTitle(title);
 		this.runnable = runnable;
+
+		setOnSucceeded(event -> {
+			updateMessage("Finished Installed!");
+			updateProgress(1, 1);
+			//TODO beep
+		});
 	}
 
 	public void start() {
@@ -38,12 +44,4 @@ public class DownloadTask extends Task<Void> {
 		this.runnable.run();
 		return null;
 	}
-
-	@Override
-	protected void done() {
-		updateMessage("Finished Installed!");
-		updateProgress(1, 1);
-		super.done();
-	}
-
 }

@@ -11,7 +11,6 @@ import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import javafx.scene.image.Image;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -39,13 +38,22 @@ public class CurseImporter implements IImporter {
 	@Override
 	public Instance create() {
 		String name = data.map(CurseProject::getName);
-		List<String> authors = data.map(CurseProject::getAuthors);
-
+		String authors = data.map(CurseProject::getAuthors).stream().map(CurseProject.Author::getName).collect(Collectors.joining(", "));
+		String gameVersions = data.map(CurseProject::getLatestFiles).stream().flatMap(file -> file.getGameVersion().stream()).distinct().collect(Collectors.joining(", "));
 		List<CurseProject.Category> categories = data.map(CurseProject::getCategories);
 		String websiteUrl = data.map(CurseProject::getWebSiteURL);
 		if (name == null)
 			return null;
-		Instance instance = new Instance(name, url.toString(), new CurseInstaller(data.getIfPresent()), Pair.of("popularity", data.map(CurseProject::getPopularityScore)), Pair.of("authors", authors.stream().collect(Collectors.joining("\n"))), Pair.of("websiteUrl", websiteUrl), Pair.of("categories", categories));
+
+		Instance instance = new Instance(name, url.toString(), new CurseInstaller(data.getIfPresent()),
+			new Instance.Info("popularity", data.map(CurseProject::getPopularityScore)),
+			new Instance.Info("authors", authors),
+			new Instance.Info("websiteUrl", websiteUrl),
+			new Instance.Info("categories", categories),
+			new Instance.Info("downloads", data.map(CurseProject::getDownloads)),
+			new Instance.Info("gameVersions", gameVersions),
+			new Instance.Info("summary", data.map(CurseProject::getSummary))
+		);
 		instance.setImage(getImage());
 		return instance;
 	}

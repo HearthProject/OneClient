@@ -3,11 +3,14 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.Mod;
+import com.hearthproject.oneclient.api.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -34,6 +37,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonGetCurseMods;
 	public Button buttonBack;
 	public Button buttonDelete;
+	public Button buttonChangePack;
 
 	public Instance instance;
 
@@ -68,6 +72,19 @@ public class InstancePane extends ContentPane {
 		buttonPlay.setOnAction(event -> MinecraftUtil.startMinecraft(instance));
 
 		buttonUpdate.setOnAction(event -> instance.update());
+		buttonChangePack.setDisable(true);
+		buttonChangePack.setOnAction(event -> {
+			if (instance.installer instanceof CurseInstaller) {
+				CurseInstaller installer = (CurseInstaller) instance.installer;
+				CurseProject.CurseFile update = installer.findUpdate(instance, false);
+				if (update != null) {
+					installer.setFile(update);
+					installer.install(instance);
+					instance.save();
+					NotifyUtil.clear();
+				}
+			}
+		});
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());

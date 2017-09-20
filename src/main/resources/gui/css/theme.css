@@ -43,6 +43,28 @@
     -fx-background-color: transparent;
 }
 
+#oc-info-label {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-family: 'Roboto', sans-serif;
+    -fx-text-fill: -oc-text;
+    -fx-focus-traversable: false;
+}
+
+#oc-hyperlink {
+    -fx-background-color: -oc-medium;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-font-family: 'Roboto', sans-serif;
+    -fx-text-fill: -oc-text;
+    -fx-focus-traversable: false;
+}
+
 #oc-label {
     -fx-background-color: -oc-dark;
     -fx-border-width: 0;

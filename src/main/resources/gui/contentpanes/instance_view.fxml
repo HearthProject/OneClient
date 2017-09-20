@@ -58,6 +58,11 @@
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                             </VBox.margin>
                         </Button>
+                        <Button fx:id="buttonChangePack" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Change Pack Version">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
+                            </VBox.margin>
+                        </Button>
                         <Button fx:id="buttonGetCurseMods" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Download Mods">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>

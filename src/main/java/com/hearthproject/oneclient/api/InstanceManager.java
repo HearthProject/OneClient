@@ -1,8 +1,6 @@
 package com.hearthproject.oneclient.api;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
@@ -125,27 +123,33 @@ public class InstanceManager {
 		saveRecent();
 	}
 
-	//TODO replace with real url
-	public static String FEATURED_URL = "https://gist.githubusercontent.com/primetoxinz/c331a7e87952861fc0a37f68bee82a15/raw";
+	public static String FEATURED_URL = "http://fdn.redstone.tech/theoneclient/oneclient/featured.json";
 
-	public static ObservableList<Instance> getFeaturedInstances() {
-		ObservableList<Instance> list = FXCollections.observableArrayList();
-
+	public static List<String> getFeaturedProjects() {
+		String[] array = null;
 		try {
-			JsonArray array = JsonUtil.read(new URL(FEATURED_URL), JsonArray.class);
-			if (array != null) {
-				for (JsonElement e : array) {
-					Instance instance = new CurseImporter(e.getAsString()).create();
-					if (INSTANCES_MAP.containsKey(instance.getName())) {
-						instance.setInstalling(true);
-					}
-					list.add(instance);
-				}
-			}
+			array = JsonUtil.read(new URL(FEATURED_URL), String[].class);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+		if (array != null) {
+			return Lists.newArrayList(array);
+		}
+		return null;
+	}
 
+	public static ObservableList<Instance> getFeaturedInstances() {
+		ObservableList<Instance> list = FXCollections.observableArrayList();
+		List<String> featured = getFeaturedProjects();
+		if (featured != null) {
+			for (String project : featured) {
+				Instance instance = new CurseImporter(project).create();
+				if (INSTANCES_MAP.containsKey(instance.getName())) {
+					instance.setInstalling(true);
+				}
+				list.add(instance);
+			}
+		}
 		return list;
 	}
 
