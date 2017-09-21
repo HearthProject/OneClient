@@ -27,7 +27,7 @@
             </ImageView>
          </graphic>
       </JFXButton>
-      <JFXButton id="oc-raised-button" disable="true" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="Hearth">
+       <JFXButton fx:id="buttonHearth" id="oc-raised-button" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="Hearth">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <image>

@@ -69,24 +69,26 @@ public class PrivatePackPane extends ContentPane {
 	public void refresh() {
 		packList.getItems().clear();
 		adminPackList.getItems().clear();
-		try {
-			List<ModPack> packs = HearthApi.getHearthPrivatePacks().getPacks();
-			if (!packs.isEmpty()) {
-				for (ModPack modPack : packs) {
-					packList.getItems().add(modPack.name);
+		if (HearthApi.enable) {
+			try {
+				List<ModPack> packs = HearthApi.getHearthPrivatePacks().getPacks();
+				if (!packs.isEmpty()) {
+					for (ModPack modPack : packs) {
+						packList.getItems().add(modPack.name);
+					}
+					packList.getSelectionModel().select(0);
 				}
-				packList.getSelectionModel().select(0);
-			}
 
-			List<ModPack> admin = HearthApi.getHearthPrivatePacks().getAdminPacks();
-			if (!admin.isEmpty()) {
-				for (ModPack modPack : admin) {
-					adminPackList.getItems().add(modPack.name);
+				List<ModPack> admin = HearthApi.getHearthPrivatePacks().getAdminPacks();
+				if (!admin.isEmpty()) {
+					for (ModPack modPack : admin) {
+						adminPackList.getItems().add(modPack.name);
+					}
+					adminPackList.getSelectionModel().select(0);
 				}
-				adminPackList.getSelectionModel().select(0);
+			} catch (UnirestException e) {
+				e.printStackTrace();
 			}
-		} catch (UnirestException e) {
-			e.printStackTrace();
 		}
 	}
 

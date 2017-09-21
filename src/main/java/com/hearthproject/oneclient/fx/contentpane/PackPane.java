@@ -23,7 +23,7 @@ import java.io.File;
 
 public class PackPane extends ContentPane {
 
-	public JFXButton buttonCustom, buttonCurse, buttonMMC, buttonTwitch;
+	public JFXButton buttonCustom, buttonHearth, buttonCurse, buttonMMC, buttonTwitch;
 
 	public PackPane() {
 		super("gui/contentpanes/packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
@@ -55,6 +55,7 @@ public class PackPane extends ContentPane {
 
 		buttonTwitch.setOnAction(this::openTwitch);
 
+		buttonHearth.setOnAction(event -> Main.mainController.setContent(ContentPanes.PRIVATE_PACK_PANE));
 	}
 
 	private void openTwitch(Event event) {
