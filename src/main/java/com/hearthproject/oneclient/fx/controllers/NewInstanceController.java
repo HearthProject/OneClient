@@ -100,11 +100,9 @@ public class NewInstanceController {
 		loadModloaderVersions();
 		showSnapshotCheckBox.setOnAction(event -> loadVersions());
 		mcVersionComboBox.valueProperty().addListener(((o, a, b) -> loadModloaderVersions()));
-		mcVersionComboBox.getSelectionModel().selectFirst();
-		modloaderComboBox.getSelectionModel().selectFirst();
 		if (instance != null) {
 			mcVersionComboBox.getSelectionModel().select(MinecraftUtil.getVersionData(instance.getGameVersion()));
-			modloaderComboBox.getSelectionModel().select(ForgeUtils.getModloader(instance.getForgeVersion()));
+			modloaderComboBox.getSelectionModel().select(modloaderVersions.stream().filter(m -> m.getVersion().equalsIgnoreCase(instance.getForgeVersion())).findFirst().orElse(IModloader.NONE));
 			instanceNameField.setText(instance.getName());
 			iconPreview.setImage(ImageUtil.openCachedImage(instance.getIcon()));
 			createButton.setText("Update Instance");

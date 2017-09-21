@@ -1,38 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<fx:root minHeight="0.0" minWidth="0.0" type="javafx.scene.layout.AnchorPane" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+            xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox fx:id="vbox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <HBox prefHeight="40.0" prefWidth="200.0">
+                <Label id="oc-label" fx:id="title" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Installing to ...">
+                    <VBox.margin>
+                        <Insets bottom="6.0" right="6.0" top="6.0"/>
+                    </VBox.margin>
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+                <HBox VBox.vgrow="NEVER">
                     <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </VBox.margin>
                     <children>
-                        <TextField fx:id="textSearch" alignment="CENTER" HBox.hgrow="ALWAYS">
+                        <ImageView fx:id="loadingIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                             <HBox.margin>
-                                <Insets left="5.0" right="5.0"/>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </ImageView>
+                        <TextField fx:id="textSearch" alignment="CENTER" prefHeight="28.0" HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </TextField>
-                        <Button fx:id="buttonSearch" defaultButton="true" mnemonicParsing="false" text="Search">
+                        <Button fx:id="buttonSearch" defaultButton="true" mnemonicParsing="false" prefHeight="28.0" text="Search">
                             <HBox.margin>
-                                <Insets left="5.0" right="5.0"/>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </Button>
-                        <ComboBox fx:id="filterVersion" prefWidth="150.0"/>
-                        <ComboBox fx:id="filterSort" prefWidth="150.0">
+                        <ComboBox fx:id="filterSort" prefHeight="28.0" prefWidth="175.0">
                             <HBox.margin>
-                                <Insets left="5.0" right="5.0"/>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </ComboBox>
+                        <JFXToggleButton fx:id="toggleSort" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="Reverse" unToggleColor="#282828" unToggleLineColor="#4F4F4F">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </JFXToggleButton>
                     </children>
                 </HBox>
-                <HBox fx:id="hBox" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
+                <HBox fx:id="hBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <ListView fx:id="listTiles" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                        <ListView fx:id="listMods" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </children>
@@ -41,4 +63,4 @@
     <padding>
         <Insets bottom="5.0"/>
     </padding>
-</fx:root>
+</AnchorPane>

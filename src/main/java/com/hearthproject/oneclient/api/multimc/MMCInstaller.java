@@ -1,14 +1,14 @@
 package com.hearthproject.oneclient.api.multimc;
 
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.ModInstaller;
+import com.hearthproject.oneclient.api.ModpackInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MMCInstaller extends ModInstaller {
+public class MMCInstaller extends ModpackInstaller {
 	private File dir;
 
 	public MMCInstaller(File dir) {

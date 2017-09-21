@@ -3,7 +3,7 @@ package com.hearthproject.oneclient.api.curse;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.IExporter;
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.Mod;
+import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -30,7 +30,7 @@ public class CurseExporter implements IExporter {
 		manifest.version = instance.getPackVersion();
 		manifest.author = "";
 		manifest.projectID = installer.projectId;
-		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstall).map(m -> ((CurseModInstall) m).getFileData()).collect(Collectors.toList());
+		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstaller).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
 		manifest.overrides = "overrides";
 
 		Manifest.Minecraft.Modloader forge = new Manifest.Minecraft.Modloader(instance.getForgeVersion());
@@ -54,8 +54,8 @@ public class CurseExporter implements IExporter {
 			e.printStackTrace();
 		}
 		//override mods
-		List<Mod> manual = instance.getMods().stream().filter(m -> m.getType().equals(PackType.MANUAL)).collect(Collectors.toList());
-		for (Mod mod : manual) {
+		List<ModInstaller> manual = instance.getMods().stream().filter(m -> m.getType().equals(PackType.MANUAL)).collect(Collectors.toList());
+		for (ModInstaller mod : manual) {
 			File file = mod.getHash().getFile();
 
 			try {

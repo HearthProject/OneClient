@@ -3,7 +3,7 @@ package com.hearthproject.oneclient.api.curse;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.*;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.fx.nodes.PackUpdateDialog;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -19,25 +19,25 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class CurseInstaller extends ModInstaller {
-	private transient CurseProject project;
-	private transient List<CurseProject.CurseFile> files;
+public class CurseInstaller extends ModpackInstaller {
+	private transient CurseFullProject project;
+	private transient List<CurseFullProject.CurseFile> files;
 	private transient Manifest manifest;
-	private CurseProject.CurseFile file;
+	private CurseFullProject.CurseFile file;
 	public String projectId;
 
-	public CurseInstaller(CurseProject project) {
+	public CurseInstaller(CurseFullProject project) {
 		super(PackType.CURSE);
 		this.project = project;
 		this.files = project.getFiles("");
 		this.projectId = project.Id;
 	}
 
-	public void setFile(CurseProject.CurseFile file) {
+	public void setFile(CurseFullProject.CurseFile file) {
 		this.file = file;
 	}
 
-	public List<CurseProject.CurseFile> getFiles() {
+	public List<CurseFullProject.CurseFile> getFiles() {
 		return files;
 	}
 
@@ -94,9 +94,9 @@ public class CurseInstaller extends ModInstaller {
 		instance.setForgeVersion(manifest.minecraft.getModloader());
 		if (instance.checkCancel())
 			return;
-		List<Mod> mods = getMods();
+		List<ModInstaller> mods = getMods();
 		AtomicInteger counter = new AtomicInteger(1);
-		for (Mod mod : mods) {
+		for (ModInstaller mod : mods) {
 			DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 			mod.install(instance);
 			if (instance.checkCancel())
@@ -129,8 +129,8 @@ public class CurseInstaller extends ModInstaller {
 		}
 	}
 
-	public List<Mod> getMods() {
-		return manifest.files.stream().map(CurseModInstall::new).collect(Collectors.toList());
+	public List<ModInstaller> getMods() {
+		return manifest.files.stream().map(CurseModInstaller::new).collect(Collectors.toList());
 	}
 
 	@Override
@@ -138,13 +138,13 @@ public class CurseInstaller extends ModInstaller {
 		return JsonUtil.GSON.toJson(this);
 	}
 
-	public CurseProject.CurseFile findUpdate(Instance instance, boolean onlyNew) {
+	public CurseFullProject.CurseFile findUpdate(Instance instance, boolean onlyNew) {
 		NotifyUtil.setText("%s Checking for updates", instance.getName());
 		this.files = Curse.getFiles(projectId, "");
 		if (this.files != null) {
-			List<CurseProject.CurseFile> updates = Lists.newArrayList();
+			List<CurseFullProject.CurseFile> updates = Lists.newArrayList();
 			if (onlyNew) {
-				for (CurseProject.CurseFile file : files) {
+				for (CurseFullProject.CurseFile file : files) {
 					if (file.compareTo(this.file) < 0) {
 						updates.add(file);
 					}
@@ -161,7 +161,7 @@ public class CurseInstaller extends ModInstaller {
 				return null;
 			}
 
-			CurseProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);
+			CurseFullProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);
 			this.file = file;
 			return file;
 		}
@@ -170,7 +170,7 @@ public class CurseInstaller extends ModInstaller {
 
 	@Override
 	public void update(Instance instance) {
-		CurseProject.CurseFile update = findUpdate(instance, true);
+		CurseFullProject.CurseFile update = findUpdate(instance, true);
 		if (update != null) {
 			setFile(update);
 			install(instance);

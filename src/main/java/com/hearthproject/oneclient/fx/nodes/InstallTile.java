@@ -4,7 +4,7 @@ import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
@@ -35,7 +35,7 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 	@FXML
 	protected StackPane nodePane;
 	@FXML
-	protected ComboBox<CurseProject.CurseFile> comboFile;
+	protected ComboBox<CurseFullProject.CurseFile> comboFile;
 	@FXML
 	protected VBox left, right;
 

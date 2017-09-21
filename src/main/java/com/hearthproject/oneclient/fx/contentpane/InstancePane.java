@@ -2,9 +2,9 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.Mod;
+import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
@@ -25,7 +25,7 @@ import org.apache.commons.io.FileUtils;
 
 public class InstancePane extends ContentPane {
 
-	public TableView<Mod> tableMods;
+	public TableView<ModInstaller> tableMods;
 
 	public Label textPackName;
 	public Label textMinecraftVersion;
@@ -76,7 +76,7 @@ public class InstancePane extends ContentPane {
 		buttonChangePack.setOnAction(event -> {
 			if (instance.installer instanceof CurseInstaller) {
 				CurseInstaller installer = (CurseInstaller) instance.installer;
-				CurseProject.CurseFile update = installer.findUpdate(instance, false);
+				CurseFullProject.CurseFile update = installer.findUpdate(instance, false);
 				if (update != null) {
 					installer.setFile(update);
 					installer.install(instance);
@@ -88,21 +88,22 @@ public class InstancePane extends ContentPane {
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-		buttonGetCurseMods.setOnAction(event -> new ModInstallPane(instance));
+
+		buttonGetCurseMods.setOnAction(event -> CurseModPane.show(instance));
 		buttonDelete.setOnAction(event -> {
 			instance.delete();
 			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
 		});
 
-		TableColumn<Mod, Boolean> columnEnabled = new TableColumn<>("Enabled");
+		TableColumn<ModInstaller, Boolean> columnEnabled = new TableColumn<>("Enabled");
 		columnEnabled.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isEnabled()));
 
 		tableMods.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		tableMods.setPlaceholder(new Label("No Mods installed"));
-		TableColumn<Mod, String> columnMods = new TableColumn<>("Mods");
+		TableColumn<ModInstaller, String> columnMods = new TableColumn<>("Mods");
 		columnMods.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
 		tableMods.setRowFactory(table -> {
-			TableRow<Mod> row = new TableRow<>();
+			TableRow<ModInstaller> row = new TableRow<>();
 			final ContextMenu rowMenu = new ContextMenu();
 			MenuItem open = new MenuItem("Open");
 

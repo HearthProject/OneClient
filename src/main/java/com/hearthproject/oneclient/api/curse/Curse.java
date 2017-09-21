@@ -5,9 +5,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.Lists;
-import com.hearthproject.oneclient.api.curse.data.CurseModpacks;
-import com.hearthproject.oneclient.api.curse.data.CurseMods;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.api.curse.data.CurseProjects;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Curse {
-	public static Cache<String, CurseModpacks> MODPACKS_CACHE;
+	public static Cache<String, CurseProjects> MODPACKS_CACHE;
 
 	private static final String CURSE_META_BASE = "https://cursemeta.dries007.net/";
 	private static final String CURSE_META_PROJECT = CURSE_META_BASE + "${projectID}.json";
@@ -64,21 +63,12 @@ public class Curse {
 		return null;
 	}
 
-	public static CurseMods getMods() {
-		try {
-			return JsonUtil.read(new URL(CURSE_META_MODS), CurseMods.class);
-		} catch (MalformedURLException e) {
-			OneClientLogging.error(e);
-		}
-		return null;
-	}
-
-	public static CurseModpacks getModpacks() {
-		CurseModpacks packs = MODPACKS_CACHE.getIfPresent("SINGLETON");
+	public static CurseProjects getMods() {
+		CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODS");
 		if (packs == null) {
 			try {
-				packs = JsonUtil.read(new URL(CURSE_META_MODPACKS), CurseModpacks.class);
-				MODPACKS_CACHE.put("SINGLETON", packs);
+				packs = JsonUtil.read(new URL(CURSE_META_MODS), CurseProjects.class);
+				MODPACKS_CACHE.put("MODS", packs);
 			} catch (MalformedURLException e) {
 				OneClientLogging.error(e);
 			}
@@ -86,10 +76,23 @@ public class Curse {
 		return packs;
 	}
 
-	public static List<CurseProject.CurseFile> getFiles(String projectId, String gameVersion) {
-		CurseProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseProject.CurseFile[].class);
+	public static CurseProjects getModpacks() {
+		CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODPACKS");
+		if (packs == null) {
+			try {
+				packs = JsonUtil.read(new URL(CURSE_META_MODPACKS), CurseProjects.class);
+				MODPACKS_CACHE.put("MODPACKS", packs);
+			} catch (MalformedURLException e) {
+				OneClientLogging.error(e);
+			}
+		}
+		return packs;
+	}
+
+	public static List<CurseFullProject.CurseFile> getFiles(String projectId, String gameVersion) {
+		CurseFullProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseFullProject.CurseFile[].class);
 		if (files != null) {
-			List<CurseProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
+			List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
 			curseFiles.forEach(f -> f.projectId = projectId);
 			return curseFiles;
 		}

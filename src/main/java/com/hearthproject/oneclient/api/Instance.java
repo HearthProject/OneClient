@@ -35,13 +35,13 @@ public class Instance {
 	public String icon;
 	public Map<String, Object> info;
 	public transient Map<String, Object> tempInfo;
-	public ObservableList<Mod> mods = FXCollections.observableArrayList();
+	public ObservableList<ModInstaller> mods = FXCollections.observableArrayList();
 
 	public transient Image image;
 	public transient SimpleBooleanProperty installing;
-	public ModInstaller installer;
+	public ModpackInstaller installer;
 
-	public Instance(String name, String url, ModInstaller installer, Info... info) {
+	public Instance(String name, String url, ModpackInstaller installer, Info... info) {
 		this();
 		this.name = name;
 		this.url = url;
@@ -124,11 +124,11 @@ public class Instance {
 		this.image = image;
 	}
 
-	public ObservableList<Mod> getMods() {
+	public ObservableList<ModInstaller> getMods() {
 		return mods;
 	}
 
-	public void setMods(ObservableList<Mod> mods) {
+	public void setMods(ObservableList<ModInstaller> mods) {
 		this.mods = mods;
 	}
 
@@ -179,7 +179,7 @@ public class Instance {
 		return JsonUtil.GSON.toJson(this);
 	}
 
-	public ModInstaller getInstaller() {
+	public ModpackInstaller getInstaller() {
 		return installer;
 	}
 
@@ -191,15 +191,15 @@ public class Instance {
 		new Thread(() -> {
 			File modDir = getModDirectory();
 			File[] mods = modDir.listFiles(MOD_FILTER);
-			List<Mod> newMods = Lists.newArrayList();
+			List<ModInstaller> newMods = Lists.newArrayList();
 
 			if (this.mods != null && mods != null && mods.length > 0) {
 				List<File> files = Lists.newArrayList(mods);
-				List<Mod> removal = Lists.newArrayList();
-				for (Mod mod : this.mods) {
+				List<ModInstaller> removal = Lists.newArrayList();
+				for (ModInstaller mod : this.mods) {
 					Collection<File> sorted = Collections2.filter(files, f -> {
-						if (f != null && mod != null && mod.file != null) {
-							return f.toString().equals(mod.file.getFilePath());
+						if (f != null && mod != null && mod.getHash() != null) {
+							return f.toString().equals(mod.getHash().getFilePath());
 						}
 						return false;
 					});
@@ -216,20 +216,20 @@ public class Instance {
 
 				files.parallelStream().forEach(file -> {
 					boolean match = false;
-					Collection<Mod> sorted = Collections2.filter(this.mods, m -> {
+					Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {
-							return m.file.getFilePath().equals(file.toString());
+							return m.getHash().getFilePath().equals(file.toString());
 						}
 						return false;
 					});
-					for (Mod mod : sorted) {
+					for (ModInstaller mod : sorted) {
 						if (mod.matches(file)) {
 							match = true;
 							break;
 						}
 					}
 					if (!match) {
-						Mod mod = new Mod(PackType.MANUAL, new FileHash(file));
+						ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
 						newMods.add(mod);
 					}
 				});

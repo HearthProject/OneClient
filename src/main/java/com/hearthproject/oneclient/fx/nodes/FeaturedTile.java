@@ -4,7 +4,7 @@ import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
@@ -38,7 +38,7 @@ public class FeaturedTile extends StackPane {
 	@FXML
 	public StackPane nodePane;
 	@FXML
-	public ComboBox<CurseProject.CurseFile> files;
+	public ComboBox<CurseFullProject.CurseFile> files;
 
 	public FeaturedTile(Instance instance) {
 		if (instance == null)

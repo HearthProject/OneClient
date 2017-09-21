@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.ButtonType;
@@ -10,17 +10,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PackUpdateDialog extends TableDialog<CurseProject.CurseFile> {
+public class PackUpdateDialog extends TableDialog<CurseFullProject.CurseFile> {
 
 	@SuppressWarnings("unchecked")
-	public PackUpdateDialog(List<CurseProject.CurseFile> files) {
+	public PackUpdateDialog(List<CurseFullProject.CurseFile> files) {
 		super(files);
-		TableColumn<CurseProject.CurseFile, String> columnName = new TableColumn<>("Files");
+		TableColumn<CurseFullProject.CurseFile, String> columnName = new TableColumn<>("Files");
 		columnName.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFileName()));
 
-		TableColumn<CurseProject.CurseFile, String> columnVersion = new TableColumn<>("Version");
+		TableColumn<CurseFullProject.CurseFile, String> columnVersion = new TableColumn<>("Version");
 		columnVersion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getGameVersion().stream().collect(Collectors.joining())));
-		TableColumn<CurseProject.CurseFile, Date> columnDate = new TableColumn<>("Release Date");
+		TableColumn<CurseFullProject.CurseFile, Date> columnDate = new TableColumn<>("Release Date");
 		columnDate.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getDate()));
 
 		table.getColumns().addAll(columnName, columnVersion, columnDate);

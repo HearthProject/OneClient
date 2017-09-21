@@ -1,46 +1,50 @@
 package com.hearthproject.oneclient.fx.nodes;
 
+import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.Mod;
-import com.hearthproject.oneclient.api.curse.CurseMod;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
-import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.api.ModInstaller;
+import com.hearthproject.oneclient.api.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.util.MiscUtil;
+import com.jfoenix.controls.JFXButton;
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 
-public class ModTile extends StackPane {
+public class ModTile extends HBox implements Comparable<ModTile> {
 	@FXML
 	protected ImageView imageView;
-
 	@FXML
 	protected Hyperlink title;
-
 	@FXML
-	protected VBox left, middle, right;
-
+	protected JFXButton buttonInstall;
 	@FXML
-	protected Button buttonInstall;
+	protected StackPane nodePane;
+	@FXML
+	protected ComboBox<CurseFullProject.CurseFile> comboFile;
+	@FXML
+	protected VBox left, right;
 
 	protected Instance instance;
-	protected Mod mod;
+	protected ModInstaller mod;
 
-	protected ComboBox<CurseProject.CurseFile> comboFile;
-
-	public ModTile(Instance instance, Mod mod) {
+	public ModTile(Instance instance, CurseModInstaller mod) {
 		this.instance = instance;
 		this.mod = mod;
 
@@ -53,51 +57,74 @@ public class ModTile extends StackPane {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		title.setText(this.mod.getName());
-		title.setTextFill(Color.web("#FFFFFF"));
-		title.setFont(javafx.scene.text.Font.font(title.getFont().getFamily(), FontWeight.BOLD, title.getFont().getSize()));
-		if (mod instanceof CurseMod) {
-			title.setOnAction(event -> OperatingSystem.browseURI(((CurseMod) this.mod).data.WebSiteURL));
-			comboFile = new ComboBox<>(FXCollections.observableArrayList(((CurseMod) mod).getFiles()));
-			comboFile.getSelectionModel().selectFirst();
-			right.getChildren().add(comboFile);
-			buttonInstall.setOnAction(event ->
-				DownloadManager.startDownload(instance.getName(), () -> {
-					((CurseMod) mod).setFileData(comboFile.getValue().toFileData());
-					mod.install(instance);
-				})
-			);
-
+		MiscUtil.setupLink(title, mod.getName(), mod.getProject().WebSiteURL);
+		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> {
+			Image image = mod.fullProject.map(CurseFullProject::getImage);
+			if (image != null)
+				imageView.setImage(image);
+		})).start();
+		comboFile.setVisible(true);
+		comboFile.setItems(FXCollections.observableArrayList(mod.fullProject.getIfPresent().getFiles(instance.getGameVersion())));
+		comboFile.getSelectionModel().selectFirst();
+		if (!comboFile.getItems().isEmpty()) {
+			mod.setFileData(comboFile.getValue().toFileData());
+			comboFile.valueProperty().addListener((v, a, b) -> mod.setFileData(comboFile.getValue().toFileData()));
 		}
-		//
-		//		if (this.mod.getInstaller() instanceof CurseInstaller) {
-		//			comboFile = new ComboBox<>(FXCollections.observableArrayList(((CurseInstaller) this.mod.getInstaller()).getFiles()));
-		//			comboFile.getSelectionModel().selectFirst();
-		//			right.getChildren().add(comboFile);
-		//			((CurseInstaller) this.mod.getInstaller()).setFile(comboFile.getValue());
-		//			comboFile.valueProperty().addListener((v, a, b) -> ((CurseInstaller) this.mod.getInstaller()).setFile(b));
-		//		}
-		//		//		left.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
-		//		middle.getChildren().addAll(info(getPopularity()), info(this.mod.info.get("authors")));
 
-		//		buttonInstall.setOnAction(event -> DownloadManager.startDownload(this.mod.getName(), this.mod::install));
-		//		imageView.setImage(this.mod.getImage());
-		imageView.setFitHeight(75);
-		imageView.setFitWidth(75);
+		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers(mod.fullProject.map(CurseFullProject::getDownloads)));
+		Label gameVersions = info("Versions: %s", mod.fullProject.map(CurseFullProject::getVersions));
+		right.setAlignment(Pos.BASELINE_RIGHT);
+		right.getChildren().addAll(gameVersions, downloads);
+		left.getChildren().addAll(info("By %s", mod.fullProject.map(CurseFullProject::getAuthorsString)));
+
+		DownloadTask task = DownloadManager.createDownload(mod.getName(), () -> mod.install(instance));
+		buttonInstall.setOnAction(event -> {
+			task.start();
+			buttonInstall.setDisable(true);
+		});
+		task.setOnSucceeded(event -> {
+			buttonInstall.setDisable(false);
+			instance.verifyMods();
+		});
+
+		nodePane.setOpacity(0F);
+		nodePane.hoverProperty().addListener((observable, oldValue, newValue) -> {
+			FadeTransition fadeTransition = new FadeTransition(new Duration(400), nodePane);
+			if (newValue) {
+				fadeTransition.setFromValue(0F);
+				fadeTransition.setToValue(1F);
+				fadeTransition.play();
+				nodePane.setOpacity(1F);
+			} else {
+				fadeTransition.setFromValue(1F);
+				fadeTransition.setToValue(0F);
+				fadeTransition.play();
+				nodePane.setOpacity(0F);
+			}
+		});
+		imageView.disableProperty().bind(instance.installingProperty());
+		instance.installingProperty().addListener((observable, oldValue, newValue) -> {
+
+		});
 	}
 
-	public Label info(Object value) {
-		return info(value.toString());
+	public Label info(String format, Object... params) {
+		return info(String.format(format, params));
 	}
 
 	public Label info(String value) {
 		Label l = new Label(value);
 		l.setTextFill(Color.web("#FFFFFF"));
+		l.setId("oc-info-label");
 		return l;
 	}
 
 	private String getName() {
-		return mod.getName().trim();
+		return instance.name.trim();
 	}
 
+	@Override
+	public int compareTo(ModTile o) {
+		return getName().compareTo(o.getName());
+	}
 }
