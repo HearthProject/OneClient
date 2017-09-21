@@ -14,8 +14,10 @@ import javafx.collections.ObservableMap;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InstanceManager {
 	protected static ObservableMap<String, Instance> INSTANCES_MAP = FXCollections.observableHashMap();
@@ -125,15 +127,19 @@ public class InstanceManager {
 
 	public static String FEATURED_URL = "http://fdn.redstone.tech/theoneclient/oneclient/featured.json";
 
+	private static class Featured {
+		private String name, projectId;
+	}
+
 	public static List<String> getFeaturedProjects() {
-		String[] array = null;
+		Featured[] array = null;
 		try {
-			array = JsonUtil.read(new URL(FEATURED_URL), String[].class);
+			array = JsonUtil.read(new URL(FEATURED_URL), Featured[].class);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		if (array != null) {
-			return Lists.newArrayList(array);
+			return Arrays.stream(array).map(f -> f.projectId).collect(Collectors.toList());
 		}
 		return null;
 	}
