@@ -21,10 +21,10 @@ import java.util.concurrent.Executors;
 
 public class CurseModInstaller extends ModInstaller {
 	private final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-	public AsyncTask<CurseFullProject> fullProject;
+	public transient AsyncTask<CurseFullProject> fullProject;
 
 	private FileData fileData;
-	private CurseProject project;
+	private transient CurseProject project;
 
 	public CurseModInstaller(CurseProject data) {
 		super(PackType.CURSE);
@@ -42,12 +42,15 @@ public class CurseModInstaller extends ModInstaller {
 	@Override
 	public void install(Instance instance) {
 		try {
+
 			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);
+			instance.getMods().add(this);
 		} catch (Throwable e) {
 			OneClientLogging.error(e);
 		}
+
 	}
 
 	public FileData getFileData() {

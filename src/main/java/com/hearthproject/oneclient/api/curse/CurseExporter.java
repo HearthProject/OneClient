@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
+import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -25,12 +26,26 @@ public class CurseExporter implements IExporter {
 
 	@Override
 	public void export(Instance instance) {
-		CurseInstaller installer = (CurseInstaller) instance.installer;
+		CurseInstaller installer = null;
+		if (instance.installer instanceof CurseInstaller) {
+			installer = (CurseInstaller) instance.installer;
+		}
+
 		Manifest manifest = new Manifest();
+		manifest.manifestType = "minecraftModpack";
+		manifest.manifestVersion = 1;
+		try {
+			if (MinecraftAuthController.getAuthentication() != null)
+				manifest.author = MinecraftAuthController.getUsername(MinecraftAuthController.getAuthentication());
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 		manifest.name = instance.getName();
 		manifest.version = instance.getPackVersion();
 		manifest.author = "";
-		manifest.projectID = installer.projectId;
+		if (installer != null) {
+			manifest.projectID = installer.projectId;
+		}
 		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstaller).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
 		manifest.overrides = "overrides";
 
@@ -39,6 +54,7 @@ public class CurseExporter implements IExporter {
 
 		minecraft.version = instance.getGameVersion();
 		minecraft.modLoaders.add(forge);
+		manifest.minecraft = minecraft;
 
 		File dir = FileUtil.findDirectory(Constants.EXPORTS, instance.getName());
 		File overrides = FileUtil.findDirectory(dir, "overrides");
@@ -77,4 +93,5 @@ public class CurseExporter implements IExporter {
 		}
 
 	}
+
 }

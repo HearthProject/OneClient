@@ -68,6 +68,11 @@
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                             </VBox.margin>
                         </Button>
+                        <MenuButton fx:id="buttonExport" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Export Modpack" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
+                            </VBox.margin>
+                        </MenuButton>
                         <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete Instance">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>

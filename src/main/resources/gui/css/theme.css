@@ -425,6 +425,31 @@
 }
 
 
+.menu-button {
+    -fx-background-color: -fill-color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-padding: 0 4 0 4;
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-font-family: 'Roboto', sans-serif;
+}
+
+.menu-button:hover {
+    -fx-background-color: -hover-color;
+}
+
+.menu-button .arrow {
+    -fx-background-color: transparent, -text-color;
+}
+
+.menu-button:focused {
+    -fx-border-color: -accent-color;
+}
+
 
 .combo-box-base {
     -fx-background-color: -fill-color;

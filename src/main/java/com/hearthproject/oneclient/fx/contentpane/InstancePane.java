@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModInstaller;
+import com.hearthproject.oneclient.api.curse.CurseExporter;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
@@ -38,6 +39,7 @@ public class InstancePane extends ContentPane {
 	public Button buttonBack;
 	public Button buttonDelete;
 	public Button buttonChangePack;
+	public MenuButton buttonExport;
 
 	public Instance instance;
 
@@ -71,10 +73,15 @@ public class InstancePane extends ContentPane {
 
 		buttonPlay.setOnAction(event -> MinecraftUtil.startMinecraft(instance));
 
-		buttonUpdate.setOnAction(event -> instance.update());
+
 		buttonChangePack.setDisable(true);
-		buttonChangePack.setOnAction(event -> {
-			if (instance.installer instanceof CurseInstaller) {
+		buttonUpdate.setDisable(true);
+		if (instance.installer instanceof CurseInstaller) {
+			//			buttonChangePack.setDisable(false);
+			buttonUpdate.setDisable(false);
+			buttonUpdate.setOnAction(event -> instance.update());
+			buttonChangePack.setOnAction(event -> {
+
 				CurseInstaller installer = (CurseInstaller) instance.installer;
 				CurseFullProject.CurseFile update = installer.findUpdate(instance, false);
 				if (update != null) {
@@ -83,8 +90,8 @@ public class InstancePane extends ContentPane {
 					instance.save();
 					NotifyUtil.clear();
 				}
-			}
-		});
+			});
+		}
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
@@ -94,6 +101,16 @@ public class InstancePane extends ContentPane {
 			instance.delete();
 			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
 		});
+
+		MenuItem curse = new MenuItem("Curse ZIP");
+
+		curse.setOnAction(event -> {
+
+			new CurseExporter().export(instance);
+
+		});
+
+		buttonExport.getItems().addAll(curse);
 
 		TableColumn<ModInstaller, Boolean> columnEnabled = new TableColumn<>("Enabled");
 		columnEnabled.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isEnabled()));

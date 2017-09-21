@@ -6,8 +6,8 @@ import java.util.List;
 
 public class Manifest {
 
+	public int manifestVersion;
 	public String manifestType;
-	public String manifestVersion;
 	public String name;
 	public String version;
 	public String author;
