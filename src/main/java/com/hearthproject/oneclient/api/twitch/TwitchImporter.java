@@ -29,6 +29,6 @@ public class TwitchImporter implements IImporter {
 		instance.setGameVersion(gameVersion);
 		instance.setForgeVersion(forgeVersion);
 
-		return null;
+		return instance;
 	}
 }

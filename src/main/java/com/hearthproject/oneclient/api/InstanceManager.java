@@ -5,7 +5,10 @@ import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.SplashScreen;
+import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
+import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,7 +34,12 @@ public class InstanceManager {
 			INSTANCES_MAP.put(instance.getName(), instance);
 			instance.verifyMods();
 			save();
+			MiscUtil.runLaterIfNeeded( () -> {
+				if(ContentPanes.INSTANCES_PANE.gridView != null)
+					ContentPanes.INSTANCES_PANE.gridView.setItems(getInstances());
+			});
 		}
+
 	}
 
 	public static void save() {
