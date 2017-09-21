@@ -34,11 +34,6 @@
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </VBox.margin>
                                 </CheckBox>
-                                <Button fx:id="buttonImport" mnemonicParsing="false" text="Import Twitch Packs">
-                                    <VBox.margin>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                    </VBox.margin>
-                                </Button>
                             </children>
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -61,6 +56,29 @@
                                         </Text>
                                     </children>
                                 </HBox>
+                                <Label text="Java Path">
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </VBox.margin>
+                                    <children>
+                                        <Button fx:id="buttonJavaPath" mnemonicParsing="false" text="...">
+                                            <HBox.margin>
+                                                <Insets left="6.0" right="6.0"/>
+                                            </HBox.margin>
+                                        </Button>
+                                        <TextField fx:id="fieldJavaPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                                        <Button fx:id="buttonFindJava" mnemonicParsing="false" text="Detect">
+                                            <HBox.margin>
+                                                <Insets left="6.0" right="6.0"/>
+                                            </HBox.margin>
+                                        </Button>
+                                    </children>
+                                </HBox>
                                 <Label text="Java Arguments">
                                     <VBox.margin>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -68,7 +86,7 @@
                                 </Label>
                                 <TextField fx:id="argumentBox">
                                     <VBox.margin>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                        <Insets bottom="6.0" left="5.0" right="6.0" top="6.0"/>
                                     </VBox.margin>
                                 </TextField>
                                 <Label text="Minimum RAM">
@@ -78,7 +96,7 @@
                                 </Label>
                                 <Spinner fx:id="spinnerMinRAM">
                                     <VBox.margin>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                                     </VBox.margin>
                                 </Spinner>
                                 <Label text="Maximum RAM">
@@ -88,7 +106,7 @@
                                 </Label>
                                 <Spinner fx:id="spinnerMaxRAM">
                                     <VBox.margin>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                                     </VBox.margin>
                                 </Spinner>
                             </children>
@@ -101,7 +119,7 @@
                         </VBox>
                         <HBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="702.0">
                             <children>
-                                <Button fx:id="buttonSave" alignment="CENTER_RIGHT" mnemonicParsing="false" defaultButton="true" text="Save" HBox.hgrow="ALWAYS">
+                                <Button fx:id="buttonSave" alignment="CENTER_RIGHT" defaultButton="true" mnemonicParsing="false" text="Save" HBox.hgrow="ALWAYS">
                                     <HBox.margin>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </HBox.margin>

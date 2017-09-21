@@ -26,7 +26,7 @@ public class JsonUtil {
 			return CurseInstaller.class;
 		}
 		return ModInstaller.class;
-	}).createGsonBuilder().registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
+	}).createGsonBuilder().registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
 
 	static class ObservableListDeserializer<T> implements JsonDeserializer<ObservableList<T>> {
 

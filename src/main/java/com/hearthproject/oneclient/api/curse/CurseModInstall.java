@@ -11,10 +11,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
-public class CurseMod extends Mod {
+public class CurseModInstall extends Mod {
 	private FileData fileData;
 
-	public CurseMod(FileData fileData) {
+	public CurseModInstall(FileData fileData) {
 		super(PackType.CURSE);
 		this.fileData = fileData;
 	}

@@ -30,7 +30,7 @@ public class CurseExporter implements IExporter {
 		manifest.version = instance.getPackVersion();
 		manifest.author = "";
 		manifest.projectID = installer.projectId;
-		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseMod).map(m -> ((CurseMod) m).getFileData()).collect(Collectors.toList());
+		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstall).map(m -> ((CurseModInstall) m).getFileData()).collect(Collectors.toList());
 		manifest.overrides = "overrides";
 
 		Manifest.Minecraft.Modloader forge = new Manifest.Minecraft.Modloader(instance.getForgeVersion());

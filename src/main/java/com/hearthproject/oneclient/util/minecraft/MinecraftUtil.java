@@ -65,7 +65,7 @@ public class MinecraftUtil {
 			e.printStackTrace();
 		}
 		try {
-			if(!VERSION_MANIFEST.exists()){
+			if (!VERSION_MANIFEST.exists()) {
 				OneClientLogging.logUserError(new FileNotFoundException("Minecraft version manifest was not found. "
 					+ "\nIf playing in offline mode try starting the game with an internet connection."), "Error playing minecraft");
 			}
@@ -239,7 +239,7 @@ public class MinecraftUtil {
 				cpb.append(mcJar.getAbsolutePath());
 
 				ArrayList<String> arguments = new ArrayList<>();
-				arguments.add("java");
+				arguments.add(SettingsUtil.settings.getJavaPath());
 
 				arguments.add("-Djava.library.path=" + NATIVES.getAbsolutePath());
 
@@ -310,4 +310,5 @@ public class MinecraftUtil {
 		}).start();
 		return true;
 	}
+
 }

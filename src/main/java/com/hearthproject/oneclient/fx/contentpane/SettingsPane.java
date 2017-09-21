@@ -3,11 +3,14 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.curse.CursePackImporter;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.beans.binding.Bindings;
+import javafx.event.Event;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
 
+import java.io.File;
 import java.io.IOException;
 
 public class SettingsPane extends ContentPane {
@@ -16,10 +19,12 @@ public class SettingsPane extends ContentPane {
 	public CheckBox checkTracking;
 	public Button buttonSave;
 	public TextField argumentBox;
-	public Button buttonImport;
 	public Spinner<Integer> spinnerMinRAM, spinnerMaxRAM;
 
 	public SpinnerValueFactory.IntegerSpinnerValueFactory minMemory, maxMemory;
+
+	public TextField fieldJavaPath;
+	public Button buttonJavaPath, buttonFindJava;
 
 	public SettingsPane() {
 		super("gui/contentpanes/settings.fxml", "Settings", "settings.png", ButtonDisplay.BELOW_DIVIDER);
@@ -27,6 +32,7 @@ public class SettingsPane extends ContentPane {
 
 	@Override
 	protected void onStart() {
+
 		checkLog.setSelected(SettingsUtil.settings.show_log_window);
 		checkTracking.setSelected(SettingsUtil.settings.tracking);
 		buttonSave.setOnAction(event -> {
@@ -78,7 +84,11 @@ public class SettingsPane extends ContentPane {
 		spinnerMaxRAM.setEditable(true);
 
 		argumentBox.setText(SettingsUtil.settings.arguments);
-		buttonImport.setOnAction(event -> CursePackImporter.importPacks());
+		buttonFindJava.setVisible(false);
+		Bindings.bindBidirectional(fieldJavaPath.textProperty(), SettingsUtil.settings.javaPath);
+
+		buttonJavaPath.setOnAction(this::openChooser);
+
 	}
 
 	@Override
@@ -86,4 +96,22 @@ public class SettingsPane extends ContentPane {
 
 	}
 
+	public void openChooser(Event event) {
+		selectJava(OperatingSystem.getPrograms());
+	}
+
+	public void selectJava(File start) {
+		DirectoryChooser chooser = new DirectoryChooser();
+		chooser.setInitialDirectory(start);
+		chooser.setTitle("Choose Java Path");
+		File file = chooser.showDialog(null);
+		if (file != null) {
+			if (!new File(file, "bin/java").exists()) {
+				new Alert(Alert.AlertType.ERROR, "Invalid Java Path", ButtonType.OK).showAndWait();
+				selectJava(file);
+				return;
+			}
+			SettingsUtil.settings.setJavaPath(file.toString());
+		}
+	}
 }

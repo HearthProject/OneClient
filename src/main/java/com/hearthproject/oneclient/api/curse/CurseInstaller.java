@@ -132,7 +132,7 @@ public class CurseInstaller extends ModInstaller {
 	}
 
 	public List<Mod> getMods() {
-		return manifest.files.stream().map(CurseMod::new).collect(Collectors.toList());
+		return manifest.files.stream().map(CurseModInstall::new).collect(Collectors.toList());
 	}
 
 	@Override

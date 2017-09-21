@@ -14,6 +14,14 @@ public class OperatingSystem {
 
 	public static final String SYSTEM_ARCH = System.getProperty("os.arch").equals("64") ? "64" : "32";
 
+	public static File getPrograms() {
+		return OperatingSystem.isWindows() ? new File(System.getenv("%ProgramW6432%")) : new File("/usr/lib");
+	}
+
+	public static boolean isWindows() {
+		return getOS().equalsIgnoreCase("windows");
+	}
+
 	public static String getOS() {
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.contains("win")) {
