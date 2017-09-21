@@ -15,7 +15,7 @@ public class OperatingSystem {
 	public static final String SYSTEM_ARCH = System.getProperty("os.arch").equals("64") ? "64" : "32";
 
 	public static File getPrograms() {
-		return OperatingSystem.isWindows() ? new File(System.getenv("%ProgramW6432%")) : new File("/usr/lib");
+		return OperatingSystem.isWindows() ? new File(System.getenv("ProgramFiles")) : new File("/usr/lib");
 	}
 
 	public static boolean isWindows() {
