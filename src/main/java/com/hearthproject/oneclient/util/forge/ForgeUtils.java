@@ -88,11 +88,19 @@ public class ForgeUtils {
 		ForgeVersions.ForgeVersion version = getForgeVersion(forgeVer);
 		String jarName = getForgeJar(mcVer, forgeVer, null);
 		File forgeJar = new File(Constants.TEMPDIR, jarName);
+		File forgeSHA1 = new File(Constants.TEMPDIR, jarName + ".sha1");
+		if(forgeJar.exists() && forgeSHA1.exists()){
+			if(MiscUtil.checksumEquals(forgeJar, FileUtils.readFileToString(forgeSHA1, StandardCharsets.UTF_8))){
+				return new JarFile(forgeJar);
+			}
+		}
 		OneClientLogging.logger.info("Downloading forge jar to " + versionsDir.getAbsolutePath());
 		if (version.branch != null && !version.branch.isEmpty()) {
 			jarName = getForgeJar(mcVer, forgeVer, version.branch);
 		}
+		URL forgeSHA1URL = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + jarName + ".sha1");
 		URL forgeJarURL = new URL("http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + jarName);
+		FileUtils.copyURLToFile(forgeSHA1URL, forgeSHA1);
 		FileUtils.copyURLToFile(forgeJarURL, forgeJar);
 		return new JarFile(forgeJar);
 	}
