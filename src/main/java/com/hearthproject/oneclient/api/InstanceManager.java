@@ -41,7 +41,6 @@ public class InstanceManager {
 			instance.verifyMods();
 			save();
 		}
-		verify();
 	}
 
 	public static void save() {

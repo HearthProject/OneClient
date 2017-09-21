@@ -20,8 +20,10 @@ public class FileUtil {
 		if (path == null)
 			return null;
 
-		if (!path.exists())
+		if (!path.exists()) {
 			path.mkdirs();
+			OneClientLogging.info("Creating Directory {}", path);
+		}
 		return path;
 	}
 

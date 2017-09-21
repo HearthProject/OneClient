@@ -57,4 +57,8 @@ public class ModInstaller implements IInstallable {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return getType().name();
+	}
 }

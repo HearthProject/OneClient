@@ -34,10 +34,12 @@ public class ImageUtil {
 			findFont(graphics, text, 75);
 			Rectangle rect = getStringBounds(graphics, text, 0, 0);
 			graphics.drawString(text, SIZE / 2 - (int) (rect.getWidth() / 2), SIZE / 2 + ((int) rect.getHeight() / 2));
-			try {
-				ImageIO.write(bufferedImage, "png", image);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (bufferedImage != null) {
+				try {
+					ImageIO.write(bufferedImage, "png", image);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 
 		}

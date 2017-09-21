@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -137,10 +138,13 @@ public class Instance {
 	}
 
 	public void install() {
+		OneClientLogging.info("{}: Installing with {}", getName(), installer.toString());
 		setInstalling(true);
+
 		FileUtil.createDirectory(getDirectory());
 		if (getDirectory().exists())
 			InstanceManager.addInstance(this);
+
 		if (checkCancel())
 			return;
 		if (installer != null)

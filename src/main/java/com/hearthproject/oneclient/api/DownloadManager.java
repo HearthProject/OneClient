@@ -21,8 +21,10 @@ public class DownloadManager {
 	}
 
 	public static void updateMessage(String name, String message, Object... params) {
-		get(name).updateMessage(String.format(message, params));
-		OneClientLogging.info(String.format(message, params));
+		if (get(name) != null) {
+			get(name).updateMessage(String.format(message, params));
+			OneClientLogging.info(String.format(message, params));
+		}
 	}
 
 	public static ReadOnlyDoubleProperty progressProperty(String name) {

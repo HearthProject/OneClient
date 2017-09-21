@@ -13,6 +13,7 @@ import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -40,9 +41,13 @@ public class CurseModInstaller extends ModInstaller {
 
 	@Override
 	public void install(Instance instance) {
-		DownloadManager.updateMessage(getName(), "%s Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
-		File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
-		this.hash = new FileHash(mod);
+		try {
+			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
+			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
+			this.hash = new FileHash(mod);
+		} catch (Throwable e) {
+			OneClientLogging.error(e);
+		}
 	}
 
 	public FileData getFileData() {
@@ -57,4 +62,8 @@ public class CurseModInstaller extends ModInstaller {
 		return project;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s:%s", getType(), project.Id);
+	}
 }

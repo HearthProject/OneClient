@@ -43,72 +43,77 @@ public class CurseInstaller extends ModpackInstaller {
 
 	@Override
 	public void install(Instance instance) {
-		if (instance.checkCancel())
-			return;
-		if (file == null) {
-			OneClientLogging.error(new NullPointerException("No Curse File Selected"));
-			return;
-		}
-		if (instance.checkCancel())
-			return;
 		try {
-			FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (instance.checkCancel())
-			return;
-		//TODO more precise
-		if (instance.getModDirectory().exists()) {
-			try {
-				FileUtils.deleteDirectory(instance.getModDirectory());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (instance.checkCancel())
-			return;
-		//TODO more precise
-		if (instance.getConfigDirectory().exists()) {
-			try {
-				FileUtils.deleteDirectory(instance.getConfigDirectory());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (instance.checkCancel())
-			return;
-		DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
-		if (instance.checkCancel())
-			return;
-		File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
-		File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
-		DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
-		if (instance.checkCancel())
-			return;
-		manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
-		DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
-		if (instance.checkCancel())
-			return;
-		instance.setGameVersion(manifest.minecraft.version);
-		instance.setForgeVersion(manifest.minecraft.getModloader());
-		if (instance.checkCancel())
-			return;
-		List<ModInstaller> mods = getMods();
-		AtomicInteger counter = new AtomicInteger(1);
-		for (ModInstaller mod : mods) {
-			DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
-			mod.install(instance);
 			if (instance.checkCancel())
 				return;
+			if (file == null) {
+				OneClientLogging.error(new NullPointerException("No Curse File Selected"));
+				return;
+			}
+			if (instance.checkCancel())
+				return;
+			try {
+				FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (instance.checkCancel())
+				return;
+			//TODO more precise
+			if (instance.getModDirectory().exists()) {
+				try {
+					FileUtils.deleteDirectory(instance.getModDirectory());
+				} catch (IOException e) {
+					OneClientLogging.error(e);
+				}
+			}
+			if (instance.checkCancel())
+				return;
+			//TODO more precise
+			if (instance.getConfigDirectory().exists()) {
+				try {
+					FileUtils.deleteDirectory(instance.getConfigDirectory());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (instance.checkCancel())
+				return;
+			DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
+			if (instance.checkCancel())
+				return;
+			File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
+			File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
+			DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
+			if (instance.checkCancel())
+				return;
+			manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
+			DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
+			if (instance.checkCancel())
+				return;
+
+			instance.setGameVersion(manifest.minecraft.version);
+			instance.setForgeVersion(manifest.minecraft.getModloader());
+			DownloadManager.updateMessage(instance.getName(), "%s - version : %s forge : %s", instance.getName(), instance.getGameVersion(), instance.getForgeVersion());
+			List<ModInstaller> mods = getMods();
+			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s Mods", instance.getName(), mods.size());
+			AtomicInteger counter = new AtomicInteger(1);
+			for (ModInstaller mod : mods) {
+				DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
+				mod.install(instance);
+				if (instance.checkCancel())
+					return;
+			}
+			if (instance.checkCancel())
+				return;
+			DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
+			installOverrides(pack, instance.getDirectory());
+			NotifyUtil.clear();
+			if (instance.checkCancel())
+				return;
+		} catch (Throwable e) {
+			OneClientLogging.error(e);
 		}
-		if (instance.checkCancel())
-			return;
-		DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
-		installOverrides(pack, instance.getDirectory());
-		NotifyUtil.clear();
-		if (instance.checkCancel())
-			return;
 	}
 
 	private void installOverrides(File pack, File instance) {
@@ -130,12 +135,14 @@ public class CurseInstaller extends ModpackInstaller {
 	}
 
 	public List<ModInstaller> getMods() {
+		OneClientLogging.info("{} - Collecting Mods", manifest.name);
 		return manifest.files.stream().map(CurseModInstaller::new).collect(Collectors.toList());
 	}
 
+
 	@Override
 	public String toString() {
-		return JsonUtil.GSON.toJson(this);
+		return String.format("%s:%s", getType(), project.Id);
 	}
 
 	public CurseFullProject.CurseFile findUpdate(Instance instance, boolean onlyNew) {

@@ -87,4 +87,9 @@ public class HomePane extends ContentPane {
 	public void refresh() {
 	}
 
+	@Override
+	public void close() {
+		featured.getItems().clear();
+		recent.getItems().clear();
+	}
 }

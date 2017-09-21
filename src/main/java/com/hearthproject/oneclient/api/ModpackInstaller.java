@@ -17,4 +17,9 @@ public class ModpackInstaller implements IInstallable {
 	public PackType getType() {
 		return type;
 	}
+
+	@Override
+	public String toString() {
+		return type.name();
+	}
 }
