@@ -110,11 +110,15 @@ public class Instance {
 	}
 
 	public File getIcon() {
-		File file = new File(getDirectory(), icon);
+		File file = getIconFile();
 		if (!file.exists()) {
 			ImageUtil.createIcon(MiscUtil.parseLetters(getName()), file);
 		}
 		return file;
+	}
+
+	public File getIconFile() {
+		return new File(getDirectory(), icon);
 	}
 
 	public void setIcon(String icon) {

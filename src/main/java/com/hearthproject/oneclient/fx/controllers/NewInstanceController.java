@@ -132,7 +132,7 @@ public class NewInstanceController {
 		if (selectedImageFile != null) {
 			instance.setIcon(selectedImageFile.getName());
 			try {
-				FileUtils.copyFile(selectedImageFile, instance.getIcon());
+				FileUtils.copyFile(selectedImageFile, instance.getIconFile());
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
