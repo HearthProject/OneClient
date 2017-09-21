@@ -564,11 +564,13 @@
 
 .hyperlink:hover,
 .hyperlink:hover:visited {
-    -fx-underline: true;
+    -fx-underline: false;
+    -fx-text-fill: -text-color;
 }
 
 .hyperlink:visited {
     -fx-underline: false;
+    -fx-text-fill: -text-color;
 }
 
 .label {

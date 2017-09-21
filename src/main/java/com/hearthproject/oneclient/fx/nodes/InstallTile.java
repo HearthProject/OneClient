@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.fx.nodes;
 import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
@@ -53,10 +54,11 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		MiscUtil.setupLink(title, instance.getName(), instance.tempInfo.get("websiteUrl").toString());
+
 		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(instance.getImage()))).start();
 		if (instance.getInstaller() instanceof CurseInstaller) {
 			CurseInstaller installer = (CurseInstaller) instance.getInstaller();
+			MiscUtil.setupLink(title, instance.getName(), Curse.getCurseForge(installer.projectId).toString());
 			comboFile.setVisible(true);
 			comboFile.setItems(FXCollections.observableArrayList(installer.getFiles()));
 			comboFile.getSelectionModel().selectFirst();

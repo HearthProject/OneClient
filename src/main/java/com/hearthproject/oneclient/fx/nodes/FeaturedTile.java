@@ -3,10 +3,10 @@ package com.hearthproject.oneclient.fx.nodes;
 import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.OperatingSystem;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -57,17 +57,18 @@ public class FeaturedTile extends StackPane {
 		}
 		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(instance.getImage()))).start();
 		imageView.setEffect(blurEffect);
-		modpackText.setText(instance.getName());
-		modpackText.setOnAction(event -> OperatingSystem.browseURI(instance.getUrl()));
+
 		statusText.setText(instance.getGameVersion());
 		statusText.setFill(Color.web("#FFFFFF"));
 		nodePane.setOpacity(0F);
 
 		if (instance.getInstaller() instanceof CurseInstaller) {
-			files.setItems(FXCollections.observableArrayList(((CurseInstaller) instance.getInstaller()).getFiles()));
+			CurseInstaller installer = (CurseInstaller) instance.getInstaller();
+			MiscUtil.setupLink(modpackText, instance.getName(), Curse.getCurseForge(installer.projectId).toString());
+			files.setItems(FXCollections.observableArrayList(installer.getFiles()));
 			files.getSelectionModel().selectFirst();
-			((CurseInstaller) instance.getInstaller()).setFile(files.getValue());
-			files.valueProperty().addListener((v, a, b) -> ((CurseInstaller) instance.getInstaller()).setFile(b));
+			installer.setFile(files.getValue());
+			files.valueProperty().addListener((v, a, b) -> installer.setFile(b));
 		}
 
 		DownloadTask task = DownloadManager.createDownload(instance.getName(), instance::install);

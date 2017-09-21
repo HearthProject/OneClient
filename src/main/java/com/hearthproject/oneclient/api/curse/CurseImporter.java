@@ -33,14 +33,12 @@ public class CurseImporter implements IImporter {
 		String name = data.map(CurseFullProject::getName);
 
 		List<CurseFullProject.Category> categories = data.map(CurseFullProject::getCategories);
-		String websiteUrl = data.map(CurseFullProject::getWebSiteURL);
 		if (name == null)
 			return null;
 
-		Instance instance = new Instance(name, url.toString(), new CurseInstaller(data.getIfPresent()),
+		Instance instance = new Instance(name, data.map(CurseFullProject::getWebSiteURL), new CurseInstaller(data.getIfPresent()),
 			new Instance.Info("popularity", data.map(CurseFullProject::getPopularityScore)),
 			new Instance.Info("authors", data.map(CurseFullProject::getAuthorsString)),
-			new Instance.Info("websiteUrl", websiteUrl),
 			new Instance.Info("categories", categories),
 			new Instance.Info("downloads", data.map(CurseFullProject::getDownloads)),
 			new Instance.Info("gameVersions", data.map(CurseFullProject::getVersions)),

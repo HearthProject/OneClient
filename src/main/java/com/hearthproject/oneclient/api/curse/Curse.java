@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class Curse {
 	public static Cache<String, CurseProjects> MODPACKS_CACHE;
 
+	private static final String CURSE_FORGE = "https://minecraft.curseforge.com/projects/${projectID}";
 	private static final String CURSE_META_BASE = "https://cursemeta.dries007.net/";
 	private static final String CURSE_META_PROJECT = CURSE_META_BASE + "${projectID}.json";
 	private static final String CURSE_META_FILES = CURSE_META_BASE + "${projectID}/files.json";
@@ -95,6 +96,15 @@ public class Curse {
 			List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
 			curseFiles.forEach(f -> f.projectId = projectId);
 			return curseFiles;
+		}
+		return null;
+	}
+
+	public static URL getCurseForge(String projectID) {
+		try {
+			return new URL(CURSE_FORGE.replace("${projectID}", projectID));
+		} catch (MalformedURLException e) {
+			OneClientLogging.error(e);
 		}
 		return null;
 	}
