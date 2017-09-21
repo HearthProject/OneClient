@@ -44,6 +44,7 @@ public class MinecraftUtil {
 	private static GameVersion version = null;
 
 	public static File ASSETS;
+	public static File LEGACY_ASSETS;
 	public static File VERSIONS;
 	public static File LIBRARIES;
 	public static File NATIVES;
@@ -51,6 +52,7 @@ public class MinecraftUtil {
 
 	public static void load() {
 		ASSETS = new File(Constants.MINECRAFTDIR, "assets");
+		LEGACY_ASSETS = new File(ASSETS, "legacy");
 		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
 		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");
 		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
@@ -207,10 +209,14 @@ public class MinecraftUtil {
 		InstanceManager.addRecent(instance);
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+		boolean hasLegacyAssets = "legacy".equals(versionData.assetIndex.id);
 		OneClientLogging.logger.info("Starting minecraft...");
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getGameVersion());
 		new Thread(() -> {
 			try {
+
+				if (hasLegacyAssets)
+					prepareLegacyAssets(versionData);
 
 				StringBuilder cpb = new StringBuilder();
 				String mainClass = versionData.mainClass;
@@ -279,7 +285,7 @@ public class MinecraftUtil {
 				arguments.add("--version");
 				arguments.add(instance.getGameVersion());
 				arguments.add("--assetsDir");
-				arguments.add(ASSETS.toString());
+				arguments.add(hasLegacyAssets ? LEGACY_ASSETS.toString() : ASSETS.toString());
 				arguments.add("--assetIndex");
 				arguments.add(versionData.assetIndex.id);
 				arguments.add("--gameDir");
@@ -313,6 +319,33 @@ public class MinecraftUtil {
 
 		}).start();
 		return true;
+	}
+
+	private static void prepareLegacyAssets(Version version) {
+		File assetsInfo = new File(ASSETS, "indexes" + File.separator + version.assetIndex.id + ".json");
+		File objectsDir = new File(ASSETS, "objects");
+		if (!LEGACY_ASSETS.exists() && !LEGACY_ASSETS.mkdir())
+			return;
+
+		if (assetsInfo.exists())
+		{
+			OneClientLogging.logger.info("Preparing legacy assets...");
+			try {
+				AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
+				index.getFileMap().forEach((name, assetObject) -> {
+					String hash = assetObject.getHash();
+					File objectFile = new File(objectsDir, hash.substring(0, 2) + File.separator + hash);
+					File legacyFile = new File(LEGACY_ASSETS, name);
+					try {
+						FileUtils.copyFile(objectFile, legacyFile, false);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
