@@ -37,7 +37,7 @@ public class FileHash {
 			URI u = new URI(file.trim().replaceAll("\\u0020", "%20"));
 			return new File(u.getPath());
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return null;
 	}

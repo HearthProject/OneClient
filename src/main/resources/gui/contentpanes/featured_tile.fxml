@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
@@ -16,14 +17,14 @@
             <children>
                 <VBox alignment="CENTER" pickOnBounds="false" StackPane.alignment="CENTER">
                     <children>
-                        <Text fx:id="modpackText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="MODPACK NAME">
+                        <Hyperlink fx:id="modpackText" style="-fx-fill: -oc-text; -fx-font-family: 'Roboto' -sans-serif;; -fx-font-weight: bold;" text="MODPACK NAME">
                             <VBox.margin>
                                 <Insets/>
                             </VBox.margin>
                             <effect>
                                 <DropShadow/>
                             </effect>
-                        </Text>
+                        </Hyperlink>
                         <JFXButton id="oc-raised-button" fx:id="installButton" buttonType="RAISED" focusTraversable="false" pickOnBounds="false" prefHeight="35.0" prefWidth="94.0" text="INSTALL">
                             <VBox.margin>
                                 <Insets top="6.0"/>

@@ -87,7 +87,7 @@ public class PrivatePackPane extends ContentPane {
 					adminPackList.getSelectionModel().select(0);
 				}
 			} catch (UnirestException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 	}

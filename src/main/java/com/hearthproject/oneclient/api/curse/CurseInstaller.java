@@ -55,7 +55,7 @@ public class CurseInstaller extends ModpackInstaller {
 			try {
 				FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 			if (instance.checkCancel())
 				return;
@@ -74,7 +74,7 @@ public class CurseInstaller extends ModpackInstaller {
 				try {
 					FileUtils.deleteDirectory(instance.getConfigDirectory());
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 			if (instance.checkCancel())
@@ -128,7 +128,7 @@ public class CurseInstaller extends ModpackInstaller {
 					else if (file.isFile())
 						FileUtils.copyFile(file, output);
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 		}

@@ -38,7 +38,7 @@ public class NewPackPane extends ContentPane {
 					ModPack modPack = HearthApi.getHearthPrivatePacks().createNewPack(textPackName.getText(), "Testing mod pack");
 					ContentPanes.PRIVATE_PACK_PANE.button.fire();
 				} catch (Exception e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 		});

@@ -249,7 +249,7 @@ public class MinecraftAuthController {
 					if (image != null)
 						Main.mainController.userAvatar.setImage(image);
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 				Main.mainController.usernameText.setText(authentication.getSelectedProfile().getName());
 				if (HearthApi.enable && HearthApi.getHearthAuthentication().getAuthentication() != null) {
@@ -264,12 +264,12 @@ public class MinecraftAuthController {
 								try {
 									roleImage.setImage(new Image(new URL(role.iconUrl).openStream()));
 								} catch (IOException e) {
-									e.printStackTrace();
+									OneClientLogging.error(e);
 								}
 							}
 						}
 					} catch (UnirestException e) {
-						e.printStackTrace();
+						OneClientLogging.error(e);
 					}
 				}
 				Main.mainController.userBox.getChildren().add(Main.mainController.userInfoBox);

@@ -6,12 +6,14 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.OperatingSystem;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -28,7 +30,7 @@ public class FeaturedTile extends StackPane {
 	public final Instance instance;
 
 	@FXML
-	public Text modpackText;
+	public Hyperlink modpackText;
 	@FXML
 	public ImageView imageView;
 	@FXML
@@ -56,6 +58,7 @@ public class FeaturedTile extends StackPane {
 		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(instance.getImage()))).start();
 		imageView.setEffect(blurEffect);
 		modpackText.setText(instance.getName());
+		modpackText.setOnAction(event -> OperatingSystem.browseURI(instance.getUrl()));
 		statusText.setText(instance.getGameVersion());
 		statusText.setFill(Color.web("#FFFFFF"));
 		nodePane.setOpacity(0F);

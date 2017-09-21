@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.util;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -35,7 +36,7 @@ public class AsyncTask<T> implements ListenableFuture<T>, Runnable {
 			T t = get();
 			return t;
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return null;
 	}
@@ -56,7 +57,7 @@ public class AsyncTask<T> implements ListenableFuture<T>, Runnable {
 		try {
 			return get() != null;
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return false;
 	}

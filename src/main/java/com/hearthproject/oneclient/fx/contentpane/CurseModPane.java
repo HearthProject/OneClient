@@ -155,7 +155,7 @@ public class CurseModPane extends ContentPane {
 					entries = mods.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), instance.getGameVersion(), textSearch.getText());
 					packCount = entries.size();
 				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 			if (entries == null || entries.isEmpty()) {

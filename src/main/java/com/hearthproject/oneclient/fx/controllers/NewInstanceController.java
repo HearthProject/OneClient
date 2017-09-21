@@ -191,7 +191,7 @@ public class NewInstanceController {
 				mcVersionComboBox.getSelectionModel().selectFirst();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class NewInstanceController {
 				modloaderVersions.addAll(ForgeUtils.loadForgeVersions().filterMCVersion(mcVersionComboBox.getValue()));
 				modloaderComboBox.setItems(modloaderVersions);
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 	}

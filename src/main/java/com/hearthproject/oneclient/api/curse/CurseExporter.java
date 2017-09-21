@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -51,7 +52,7 @@ public class CurseExporter implements IExporter {
 		try {
 			FileUtils.copyDirectory(instance.getConfigDirectory(), config);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		//override mods
 		List<ModInstaller> manual = instance.getMods().stream().filter(m -> m.getType().equals(PackType.MANUAL)).collect(Collectors.toList());
@@ -61,7 +62,7 @@ public class CurseExporter implements IExporter {
 			try {
 				FileUtils.copy(new FileInputStream(file), new File(mods, file.getName()));
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 		try {
@@ -72,7 +73,7 @@ public class CurseExporter implements IExporter {
 			zip.addFile(manifestJson, parameters);
 			zip.addFolder(overrides, parameters);
 		} catch (ZipException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 
 	}

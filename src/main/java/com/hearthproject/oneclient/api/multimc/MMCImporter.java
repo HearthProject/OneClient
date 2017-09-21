@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.IImporter;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class MMCImporter implements IImporter {
 		try {
 			config.load(new FileInputStream(new File(pack, "instance.cfg")));
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 

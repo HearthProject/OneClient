@@ -147,7 +147,7 @@ public class InstanceManager {
 		try {
 			array = JsonUtil.read(new URL(FEATURED_URL), Featured[].class);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		if (array != null) {
 			return Arrays.stream(array).map(f -> f.projectId).collect(Collectors.toList());

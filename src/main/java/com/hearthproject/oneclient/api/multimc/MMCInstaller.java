@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.api.multimc;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModpackInstaller;
 import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class MMCInstaller extends ModpackInstaller {
 		try {
 			FileUtils.copyDirectory(new File(dir, "minecraft"), instance.getDirectory());
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 

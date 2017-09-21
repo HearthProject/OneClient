@@ -128,7 +128,7 @@ public class CurseMetaPane extends ContentPane {
 					entries = packs.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), filterVersion.getValue(), textSearch.getText());
 					packCount = entries.size();
 				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 			if (entries == null || entries.isEmpty()) {

@@ -160,7 +160,7 @@ public class Instance {
 			if (checkCancel())
 				return;
 		} catch (Throwable throwable) {
-			throwable.printStackTrace();
+			OneClientLogging.error(throwable);
 		}
 		save();
 		setInstalling(false);
@@ -173,7 +173,7 @@ public class Instance {
 			getDirectory().delete();
 			InstanceManager.removeInstance(this);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 

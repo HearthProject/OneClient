@@ -61,7 +61,7 @@ public class CurseFullProject {
 				try {
 					return new URL(icon);
 				} catch (MalformedURLException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 		}
 		return null;
@@ -98,7 +98,7 @@ public class CurseFullProject {
 			try {
 				name = URLEncoder.encode(getName(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 			File file = new File(Constants.ICONDIR, name + ".png");
 			FileUtil.downloadFromURL(url, file);

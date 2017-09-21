@@ -24,7 +24,7 @@ public class ImageUtil {
 		try {
 			bufferedImage = ImageIO.read(FileUtil.getResource("images/modpack-template.png"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		if (bufferedImage != null) {
 			Graphics graphics = bufferedImage.getGraphics();
@@ -38,7 +38,7 @@ public class ImageUtil {
 				try {
 					ImageIO.write(bufferedImage, "png", image);
 				} catch (IOException e) {
-					e.printStackTrace();
+					OneClientLogging.error(e);
 				}
 			}
 
@@ -74,7 +74,7 @@ public class ImageUtil {
 		} catch (FileNotFoundException e) {
 			OneClientLogging.error(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return image;
 	}
@@ -101,7 +101,7 @@ public class ImageUtil {
 					try {
 						stream.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						OneClientLogging.error(e);
 					}
 				}
 			}
@@ -127,7 +127,7 @@ public class ImageUtil {
 		try {
 			inputStream.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		return image;
 	}

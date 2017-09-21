@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.api.twitch;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModpackInstaller;
 import com.hearthproject.oneclient.api.PackType;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class TwitchInstaller extends ModpackInstaller {
 		try {
 			FileUtils.copyDirectory(twitchFolder, instance.getDirectory());
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		super.install(instance);
 	}

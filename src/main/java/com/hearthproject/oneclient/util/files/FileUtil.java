@@ -63,7 +63,7 @@ public class FileUtil {
 				ZipFile zip = new ZipFile(from);
 				zip.extractAll(to.toString());
 			} catch (ZipException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 		return to;

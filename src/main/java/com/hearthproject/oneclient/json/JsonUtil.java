@@ -64,7 +64,7 @@ public class JsonUtil {
 			InputStreamReader reader = new InputStreamReader(url.openStream());
 			return GSON.fromJson(reader, object);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 
 		return null;
@@ -75,7 +75,7 @@ public class JsonUtil {
 			InputStreamReader reader = new InputStreamReader(url.openStream());
 			return GSON.fromJson(reader, type);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 
 		return null;

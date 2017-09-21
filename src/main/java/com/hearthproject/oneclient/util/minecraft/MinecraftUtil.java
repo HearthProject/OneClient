@@ -66,7 +66,7 @@ public class MinecraftUtil {
 		try {
 			FileUtil.downloadFromURL(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), VERSION_MANIFEST);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		try {
 			if (!VERSION_MANIFEST.exists()) {
@@ -75,7 +75,7 @@ public class MinecraftUtil {
 			}
 			return IOUtils.toString(VERSION_MANIFEST.toURI(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 		SplashScreen.updateProgess("Reading version json", 25);
 		return null;
@@ -344,11 +344,11 @@ public class MinecraftUtil {
 					try {
 						FileUtils.copyFile(objectFile, legacyFile, false);
 					} catch (IOException e) {
-						e.printStackTrace();
+						OneClientLogging.error(e);
 					}
 				});
 			} catch (IOException e) {
-				e.printStackTrace();
+				OneClientLogging.error(e);
 			}
 		}
 	}

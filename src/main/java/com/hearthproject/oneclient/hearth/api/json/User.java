@@ -1,6 +1,7 @@
 package com.hearthproject.oneclient.hearth.api.json;
 
 import com.hearthproject.oneclient.hearth.api.HearthApi;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class User {
 		try {
 			FileUtils.writeStringToFile(getFile(dir), HearthApi.GSON.toJson(this), StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			e.printStackTrace();
+			OneClientLogging.error(e);
 		}
 	}
 
