@@ -297,6 +297,12 @@ public class MinecraftUtil {
 				OneClientLogging.info("{}", arguments);
 				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(), process);
 
+				if(SettingsUtil.settings.close_launcher_with_minecraft){
+					OneClientLogging.info("Closing launcher, this can be disabled in settings");
+					System.exit(1);
+				}
+
+
 				try {
 					BufferedReader reader =
 						new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -316,7 +322,6 @@ public class MinecraftUtil {
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);
 			}
-
 		}).start();
 		return true;
 	}

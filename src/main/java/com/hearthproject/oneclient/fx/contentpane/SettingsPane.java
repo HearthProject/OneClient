@@ -17,6 +17,7 @@ public class SettingsPane extends ContentPane {
 
 	public CheckBox checkLog;
 	public CheckBox checkTracking;
+	public CheckBox checkCloseLauncher;
 	public Button buttonSave;
 	public TextField argumentBox;
 	public Spinner<Integer> spinnerMinRAM, spinnerMaxRAM;
@@ -35,9 +36,11 @@ public class SettingsPane extends ContentPane {
 
 		checkLog.setSelected(SettingsUtil.settings.show_log_window);
 		checkTracking.setSelected(SettingsUtil.settings.tracking);
+		checkCloseLauncher.setSelected(SettingsUtil.settings.close_launcher_with_minecraft);
 		buttonSave.setOnAction(event -> {
 			SettingsUtil.settings.show_log_window = checkLog.isSelected();
 			SettingsUtil.settings.tracking = checkTracking.isSelected();
+			SettingsUtil.settings.close_launcher_with_minecraft = checkCloseLauncher.isSelected();
 			SettingsUtil.settings.minecraftMinMemory = minMemory.getValue();
 			SettingsUtil.settings.minecraftMaxMemory = maxMemory.getValue();
 			SettingsUtil.settings.arguments = argumentBox.getText();

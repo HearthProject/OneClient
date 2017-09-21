@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class LauncherSettings {
 	public boolean left_align_window_buttons = false;
 	public boolean show_log_window = true;
+	public boolean close_launcher_with_minecraft = false;
 
 	public boolean tracking = true;
 
