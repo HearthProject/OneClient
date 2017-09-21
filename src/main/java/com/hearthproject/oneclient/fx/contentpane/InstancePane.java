@@ -88,7 +88,7 @@ public class InstancePane extends ContentPane {
 		buttonEditVersion.setOnAction(event -> NewInstanceController.start(instance));
 
 		buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
-		buttonGetCurseMods.setDisable(true);
+		buttonGetCurseMods.setOnAction(event -> new ModInstallPane(instance));
 		buttonDelete.setOnAction(event -> {
 			instance.delete();
 			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);

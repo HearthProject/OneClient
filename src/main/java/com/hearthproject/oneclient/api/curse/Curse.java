@@ -6,6 +6,7 @@ import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.api.curse.data.CurseModpacks;
+import com.hearthproject.oneclient.api.curse.data.CurseMods;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -24,6 +25,7 @@ public class Curse {
 	private static final String CURSE_META_FILES = CURSE_META_BASE + "${projectID}/files.json";
 	private static final String CURSE_META_FILE = CURSE_META_BASE + "${projectID}/${fileID}.json";
 	private static final String CURSE_META_MODPACKS = CURSE_META_BASE + "modpacks.json";
+	private static final String CURSE_META_MODS = CURSE_META_BASE + "mods.json";
 
 	public static void init() {
 		RemovalListener<String, Object> removalListener = removal -> {
@@ -53,9 +55,18 @@ public class Curse {
 		return null;
 	}
 
-	public static URL getFileURL(int projectID, int fileID) {
+	public static URL getFileURL(String projectID, String fileID) {
 		try {
-			return new URL(CURSE_META_FILE.replace("${projectID}", "" + projectID).replace("${fileID}", "" + fileID));
+			return new URL(CURSE_META_FILE.replace("${projectID}", projectID).replace("${fileID}", fileID));
+		} catch (MalformedURLException e) {
+			OneClientLogging.error(e);
+		}
+		return null;
+	}
+
+	public static CurseMods getMods() {
+		try {
+			return JsonUtil.read(new URL(CURSE_META_MODS), CurseMods.class);
 		} catch (MalformedURLException e) {
 			OneClientLogging.error(e);
 		}
@@ -78,7 +89,9 @@ public class Curse {
 	public static List<CurseProject.CurseFile> getFiles(String projectId, String gameVersion) {
 		CurseProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseProject.CurseFile[].class);
 		if (files != null) {
-			return Lists.newArrayList(files).stream().sorted().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
+			List<CurseProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
+			curseFiles.forEach(f -> f.projectId = projectId);
+			return curseFiles;
 		}
 		return null;
 	}

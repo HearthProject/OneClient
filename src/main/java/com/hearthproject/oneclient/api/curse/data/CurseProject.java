@@ -2,6 +2,7 @@ package com.hearthproject.oneclient.api.curse.data;
 
 import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Hyperlink;
 import org.apache.commons.io.FilenameUtils;
 
@@ -79,6 +80,7 @@ public class CurseProject {
 		private String FileName;
 		private String Id;
 		private String FileDate;
+		public String projectId;
 
 		public String getId() {
 			return Id;
@@ -107,9 +109,10 @@ public class CurseProject {
 
 		public Date getDate() {
 			try {
-				return DATE_FORMAT.parse(FileDate);
+				if (!FileDate.isEmpty())
+					return DATE_FORMAT.parse(FileDate);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				OneClientLogging.error("{} {}", projectId, e);
 			}
 			return new Date();
 		}
@@ -117,6 +120,10 @@ public class CurseProject {
 		@Override
 		public int compareTo(CurseFile o) {
 			return -1 * getDate().compareTo(o.getDate());
+		}
+
+		public FileData toFileData() {
+			return new FileData(projectId, Id);
 		}
 	}
 

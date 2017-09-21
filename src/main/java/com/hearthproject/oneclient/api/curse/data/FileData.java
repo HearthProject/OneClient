@@ -4,11 +4,11 @@ import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.json.JsonUtil;
 
 public class FileData {
-	public int projectID;
-	public int fileID;
+	public String projectID;
+	public String fileID;
 	public boolean required;
 
-	public FileData(int projectID, int fileID) {
+	public FileData(String projectID, String fileID) {
 		this.projectID = projectID;
 		this.fileID = fileID;
 	}

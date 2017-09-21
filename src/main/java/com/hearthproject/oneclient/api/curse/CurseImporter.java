@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class CurseImporter implements IImporter {
 
-	private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+	private final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 	private final String projectID;
 	private final URL url;
 	private AsyncTask<CurseProject> data;
