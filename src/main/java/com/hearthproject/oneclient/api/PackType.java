@@ -4,7 +4,7 @@ public enum PackType {
 	MANUAL,
 	HEARTH,
 	CURSE,
-	MULTIMC;
+	MULTIMC, TWITCH;
 
 	public static final PackType[] VALUES = values();
 

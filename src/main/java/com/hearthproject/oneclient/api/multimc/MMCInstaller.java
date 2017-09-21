@@ -25,8 +25,4 @@ public class MMCInstaller extends ModpackInstaller {
 		}
 	}
 
-	@Override
-	public PackType getType() {
-		return PackType.MULTIMC;
-	}
 }
