@@ -39,6 +39,7 @@ public class ImageUtil {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		}
 	}
 
@@ -63,10 +64,15 @@ public class ImageUtil {
 			return null;
 		}
 		Image image = null;
+
 		try {
-			image = new Image(new FileInputStream(file));
+			FileInputStream stream = new FileInputStream(file);
+			image = new Image(stream);
+			stream.close();
 		} catch (FileNotFoundException e) {
 			OneClientLogging.error(e);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return image;
 	}
@@ -82,11 +88,22 @@ public class ImageUtil {
 		}
 		Image image = IMAGE_CACHE.getIfPresent(file.getName());
 		if (image == null) {
+			FileInputStream stream = null;
 			try {
-				image = new Image(new FileInputStream(file));
+				stream = new FileInputStream(file);
+				image = new Image(stream);
 			} catch (FileNotFoundException e) {
 				OneClientLogging.error(e);
+			} finally {
+				if (stream != null) {
+					try {
+						stream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+
 			if (image == null)
 				return null;
 			IMAGE_CACHE.put(name, image);

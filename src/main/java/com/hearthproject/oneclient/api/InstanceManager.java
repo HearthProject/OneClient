@@ -5,12 +5,10 @@ import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.SplashScreen;
-import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
-import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
@@ -24,9 +22,17 @@ import java.util.stream.Collectors;
 
 public class InstanceManager {
 	protected static ObservableMap<String, Instance> INSTANCES_MAP = FXCollections.observableHashMap();
+	protected static ObservableList<Instance> INSTANCES = FXCollections.observableArrayList();
+
+	static {
+		INSTANCES_MAP.addListener((MapChangeListener<? super String, ? super Instance>) change -> {
+			INSTANCES.addAll(change.getValueAdded());
+			INSTANCES.removeAll(change.getValueRemoved());
+		});
+	}
 
 	public static ObservableList<Instance> getInstances() {
-		return FXCollections.observableArrayList(INSTANCES_MAP.values());
+		return INSTANCES;
 	}
 
 	public static void addInstance(Instance instance) {
@@ -34,12 +40,8 @@ public class InstanceManager {
 			INSTANCES_MAP.put(instance.getName(), instance);
 			instance.verifyMods();
 			save();
-			MiscUtil.runLaterIfNeeded( () -> {
-				if(ContentPanes.INSTANCES_PANE.gridView != null)
-					ContentPanes.INSTANCES_PANE.gridView.setItems(getInstances());
-			});
 		}
-
+		verify();
 	}
 
 	public static void save() {
@@ -49,9 +51,10 @@ public class InstanceManager {
 	public static void verify() {
 		OneClientLogging.logger.info("Verifying Instances");
 		SplashScreen.updateProgess("Verifying instances", 10);
+
 		for (Iterator<Instance> iterator = INSTANCES_MAP.values().iterator(); iterator.hasNext(); ) {
 			Instance instance = iterator.next();
-			if (!instance.getDirectory().exists()) {
+			if (!instance.getDirectory().exists() || !(instance.getDirectory().exists())) {
 				INSTANCES_MAP.remove(instance.getName());
 			} else {
 				instance.verifyMods();
@@ -67,7 +70,7 @@ public class InstanceManager {
 		if (dirs != null) {
 			for (File dir : dirs) {
 				Instance instance = load(dir);
-				if (instance != null) {
+				if (instance != null && !INSTANCES_MAP.containsKey(instance.getName())) {
 					addInstance(instance);
 				}
 			}
@@ -106,6 +109,7 @@ public class InstanceManager {
 
 	public static void removeInstance(Instance instance) {
 		INSTANCES_MAP.remove(instance.getName());
+		verify();
 	}
 
 	private static List<String> RECENT_INSTANCES = Lists.newArrayList();

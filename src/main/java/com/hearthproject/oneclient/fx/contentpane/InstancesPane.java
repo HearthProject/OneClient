@@ -62,6 +62,8 @@ public class InstancesPane extends ContentPane {
 	}
 
 	@Override
-	public void refresh() { }
+	public void refresh() {
+		InstanceManager.load();
+	}
 
 }

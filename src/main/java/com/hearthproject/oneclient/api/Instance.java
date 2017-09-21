@@ -96,6 +96,10 @@ public class Instance {
 		return new File(Constants.INSTANCEDIR, getName());
 	}
 
+	public File getDataFile() {
+		return new File(getDirectory(), "instance.json");
+	}
+
 	public File getModDirectory() {
 		return FileUtil.findDirectory(getDirectory(), "mods");
 	}
@@ -214,7 +218,7 @@ public class Instance {
 				}
 				this.mods.removeAll(removal);
 
-				files.parallelStream().forEach(file -> {
+				files.stream().forEach(file -> {
 					boolean match = false;
 					Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {
