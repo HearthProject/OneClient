@@ -40,7 +40,7 @@ public class PrivatePackPane extends ContentPane {
 		});
 		buttonLogin.setDisable(!HearthApi.enable);
 		if (!HearthApi.enable) {
-			infoText.setText("Service unavailable, coming when done.");
+			infoText.setText("Service unavailable, coming soon!");
 		}
 		buttonNewPack.setOnAction(event -> HearthPanes.newPackPane.button.fire());
 	}
