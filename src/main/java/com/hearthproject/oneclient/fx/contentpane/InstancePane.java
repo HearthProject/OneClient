@@ -73,7 +73,6 @@ public class InstancePane extends ContentPane {
 
 		buttonPlay.setOnAction(event -> MinecraftUtil.startMinecraft(instance));
 
-
 		buttonChangePack.setDisable(true);
 		buttonUpdate.setDisable(true);
 		if (instance.installer instanceof CurseInstaller) {

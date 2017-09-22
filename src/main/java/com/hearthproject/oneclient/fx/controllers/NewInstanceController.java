@@ -198,10 +198,18 @@ public class NewInstanceController {
 	public void loadModloaderVersions() {
 		if (mcVersionComboBox.getValue() != null) {
 			try {
+
+				IModloader old = modloaderComboBox.getValue();
 				modloaderVersions.clear();
 				modloaderVersions.add(IModloader.NONE);
 				modloaderVersions.addAll(ForgeUtils.loadForgeVersions().filterMCVersion(mcVersionComboBox.getValue()));
 				modloaderComboBox.setItems(modloaderVersions);
+				if (old != IModloader.NONE) {
+					modloaderComboBox.getSelectionModel().select(2);
+				} else {
+					modloaderComboBox.getSelectionModel().selectFirst();
+				}
+
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}

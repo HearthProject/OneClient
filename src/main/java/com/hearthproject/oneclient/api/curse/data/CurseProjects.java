@@ -25,9 +25,9 @@ public class CurseProjects extends HashMap<String, CurseProject> {
 	public List<Map.Entry<String, CurseProject>> filter(boolean reverse, String sorting, String version, String name) {
 		List<Map.Entry<String, CurseProject>> list = filter(pack -> pack.matchesVersion(version), pack -> pack.matchesName(name));
 		if (sorting.equalsIgnoreCase("Popularity"))
-			list.sort((o1, o2) -> reverse ? 1 : -1 * Double.compare(o1.getValue().getPopularityScore(), o2.getValue().getPopularityScore()));
+			list.sort((o1, o2) -> (reverse ? 1 : -1) * Double.compare(o1.getValue().getPopularityScore(), o2.getValue().getPopularityScore()));
 		if (sorting.equalsIgnoreCase("Alphabetical"))
-			list.sort((o1, o2) -> reverse ? 1 : -1 * o1.getValue().Name.compareTo(o2.getValue().Name));
+			list.sort((o1, o2) -> (reverse ? -1 : 1) * o1.getValue().Name.compareTo(o2.getValue().Name));
 		return list;
 	}
 

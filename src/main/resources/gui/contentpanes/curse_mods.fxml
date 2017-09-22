@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
@@ -13,9 +12,6 @@
               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label id="oc-label" fx:id="title" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Installing to ...">
-                    <VBox.margin>
-                        <Insets bottom="6.0" right="6.0" top="6.0"/>
-                    </VBox.margin>
                     <font>
                         <Font size="24.0"/>
                     </font>
@@ -25,11 +21,16 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </VBox.margin>
                     <children>
-                        <ImageView fx:id="loadingIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Button fx:id="buttonBack" mnemonicParsing="false" text="Back">
                             <HBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
-                        </ImageView>
+                        </Button>
+                        <ProgressIndicator fx:id="loadingIcon" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="32.0">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </ProgressIndicator>
                         <TextField fx:id="textSearch" alignment="CENTER" prefHeight="28.0" HBox.hgrow="ALWAYS">
                             <HBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>

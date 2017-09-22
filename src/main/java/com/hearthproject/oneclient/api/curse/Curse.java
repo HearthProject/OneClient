@@ -35,6 +35,7 @@ public class Curse {
 		};
 		MODPACKS_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).removalListener(removalListener).build();
 		getModpacks();
+		getMods();
 	}
 
 	public static URL getProjectURL(String projectID) {
@@ -65,9 +66,11 @@ public class Curse {
 	}
 
 	public static CurseProjects getMods() {
+
 		CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODS");
 		if (packs == null) {
 			try {
+				OneClientLogging.info("Loading Curse Mods");
 				packs = JsonUtil.read(new URL(CURSE_META_MODS), CurseProjects.class);
 				MODPACKS_CACHE.put("MODS", packs);
 			} catch (MalformedURLException e) {
@@ -78,9 +81,11 @@ public class Curse {
 	}
 
 	public static CurseProjects getModpacks() {
+
 		CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODPACKS");
 		if (packs == null) {
 			try {
+				OneClientLogging.info("Loading Curse Modpacks");
 				packs = JsonUtil.read(new URL(CURSE_META_MODPACKS), CurseProjects.class);
 				MODPACKS_CACHE.put("MODPACKS", packs);
 			} catch (MalformedURLException e) {

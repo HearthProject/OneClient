@@ -14,8 +14,6 @@ import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ModTile;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXToggleButton;
@@ -25,7 +23,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -51,37 +48,38 @@ public class CurseModPane extends ContentPane {
 	public ComboBox<String> filterSort;
 	@FXML
 	public Label title;
-
-	public Label placeholder;
 	@FXML
 	public ObservableList<ModTile> tiles = FXCollections.observableArrayList();
 	@FXML
 	public ListView<ModTile> listMods;
 	@FXML
-	public Button buttonSearch;
+	public Button buttonSearch, buttonBack;
 	@FXML
 	public TextField textSearch;
 	@FXML
-	public ImageView loadingIcon;
+	public ProgressIndicator loadingIcon;
 
-	private int loadPerScroll = 10;
+	public Label placeholder;
+
+	private int loadPerScroll = 4;
 	private int packCount;
 
 	public final EventHandler<ScrollEvent> scroll = event -> {
 		if (event.getDeltaY() < 0) {
-			if (packCount != entries.size())
-				loadPacks(loadPerScroll, false);
+			if (entries == null || packCount != entries.size())
+				loadMods(loadPerScroll, false);
 		}
 	};
 
 	private static AsyncTask<CurseProjects> mods;
 	private static List<Map.Entry<String, CurseProject>> entries;
 
-	private volatile SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
+	private volatile SimpleBooleanProperty loading;
 	private Instance instance;
 
 	public CurseModPane() {
 		super("gui/contentpanes/curse_mods.fxml", "Curse Mods", "", ButtonDisplay.NONE);
+		loading = new SimpleBooleanProperty(false);
 	}
 
 	public static void show(Instance instance) {
@@ -93,41 +91,38 @@ public class CurseModPane extends ContentPane {
 			node.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 			VBox.setVgrow(node, Priority.ALWAYS);
 			HBox.setHgrow(node, Priority.ALWAYS);
-			Main.mainController.currentContent.button.setSelected(false);
 			Main.mainController.setContent(pane);
 		}
 	}
 
 	public void setupPane(Instance instance) {
 		this.instance = instance;
-		loadingIcon.setImage(ImageUtil.openCachedImage(FileUtil.getResource("images/loading.gif"), "loading"));
-		loadingIcon.setFitHeight(32);
-		loadingIcon.setFitWidth(32);
-		loadingIcon.visibleProperty().bind(loading);
 
 		filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
 		filterSort.getSelectionModel().selectFirst();
-		filterSort.valueProperty().addListener(v -> loadPacks(loadPerScroll, true));
+		filterSort.valueProperty().addListener(v -> loadMods(loadPerScroll, true));
 
-		toggleSort.selectedProperty().addListener(v -> loadPacks(loadPerScroll, true));
+		toggleSort.selectedProperty().addListener(v -> loadMods(loadPerScroll, true));
 
-		buttonSearch.setOnAction(action -> loadPacks(loadPerScroll, true));
+		buttonSearch.setOnAction(action -> loadMods(loadPerScroll, true));
 
 		listMods.setFixedCellSize(162);
 		listMods.setPlaceholder(placeholder = new Label("Loading..."));
 		listMods.setOnScroll(scroll);
 		listMods.setItems(tiles);
 
+		title.setText("Installing Mods to " + instance.getName());
+		buttonBack.setOnAction(event -> InstancePane.show(instance));
+
 		mods = new AsyncTask<>(Curse::getMods);
 		service.submit(mods);
 		mods.addListener(this::init, service);
 
+		loadingIcon.visibleProperty().bind(loading);
 		buttonSearch.disableProperty().bind(loading);
 		textSearch.disableProperty().bind(loading);
 		filterSort.disableProperty().bind(loading);
 		toggleSort.disableProperty().bind(loading);
-
-		title.setText("Installing Mods to " + instance.getName());
 	}
 
 	@Override
@@ -138,32 +133,33 @@ public class CurseModPane extends ContentPane {
 	}
 
 	public void init() {
-		loadPacks(loadPerScroll, false);
+		loadMods(loadPerScroll, false);
 	}
 
-	public void loadPacks(int count, boolean reset) {
+	public void loadMods(int count, boolean reset) {
 		new Thread(() -> {
 			if (loading.get()) {
 				return;
 			}
-			OneClientLogging.info("Mods: {} {} {} ", filterSort.getValue(), instance.getGameVersion(), textSearch.getText());
 			loading.setValue(true);
 			MiscUtil.runLaterIfNeeded(() -> placeholder.setText("Loading..."));
 			if (entries == null || reset) {
 				MiscUtil.runLaterIfNeeded(tiles::clear);
 				try {
+					OneClientLogging.info("Loading Entries");
 					entries = mods.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), instance.getGameVersion(), textSearch.getText());
 					packCount = entries.size();
 				} catch (InterruptedException | ExecutionException e) {
 					OneClientLogging.error(e);
 				}
 			}
+
 			if (entries == null || entries.isEmpty()) {
 				loading.setValue(false);
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Mods Found"));
 				return;
 			}
-
+			OneClientLogging.info("Entries Found");
 			List<ModTile> mods = Lists.newArrayList();
 			for (int i = 0; i < count; i++) {
 				if (entries == null || entries.isEmpty())
@@ -171,17 +167,15 @@ public class CurseModPane extends ContentPane {
 				Map.Entry<String, CurseProject> entry = entries.remove(0);
 				MiscUtil.runLaterIfNeeded(() -> mods.add(new ModTile(instance, new CurseModInstaller(entry.getValue()))));
 			}
-
 			MiscUtil.runLaterIfNeeded(() -> {
 				if (reset)
 					tiles.setAll(mods);
 				else
 					tiles.addAll(mods);
+				loading.setValue(false);
 			});
 			OneClientLogging.info("Loaded {} of {} Mods", packCount - entries.size(), packCount);
-			loading.setValue(false);
 			if (tiles.isEmpty()) {
-				loading.setValue(false);
 				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Mods Found"));
 			}
 		}).start();
@@ -190,5 +184,6 @@ public class CurseModPane extends ContentPane {
 
 	public void close() {
 		tiles.clear();
+		listMods.getItems().clear();
 	}
 }
