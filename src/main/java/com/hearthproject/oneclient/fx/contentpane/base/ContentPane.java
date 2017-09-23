@@ -32,7 +32,7 @@ public abstract class ContentPane {
 
 	public void setNode() {
 		try {
-			node = getFXMLLoader().load(getFXMLUrl().openStream());
+			node = getFXMLLoader().load();
 		} catch (IOException e) {
 			OneClientLogging.error(e);
 		}

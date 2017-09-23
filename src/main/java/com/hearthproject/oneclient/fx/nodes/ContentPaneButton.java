@@ -16,7 +16,7 @@ public class ContentPaneButton extends JFXButton {
 		super("CURSE_META_PANE");
 		ImageView imageView = new ImageView();
 		if (imageName != null && !imageName.isEmpty()) {
-			Image image = ImageUtil.openCachedImage(FileUtil.getResource("images/" + imageName), imageName);
+			Image image = ImageUtil.openCachedImage(FileUtil.getResourceStream("images/" + imageName), imageName);
 			if (image != null)
 				imageView.setImage(image);
 			setGraphic(imageView);

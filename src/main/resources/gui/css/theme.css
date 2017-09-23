@@ -74,6 +74,7 @@
     -fx-font-size: 24px;
     -fx-font-family: 'Roboto', sans-serif;
     -fx-text-fill: -oc-text;
+    -fx-stroke: -oc-text;
     -fx-focus-traversable: false;
 }
 

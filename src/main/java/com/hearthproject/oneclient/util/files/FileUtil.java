@@ -99,11 +99,18 @@ public class FileUtil {
 		return location;
 	}
 
-	public static InputStream getResource(String resource) {
+	public static InputStream getResourceStream(String resource) {
 		if (resource == null)
 			return null;
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		return classLoader.getResourceAsStream(resource);
+	}
+
+	public static URL getResource(String resource) {
+		if (resource == null)
+			return null;
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		return classLoader.getResource(resource);
 	}
 
 	public static boolean isDirectoryEmpty(File dir) {

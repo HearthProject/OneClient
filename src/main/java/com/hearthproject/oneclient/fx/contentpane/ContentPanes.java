@@ -23,8 +23,7 @@ public class ContentPanes {
 		try {
 			ContentPane pane = clazz.newInstance();
 			URL fxmlUrl = pane.getFXMLUrl();
-			FXMLLoader fxmlLoader = new FXMLLoader();
-			fxmlLoader.setLocation(fxmlUrl);
+			FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
 			fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
 			pane.setFXMLLoader(fxmlLoader);
 			fxmlLoader.setController(pane);

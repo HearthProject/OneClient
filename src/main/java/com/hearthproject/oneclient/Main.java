@@ -157,7 +157,7 @@ public class Main extends Application {
 	private static void checkModpackIcon(){
 		if(!Constants.MODPACKICON.exists()){
 			try {
-				FileUtils.copyInputStreamToFile(FileUtil.getResource("images/modpack.png"), Constants.MODPACKICON);
+				FileUtils.copyInputStreamToFile(FileUtil.getResourceStream("images/modpack.png"), Constants.MODPACKICON);
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}

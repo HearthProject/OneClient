@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.curse.CurseModInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -21,11 +22,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class ModTile extends HBox implements Comparable<ModTile> {
 	@FXML
@@ -48,8 +47,7 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 		this.instance = instance;
 		this.mod = mod;
 
-		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/install_tile.fxml");
-		FXMLLoader fxmlLoader = new FXMLLoader(loc);
+		FXMLLoader fxmlLoader = new FXMLLoader(FileUtil.getResource("gui/contentpanes/install_tile.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		try {
@@ -114,7 +112,6 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 
 	public Label info(String value) {
 		Label l = new Label(value);
-		l.setTextFill(Color.web("#FFFFFF"));
 		l.setId("oc-info-label");
 		return l;
 	}

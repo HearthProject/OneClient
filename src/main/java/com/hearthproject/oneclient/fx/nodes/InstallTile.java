@@ -21,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -70,7 +71,10 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 		right.setAlignment(Pos.BASELINE_RIGHT);
 		right.getChildren().addAll(gameVersions, downloads);
 		//		right.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
-		left.getChildren().addAll(info("By %s", instance.tempInfo.get("authors")));
+		left.getChildren().addAll(
+			info("By %s", instance.tempInfo.get("authors")),
+			info("%s", instance.tempInfo.get("summary"))
+		);
 
 		DownloadTask task = DownloadManager.createDownload(instance.getName(), instance::install);
 		buttonInstall.setOnAction(event -> {
@@ -94,13 +98,6 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 			}
 		});
 		imageView.disableProperty().bind(instance.installingProperty());
-		instance.installingProperty().addListener((observable, oldValue, newValue) -> {
-			//			if (newValue) {
-			//				statusText.setText("Installing...");
-			//			} else {
-			//				statusText.setText(instance.getGameVersion());
-			//			}
-		});
 	}
 
 	public Label info(String format, Object... params) {
@@ -111,6 +108,8 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 		Label l = new Label(value);
 		l.setTextFill(Color.web("#FFFFFF"));
 		l.setId("oc-info-label");
+		l.setWrapText(true);
+		l.setTextAlignment(TextAlignment.JUSTIFY);
 		return l;
 	}
 

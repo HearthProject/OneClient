@@ -77,7 +77,7 @@ public class CurseMetaPane extends ContentPane {
 		anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
 		anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
-		loadingIcon.setImage(ImageUtil.openCachedImage(FileUtil.getResource("images/loading.gif"), "loading"));
+		loadingIcon.setImage(ImageUtil.openCachedImage(FileUtil.getResourceStream("images/loading.gif"), "loading"));
 		loadingIcon.setFitHeight(32);
 		loadingIcon.setFitWidth(32);
 		loadingIcon.visibleProperty().bind(loading);
