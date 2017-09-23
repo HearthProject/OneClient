@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -17,13 +18,15 @@ public abstract class PageTask<T> extends Task<Void> {
 	private List<Map.Entry<String, CurseProject>> entries;
 	private ObservableList<T> tiles;
 	private StringProperty placeholder;
+	private IntegerProperty count;
 
 	public PageTask(List<Map.Entry<String, CurseProject>> entries,
 	                ObservableList<T> tiles,
-	                StringProperty placeholder) {
+	                StringProperty placeholder, IntegerProperty count) {
 		this.entries = entries;
 		this.tiles = tiles;
 		this.placeholder = placeholder;
+		this.count = count;
 	}
 
 	public abstract void addElement(List<T> elements, Map.Entry<String, CurseProject> entry);
@@ -40,14 +43,13 @@ public abstract class PageTask<T> extends Task<Void> {
 
 			Map.Entry<String, CurseProject> entry = entries.remove(0);
 			addElement(elements, entry);
-			OneClientLogging.info("Element Created");
 		}
 		if (checkCancel())
 			return null;
 		MiscUtil.runLaterIfNeeded(() -> tiles.addAll(elements));
 		if (checkCancel())
 			return null;
-		//		OneClientLogging.info("Loaded {} of {} Modpacks", count - entries.size(), count);
+		OneClientLogging.info("Loaded {} of {} Modpacks", count.intValue() - entries.size(), count.intValue());
 		if (tiles.isEmpty()) {
 			MiscUtil.runLaterIfNeeded(() -> placeholder.setValue("No Packs Found"));
 		}

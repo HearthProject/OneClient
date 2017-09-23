@@ -18,6 +18,7 @@ import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXToggleButton;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -55,7 +56,7 @@ public class CurseMetaPane extends ContentPane {
 
 	public ImageView loadingIcon;
 
-	SimpleIntegerProperty elementCount = new SimpleIntegerProperty(0);
+	private SimpleIntegerProperty count = new SimpleIntegerProperty(0);
 
 	private PageService pageService;
 
@@ -100,7 +101,7 @@ public class CurseMetaPane extends ContentPane {
 		listPacks.setOnScroll(scroll);
 		listPacks.setItems(tiles);
 
-		pageService = new PackService(() -> entries, tiles, placeholder.textProperty());
+		pageService = new PackService(() -> entries, tiles, placeholder.textProperty(), count);
 
 		packs = new AsyncTask<>(Curse::getModpacks);
 		service.submit(packs);
@@ -125,6 +126,7 @@ public class CurseMetaPane extends ContentPane {
 				tiles.clear();
 				try {
 					entries = packs.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), filterVersion.getValue(), textSearch.getText());
+					count.set(entries.size());
 				} catch (InterruptedException | ExecutionException e) {
 					OneClientLogging.error(e);
 				}
@@ -158,19 +160,23 @@ public class CurseMetaPane extends ContentPane {
 
 	public class PackService extends PageService<ModpackTile> {
 
-		public PackService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModpackTile> tiles, StringProperty placeholder) {
-			super(entries, tiles, placeholder);
+		public PackService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModpackTile> tiles, StringProperty placeholder, IntegerProperty count) {
+			super(entries, tiles, placeholder, count);
 		}
 
 		@Override
 		protected Task<Void> createTask() {
-			return new PageTask<ModpackTile>(entries.get(), tiles, placeholder) {
+			return new PageTask<ModpackTile>(entries.get(), tiles, placeholder, count) {
 				@Override
 				public void addElement(List<ModpackTile> elements, Map.Entry<String, CurseProject> entry) {
 					Instance instance = new CurseImporter(entry.getKey()).create();
 					if (instance != null) {
-						MiscUtil.runLaterIfNeeded(() -> elements.add(new ModpackTile(instance)));
+						MiscUtil.runLaterIfNeeded(() -> {
+							elements.add(new ModpackTile(instance));
+							page.setText((count.intValue() - entries.get().size()) + "/" + count.intValue());
+						});
 					}
+
 				}
 			};
 		}

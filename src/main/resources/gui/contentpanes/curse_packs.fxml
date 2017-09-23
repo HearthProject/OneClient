@@ -18,16 +18,16 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </VBox.margin>
                     <children>
-                        <Label fx:id="page" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="28.0" HBox.hgrow="NEVER">
-                            <HBox.margin>
-                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
-                            </HBox.margin>
-                        </Label>
                         <ImageView fx:id="loadingIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                             <HBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </ImageView>
+                        <Label fx:id="page" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="28.0" HBox.hgrow="NEVER">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </Label>
                         <TextField fx:id="textSearch" alignment="CENTER" prefHeight="28.0" HBox.hgrow="ALWAYS">
                             <HBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>

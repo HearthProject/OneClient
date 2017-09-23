@@ -18,6 +18,8 @@ import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXToggleButton;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,7 +52,7 @@ public class CurseModPane extends ContentPane {
 	@FXML
 	public ComboBox<String> filterSort;
 	@FXML
-	public Label title;
+	public Label title, page;
 	@FXML
 	public ObservableList<ModTile> tiles = FXCollections.observableArrayList();
 	@FXML
@@ -64,12 +66,11 @@ public class CurseModPane extends ContentPane {
 
 	public Label placeholder;
 
-	private int packCount;
+	private SimpleIntegerProperty count = new SimpleIntegerProperty(0);
 
 	public final EventHandler<ScrollEvent> scroll = event -> {
 		if (event.getDeltaY() < 0) {
-			if (entries == null || packCount != entries.size())
-				loadMods(false);
+			loadMods(false);
 		}
 	};
 
@@ -77,11 +78,11 @@ public class CurseModPane extends ContentPane {
 	private static List<Map.Entry<String, CurseProject>> entries;
 
 	private Instance instance;
-
 	private PageService pageService;
 
 	public CurseModPane() {
 		super("gui/contentpanes/curse_mods.fxml", "Curse Mods", "", ButtonDisplay.NONE);
+
 	}
 
 	public static void show(Instance instance) {
@@ -116,7 +117,7 @@ public class CurseModPane extends ContentPane {
 		title.setText("Installing Mods to " + instance.getName());
 		buttonBack.setOnAction(event -> InstancePane.show(instance));
 
-		pageService = new ModService(() -> entries, tiles, placeholder.textProperty(), instance);
+		pageService = new ModService(() -> entries, tiles, placeholder.textProperty(), instance, count);
 
 		mods = new AsyncTask<>(Curse::getMods);
 		service.submit(mods);
@@ -148,7 +149,7 @@ public class CurseModPane extends ContentPane {
 				try {
 					OneClientLogging.info("Loading Entries");
 					entries = mods.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), instance.getGameVersion(), textSearch.getText());
-					packCount = entries.size();
+					count.set(entries.size());
 				} catch (InterruptedException | ExecutionException e) {
 					OneClientLogging.error(e);
 				}
@@ -167,23 +168,26 @@ public class CurseModPane extends ContentPane {
 		tiles.clear();
 	}
 
-	public static class ModService extends PageService<ModTile> {
+	public class ModService extends PageService<ModTile> {
 		private Instance instance;
 
-		public ModService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModTile> tiles, StringProperty placeholder, Instance instance) {
-			super(entries, tiles, placeholder);
+		public ModService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModTile> tiles, StringProperty placeholder, Instance instance, IntegerProperty count) {
+			super(entries, tiles, placeholder, count);
 			this.instance = instance;
 		}
 
 		@Override
 		protected Task<Void> createTask() {
-			return new PageTask<ModTile>(entries.get(), tiles, placeholder) {
+			return new PageTask<ModTile>(entries.get(), tiles, placeholder, count) {
 				@Override
 				public void addElement(List<ModTile> elements, Map.Entry<String, CurseProject> entry) {
 					CurseFullProject project = JsonUtil.read(Curse.getProjectURL(entry.getValue().Id), CurseFullProject.class);
 					CurseModInstaller installer = new CurseModInstaller(instance, project);
 					if (instance != null) {
-						MiscUtil.runLaterIfNeeded(() -> elements.add(new ModTile(instance, installer)));
+						MiscUtil.runLaterIfNeeded(() -> {
+							elements.add(new ModTile(instance, installer));
+							page.setText((count.intValue() - entries.get().size()) + "/" + count.intValue());
+						});
 					}
 				}
 			};

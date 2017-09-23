@@ -26,6 +26,11 @@
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
                             </HBox.margin>
                         </Button>
+                        <Label fx:id="page" minHeight="-Infinity" prefHeight="28.0" text="Label">
+                            <HBox.margin>
+                                <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+                            </HBox.margin>
+                        </Label>
                         <ProgressIndicator fx:id="loadingIcon" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="32.0">
                             <HBox.margin>
                                 <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
