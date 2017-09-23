@@ -78,8 +78,9 @@ public class CurseFullProject {
 
 	public static class CurseFile implements Comparable<CurseFile> {
 		private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-		private String DownloadURL;
 		private List<String> GameVersion;
+		private List<Dependency> Dependencies;
+		private String DownloadURL;
 		private String FileName;
 		private String Id;
 		private String FileDate;
@@ -101,8 +102,8 @@ public class CurseFullProject {
 			return FilenameUtils.removeExtension(FileName);
 		}
 
-		public boolean equals(String version) {
-			return GameVersion.contains(version);
+		public List<Dependency> getDependencies() {
+			return Dependencies;
 		}
 
 		@Override
@@ -125,8 +126,20 @@ public class CurseFullProject {
 			return -1 * getDate().compareTo(o.getDate());
 		}
 
+		public boolean equals(String version) {
+			return GameVersion.contains(version);
+		}
+
 		public FileData toFileData() {
 			return new FileData(projectId, Id);
+		}
+
+		public class Dependency {
+			public String AddOnId, Type;
+
+			public boolean isRequired() {
+				return Type.equals("required");
+			}
 		}
 	}
 

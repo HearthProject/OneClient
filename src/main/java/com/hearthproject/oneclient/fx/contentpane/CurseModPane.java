@@ -183,6 +183,7 @@ public class CurseModPane extends ContentPane {
 				public void addElement(List<ModTile> elements, Map.Entry<String, CurseProject> entry) {
 					CurseFullProject project = JsonUtil.read(Curse.getProjectURL(entry.getValue().Id), CurseFullProject.class);
 					CurseModInstaller installer = new CurseModInstaller(instance, project);
+					installer.setResolveDependencies(true);
 					if (instance != null) {
 						MiscUtil.runLaterIfNeeded(() -> {
 							elements.add(new ModTile(instance, installer));

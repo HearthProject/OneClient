@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.api.curse.data.FileData;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -18,7 +19,9 @@ public class CurseModInstaller extends ModInstaller {
 
 	private FileData fileData;
 	private transient List<CurseFullProject.CurseFile> files;
+	private transient CurseFullProject.CurseFile file;
 	public transient CurseFullProject project;
+	public boolean resolveDependencies;
 
 	public CurseModInstaller(Instance instance, CurseFullProject data) {
 		super(PackType.CURSE);
@@ -34,7 +37,21 @@ public class CurseModInstaller extends ModInstaller {
 
 	@Override
 	public void install(Instance instance) {
+		if (fileData == null) {
+			OneClientLogging.info("No File Selected");
+		}
 		try {
+			if (resolveDependencies) {
+				for (CurseFullProject.CurseFile.Dependency dep : file.getDependencies()) {
+					if (dep.isRequired()) {
+						CurseFullProject project = JsonUtil.read(Curse.getProjectURL(dep.AddOnId), CurseFullProject.class);
+						CurseModInstaller depInstaller = new CurseModInstaller(instance, project);
+						depInstaller.setFile(depInstaller.getFiles().stream().findFirst().orElse(null));
+						DownloadManager.updateMessage(instance.getName(), "%s - Installing Dependency %s for %s", instance.getName(), FilenameUtils.getBaseName(depInstaller.fileData.getURL()), FilenameUtils.getBaseName(fileData.getURL()));
+						depInstaller.install(instance);
+					}
+				}
+			}
 			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);
@@ -42,15 +59,15 @@ public class CurseModInstaller extends ModInstaller {
 		} catch (Throwable e) {
 			OneClientLogging.error(e);
 		}
-
 	}
 
 	public FileData getFileData() {
 		return fileData;
 	}
 
-	public void setFileData(FileData fileData) {
-		this.fileData = fileData;
+	public void setFile(CurseFullProject.CurseFile file) {
+		this.fileData = file.toFileData();
+		this.file = file;
 	}
 
 	@Override
@@ -60,6 +77,10 @@ public class CurseModInstaller extends ModInstaller {
 
 	public List<CurseFullProject.CurseFile> getFiles() {
 		return files;
+	}
+
+	public void setResolveDependencies(boolean resolveDependencies) {
+		this.resolveDependencies = resolveDependencies;
 	}
 }
 

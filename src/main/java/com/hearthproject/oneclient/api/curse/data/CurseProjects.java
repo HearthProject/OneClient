@@ -22,8 +22,9 @@ public class CurseProjects extends HashMap<String, CurseProject> {
 		return entries;
 	}
 
-	public List<Map.Entry<String, CurseProject>> filter(boolean reverse, String sorting, String version, String name) {
-		List<Map.Entry<String, CurseProject>> list = filter(pack -> pack.matchesVersion(version), pack -> pack.matchesName(name));
+	public List<Map.Entry<String, CurseProject>> filter(boolean reverse, String sorting, String version, String search) {
+
+		List<Map.Entry<String, CurseProject>> list = filter(pack -> pack.matchesVersion(version), search(search));
 		if (sorting.equalsIgnoreCase("Popularity"))
 			list.sort((o1, o2) -> (reverse ? 1 : -1) * Double.compare(o1.getValue().getPopularityScore(), o2.getValue().getPopularityScore()));
 		if (sorting.equalsIgnoreCase("Alphabetical"))
@@ -35,6 +36,13 @@ public class CurseProjects extends HashMap<String, CurseProject> {
 		Predicate<CurseProject> filter = pack -> (version == null || version.test(pack)) && (name == null || name.test(pack));
 		Collection<Map.Entry<String, CurseProject>> entries = Collections2.filter(getEntries(), e -> filter.test(e.getValue()));
 		return entries.stream().filter(pack -> filter.test(pack.getValue())).collect(Collectors.toList());
+	}
+
+	//	private static Pattern pattern = Pattern.compile("(.*)\\:(.*)");
+
+	public Predicate<CurseProject> search(String search) {
+
+		return pack -> pack.matchesName(search);
 	}
 
 	@Override

@@ -12,6 +12,8 @@ public class CurseProject {
 	public String Id;
 	public double PopularityScore;
 
+	public boolean matchesAuthor(String author) { return PrimaryAuthorName.equalsIgnoreCase(author); }
+
 	public boolean matchesName(String name) {
 		return Name.toLowerCase().contains(name.toLowerCase());
 	}
@@ -30,6 +32,5 @@ public class CurseProject {
 	public double getPopularityScore() {
 		return PopularityScore;
 	}
-
 
 }

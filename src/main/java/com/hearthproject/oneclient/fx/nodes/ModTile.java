@@ -64,8 +64,8 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 		comboFile.setItems(FXCollections.observableArrayList(mod.getFiles()));
 		comboFile.getSelectionModel().selectFirst();
 		if (!comboFile.getItems().isEmpty()) {
-			mod.setFileData(comboFile.getValue().toFileData());
-			comboFile.valueProperty().addListener((v, a, b) -> mod.setFileData(comboFile.getValue().toFileData()));
+			mod.setFile(comboFile.getValue());
+			comboFile.valueProperty().addListener((v, a, b) -> mod.setFile(comboFile.getValue()));
 		}
 
 		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers(mod.project.getDownloads()));
@@ -74,7 +74,7 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 		right.getChildren().addAll(gameVersions, downloads);
 		left.getChildren().addAll(info("By %s", mod.project.getAuthorsString()));
 
-		DownloadTask task = DownloadManager.createDownload(mod.getName(), () -> mod.install(instance));
+		DownloadTask task = DownloadManager.createDownload(instance.getName(), () -> mod.install(instance));
 		buttonInstall.setOnAction(event -> {
 			task.start();
 			buttonInstall.setDisable(true);

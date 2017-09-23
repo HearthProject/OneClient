@@ -12,6 +12,7 @@ import com.hearthproject.oneclient.util.logging.OneClientLogging;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -100,6 +101,7 @@ public class Curse {
 		if (files != null) {
 			List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
 			curseFiles.forEach(f -> f.projectId = projectId);
+			curseFiles.sort(Comparator.comparing(CurseFullProject.CurseFile::getDate));
 			return curseFiles;
 		}
 		return null;
