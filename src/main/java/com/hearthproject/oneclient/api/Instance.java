@@ -13,7 +13,6 @@ import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
@@ -38,7 +37,6 @@ public class Instance {
 	public transient Map<String, Object> tempInfo;
 	public ObservableList<ModInstaller> mods = FXCollections.observableArrayList();
 
-	public transient Image image;
 	public transient SimpleBooleanProperty installing;
 	public ModpackInstaller installer;
 
@@ -123,14 +121,6 @@ public class Instance {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
-	}
-
-	public Image getImage() {
-		return image;
-	}
-
-	public void setImage(Image image) {
-		this.image = image;
 	}
 
 	public ObservableList<ModInstaller> getMods() {

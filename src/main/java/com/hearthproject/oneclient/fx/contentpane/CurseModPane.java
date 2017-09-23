@@ -1,25 +1,27 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.api.curse.data.CurseProjects;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ModTile;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXToggleButton;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 public class CurseModPane extends ContentPane {
 	private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -61,25 +64,24 @@ public class CurseModPane extends ContentPane {
 
 	public Label placeholder;
 
-	private int loadPerScroll = 4;
 	private int packCount;
 
 	public final EventHandler<ScrollEvent> scroll = event -> {
 		if (event.getDeltaY() < 0) {
 			if (entries == null || packCount != entries.size())
-				loadMods(loadPerScroll, false);
+				loadMods(false);
 		}
 	};
 
 	private static AsyncTask<CurseProjects> mods;
 	private static List<Map.Entry<String, CurseProject>> entries;
 
-	private volatile SimpleBooleanProperty loading;
 	private Instance instance;
+
+	private PageService pageService;
 
 	public CurseModPane() {
 		super("gui/contentpanes/curse_mods.fxml", "Curse Mods", "", ButtonDisplay.NONE);
-		loading = new SimpleBooleanProperty(false);
 	}
 
 	public static void show(Instance instance) {
@@ -100,11 +102,11 @@ public class CurseModPane extends ContentPane {
 
 		filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
 		filterSort.getSelectionModel().selectFirst();
-		filterSort.valueProperty().addListener(v -> loadMods(loadPerScroll, true));
+		filterSort.valueProperty().addListener(v -> loadMods(true));
 
-		toggleSort.selectedProperty().addListener(v -> loadMods(loadPerScroll, true));
+		toggleSort.selectedProperty().addListener(v -> loadMods(true));
 
-		buttonSearch.setOnAction(action -> loadMods(loadPerScroll, true));
+		buttonSearch.setOnAction(action -> loadMods(true));
 
 		listMods.setFixedCellSize(162);
 		listMods.setPlaceholder(placeholder = new Label("Loading..."));
@@ -114,15 +116,17 @@ public class CurseModPane extends ContentPane {
 		title.setText("Installing Mods to " + instance.getName());
 		buttonBack.setOnAction(event -> InstancePane.show(instance));
 
+		pageService = new ModService(() -> entries, tiles, placeholder.textProperty(), instance);
+
 		mods = new AsyncTask<>(Curse::getMods);
 		service.submit(mods);
 		mods.addListener(this::init, service);
 
-		loadingIcon.visibleProperty().bind(loading);
-		buttonSearch.disableProperty().bind(loading);
-		textSearch.disableProperty().bind(loading);
-		filterSort.disableProperty().bind(loading);
-		toggleSort.disableProperty().bind(loading);
+		loadingIcon.visibleProperty().bind(pageService.runningProperty());
+		buttonSearch.disableProperty().bind(pageService.runningProperty());
+		textSearch.disableProperty().bind(pageService.runningProperty());
+		filterSort.disableProperty().bind(pageService.runningProperty());
+		toggleSort.disableProperty().bind(pageService.runningProperty());
 	}
 
 	@Override
@@ -133,18 +137,14 @@ public class CurseModPane extends ContentPane {
 	}
 
 	public void init() {
-		loadMods(loadPerScroll, false);
+		loadMods(false);
 	}
 
-	public void loadMods(int count, boolean reset) {
-		new Thread(() -> {
-			if (loading.get()) {
-				return;
-			}
-			loading.setValue(true);
-			MiscUtil.runLaterIfNeeded(() -> placeholder.setText("Loading..."));
+	public void loadMods(boolean reset) {
+
+		if (!pageService.isRunning()) {
 			if (entries == null || reset) {
-				MiscUtil.runLaterIfNeeded(tiles::clear);
+				tiles.clear();
 				try {
 					OneClientLogging.info("Loading Entries");
 					entries = mods.get().filter(toggleSort.isSelected(), filterSort.getValue().toLowerCase(), instance.getGameVersion(), textSearch.getText());
@@ -153,37 +153,40 @@ public class CurseModPane extends ContentPane {
 					OneClientLogging.error(e);
 				}
 			}
-
 			if (entries == null || entries.isEmpty()) {
-				loading.setValue(false);
-				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Mods Found"));
+				placeholder.setText("No Mods Found");
 				return;
 			}
-			OneClientLogging.info("Entries Found");
-			List<ModTile> mods = Lists.newArrayList();
-			for (int i = 0; i < count; i++) {
-				if (entries == null || entries.isEmpty())
-					break;
-				Map.Entry<String, CurseProject> entry = entries.remove(0);
-				MiscUtil.runLaterIfNeeded(() -> mods.add(new ModTile(instance, new CurseModInstaller(entry.getValue()))));
-			}
-			MiscUtil.runLaterIfNeeded(() -> {
-				if (reset)
-					tiles.setAll(mods);
-				else
-					tiles.addAll(mods);
-				loading.setValue(false);
-			});
-			OneClientLogging.info("Loaded {} of {} Mods", packCount - entries.size(), packCount);
-			if (tiles.isEmpty()) {
-				MiscUtil.runLaterIfNeeded(() -> placeholder.setText("No Mods Found"));
-			}
-		}).start();
-
+			placeholder.setText("Loading...");
+			pageService.reset();
+			pageService.start();
+		}
 	}
 
 	public void close() {
 		tiles.clear();
-		listMods.getItems().clear();
+	}
+
+	public static class ModService extends PageService<ModTile> {
+		private Instance instance;
+
+		public ModService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModTile> tiles, StringProperty placeholder, Instance instance) {
+			super(entries, tiles, placeholder);
+			this.instance = instance;
+		}
+
+		@Override
+		protected Task<Void> createTask() {
+			return new PageTask<ModTile>(entries.get(), tiles, placeholder) {
+				@Override
+				public void addElement(List<ModTile> elements, Map.Entry<String, CurseProject> entry) {
+					CurseFullProject project = JsonUtil.read(Curse.getProjectURL(entry.getValue().Id), CurseFullProject.class);
+					CurseModInstaller installer = new CurseModInstaller(instance, project);
+					if (instance != null) {
+						MiscUtil.runLaterIfNeeded(() -> elements.add(new ModTile(instance, installer)));
+					}
+				}
+			};
+		}
 	}
 }

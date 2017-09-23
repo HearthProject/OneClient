@@ -2,7 +2,10 @@ package com.hearthproject.oneclient.util.files;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 
 import javax.imageio.ImageIO;
@@ -11,6 +14,10 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ImageUtil {
@@ -130,6 +137,56 @@ public class ImageUtil {
 			OneClientLogging.error(e);
 		}
 		return image;
+	}
+
+	public static Image downloadAndOpenImage(String url, String name) {
+		if (url != null) {
+			try {
+				return downloadAndOpenImage(new URL(url), name);
+			} catch (MalformedURLException e) {
+				OneClientLogging.error(e);
+			}
+		}
+		return null;
+	}
+
+	public static Image downloadAndOpenImage(URL url, String name) {
+		try {
+			String file = URLEncoder.encode(name, "UTF-8");
+			if (file != null) {
+				File image = new File(Constants.ICONDIR, file + ".png");
+				if (!image.exists()) {
+					if (url != null) {
+						FileUtil.downloadFromURL(url, image);
+					}
+				}
+				return ImageUtil.openCachedImage(image);
+			}
+		} catch (Throwable e) {
+			OneClientLogging.error(e);
+		}
+		return null;
+	}
+
+	public static class ImageService extends Service<Image> {
+		public String url, name;
+
+		public ImageService(String url, String name) {
+			this.url = url;
+			this.name = name;
+
+			this.setExecutor(Executors.newSingleThreadExecutor());
+		}
+
+		@Override
+		protected Task<Image> createTask() {
+			return new Task<Image>() {
+				@Override
+				protected Image call() throws Exception {
+					return downloadAndOpenImage(url, name);
+				}
+			};
+		}
 	}
 
 }

@@ -1,20 +1,12 @@
 package com.hearthproject.oneclient.api.curse.data;
 
-import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.Curse;
+import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
-import com.hearthproject.oneclient.util.files.FileUtil;
-import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,16 +46,9 @@ public class CurseFullProject {
 		return Authors;
 	}
 
-	public URL getIcon() {
-		if (Attachments != null) {
-			String icon = Attachments.stream().filter(a -> a.IsDefault).map(a -> a.Url).findFirst().orElse(null);
-			if (icon != null)
-				try {
-					return new URL(icon);
-				} catch (MalformedURLException e) {
-					OneClientLogging.error(e);
-				}
-		}
+	public String getIcon() {
+		if (Attachments != null)
+			return Attachments.stream().map(a -> a.Url).findFirst().orElse(null);
 		return null;
 	}
 
@@ -89,22 +74,6 @@ public class CurseFullProject {
 
 	public String getSummary() {
 		return Summary;
-	}
-
-	public Image getImage() {
-		URL url = getIcon();
-		if (url != null) {
-			String name = null;
-			try {
-				name = URLEncoder.encode(getName(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				OneClientLogging.error(e);
-			}
-			File file = new File(Constants.ICONDIR, name + ".png");
-			FileUtil.downloadFromURL(url, file);
-			return ImageUtil.openCachedImage(file);
-		}
-		return null;
 	}
 
 	public static class CurseFile implements Comparable<CurseFile> {
@@ -179,6 +148,11 @@ public class CurseFullProject {
 		private String ThumbnailUrl;
 		private String Title;
 		private String Url;
+
+		@Override
+		public String toString() {
+			return JsonUtil.GSON.toJson(this);
+		}
 	}
 
 	public class Category {

@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.api.curse.CurseModInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -17,7 +18,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -55,25 +55,24 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		MiscUtil.setupLink(title, mod.getName(), mod.getProject().WebSiteURL);
-		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> {
-			Image image = mod.fullProject.map(CurseFullProject::getImage);
-			if (image != null)
-				imageView.setImage(image);
-		})).start();
+		ImageUtil.ImageService service = new ImageUtil.ImageService(mod.project.getIcon(), mod.getName());
+		service.setOnSucceeded(event -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(service.getValue())));
+		service.start();
+
+		MiscUtil.setupLink(title, mod.getName(), mod.project.getWebSiteURL());
 		comboFile.setVisible(true);
-		comboFile.setItems(FXCollections.observableArrayList(mod.fullProject.getIfPresent().getFiles(instance.getGameVersion())));
+		comboFile.setItems(FXCollections.observableArrayList(mod.getFiles()));
 		comboFile.getSelectionModel().selectFirst();
 		if (!comboFile.getItems().isEmpty()) {
 			mod.setFileData(comboFile.getValue().toFileData());
 			comboFile.valueProperty().addListener((v, a, b) -> mod.setFileData(comboFile.getValue().toFileData()));
 		}
 
-		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers(mod.fullProject.map(CurseFullProject::getDownloads)));
-		Label gameVersions = info("Versions: %s", mod.fullProject.map(CurseFullProject::getVersions));
+		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers(mod.project.getDownloads()));
+		Label gameVersions = info("Versions: %s", mod.project.getVersions());
 		right.setAlignment(Pos.BASELINE_RIGHT);
 		right.getChildren().addAll(gameVersions, downloads);
-		left.getChildren().addAll(info("By %s", mod.fullProject.map(CurseFullProject::getAuthorsString)));
+		left.getChildren().addAll(info("By %s", mod.project.getAuthorsString()));
 
 		DownloadTask task = DownloadManager.createDownload(mod.getName(), () -> mod.install(instance));
 		buttonInstall.setOnAction(event -> {
@@ -101,9 +100,6 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 			}
 		});
 		imageView.disableProperty().bind(instance.installingProperty());
-		instance.installingProperty().addListener((observable, oldValue, newValue) -> {
-
-		});
 	}
 
 	public Label info(String format, Object... params) {

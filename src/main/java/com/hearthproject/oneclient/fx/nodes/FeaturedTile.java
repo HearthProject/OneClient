@@ -7,6 +7,7 @@ import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -15,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -55,7 +57,12 @@ public class FeaturedTile extends StackPane {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(instance.getImage()))).start();
+		new Thread(() -> {
+			Image image = ImageUtil.downloadAndOpenImage((String) instance.tempInfo.get("icon-url"), instance.getName());
+			if (image != null) {
+				MiscUtil.runLaterIfNeeded(() -> imageView.setImage(image));
+			}
+		}).start();
 		imageView.setEffect(blurEffect);
 
 		statusText.setText(instance.getGameVersion());

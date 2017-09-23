@@ -7,7 +7,6 @@ import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.AsyncTask;
-import javafx.scene.image.Image;
 
 import java.net.URL;
 import java.util.List;
@@ -42,11 +41,9 @@ public class CurseImporter implements IImporter {
 			new Instance.Info("categories", categories),
 			new Instance.Info("downloads", data.map(CurseFullProject::getDownloads)),
 			new Instance.Info("gameVersions", data.map(CurseFullProject::getVersions)),
-			new Instance.Info("summary", data.map(CurseFullProject::getSummary))
+			new Instance.Info("summary", data.map(CurseFullProject::getSummary)),
+			new Instance.Info("icon-url", data.map(CurseFullProject::getIcon).toString())
 		);
-		Image image = data.map(CurseFullProject::getImage);
-		if (image != null)
-			instance.setImage(image);
 		return instance;
 	}
 

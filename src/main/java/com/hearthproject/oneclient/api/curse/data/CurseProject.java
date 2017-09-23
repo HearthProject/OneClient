@@ -1,8 +1,5 @@
 package com.hearthproject.oneclient.api.curse.data;
 
-import com.hearthproject.oneclient.api.curse.Curse;
-import com.hearthproject.oneclient.json.JsonUtil;
-
 import java.util.List;
 
 public class CurseProject {
@@ -23,10 +20,6 @@ public class CurseProject {
 		if (version.equals("All"))
 			return true;
 		return GameVersionLatestFiles.stream().map(f -> f.GameVesion).anyMatch(v -> v.equals(version));
-	}
-
-	private CurseFullProject.CurseFile[] findFiles() {
-		return JsonUtil.read(Curse.getProjectFilesURL(Id), CurseFullProject.CurseFile[].class);
 	}
 
 	@Override

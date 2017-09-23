@@ -1,37 +1,30 @@
 package com.hearthproject.oneclient.api.curse;
 
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
 import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
 import com.hearthproject.oneclient.api.curse.data.FileData;
-import com.hearthproject.oneclient.json.JsonUtil;
-import com.hearthproject.oneclient.util.AsyncTask;
 import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.util.concurrent.Executors;
+import java.util.List;
 
 public class CurseModInstaller extends ModInstaller {
-	private final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-	public transient AsyncTask<CurseFullProject> fullProject;
 
 	private FileData fileData;
-	private transient CurseProject project;
+	private transient List<CurseFullProject.CurseFile> files;
+	public transient CurseFullProject project;
 
-	public CurseModInstaller(CurseProject data) {
+	public CurseModInstaller(Instance instance, CurseFullProject data) {
 		super(PackType.CURSE);
-		this.name = data.Name;
 		this.project = data;
-		this.fullProject = new AsyncTask<>(() -> JsonUtil.read(Curse.getProjectURL(data.Id), CurseFullProject.class));
-		service.execute(fullProject);
+		this.name = project.getName();
+		this.files = project.getFiles(instance.getGameVersion());
 	}
 
 	public CurseModInstaller(FileData fileData) {
@@ -42,7 +35,6 @@ public class CurseModInstaller extends ModInstaller {
 	@Override
 	public void install(Instance instance) {
 		try {
-
 			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);
@@ -61,12 +53,14 @@ public class CurseModInstaller extends ModInstaller {
 		this.fileData = fileData;
 	}
 
-	public CurseProject getProject() {
-		return project;
-	}
-
 	@Override
 	public String toString() {
 		return String.format("%s:%s", getType(), project.Id);
 	}
+
+	public List<CurseFullProject.CurseFile> getFiles() {
+		return files;
+	}
 }
+
+

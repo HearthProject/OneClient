@@ -7,6 +7,8 @@ import com.hearthproject.oneclient.api.curse.Curse;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
+import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -25,9 +27,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.net.URL;
 
-public class InstallTile extends HBox implements Comparable<InstallTile> {
+public class ModpackTile extends HBox implements Comparable<ModpackTile> {
 	@FXML
 	protected ImageView imageView;
 	@FXML
@@ -43,11 +44,10 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 
 	protected Instance instance;
 
-	public InstallTile(Instance instance) {
+	public ModpackTile(Instance instance) {
 		this.instance = instance;
 
-		URL loc = Thread.currentThread().getContextClassLoader().getResource("gui/contentpanes/install_tile.fxml");
-		FXMLLoader fxmlLoader = new FXMLLoader(loc);
+		FXMLLoader fxmlLoader = new FXMLLoader(FileUtil.getResource("gui/contentpanes/install_tile.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		try {
@@ -56,7 +56,10 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 			throw new RuntimeException(exception);
 		}
 
-		new Thread(() -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(instance.getImage()))).start();
+		ImageUtil.ImageService service = new ImageUtil.ImageService((String) instance.tempInfo.get("icon-url"), instance.getName());
+		service.setOnSucceeded(event -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(service.getValue())));
+		service.start();
+
 		if (instance.getInstaller() instanceof CurseInstaller) {
 			CurseInstaller installer = (CurseInstaller) instance.getInstaller();
 			MiscUtil.setupLink(title, instance.getName(), Curse.getCurseForge(installer.projectId).toString());
@@ -118,7 +121,7 @@ public class InstallTile extends HBox implements Comparable<InstallTile> {
 	}
 
 	@Override
-	public int compareTo(InstallTile o) {
+	public int compareTo(ModpackTile o) {
 		return getName().compareTo(o.getName());
 	}
 }
