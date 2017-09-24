@@ -39,7 +39,7 @@ public class Updater {
 		if (Constants.getVersion() == null) {
 			return Optional.empty();
 		}
-		if (!launcherUpdate.latestVersion.equals(Constants.getVersion())) {
+		if (launcherUpdate.compareTo(new LauncherUpdate(Constants.getVersion())) > 0) {
 			return Optional.of(launcherUpdate.latestVersion);
 		}
 		return Optional.empty();
