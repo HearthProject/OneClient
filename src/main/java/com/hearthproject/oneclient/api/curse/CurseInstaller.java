@@ -114,6 +114,7 @@ public class CurseInstaller extends ModpackInstaller {
 		} catch (Throwable e) {
 			OneClientLogging.error(e);
 		}
+		instance.verifyMods();
 	}
 
 	private void installOverrides(File pack, File instance) {

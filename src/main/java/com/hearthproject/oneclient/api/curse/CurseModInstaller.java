@@ -59,6 +59,7 @@ public class CurseModInstaller extends ModInstaller {
 			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);
+			this.name = mod.getName();
 			instance.getMods().add(this);
 		} catch (Throwable e) {
 			OneClientLogging.error(e);
@@ -79,7 +80,6 @@ public class CurseModInstaller extends ModInstaller {
 
 	public CurseFullProject.CurseFile findUpdate(String gameVersion, boolean onlyNew) {
 		NotifyUtil.setText("%s Checking for updates", getName());
-		System.out.println(gameVersion);
 		this.files = Curse.getFiles(project.Id, gameVersion);
 		if (this.files != null) {
 			List<CurseFullProject.CurseFile> updates = Lists.newArrayList();

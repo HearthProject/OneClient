@@ -38,6 +38,9 @@ public class ModInstaller implements IInstallable {
 	}
 
 	public String getName() {
+		if (name == null || name.isEmpty()) {
+			this.name = FilenameUtils.getBaseName(this.hash.getFilePath());
+		}
 		return name;
 	}
 

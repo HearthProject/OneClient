@@ -20,7 +20,6 @@ public class TableDialog<T> extends Dialog<T> {
 
 	@SuppressWarnings("unchecked")
 	public TableDialog(Collection<T> files) {
-		System.out.println(files);
 		dialogPane = getDialogPane();
 		setResizable(true);
 		this.table = new TableView<>(FXCollections.observableArrayList(files));
