@@ -103,11 +103,7 @@ public class InstancePane extends ContentPane {
 
 		MenuItem curse = new MenuItem("Curse ZIP");
 
-		curse.setOnAction(event -> {
-
-			new CurseExporter().export(instance);
-
-		});
+		curse.setOnAction(event -> new CurseExporter().export(instance));
 
 		buttonExport.getItems().addAll(curse);
 

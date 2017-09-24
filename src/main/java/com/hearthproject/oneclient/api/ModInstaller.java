@@ -26,6 +26,8 @@ public class ModInstaller implements IInstallable {
 		instance.mods.add(this);
 	}
 
+	public void update(Instance instance) { }
+
 	@Override
 	public PackType getType() {
 		return type;

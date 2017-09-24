@@ -2,7 +2,9 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
+import com.hearthproject.oneclient.fx.nodes.JavaDialog;
 import com.hearthproject.oneclient.util.OperatingSystem;
+import com.hearthproject.oneclient.util.files.JavaUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.beans.binding.Bindings;
@@ -87,7 +89,11 @@ public class SettingsPane extends ContentPane {
 		spinnerMaxRAM.setEditable(true);
 
 		argumentBox.setText(SettingsUtil.settings.arguments);
-		buttonFindJava.setVisible(false);
+		buttonFindJava.setOnAction(event -> {
+			JavaUtil.JavaInstall java = new JavaDialog().showAndWait().orElse(null);
+			if (java != null)
+				SettingsUtil.settings.setJavaPath(java.path);
+		});
 		Bindings.bindBidirectional(fieldJavaPath.textProperty(), SettingsUtil.settings.javaPath);
 
 		buttonJavaPath.setOnAction(this::openChooser);

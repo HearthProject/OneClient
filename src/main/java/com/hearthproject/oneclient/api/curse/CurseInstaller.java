@@ -5,7 +5,7 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.*;
 import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.api.curse.data.Manifest;
-import com.hearthproject.oneclient.fx.nodes.PackUpdateDialog;
+import com.hearthproject.oneclient.fx.nodes.UpdateDialog;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
@@ -168,7 +168,7 @@ public class CurseInstaller extends ModpackInstaller {
 				return null;
 			}
 
-			CurseFullProject.CurseFile file = new PackUpdateDialog(updates).showAndWait().orElse(null);
+			CurseFullProject.CurseFile file = new UpdateDialog(updates).showAndWait().orElse(null);
 			this.file = file;
 			return file;
 		}

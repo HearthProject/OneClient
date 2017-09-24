@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
-import java.util.List;
+import java.util.Collection;
 
 public class TableDialog<T> extends Dialog<T> {
 
@@ -19,7 +19,8 @@ public class TableDialog<T> extends Dialog<T> {
 	protected final DialogPane dialogPane;
 
 	@SuppressWarnings("unchecked")
-	public TableDialog(List<T> files) {
+	public TableDialog(Collection<T> files) {
+		System.out.println(files);
 		dialogPane = getDialogPane();
 		setResizable(true);
 		this.table = new TableView<>(FXCollections.observableArrayList(files));

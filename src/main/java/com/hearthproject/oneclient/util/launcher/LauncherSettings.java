@@ -16,7 +16,7 @@ public class LauncherSettings {
 	public SimpleStringProperty javaPath = new SimpleStringProperty(System.getProperty("java.home"));
 
 	public String getJavaPath() {
-		return javaPath.get() + "/bin/java";
+		return javaPath.get();
 	}
 
 	public SimpleStringProperty javaPathProperty() {

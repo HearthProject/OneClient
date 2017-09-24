@@ -1,9 +1,11 @@
 package com.hearthproject.oneclient.json;
 
 import com.google.gson.*;
+import com.hearthproject.oneclient.api.ModInstaller;
 import com.hearthproject.oneclient.api.ModpackInstaller;
 import com.hearthproject.oneclient.api.PackType;
 import com.hearthproject.oneclient.api.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.curse.CurseModInstaller;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import io.gsonfire.GsonFireBuilder;
 import javafx.collections.FXCollections;
@@ -26,6 +28,12 @@ public class JsonUtil {
 			return CurseInstaller.class;
 		}
 		return ModpackInstaller.class;
+	}).registerTypeSelector(ModInstaller.class, readElement -> {
+		String type = readElement.getAsJsonObject().get("type").getAsString();
+		if (type.equals(PackType.CURSE.name())) {
+			return CurseModInstaller.class;
+		}
+		return ModInstaller.class;
 	}).createGsonBuilder().registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
 
 	static class ObservableListDeserializer<T> implements JsonDeserializer<ObservableList<T>> {

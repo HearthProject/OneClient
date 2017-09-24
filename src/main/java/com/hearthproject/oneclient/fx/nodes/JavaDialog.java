@@ -1,38 +1,22 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import com.hearthproject.oneclient.util.files.JavaUtil;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableColumn;
 
-public class JavaDialog extends TableDialog<JavaDialog.Java> {
+public class JavaDialog extends TableDialog<JavaUtil.JavaInstall> {
 
 	public JavaDialog() {
-		super(findJVMS());
+		super(JavaUtil.getAvailableInstalls());
+
+		TableColumn<JavaUtil.JavaInstall, String> paths = new TableColumn<>("Paths");
+		paths.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().path));
+		table.getColumns().addAll(paths);
+		setTitle("Java Detection");
+		dialogPane.setHeaderText("Please Choose a Java Version");
+		dialogPane.getStyleClass().add("java-dialog");
+		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 	}
 
-	private static Predicate<String> isJavaPath = path -> path.endsWith("/bin/java");
-
-	//TODO check github todo for this
-	public static List<Java> findJVMS() {
-		List<Java> javasPath = Arrays.stream(System.getenv("PATH").split(";")).filter(isJavaPath).map(Java::new).collect(Collectors.toList());
-		return null;
-	}
-
-	public static class Java {
-		private File directory;
-
-		public Java(File directory) {
-			this.directory = directory;
-		}
-
-		public Java(String directory) {
-			this(new File(directory));
-		}
-
-		public File getDirectory() {
-			return directory;
-		}
-	}
 }
