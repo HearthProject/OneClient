@@ -119,7 +119,7 @@ public class CurseModInstaller extends ModInstaller {
 
 	@Override
 	public String toString() {
-		return String.format("%s:%s", getType(), project.Id);
+		return String.format("%s:%s", getType(), fileData);
 	}
 
 	public List<CurseFullProject.CurseFile> getFiles() {

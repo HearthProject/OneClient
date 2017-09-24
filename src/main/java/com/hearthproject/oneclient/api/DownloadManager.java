@@ -32,7 +32,8 @@ public class DownloadManager {
 	}
 
 	public static void updateProgress(String name, double workDone, double max) {
-		get(name).updateProgress(workDone, max);
+		if (get(name) != null)
+			get(name).updateProgress(workDone, max);
 	}
 
 	public static DownloadTask get(String name) {

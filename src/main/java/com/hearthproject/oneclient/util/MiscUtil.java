@@ -31,7 +31,7 @@ public class MiscUtil {
 		if (StringUtils.containsWhitespace(name)) {
 			return WordUtils.initials(name);
 		}
-		return name.substring(0, Math.min(6, name.length()));
+		return name.substring(0, Math.min(7, name.length()));
 	}
 
 	public static boolean checksumEquals(File file, String checksum) {

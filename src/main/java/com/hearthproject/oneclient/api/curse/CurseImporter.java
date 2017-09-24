@@ -42,7 +42,7 @@ public class CurseImporter implements IImporter {
 			new Instance.Info("downloads", data.map(CurseFullProject::getDownloads)),
 			new Instance.Info("gameVersions", data.map(CurseFullProject::getVersions)),
 			new Instance.Info("summary", data.map(CurseFullProject::getSummary)),
-			new Instance.Info("icon-url", data.map(CurseFullProject::getIcon).toString())
+			new Instance.Info("icon-url", data.map(CurseFullProject::getIcon))
 		);
 		return instance;
 	}

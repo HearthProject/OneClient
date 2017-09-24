@@ -14,7 +14,6 @@ public class FileData {
 	}
 
 	public String getURL() {
-
 		CurseFullProject.CurseFile file = JsonUtil.read(Curse.getFileURL(projectID, fileID), CurseFullProject.CurseFile.class);
 		if (file != null) {
 			return file.getDownloadURL();

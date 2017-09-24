@@ -6,6 +6,7 @@ import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.json.JsonUtil;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -36,11 +37,13 @@ public class InstanceManager {
 	}
 
 	public static void addInstance(Instance instance) {
-		if (!INSTANCES_MAP.containsKey(instance.getName())) {
-			INSTANCES_MAP.put(instance.getName(), instance);
-			instance.verifyMods();
-			save();
-		}
+		MiscUtil.runLaterIfNeeded(() -> {
+			if (!INSTANCES_MAP.containsKey(instance.getName())) {
+				INSTANCES_MAP.put(instance.getName(), instance);
+				instance.verifyMods();
+				save();
+			}
+		});
 	}
 
 	public static void save() {

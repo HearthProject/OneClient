@@ -1,8 +1,11 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.google.gson.JsonObject;
+import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.DownloadManager;
 import com.hearthproject.oneclient.api.Instance;
+import com.hearthproject.oneclient.api.curse.CurseZipImporter;
 import com.hearthproject.oneclient.api.multimc.MMCImporter;
 import com.hearthproject.oneclient.api.twitch.TwitchImporter;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
@@ -23,7 +26,7 @@ import java.io.File;
 
 public class PackPane extends ContentPane {
 
-	public JFXButton buttonCustom, buttonHearth, buttonCurse, buttonMMC, buttonTwitch;
+	public JFXButton buttonCustom, buttonHearth, buttonCurse, buttonMMC, buttonTwitch, buttonCurseZIP;
 
 	public PackPane() {
 		super("gui/contentpanes/packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
@@ -56,6 +59,21 @@ public class PackPane extends ContentPane {
 		buttonTwitch.setOnAction(this::openTwitch);
 
 		buttonHearth.setOnAction(event -> Main.mainController.setContent(ContentPanes.PRIVATE_PACK_PANE));
+
+		buttonCurseZIP.setOnAction(event -> {
+			FileChooser chooser = new FileChooser();
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip"));
+			chooser.setTitle("Curse ZIP Importer");
+			File file = chooser.showOpenDialog(null);
+			if (file != null && FilenameUtils.isExtension(file.toString(), "zip")) {
+				Instance instance = new CurseZipImporter(file).create();
+				if (instance != null) {
+					DownloadTask task = DownloadManager.createDownload(instance.getName(), instance::install);
+					task.start();
+				}
+				Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
+			}
+		});
 	}
 
 	private void openTwitch(Event event) {

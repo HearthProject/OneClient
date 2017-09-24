@@ -55,6 +55,15 @@
                </ImageView>
            </graphic>
        </JFXButton>
+       <JFXButton id="oc-raised-button" fx:id="buttonCurseZIP" prefHeight="50.0" prefWidth="150.0" style="-fx-font-size: 16;" text="Curse ZIP">
+           <graphic>
+               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="@../../images/curseforge.png"/>
+                   </image>
+               </ImageView>
+           </graphic>
+       </JFXButton>
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
