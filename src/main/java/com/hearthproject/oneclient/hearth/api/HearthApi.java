@@ -30,7 +30,7 @@ public class HearthApi {
 		return Unirest.get(API_URL + "/" + getHearthAuthentication().getAuthentication().accessToken + endpoint);
 	}
 
-	public static HttpRequestWithBody authicatedPostRequset(String endpoint) {
+	public static HttpRequestWithBody authenticatedPostRequest(String endpoint) {
 		return Unirest.post(API_URL + "/" + getHearthAuthentication().getAuthentication().accessToken + endpoint);
 	}
 

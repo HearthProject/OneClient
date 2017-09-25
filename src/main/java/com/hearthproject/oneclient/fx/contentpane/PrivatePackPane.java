@@ -11,6 +11,8 @@ import com.hearthproject.oneclient.hearth.fx.HearthPanes;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.text.Text;
@@ -43,6 +45,12 @@ public class PrivatePackPane extends ContentPane {
 			infoText.setText("Service unavailable, coming soon!");
 		}
 		buttonNewPack.setOnAction(event -> HearthPanes.newPackPane.button.fire());
+		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+
+			}
+		});
 	}
 
 	public void onLogin() {
