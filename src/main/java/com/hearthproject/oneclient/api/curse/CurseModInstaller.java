@@ -44,7 +44,12 @@ public class CurseModInstaller extends ModInstaller {
 		if (fileData == null) {
 			OneClientLogging.info("No File Selected");
 		}
+
 		try {
+			if (!fileData.required) {
+				DownloadManager.updateMessage(instance.getName(), "%s - Skipping Disabled Mod %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
+				return;
+			}
 			if (resolveDependencies) {
 				for (CurseFullProject.CurseFile.Dependency dep : file.getDependencies()) {
 					if (dep.isRequired()) {
@@ -56,6 +61,7 @@ public class CurseModInstaller extends ModInstaller {
 					}
 				}
 			}
+
 			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);

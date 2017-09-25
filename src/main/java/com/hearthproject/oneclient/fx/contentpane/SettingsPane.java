@@ -58,8 +58,8 @@ public class SettingsPane extends ContentPane {
 			}
 		});
 
-		maxMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMaxMemory, 128);
-		minMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMinMemory, 128);
+		maxMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(128, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMaxMemory, 128);
+		minMemory = new SpinnerValueFactory.IntegerSpinnerValueFactory(128, (int) OperatingSystem.getOSTotalMemory(), SettingsUtil.settings.minecraftMinMemory, 128);
 
 		maxMemory.valueProperty().addListener((observableValue, a, b) -> {
 			if (minMemory.getValue() > maxMemory.getValue())

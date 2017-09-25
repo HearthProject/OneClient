@@ -52,7 +52,9 @@ public class InstallLocation {
 		});
 		controller.browseButton.setOnAction(event -> {
 			DirectoryChooser directoryChooser = new DirectoryChooser();
-			directoryChooser.setInitialDirectory(new File(controller.locationField.getText()));
+			File dir = new File(controller.locationField.getText());
+			if (dir.exists())
+				directoryChooser.setInitialDirectory(dir);
 			File selectedDirectory = directoryChooser.showDialog(stage);
 			if (selectedDirectory != null) {
 				controller.locationField.setText(selectedDirectory.getAbsolutePath());

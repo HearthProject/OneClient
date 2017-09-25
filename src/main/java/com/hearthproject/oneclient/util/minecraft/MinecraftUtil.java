@@ -317,7 +317,9 @@ public class MinecraftUtil {
 					while ((lineErr = readerErr.readLine()) != null) {
 						tab.append(lineErr + "\n");
 					}
-				} catch (IOException ignore) {}
+				} catch (IOException e) {
+					OneClientLogging.error(e);
+				}
 
 			} catch (Throwable throwable) {
 				OneClientLogging.error(throwable);

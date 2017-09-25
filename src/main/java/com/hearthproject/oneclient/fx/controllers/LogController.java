@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class LogController {
 
-	private static final int MAX_CHARS = 500000;
+	private static final int MAX_CHARS = 50000000;
 
 	public TabPane root;
 	public TextArea logArea;
