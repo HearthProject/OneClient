@@ -8,6 +8,7 @@ import com.hearthproject.oneclient.api.curse.data.Manifest;
 import com.hearthproject.oneclient.fx.nodes.UpdateDialog;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
+import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.launcher.NotifyUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.scene.control.Alert;
@@ -73,7 +74,8 @@ public class CurseInstaller extends ModpackInstaller {
 				}
 			}
 			try {
-				FileUtils.copyFile(new File(Constants.ICONDIR, instance.getName() + ".png"), new File(instance.getDirectory(), "icon.png"));
+				ImageUtil.downloadAndOpenImage((String) instance.tempInfo.get("icon-url"), instance.getName());
+				FileUtils.copyFile(new File(Constants.ICONDIR, FileUtil.encode(instance.getName()) + ".png"), new File(instance.getDirectory(), "icon.png"));
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}

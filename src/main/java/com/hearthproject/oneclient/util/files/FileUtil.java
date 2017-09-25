@@ -16,6 +16,15 @@ import java.net.URLEncoder;
 
 public class FileUtil {
 
+	public static String encode(String string) {
+		try {
+			return URLEncoder.encode(string, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static File createDirectory(File path) {
 		if (path == null)
 			return null;
