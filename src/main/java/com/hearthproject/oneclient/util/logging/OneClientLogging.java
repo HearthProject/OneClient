@@ -83,6 +83,7 @@ public class OneClientLogging {
 			stage.setTitle("One Client - Log");
 			stage.getIcons().add(new Image("images/icon.png"));
 			stage.setResizable(true);
+			stage.setAlwaysOnTop(false);
 			stage.initOwner(Main.stage);
 			stage.initModality(Modality.NONE);
 			Scene scene = new Scene(root, 600, 300);

@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.ButtonType;

@@ -2,7 +2,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.DownloadManager;
+import com.hearthproject.oneclient.api.modpack.DownloadManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.skins.TaskSkin;

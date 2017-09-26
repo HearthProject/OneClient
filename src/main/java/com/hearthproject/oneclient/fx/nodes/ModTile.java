@@ -1,11 +1,11 @@
 package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.DownloadTask;
-import com.hearthproject.oneclient.api.DownloadManager;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.ModInstaller;
-import com.hearthproject.oneclient.api.curse.CurseModInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.api.modpack.DownloadManager;
+import com.hearthproject.oneclient.api.modpack.Instance;
+import com.hearthproject.oneclient.api.modpack.ModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
