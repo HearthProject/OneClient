@@ -62,6 +62,7 @@ public class InstancePane extends ContentPane {
 	@SuppressWarnings({ "unchecked", "ResultOfMethodCallIgnored" })
 	public void setupPane(Instance instance) {
 		this.instance = instance;
+		this.instance.verifyMods();
 		textPackName.setText(instance.getName());
 		textMinecraftVersion.setText("Minecraft " + instance.getGameVersion());
 

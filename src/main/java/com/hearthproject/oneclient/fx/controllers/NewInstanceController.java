@@ -143,6 +143,7 @@ public class NewInstanceController {
 
 		if (newInstance) {
 			InstanceManager.addInstance(instance);
+			InstanceManager.addRecent(instance);
 		} else {
 			InstanceManager.save();
 		}

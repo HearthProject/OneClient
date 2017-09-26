@@ -41,7 +41,6 @@ public class InstanceManager {
 			if (!INSTANCES_MAP.containsKey(instance.getName())) {
 				INSTANCES_MAP.put(instance.getName(), instance);
 				instance.verifyMods();
-				save();
 			}
 		});
 	}

@@ -10,6 +10,7 @@ public class ModInstaller implements IInstallable {
 
 	protected FileHash hash;
 	protected String name;
+	protected transient String process;
 
 	public ModInstaller(PackType type) {
 		this.type = type;
@@ -65,5 +66,9 @@ public class ModInstaller implements IInstallable {
 	@Override
 	public String toString() {
 		return getType().name();
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
 	}
 }

@@ -117,7 +117,7 @@ public class CurseMetaPane extends ContentPane {
 	}
 
 	public void init() {
-		MiscUtil.runLaterIfNeeded(() -> loadPacks(false));
+		MiscUtil.runLaterIfNeeded(() -> loadPacks(true));
 	}
 
 	public void loadPacks(boolean reset) {

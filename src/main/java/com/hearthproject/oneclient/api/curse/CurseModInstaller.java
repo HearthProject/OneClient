@@ -26,7 +26,6 @@ public class CurseModInstaller extends ModInstaller {
 	private transient CurseFullProject.CurseFile file;
 	public transient CurseFullProject project;
 	public boolean resolveDependencies;
-
 	public CurseModInstaller(Instance instance, CurseFullProject data) {
 		super(PackType.CURSE);
 		this.project = data;
@@ -46,8 +45,9 @@ public class CurseModInstaller extends ModInstaller {
 		}
 
 		try {
+
 			if (!fileData.required) {
-				DownloadManager.updateMessage(instance.getName(), "%s - Skipping Disabled Mod %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
+				DownloadManager.updateMessage(process, "%s - Skipping Disabled Mod %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 				return;
 			}
 			if (resolveDependencies) {
@@ -55,14 +55,15 @@ public class CurseModInstaller extends ModInstaller {
 					if (dep.isRequired()) {
 						CurseFullProject project = JsonUtil.read(Curse.getProjectURL(dep.AddOnId), CurseFullProject.class);
 						CurseModInstaller depInstaller = new CurseModInstaller(instance, project);
+						depInstaller.setProcess(process);
 						depInstaller.setFile(depInstaller.getFiles().stream().findFirst().orElse(null));
-						DownloadManager.updateMessage(instance.getName(), "%s - Installing Dependency %s for %s", instance.getName(), FilenameUtils.getBaseName(depInstaller.fileData.getURL()), FilenameUtils.getBaseName(fileData.getURL()));
+						DownloadManager.updateMessage(process, "%s - Installing Dependency %s for %s", instance.getName(), FilenameUtils.getBaseName(depInstaller.fileData.getURL()), FilenameUtils.getBaseName(fileData.getURL()));
 						depInstaller.install(instance);
 					}
 				}
 			}
 
-			DownloadManager.updateMessage(instance.getName(), "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
+			DownloadManager.updateMessage(process, "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
 			this.hash = new FileHash(mod);
 			this.name = mod.getName();
@@ -120,6 +121,7 @@ public class CurseModInstaller extends ModInstaller {
 
 	public void setFile(CurseFullProject.CurseFile file) {
 		this.fileData = file.toFileData();
+		this.fileData.required = true;
 		this.file = file;
 	}
 
@@ -135,6 +137,7 @@ public class CurseModInstaller extends ModInstaller {
 	public void setResolveDependencies(boolean resolveDependencies) {
 		this.resolveDependencies = resolveDependencies;
 	}
+
 }
 
 

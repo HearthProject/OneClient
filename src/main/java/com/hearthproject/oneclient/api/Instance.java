@@ -194,8 +194,12 @@ public class Instance {
 			File modDir = getModDirectory();
 			File[] mods = modDir.listFiles(MOD_FILTER);
 			List<ModInstaller> newMods = Lists.newArrayList();
-
-			if (this.mods != null && mods != null && mods.length > 0) {
+			if (mods == null || mods.length == 0) {
+				this.mods.clear();
+				this.save();
+				return;
+			}
+			if (this.mods != null) {
 				List<File> files = Lists.newArrayList(mods);
 				List<ModInstaller> removal = Lists.newArrayList();
 				for (ModInstaller mod : this.mods) {
@@ -216,7 +220,7 @@ public class Instance {
 				}
 				this.mods.removeAll(removal);
 
-				files.stream().forEach(file -> {
+				files.forEach(file -> {
 					boolean match = false;
 					Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
 						if (m != null) {

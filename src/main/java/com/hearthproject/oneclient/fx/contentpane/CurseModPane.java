@@ -138,7 +138,7 @@ public class CurseModPane extends ContentPane {
 	}
 
 	public void init() {
-		loadMods(false);
+		loadMods(true);
 	}
 
 	public void loadMods(boolean reset) {

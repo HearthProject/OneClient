@@ -157,7 +157,8 @@ public class MinecraftAuthController {
 				HearthApi.getHearthAuthentication().login(authentication);
 				save(save);
 			} catch (Exception e) {
-				OneClientLogging.logUserError(e, "Failed to log into hearth");
+				OneClientLogging.error(e);
+				//				OneClientLogging.logUserError(e, "Failed to log into hearth");
 			}
 		}
 		updateGui();
