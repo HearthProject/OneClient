@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.hearthproject.oneclient.util.MiscUtil.checkCancel;
+
 public class CurseInstaller extends ModpackInstaller {
 	private transient CurseFullProject project;
 	private transient List<CurseFullProject.CurseFile> files;
@@ -45,15 +47,15 @@ public class CurseInstaller extends ModpackInstaller {
 	@Override
 	public void install(Instance instance) {
 		try {
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			if (file == null) {
 				OneClientLogging.error(new NullPointerException("No Curse File Selected"));
 				return;
 			}
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			//TODO more precise
 			if (instance.getModDirectory().exists()) {
@@ -63,7 +65,7 @@ public class CurseInstaller extends ModpackInstaller {
 					OneClientLogging.error(e);
 				}
 			}
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			//TODO more precise
 			if (instance.getConfigDirectory().exists()) {
@@ -80,19 +82,19 @@ public class CurseInstaller extends ModpackInstaller {
 				OneClientLogging.error(e);
 			}
 
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			DownloadManager.updateMessage(instance.getName(), "Downloading %s", instance.getName());
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			File directory = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 			File pack = FileUtil.extractFromURL(file.getDownloadURL(), directory);
 			DownloadManager.updateMessage(instance.getName(), "Extracting %s", instance.getName());
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
 			DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 
 			instance.setGameVersion(manifest.minecraft.version);
@@ -105,15 +107,15 @@ public class CurseInstaller extends ModpackInstaller {
 				DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 				mod.setProcess(instance.getName());
 				mod.install(instance);
-				if (instance.checkCancel())
+				if (checkCancel())
 					return;
 			}
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
 			installOverrides(pack, instance.getDirectory());
 			NotifyUtil.clear();
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 		} catch (Throwable e) {
 			OneClientLogging.error(e);

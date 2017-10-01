@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.api.modpack.curse;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.api.modpack.IImporter;
+import com.hearthproject.oneclient.api.modpack.Info;
 import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.json.JsonUtil;
@@ -36,13 +37,13 @@ public class CurseImporter implements IImporter {
 			return null;
 
 		Instance instance = new Instance(name, data.map(CurseFullProject::getWebSiteURL), new CurseInstaller(data.getIfPresent()),
-			new Instance.Info("popularity", data.map(CurseFullProject::getPopularityScore)),
-			new Instance.Info("authors", data.map(CurseFullProject::getAuthorsString)),
-			new Instance.Info("categories", categories),
-			new Instance.Info("downloads", data.map(CurseFullProject::getDownloads)),
-			new Instance.Info("gameVersions", data.map(CurseFullProject::getVersions)),
-			new Instance.Info("summary", data.map(CurseFullProject::getSummary)),
-			new Instance.Info("icon-url", data.map(CurseFullProject::getIcon))
+			new Info("popularity", data.map(CurseFullProject::getPopularityScore)),
+			new Info("authors", data.map(CurseFullProject::getAuthorsString)),
+			new Info("categories", categories),
+			new Info("downloads", data.map(CurseFullProject::getDownloads)),
+			new Info("gameVersions", data.map(CurseFullProject::getVersions)),
+			new Info("summary", data.map(CurseFullProject::getSummary)),
+			new Info("icon-url", data.map(CurseFullProject::getIcon))
 		);
 		return instance;
 	}

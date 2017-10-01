@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.hearthproject.oneclient.util.MiscUtil.checkCancel;
+
 public class CurseZipInstaller extends ModpackInstaller {
 	private transient Manifest manifest;
 	private transient File pack;
@@ -27,7 +29,7 @@ public class CurseZipInstaller extends ModpackInstaller {
 			instance.setGameVersion(manifest.minecraft.version);
 			instance.setForgeVersion(manifest.minecraft.getModloader());
 			DownloadManager.updateMessage(instance.getName(), "Installing %s", instance.getName());
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			DownloadManager.updateMessage(instance.getName(), "%s - version : %s forge : %s", instance.getName(), instance.getGameVersion(), instance.getForgeVersion());
 			List<ModInstaller> mods = getMods();
@@ -35,14 +37,14 @@ public class CurseZipInstaller extends ModpackInstaller {
 			for (ModInstaller mod : mods) {
 				DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
 				mod.install(instance);
-				if (instance.checkCancel())
+				if (checkCancel())
 					return;
 			}
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 			DownloadManager.updateMessage(instance.getName(), "Copying Overrides");
 			installOverrides(pack, instance.getDirectory());
-			if (instance.checkCancel())
+			if (checkCancel())
 				return;
 		} catch (Throwable e) {
 			OneClientLogging.error(e);

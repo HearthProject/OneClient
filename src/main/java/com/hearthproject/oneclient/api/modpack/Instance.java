@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.hearthproject.oneclient.util.MiscUtil.checkCancel;
+
 public class Instance {
 
 	public String name;
@@ -257,43 +259,15 @@ public class Instance {
 		this.installing.set(installing);
 	}
 
-	public boolean checkCancel() {
-		if (Thread.currentThread().isInterrupted()) {
-			DownloadManager.updateMessage(getName(), "Cancelling!");
-			return true;
-		}
-		return false;
+	public String createLaunchScript() {
+		StringBuilder builder = new StringBuilder();
+
+		String mainClass = "mainClass" + "net.minecraft.launcherwrapper.Launcher" + "\n";
+		builder.append(mainClass);
+
+		//TODO applet class (wrapper thing?)
+		//TODO unfinished
+		return "";
 	}
 
-	public static class Info {
-		private boolean temp;
-		private transient String key;
-		private Object info;
-
-		public Info(String key, Object info) {
-			this(key, info, true);
-		}
-
-		public Info(String key, Object info, boolean temp) {
-			this.temp = temp;
-			this.key = key;
-			this.info = info;
-		}
-
-		public boolean isKept() {
-			return !isTemp();
-		}
-
-		public boolean isTemp() {
-			return temp;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public Object getInfo() {
-			return info;
-		}
-	}
 }

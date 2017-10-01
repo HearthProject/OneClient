@@ -219,4 +219,11 @@ public class MiscUtil {
 		return r;
 	}
 
+	public static boolean checkCancel() {
+		if (Thread.currentThread().isInterrupted()) {
+			return true;
+		}
+		return false;
+	}
+
 }
