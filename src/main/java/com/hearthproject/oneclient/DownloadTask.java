@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient;
 
-import com.hearthproject.oneclient.api.DownloadManager;
+import com.hearthproject.oneclient.api.modpack.DownloadManager;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import javafx.concurrent.Task;
 

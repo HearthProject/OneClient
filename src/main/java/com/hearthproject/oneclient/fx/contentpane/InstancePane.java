@@ -1,11 +1,11 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.ModInstaller;
-import com.hearthproject.oneclient.api.curse.CurseExporter;
-import com.hearthproject.oneclient.api.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.api.modpack.Instance;
+import com.hearthproject.oneclient.api.modpack.ModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.CurseExporter;
+import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
@@ -62,6 +62,7 @@ public class InstancePane extends ContentPane {
 	@SuppressWarnings({ "unchecked", "ResultOfMethodCallIgnored" })
 	public void setupPane(Instance instance) {
 		this.instance = instance;
+		this.instance.verifyMods();
 		textPackName.setText(instance.getName());
 		textMinecraftVersion.setText("Minecraft " + instance.getGameVersion());
 

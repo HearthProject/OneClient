@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.InstanceManager;
+import com.hearthproject.oneclient.api.modpack.Instance;
+import com.hearthproject.oneclient.api.modpack.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.FeaturedTile;

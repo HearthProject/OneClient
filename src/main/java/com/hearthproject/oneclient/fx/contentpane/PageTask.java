@@ -1,7 +1,7 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.google.common.collect.Lists;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import javafx.beans.property.IntegerProperty;

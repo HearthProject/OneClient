@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -41,14 +40,13 @@ public class ImageUtil {
 			findFont(graphics, text, 75);
 			Rectangle rect = getStringBounds(graphics, text, 0, 0);
 			graphics.drawString(text, SIZE / 2 - (int) (rect.getWidth() / 2), SIZE / 2 + ((int) rect.getHeight() / 2));
-			if (bufferedImage != null) {
+			if (image.getParentFile().exists()) {
 				try {
 					ImageIO.write(bufferedImage, "png", image);
 				} catch (IOException e) {
 					OneClientLogging.error(e);
 				}
 			}
-
 		}
 	}
 
@@ -152,7 +150,7 @@ public class ImageUtil {
 
 	public static Image downloadAndOpenImage(URL url, String name) {
 		try {
-			String file = URLEncoder.encode(name, "UTF-8");
+			String file = FileUtil.encode(name);
 			if (file != null) {
 				File image = new File(Constants.ICONDIR, file + ".png");
 				if (!image.exists()) {

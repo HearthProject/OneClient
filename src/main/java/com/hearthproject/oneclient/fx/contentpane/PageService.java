@@ -1,6 +1,6 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseProject;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;

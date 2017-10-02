@@ -1,11 +1,11 @@
 package com.hearthproject.oneclient.json;
 
 import com.google.gson.*;
-import com.hearthproject.oneclient.api.ModInstaller;
-import com.hearthproject.oneclient.api.ModpackInstaller;
-import com.hearthproject.oneclient.api.PackType;
-import com.hearthproject.oneclient.api.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.modpack.ModInstaller;
+import com.hearthproject.oneclient.api.modpack.ModpackInstaller;
+import com.hearthproject.oneclient.api.modpack.PackType;
+import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.CurseModInstaller;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import io.gsonfire.GsonFireBuilder;
 import javafx.collections.FXCollections;

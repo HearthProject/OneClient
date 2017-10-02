@@ -81,7 +81,7 @@ public class LogController {
 
 		public void close(Event event) {
 			if (process.isAlive()) {
-				Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to close this Instasnce?", ButtonType.YES, ButtonType.NO);
+				Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to close this Instance?", ButtonType.YES, ButtonType.NO);
 				ButtonType button = confirm.showAndWait().orElse(ButtonType.NO);
 				if (button == ButtonType.YES) {
 					kill();

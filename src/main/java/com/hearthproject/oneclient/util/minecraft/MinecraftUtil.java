@@ -3,8 +3,8 @@ package com.hearthproject.oneclient.util.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.InstanceManager;
+import com.hearthproject.oneclient.api.modpack.Instance;
+import com.hearthproject.oneclient.api.modpack.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MinecraftUtil {
 
@@ -197,6 +198,7 @@ public class MinecraftUtil {
 		NotifyUtil.clear();
 	}
 
+	//TODO we need to verify that minecraft is installed before launching.
 	public static boolean startMinecraft(Instance instance) {
 		if (!MinecraftAuthController.isUserValid()) {
 			MinecraftAuthController.updateGui();
@@ -209,13 +211,16 @@ public class MinecraftUtil {
 		InstanceManager.addRecent(instance);
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
-		boolean hasLegacyAssets = "legacy".equals(versionData.assetIndex.id);
+		AtomicBoolean hasLegacyAssets = new AtomicBoolean(false);
+		if (versionData != null) {
+			hasLegacyAssets.set("legacy".equals(versionData.assetIndex.id));
+		}
 		OneClientLogging.logger.info("Starting minecraft...");
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getGameVersion());
 		new Thread(() -> {
 			try {
 
-				if (hasLegacyAssets)
+				if (hasLegacyAssets.get())
 					prepareLegacyAssets(versionData);
 
 				StringBuilder cpb = new StringBuilder();
@@ -285,7 +290,7 @@ public class MinecraftUtil {
 				arguments.add("--version");
 				arguments.add(instance.getGameVersion());
 				arguments.add("--assetsDir");
-				arguments.add(hasLegacyAssets ? LEGACY_ASSETS.toString() : ASSETS.toString());
+				arguments.add(hasLegacyAssets.get() ? LEGACY_ASSETS.toString() : ASSETS.toString());
 				arguments.add("--assetIndex");
 				arguments.add(versionData.assetIndex.id);
 				arguments.add("--gameDir");
@@ -301,7 +306,6 @@ public class MinecraftUtil {
 					OneClientLogging.info("Closing launcher, this can be disabled in settings");
 					System.exit(1);
 				}
-
 
 				try {
 					BufferedReader reader =

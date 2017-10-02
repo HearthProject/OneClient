@@ -3,12 +3,12 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.Instance;
-import com.hearthproject.oneclient.api.curse.Curse;
-import com.hearthproject.oneclient.api.curse.CurseModInstaller;
-import com.hearthproject.oneclient.api.curse.data.CurseFullProject;
-import com.hearthproject.oneclient.api.curse.data.CurseProject;
-import com.hearthproject.oneclient.api.curse.data.CurseProjects;
+import com.hearthproject.oneclient.api.modpack.Instance;
+import com.hearthproject.oneclient.api.modpack.curse.Curse;
+import com.hearthproject.oneclient.api.modpack.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseProject;
+import com.hearthproject.oneclient.api.modpack.curse.data.CurseProjects;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ModTile;
@@ -138,7 +138,7 @@ public class CurseModPane extends ContentPane {
 	}
 
 	public void init() {
-		loadMods(false);
+		loadMods(true);
 	}
 
 	public void loadMods(boolean reset) {
