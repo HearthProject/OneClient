@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.util.launcher;
 
+import com.hearthproject.oneclient.util.files.JavaUtil;
 import javafx.beans.property.SimpleStringProperty;
 
 public class LauncherSettings {
@@ -13,7 +14,7 @@ public class LauncherSettings {
 
 	public String arguments = "-XX:+UseG1GC -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 
-	public SimpleStringProperty javaPath = new SimpleStringProperty(System.getProperty("java.home"));
+	public SimpleStringProperty javaPath = new SimpleStringProperty(JavaUtil.getDefault().path);
 
 	public String getJavaPath() {
 		return javaPath.get();
