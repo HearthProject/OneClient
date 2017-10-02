@@ -3,10 +3,12 @@ package com.hearthproject.oneclient.hearth.api.endpoints;
 import com.google.gson.reflect.TypeToken;
 import com.hearthproject.oneclient.hearth.api.HearthApi;
 import com.hearthproject.oneclient.hearth.api.json.packs.ModPack;
+import com.hearthproject.oneclient.hearth.api.json.packs.PackUpload;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class HearthPrivatePacks {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("name", name);
 		jsonObject.put("description", description);
-		HttpResponse<String> response = HearthApi.authicatedPostRequset("/packs/new")
+		HttpResponse<String> response = HearthApi.authenticatedPostRequest("/packs/new")
 			.header("Content-Type", "application/json")
 			.body(jsonObject.toString())
 			.asString();
@@ -55,5 +57,16 @@ public class HearthPrivatePacks {
 
 		List<ModPack> packs = HearthApi.GSON.fromJson(response.getBody(), new TypeToken<ArrayList<ModPack>>() {}.getType());
 		return packs;
+	}
+
+	//TODO add someway of tracking the progress of the file upload
+	public ModPack.ModPackVersion uploadNewPack(PackUpload packUpload, File file) throws UnirestException {
+		HttpResponse<String> response = HearthApi.authenticatedPostRequest("/packs/" + packUpload.modpack + "/admin/newVersion")
+			.header("Content-Type", "application/json")
+			.field("file", file)
+			.field("json", HearthApi.GSON.toJson(packUpload))
+			.asString();
+		ModPack.ModPackVersion modPackVersion = HearthApi.GSON.fromJson(response.getBody(), ModPack.ModPackVersion.class);
+		return modPackVersion;
 	}
 }

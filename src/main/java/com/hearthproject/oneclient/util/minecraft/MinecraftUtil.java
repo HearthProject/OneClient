@@ -48,7 +48,6 @@ public class MinecraftUtil {
 	public static File LEGACY_ASSETS;
 	public static File VERSIONS;
 	public static File LIBRARIES;
-	public static File NATIVES;
 	public static File VERSION_MANIFEST;
 
 	public static void load() {
@@ -56,7 +55,6 @@ public class MinecraftUtil {
 		LEGACY_ASSETS = new File(ASSETS, "legacy");
 		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
 		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");
-		NATIVES = new File(Constants.MINECRAFTDIR, "natives");
 		VERSION_MANIFEST = new File(VERSIONS, "version_manifest.json");
 		parseGameVersions();
 		MINECRAFT_VERSIONS = getVersions(false);
@@ -158,11 +156,12 @@ public class MinecraftUtil {
 			}
 		});
 
+		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
 		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
 			OneClientLogging.logger.info("Extracting native " + library.name);
 			File file = library.getFile(LIBRARIES);
 			if (file.exists())
-				ZipUtil.unpack(file, NATIVES);
+				ZipUtil.unpack(file, natives);
 		});
 
 		if (!instance.getForgeVersion().isEmpty())
@@ -211,6 +210,7 @@ public class MinecraftUtil {
 		InstanceManager.addRecent(instance);
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
 		AtomicBoolean hasLegacyAssets = new AtomicBoolean(false);
 		if (versionData != null) {
 			hasLegacyAssets.set("legacy".equals(versionData.assetIndex.id));
@@ -225,8 +225,7 @@ public class MinecraftUtil {
 
 				StringBuilder cpb = new StringBuilder();
 				String mainClass = versionData.mainClass;
-				String providedArugments = versionData.minecraftArguments;
-				Optional<String> tweakClass = Optional.empty();
+				String providedArguments = versionData.minecraftArguments;
 
 				if (!instance.getForgeVersion().isEmpty()) {
 					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion())) {
@@ -235,11 +234,7 @@ public class MinecraftUtil {
 					}
 					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getGameVersion(), instance.getForgeVersion());
 					mainClass = forgeVersionProfile.mainClass;
-					providedArugments = forgeVersionProfile.minecraftArguments;
-
-					List argList = Arrays.asList(forgeVersionProfile.minecraftArguments.split(" "));
-					OneClientLogging.logger.info("Using tweakclass: " + argList.get(argList.indexOf("--tweakClass") + 1).toString());
-					tweakClass = Optional.of(argList.get(argList.indexOf("--tweakClass") + 1).toString()); //TODO extract from forge json
+					providedArguments = forgeVersionProfile.minecraftArguments;
 				}
 
 				for (Version.Library library : versionData.libraries) {
@@ -256,7 +251,7 @@ public class MinecraftUtil {
 				ArrayList<String> arguments = new ArrayList<>();
 				arguments.add(SettingsUtil.settings.getJavaPath());
 
-				arguments.add("-Djava.library.path=" + NATIVES.getAbsolutePath());
+				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
 
 				for (String str : SettingsUtil.settings.arguments.split(" ")) {
 					arguments.add(str);
@@ -268,34 +263,47 @@ public class MinecraftUtil {
 				arguments.add(cpb.toString());
 				arguments.add(mainClass);
 
-				tweakClass.ifPresent(s -> arguments.add("--tweakClass=" + s));
-				//TODO improve parsing of offline/online arguments
-				arguments.add("--accessToken");
-				arguments.add(MinecraftAuthController.getAuthentication().getAuthenticatedToken());
-				arguments.add("--uuid");
-				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", ""));
-				arguments.add("--username");
-				arguments.add(MinecraftAuthController.getAuthentication().getSelectedProfile().getName());
-				arguments.add("--userType");
-				arguments.add(MinecraftAuthController.getAuthentication().getUserType().getName());
-				if (providedArugments.contains("${user_properties}")) {
-					arguments.add("--userProperties");
-					arguments.add((new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
+				String[] argSplit = providedArguments.split(" ");
+				for (int j = 0; j < argSplit.length; j++) {
+					String arg = argSplit[j];
+					if(arg.equals("${auth_player_name}")){
+						arg = MinecraftAuthController.getAuthentication().getSelectedProfile().getName();
+					}
+					if(arg.equals("${auth_session}")){
+						arg = MinecraftAuthController.getAuthentication().getSessionToken();
+					}
+					if(arg.equals("${auth_uuid}")){
+						arg = MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", "");
+					}
+					if(arg.equals("${auth_access_token}")){
+						arg = MinecraftAuthController.getAuthentication().getAuthenticatedToken();
+					}
+					if(arg.equals("${game_directory}")){
+						arg = instance.getDirectory().toString();
+					}
+					if(arg.equals("${game_assets}") || arg.equals("${assets_root}")){
+						arg = hasLegacyAssets.get() ? LEGACY_ASSETS.toString() : ASSETS.toString();
+					}
+					if(arg.equals("${version_name}")){
+						arg = instance.getGameVersion();
+					}
+					if(arg.equals("${assets_index_name}")){
+						arg = versionData.assetIndex.id;
+					}
+					if(arg.equals("${user_type}")){
+						arg = MinecraftAuthController.getAuthentication().getUserType().getName();
+					}
+					if(arg.equals("${version_type}")){
+						arg = "OneClient";
+					}
+					if(arg.equals("${user_properties}")){
+						arg = new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties());
+					}
+					if(arg.equals("${user_properties_map}")){
+						arg = new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties());
+					}
+					arguments.add(arg);
 				}
-
-				if (providedArugments.contains("${user_properties_map}")) {
-					arguments.add(new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties()));
-				}
-
-				arguments.add("--version");
-				arguments.add(instance.getGameVersion());
-				arguments.add("--assetsDir");
-				arguments.add(hasLegacyAssets.get() ? LEGACY_ASSETS.toString() : ASSETS.toString());
-				arguments.add("--assetIndex");
-				arguments.add(versionData.assetIndex.id);
-				arguments.add("--gameDir");
-				arguments.add(instance.getDirectory().toString());
-
 				ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 				processBuilder.directory(instance.getDirectory());
 				Process process = processBuilder.start();
