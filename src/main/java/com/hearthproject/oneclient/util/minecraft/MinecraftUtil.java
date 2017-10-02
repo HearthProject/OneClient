@@ -281,7 +281,7 @@ public class MinecraftUtil {
 					if(arg.equals("${game_directory}")){
 						arg = instance.getDirectory().toString();
 					}
-					if(arg.equals("${game_assets}")){
+					if(arg.equals("${game_assets}") || arg.equals("${assets_root}")){
 						arg = hasLegacyAssets.get() ? LEGACY_ASSETS.toString() : ASSETS.toString();
 					}
 					if(arg.equals("${version_name}")){
