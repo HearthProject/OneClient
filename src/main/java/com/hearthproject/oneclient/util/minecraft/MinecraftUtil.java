@@ -211,6 +211,14 @@ public class MinecraftUtil {
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
+		if(!natives.exists()){
+			versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
+				OneClientLogging.logger.info("Extracting native " + library.name);
+				File file = library.getFile(LIBRARIES);
+				if (file.exists())
+					ZipUtil.unpack(file, natives);
+			});
+		}
 		AtomicBoolean hasLegacyAssets = new AtomicBoolean(false);
 		if (versionData != null) {
 			hasLegacyAssets.set("legacy".equals(versionData.assetIndex.id));
