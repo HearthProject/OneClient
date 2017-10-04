@@ -238,7 +238,6 @@ public class MinecraftUtil {
 				if (!instance.getForgeVersion().isEmpty()) {
 					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion())) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
-						System.out.println(library.toString());
 						cpb.append(library.getAbsolutePath());
 					}
 					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getGameVersion(), instance.getForgeVersion());
