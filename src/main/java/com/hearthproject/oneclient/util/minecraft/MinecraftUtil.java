@@ -238,6 +238,7 @@ public class MinecraftUtil {
 				if (!instance.getForgeVersion().isEmpty()) {
 					for (File library : ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion())) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
+						System.out.println(library.toString());
 						cpb.append(library.getAbsolutePath());
 					}
 					ForgeVersionProfile forgeVersionProfile = ForgeUtils.downloadForgeVersion(LIBRARIES, instance.getGameVersion(), instance.getForgeVersion());
@@ -257,6 +258,7 @@ public class MinecraftUtil {
 				cpb.append(mcJar.getAbsolutePath());
 
 				ArrayList<String> arguments = new ArrayList<>();
+				arguments.add(SettingsUtil.settings.wrapperCommand);
 				arguments.add(SettingsUtil.settings.getJavaPath());
 
 				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());

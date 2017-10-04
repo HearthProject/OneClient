@@ -22,6 +22,7 @@ public class SettingsPane extends ContentPane {
 	public CheckBox checkCloseLauncher;
 	public Button buttonSave;
 	public TextField argumentBox;
+	public TextField wrapperBox;
 	public Spinner<Integer> spinnerMinRAM, spinnerMaxRAM;
 
 	public SpinnerValueFactory.IntegerSpinnerValueFactory minMemory, maxMemory;
@@ -46,6 +47,7 @@ public class SettingsPane extends ContentPane {
 			SettingsUtil.settings.minecraftMinMemory = minMemory.getValue();
 			SettingsUtil.settings.minecraftMaxMemory = maxMemory.getValue();
 			SettingsUtil.settings.arguments = argumentBox.getText();
+			SettingsUtil.settings.wrapperCommand = wrapperBox.getText();
 			try {
 				SettingsUtil.saveSetting();
 			} catch (IOException e) {
