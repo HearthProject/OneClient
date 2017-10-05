@@ -64,7 +64,7 @@ public class ModpackTile extends HBox implements Comparable<ModpackTile> {
 			CurseInstaller installer = (CurseInstaller) instance.getInstaller();
 			MiscUtil.setupLink(title, instance.getName(), Curse.getCurseForge(installer.projectId).toString());
 			comboFile.setVisible(true);
-			comboFile.setItems(FXCollections.observableArrayList(installer.getFiles()));
+			comboFile.setItems(FXCollections.observableArrayList(installer.getFiles()).sorted());
 			comboFile.getSelectionModel().selectFirst();
 			installer.setFile(comboFile.getValue());
 			comboFile.valueProperty().addListener((v, a, b) -> installer.setFile(b));

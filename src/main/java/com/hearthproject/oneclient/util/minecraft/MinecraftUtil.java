@@ -33,7 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MinecraftUtil {
@@ -118,19 +119,7 @@ public class MinecraftUtil {
 
 	public static int i = 1, count;
 
-	public static void installMinecraft(Instance instance) throws Throwable {
-		instance.setInstalling(true);
-		NotifyUtil.setText("Installing minecraft for " + instance.getName());
-		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
-
-		Version versionData = getVersion(instance.getGameVersion());
-		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
-
-		OneClientLogging.logger.info("Downloading Minecraft jar");
-		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
-			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
-		}
-
+	public static void installLibraries(Version versionData) {
 		i = 1;
 		count = versionData.libraries.size();
 		NotifyUtil.setText("Resolving %s Libraries", count);
@@ -155,14 +144,25 @@ public class MinecraftUtil {
 				}
 			}
 		});
+	}
+
+	public static void installMinecraft(Instance instance) throws Throwable {
+		instance.setInstalling(true);
+		NotifyUtil.setText("Installing minecraft for " + instance.getName());
+		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
+
+		Version versionData = getVersion(instance.getGameVersion());
+		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+
+		OneClientLogging.logger.info("Downloading Minecraft jar");
+		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
+			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
+		}
+
+		installLibraries(versionData);
 
 		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
-		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
-			OneClientLogging.logger.info("Extracting native " + library.name);
-			File file = library.getFile(LIBRARIES);
-			if (file.exists())
-				ZipUtil.unpack(file, natives);
-		});
+		extractNatives(natives, versionData);
 
 		if (!instance.getForgeVersion().isEmpty())
 			ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion());
@@ -197,6 +197,15 @@ public class MinecraftUtil {
 		NotifyUtil.clear();
 	}
 
+	public static void extractNatives(File nativesDir, Version versionData) {
+		versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
+			OneClientLogging.logger.info("Extracting native " + library.name);
+			File file = library.getFile(LIBRARIES);
+			if (file.exists())
+				ZipUtil.unpack(file, nativesDir);
+		});
+	}
+
 	//TODO we need to verify that minecraft is installed before launching.
 	public static boolean startMinecraft(Instance instance) {
 		if (!MinecraftAuthController.isUserValid()) {
@@ -211,13 +220,8 @@ public class MinecraftUtil {
 		Version versionData = getVersion(instance.getGameVersion());
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
-		if(!natives.exists()){
-			versionData.libraries.stream().filter(lib -> lib.natives != null && lib.allowed()).forEach(library -> {
-				OneClientLogging.logger.info("Extracting native " + library.name);
-				File file = library.getFile(LIBRARIES);
-				if (file.exists())
-					ZipUtil.unpack(file, natives);
-			});
+		if (!natives.exists()) {
+			extractNatives(natives, versionData);
 		}
 		AtomicBoolean hasLegacyAssets = new AtomicBoolean(false);
 		if (versionData != null) {
@@ -274,40 +278,40 @@ public class MinecraftUtil {
 				String[] argSplit = providedArguments.split(" ");
 				for (int j = 0; j < argSplit.length; j++) {
 					String arg = argSplit[j];
-					if(arg.equals("${auth_player_name}")){
+					if (arg.equals("${auth_player_name}")) {
 						arg = MinecraftAuthController.getAuthentication().getSelectedProfile().getName();
 					}
-					if(arg.equals("${auth_session}")){
+					if (arg.equals("${auth_session}")) {
 						arg = MinecraftAuthController.getAuthentication().getSessionToken();
 					}
-					if(arg.equals("${auth_uuid}")){
+					if (arg.equals("${auth_uuid}")) {
 						arg = MinecraftAuthController.getAuthentication().getSelectedProfile().getId().toString().replace("-", "");
 					}
-					if(arg.equals("${auth_access_token}")){
+					if (arg.equals("${auth_access_token}")) {
 						arg = MinecraftAuthController.getAuthentication().getAuthenticatedToken();
 					}
-					if(arg.equals("${game_directory}")){
+					if (arg.equals("${game_directory}")) {
 						arg = instance.getDirectory().toString();
 					}
-					if(arg.equals("${game_assets}") || arg.equals("${assets_root}")){
+					if (arg.equals("${game_assets}") || arg.equals("${assets_root}")) {
 						arg = hasLegacyAssets.get() ? LEGACY_ASSETS.toString() : ASSETS.toString();
 					}
-					if(arg.equals("${version_name}")){
+					if (arg.equals("${version_name}")) {
 						arg = instance.getGameVersion();
 					}
-					if(arg.equals("${assets_index_name}")){
+					if (arg.equals("${assets_index_name}")) {
 						arg = versionData.assetIndex.id;
 					}
-					if(arg.equals("${user_type}")){
+					if (arg.equals("${user_type}")) {
 						arg = MinecraftAuthController.getAuthentication().getUserType().getName();
 					}
-					if(arg.equals("${version_type}")){
+					if (arg.equals("${version_type}")) {
 						arg = "OneClient";
 					}
-					if(arg.equals("${user_properties}")){
+					if (arg.equals("${user_properties}")) {
 						arg = new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties());
 					}
-					if(arg.equals("${user_properties_map}")){
+					if (arg.equals("${user_properties_map}")) {
 						arg = new GsonBuilder().registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create().toJson(MinecraftAuthController.getAuthentication().getUserProperties());
 					}
 					arguments.add(arg);
@@ -318,7 +322,7 @@ public class MinecraftUtil {
 				OneClientLogging.info("{}", arguments);
 				LogController.LogTab tab = OneClientLogging.logController.getTab(instance.getName(), process);
 
-				if(SettingsUtil.settings.close_launcher_with_minecraft){
+				if (SettingsUtil.settings.close_launcher_with_minecraft) {
 					OneClientLogging.info("Closing launcher, this can be disabled in settings");
 					System.exit(1);
 				}
@@ -354,8 +358,7 @@ public class MinecraftUtil {
 		if (!LEGACY_ASSETS.exists() && !LEGACY_ASSETS.mkdir())
 			return;
 
-		if (assetsInfo.exists())
-		{
+		if (assetsInfo.exists()) {
 			OneClientLogging.logger.info("Preparing legacy assets...");
 			try {
 				AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);

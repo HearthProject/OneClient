@@ -61,7 +61,7 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 
 		MiscUtil.setupLink(title, mod.getName(), mod.project.getWebSiteURL());
 		comboFile.setVisible(true);
-		comboFile.setItems(FXCollections.observableArrayList(mod.getFiles()));
+		comboFile.setItems(FXCollections.observableArrayList(mod.getFiles()).sorted());
 		comboFile.getSelectionModel().selectFirst();
 		if (!comboFile.getItems().isEmpty()) {
 			mod.setFile(comboFile.getValue());
