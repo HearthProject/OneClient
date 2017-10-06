@@ -17,6 +17,9 @@ public class LauncherSettings {
 	public SimpleStringProperty javaPath = new SimpleStringProperty(JavaUtil.getDefault().path);
 
 	public String getJavaPath() {
+		//FIXME fix for broken settings files
+		if (!javaPath.get().contains("/bin/"))
+			javaPath.set(JavaUtil.getDefault().path);
 		return javaPath.get();
 	}
 

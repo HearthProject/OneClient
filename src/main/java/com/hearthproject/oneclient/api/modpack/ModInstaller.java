@@ -14,6 +14,7 @@ public class ModInstaller implements IInstallable {
 
 	public ModInstaller(PackType type) {
 		this.type = type;
+
 	}
 
 	public ModInstaller(PackType type, FileHash hash) {
@@ -71,4 +72,6 @@ public class ModInstaller implements IInstallable {
 	public void setProcess(String process) {
 		this.process = process;
 	}
+
+	public String getVersion() { return ""; }
 }

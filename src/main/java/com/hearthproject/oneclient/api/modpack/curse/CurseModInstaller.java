@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 
 public class CurseModInstaller extends ModInstaller {
@@ -26,6 +27,7 @@ public class CurseModInstaller extends ModInstaller {
 	private transient CurseFullProject.CurseFile file;
 	public transient CurseFullProject project;
 	public boolean resolveDependencies;
+
 	public CurseModInstaller(Instance instance, CurseFullProject data) {
 		super(PackType.CURSE);
 		this.project = data;
@@ -40,34 +42,40 @@ public class CurseModInstaller extends ModInstaller {
 
 	@Override
 	public void install(Instance instance) {
+		instance.verifyMods();
 		if (fileData == null) {
 			OneClientLogging.info("No File Selected");
 		}
 
 		try {
-
 			if (!fileData.required) {
 				DownloadManager.updateMessage(process, "%s - Skipping Disabled Mod %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
 				return;
 			}
 			if (resolveDependencies) {
 				for (CurseFullProject.CurseFile.Dependency dep : file.getDependencies()) {
+					instance.verifyMods();
 					if (dep.isRequired()) {
 						CurseFullProject project = JsonUtil.read(Curse.getProjectURL(dep.AddOnId), CurseFullProject.class);
 						CurseModInstaller depInstaller = new CurseModInstaller(instance, project);
+						if (instance.hasMod(depInstaller.getName())) {
+							OneClientLogging.info("{} - Dependency {} is already installed", instance.getName(), depInstaller.getName());
+							continue;
+						}
 						depInstaller.setProcess(process);
-						depInstaller.setFile(depInstaller.getFiles().stream().findFirst().orElse(null));
+						CurseFullProject.CurseFile file = depInstaller.getFiles().stream().sorted(Comparator.comparing(CurseFullProject.CurseFile::getDate).reversed()).findFirst().orElse(null);
+						depInstaller.setFile(file);
 						DownloadManager.updateMessage(process, "%s - Installing Dependency %s for %s", instance.getName(), FilenameUtils.getBaseName(depInstaller.fileData.getURL()), FilenameUtils.getBaseName(fileData.getURL()));
 						depInstaller.install(instance);
 					}
 				}
 			}
-
-			DownloadManager.updateMessage(process, "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
-			File mod = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
-			this.hash = new FileHash(mod);
-			this.name = mod.getName();
-			instance.getMods().add(this);
+			if (!instance.hasMod(getName())) {
+				DownloadManager.updateMessage(process, "%s - Installing %s", instance.getName(), FilenameUtils.getBaseName(fileData.getURL()));
+				File jar = FileUtil.downloadToName(fileData.getURL(), instance.getModDirectory());
+				this.hash = new FileHash(jar);
+				instance.getMods().add(this);
+			}
 		} catch (Throwable e) {
 			OneClientLogging.error(e);
 		}
@@ -138,6 +146,18 @@ public class CurseModInstaller extends ModInstaller {
 		this.resolveDependencies = resolveDependencies;
 	}
 
+	@Override
+	public String getVersion() {
+		return file.getDate().toString();
+	}
+
+	@Override
+	public String getName() {
+		if (fileData != null) {
+			name = FilenameUtils.getName(fileData.getURL());
+		}
+		return super.getName();
+	}
 }
 
 

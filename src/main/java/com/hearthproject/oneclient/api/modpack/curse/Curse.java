@@ -99,12 +99,33 @@ public class Curse {
 	public static List<CurseFullProject.CurseFile> getFiles(String projectId, String gameVersion) {
 		CurseFullProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseFullProject.CurseFile[].class);
 		if (files != null) {
-			List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || file.getGameVersion().contains(gameVersion)).collect(Collectors.toList());
+			List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || isCompatible(gameVersion, file.getGameVersion())).collect(Collectors.toList());
 			curseFiles.forEach(f -> f.projectId = projectId);
 			curseFiles.sort(Comparator.comparing(CurseFullProject.CurseFile::getDate));
 			return curseFiles;
 		}
 		return null;
+	}
+
+	//Hardcode sub version comparison
+	public static String formatVersion(String version) {
+		if (version.startsWith("1.12")) {
+			version = "1.12";
+		}
+
+		if (version.startsWith("1.11")) {
+			version = "1.11";
+		}
+		return version;
+	}
+
+	private static boolean isCompatible(String gameVersion, List<String> versions) {
+		gameVersion = formatVersion(gameVersion);
+		for (String v : versions) {
+			if (v.startsWith(gameVersion))
+				return true;
+		}
+		return false;
 	}
 
 	public static URL getCurseForge(String projectID) {

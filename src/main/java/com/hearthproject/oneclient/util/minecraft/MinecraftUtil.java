@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -146,33 +147,12 @@ public class MinecraftUtil {
 		});
 	}
 
-	public static void installMinecraft(Instance instance) throws Throwable {
-		instance.setInstalling(true);
-		NotifyUtil.setText("Installing minecraft for " + instance.getName());
-		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
-
-		Version versionData = getVersion(instance.getGameVersion());
-		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
-
-		OneClientLogging.logger.info("Downloading Minecraft jar");
-		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
-			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
-		}
-
-		installLibraries(versionData);
-
-		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
-		extractNatives(natives, versionData);
-
-		if (!instance.getForgeVersion().isEmpty())
-			ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion());
-
+	public static void resolveAssets(Version versionData) throws Throwable {
 		Version.AssetIndex assetIndex = versionData.assetIndex;
 		File assetsInfo = new File(ASSETS, "indexes" + File.separator + assetIndex.id + ".json");
 		FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
 		AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
 		Map<String, AssetObject> parent = index.getFileMap();
-
 		i = 0;
 		count = parent.entrySet().size();
 		NotifyUtil.setProgress(-1);
@@ -192,6 +172,36 @@ public class MinecraftUtil {
 				}
 			}
 		});
+	}
+
+	public static void installMinecraft(Instance instance) throws Throwable {
+		instance.setInstalling(true);
+		NotifyUtil.setText("Installing minecraft for " + instance.getName());
+		OneClientTracking.sendRequest("minecraft/install/" + instance.getGameVersion());
+
+		Version versionData = getVersion(instance.getGameVersion());
+
+		if (versionData == null) {
+			OneClientLogging.error("Unknown Game Version! Please Notify the Devs!");
+			return;
+		}
+
+		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
+
+		OneClientLogging.logger.info("Downloading Minecraft jar");
+		if (!MiscUtil.checksumEquals(mcJar, versionData.downloads.get("client").sha1)) {
+			FileUtils.copyURLToFile(new URL(versionData.downloads.get("client").url), mcJar);
+		}
+
+		installLibraries(versionData);
+
+		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
+		extractNatives(natives, versionData);
+		resolveAssets(versionData);
+
+		if (!instance.getForgeVersion().isEmpty())
+			ForgeUtils.resolveForgeLibrarys(instance.getGameVersion(), instance.getForgeVersion());
+
 		OneClientLogging.logger.info("Done minecraft files are all downloaded");
 		instance.setInstalling(false);
 		NotifyUtil.clear();
@@ -218,15 +228,18 @@ public class MinecraftUtil {
 		}
 		InstanceManager.addRecent(instance);
 		Version versionData = getVersion(instance.getGameVersion());
+		if (versionData == null) {
+			OneClientLogging.error("Unknown Game Version! Please Notify the Devs!");
+			return false;
+		}
+
 		File mcJar = new File(VERSIONS, instance.getGameVersion() + ".jar");
 		File natives = new File(VERSIONS, "natives-" + instance.gameVersion);
 		if (!natives.exists()) {
 			extractNatives(natives, versionData);
 		}
 		AtomicBoolean hasLegacyAssets = new AtomicBoolean(false);
-		if (versionData != null) {
-			hasLegacyAssets.set("legacy".equals(versionData.assetIndex.id));
-		}
+		hasLegacyAssets.set("legacy".equals(versionData.assetIndex.id));
 		OneClientLogging.logger.info("Starting minecraft...");
 		OneClientTracking.sendRequest("minecraft/play/" + instance.getGameVersion());
 		new Thread(() -> {
@@ -250,7 +263,7 @@ public class MinecraftUtil {
 				}
 
 				for (Version.Library library : versionData.libraries) {
-					//TODO check that forge hasnt allready included the lib, as sometimes forge has a newer version of the lib than mc does. Adding the mc libs after forge is a hacky work around for it
+					//TODO check that forge hasnt already included the lib, as sometimes forge has a newer version of the lib than mc does. Adding the mc libs after forge is a hacky work around for it
 					if (library.allowed() && library.getFile(LIBRARIES) != null) {
 						cpb.append(OperatingSystem.getJavaDelimiter());
 						cpb.append(library.getFile(LIBRARIES).getAbsolutePath());
@@ -265,9 +278,7 @@ public class MinecraftUtil {
 
 				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
 
-				for (String str : SettingsUtil.settings.arguments.split(" ")) {
-					arguments.add(str);
-				}
+				arguments.addAll(Arrays.asList(SettingsUtil.settings.arguments.split(" ")));
 				arguments.add("-Xms" + SettingsUtil.settings.minecraftMinMemory + "m");
 				arguments.add("-Xmx" + SettingsUtil.settings.minecraftMaxMemory + "m");
 

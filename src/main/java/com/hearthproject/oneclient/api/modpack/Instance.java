@@ -129,6 +129,11 @@ public class Instance {
 		return mods;
 	}
 
+	public boolean hasMod(String name) {
+		System.out.println(name);
+		return getMods().stream().anyMatch(m -> m.getName().equals(name));
+	}
+
 	public void setMods(ObservableList<ModInstaller> mods) {
 		this.mods = mods;
 	}
@@ -192,59 +197,57 @@ public class Instance {
 	//walks mod directory and creates Mod objects for any not found
 	//Remove Mod entries for files that are no longer available.
 	public void verifyMods() {
-		new Thread(() -> {
-			File modDir = getModDirectory();
-			File[] mods = modDir.listFiles(MOD_FILTER);
-			List<ModInstaller> newMods = Lists.newArrayList();
-			if (mods == null || mods.length == 0) {
-				this.mods.clear();
-				this.save();
-				return;
-			}
-			if (this.mods != null) {
-				List<File> files = Lists.newArrayList(mods);
-				List<ModInstaller> removal = Lists.newArrayList();
-				for (ModInstaller mod : this.mods) {
-					Collection<File> sorted = Collections2.filter(files, f -> {
-						if (f != null && mod != null && mod.getHash() != null) {
-							return f.toString().equals(mod.getHash().getFilePath());
-						}
-						return false;
-					});
-					boolean match = false;
-					for (File file : sorted) {
-						if (mod.matches(file))
-							match = true;
+		File modDir = getModDirectory();
+		File[] mods = modDir.listFiles(MOD_FILTER);
+		List<ModInstaller> newMods = Lists.newArrayList();
+		if (mods == null || mods.length == 0) {
+			this.mods.clear();
+			this.save();
+			return;
+		}
+		if (this.mods != null) {
+			List<File> files = Lists.newArrayList(mods);
+			List<ModInstaller> removal = Lists.newArrayList();
+			for (ModInstaller mod : this.mods) {
+				Collection<File> sorted = Collections2.filter(files, f -> {
+					if (f != null && mod != null && mod.getHash() != null) {
+						return f.toString().equals(mod.getHash().getFilePath());
 					}
-					if (!match) {
-						removal.add(mod);
+					return false;
+				});
+				boolean match = false;
+				for (File file : sorted) {
+					if (mod.matches(file))
+						match = true;
+				}
+				if (!match) {
+					removal.add(mod);
+				}
+			}
+			this.mods.removeAll(removal);
+
+			files.forEach(file -> {
+				boolean match = false;
+				Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
+					if (m != null) {
+						return m.getHash().getFilePath().equals(file.toString());
+					}
+					return false;
+				});
+				for (ModInstaller mod : sorted) {
+					if (mod.matches(file)) {
+						match = true;
+						break;
 					}
 				}
-				this.mods.removeAll(removal);
-
-				files.forEach(file -> {
-					boolean match = false;
-					Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
-						if (m != null) {
-							return m.getHash().getFilePath().equals(file.toString());
-						}
-						return false;
-					});
-					for (ModInstaller mod : sorted) {
-						if (mod.matches(file)) {
-							match = true;
-							break;
-						}
-					}
-					if (!match) {
-						ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
-						newMods.add(mod);
-					}
-				});
-				this.mods.addAll(newMods);
-			}
-			this.save();
-		}).start();
+				if (!match) {
+					ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
+					newMods.add(mod);
+				}
+			});
+			this.mods.addAll(newMods);
+		}
+		this.save();
 	}
 
 	public boolean isInstalling() {

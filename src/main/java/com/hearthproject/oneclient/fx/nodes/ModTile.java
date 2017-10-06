@@ -68,6 +68,10 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 			comboFile.valueProperty().addListener((v, a, b) -> mod.setFile(comboFile.getValue()));
 		}
 
+		if (instance.hasMod(mod.getName())) {
+			buttonInstall.setDisable(true);
+		}
+
 		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers(mod.project.getDownloads()));
 		Label gameVersions = info("Versions: %s", mod.project.getVersions());
 		right.setAlignment(Pos.BASELINE_RIGHT);
@@ -80,8 +84,9 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 			buttonInstall.setDisable(true);
 		});
 		task.setOnSucceeded(event -> {
-			buttonInstall.setDisable(false);
 			instance.verifyMods();
+			if (!instance.hasMod(mod.getName()))
+				buttonInstall.setDisable(false);
 		});
 
 		nodePane.setOpacity(0F);
