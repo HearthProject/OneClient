@@ -6,8 +6,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class FileHash {
 
@@ -33,13 +31,7 @@ public class FileHash {
 	}
 
 	public File getFile() {
-		try {
-			URI u = new URI(file.trim().replaceAll("\\u0020", "%20"));
-			return new File(u.getPath());
-		} catch (URISyntaxException e) {
-			OneClientLogging.error(e);
-		}
-		return null;
+		return new File(file);
 	}
 
 	public String getFilePath() {

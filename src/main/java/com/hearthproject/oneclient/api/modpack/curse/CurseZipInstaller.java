@@ -36,6 +36,7 @@ public class CurseZipInstaller extends ModpackInstaller {
 			AtomicInteger counter = new AtomicInteger(1);
 			for (ModInstaller mod : mods) {
 				DownloadManager.updateProgress(instance.getName(), counter.incrementAndGet(), mods.size());
+				mod.setProcess(instance.getName());
 				mod.install(instance);
 				if (checkCancel())
 					return;
