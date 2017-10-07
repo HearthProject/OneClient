@@ -28,15 +28,19 @@ public class CurseModInstaller extends ModInstaller {
 	public transient CurseFullProject project;
 	public boolean resolveDependencies;
 
+	public CurseModInstaller() {
+		setType(PackType.CURSE);
+	}
+
 	public CurseModInstaller(Instance instance, CurseFullProject data) {
-		super(PackType.CURSE);
+		this();
 		this.project = data;
 		this.name = project.getName();
 		this.files = project.getFiles(instance.getGameVersion());
 	}
 
 	public CurseModInstaller(FileData fileData) {
-		super(PackType.CURSE);
+		this();
 		this.fileData = fileData;
 	}
 
@@ -157,6 +161,10 @@ public class CurseModInstaller extends ModInstaller {
 			name = FilenameUtils.getName(fileData.getURL());
 		}
 		return super.getName();
+	}
+
+	public void setFileData(FileData fileData) {
+		this.fileData = fileData;
 	}
 }
 

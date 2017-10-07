@@ -7,14 +7,11 @@ import java.io.File;
 
 public class ModInstaller implements IInstallable {
 	private PackType type;
-
-	protected FileHash hash;
+	public FileHash hash;
 	protected String name;
 	protected transient String process;
 
-	public ModInstaller(PackType type) {
-		this.type = type;
-
+	public ModInstaller() {
 	}
 
 	public ModInstaller(PackType type, FileHash hash) {
@@ -66,7 +63,7 @@ public class ModInstaller implements IInstallable {
 
 	@Override
 	public String toString() {
-		return getType().name();
+		return String.format("%s : %s-%s", getName(), getType(), getClass().getSimpleName());
 	}
 
 	public void setProcess(String process) {
@@ -74,4 +71,16 @@ public class ModInstaller implements IInstallable {
 	}
 
 	public String getVersion() { return ""; }
+
+	public void setType(PackType type) {
+		this.type = type;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setHash(FileHash hash) {
+		this.hash = hash;
+	}
 }

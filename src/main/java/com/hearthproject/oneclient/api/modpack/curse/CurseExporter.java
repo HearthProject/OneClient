@@ -26,71 +26,76 @@ public class CurseExporter implements IExporter {
 
 	@Override
 	public void export(Instance instance) {
-		CurseInstaller installer = null;
-		if (instance.installer instanceof CurseInstaller) {
-			installer = (CurseInstaller) instance.installer;
-		}
+		instance.verifyMods();
+		new Thread(() -> {
+			System.out.println(instance.getMods());
+			CurseInstaller installer = null;
+			if (instance.installer instanceof CurseInstaller) {
+				installer = (CurseInstaller) instance.installer;
+			}
 
-		Manifest manifest = new Manifest();
-		manifest.manifestType = "minecraftModpack";
-		manifest.manifestVersion = 1;
-		try {
-			if (MinecraftAuthController.getAuthentication() != null)
-				manifest.author = MinecraftAuthController.getUsername(MinecraftAuthController.getAuthentication());
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		manifest.name = instance.getName();
-		manifest.version = instance.getPackVersion();
-		manifest.author = "";
-		if (installer != null) {
-			manifest.projectID = installer.projectId;
-		}
-		manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstaller).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
-		manifest.overrides = "overrides";
-
-		Manifest.Minecraft.Modloader forge = new Manifest.Minecraft.Modloader(instance.getForgeVersion());
-		Manifest.Minecraft minecraft = new Manifest.Minecraft();
-
-		minecraft.version = instance.getGameVersion();
-		minecraft.modLoaders.add(forge);
-		manifest.minecraft = minecraft;
-
-		File dir = FileUtil.findDirectory(Constants.EXPORTS, instance.getName());
-		File overrides = FileUtil.findDirectory(dir, "overrides");
-		File mods = FileUtil.findDirectory(overrides, "mods");
-		File config = FileUtil.findDirectory(overrides, "config");
-
-		File manifestJson = new File(dir, "manifest.json");
-		//manifest
-		JsonUtil.save(manifestJson, JsonUtil.GSON.toJson(manifest, Manifest.class));
-		//configs
-		try {
-			FileUtils.copyDirectory(instance.getConfigDirectory(), config);
-		} catch (IOException e) {
-			OneClientLogging.error(e);
-		}
-		//override mods
-		List<ModInstaller> manual = instance.getMods().stream().filter(m -> m.getType().equals(PackType.MANUAL)).collect(Collectors.toList());
-		for (ModInstaller mod : manual) {
-			File file = mod.getHash().getFile();
-
+			Manifest manifest = new Manifest();
+			manifest.manifestType = "minecraftModpack";
+			manifest.manifestVersion = 1;
 			try {
-				FileUtils.copy(new FileInputStream(file), new File(mods, file.getName()));
+				if (MinecraftAuthController.getAuthentication() != null)
+					manifest.author = MinecraftAuthController.getUsername(MinecraftAuthController.getAuthentication());
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			manifest.name = instance.getName();
+			manifest.version = instance.getPackVersion();
+			manifest.author = "";
+			if (installer != null) {
+				manifest.projectID = installer.projectId;
+			}
+			manifest.files = instance.getMods().stream().filter(m -> m.getType() == PackType.CURSE).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
+			manifest.overrides = "overrides";
+
+			Manifest.Minecraft.Modloader forge = new Manifest.Minecraft.Modloader(instance.getForgeVersion());
+			Manifest.Minecraft minecraft = new Manifest.Minecraft();
+
+			minecraft.version = instance.getGameVersion();
+			minecraft.modLoaders.add(forge);
+			manifest.minecraft = minecraft;
+
+			File temp = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
+			File overrides = FileUtil.findDirectory(temp, "overrides");
+			File mods = FileUtil.findDirectory(overrides, "mods");
+			File config = FileUtil.findDirectory(overrides, "config");
+
+			File manifestJson = new File(temp, "manifest.json");
+			//manifest
+			JsonUtil.save(manifestJson, JsonUtil.GSON.toJson(manifest, Manifest.class));
+			//configs
+			try {
+				FileUtils.copyDirectory(instance.getConfigDirectory(), config);
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
-		}
-		try {
-			ZipFile zip = new ZipFile(new File(dir, instance.getName() + ".zip"));
-			ZipParameters parameters = new ZipParameters();
-			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-			zip.addFile(manifestJson, parameters);
-			zip.addFolder(overrides, parameters);
-		} catch (ZipException e) {
-			OneClientLogging.error(e);
-		}
+			//override mods
+			List<ModInstaller> manual = instance.getMods().stream().filter(m -> m.getType().equals(PackType.MANUAL)).collect(Collectors.toList());
+			for (ModInstaller mod : manual) {
+				File file = mod.getHash().getFile();
+
+				try {
+					FileUtils.copy(new FileInputStream(file), new File(mods, file.getName()));
+				} catch (IOException e) {
+					OneClientLogging.error(e);
+				}
+			}
+			try {
+				ZipFile zip = new ZipFile(new File(Constants.EXPORTS, instance.getName() + ".zip"));
+				ZipParameters parameters = new ZipParameters();
+				parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+				parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+				zip.addFile(manifestJson, parameters);
+				zip.addFolder(overrides, parameters);
+			} catch (ZipException e) {
+				OneClientLogging.error(e);
+			}
+
+		}).start();
 
 	}
 

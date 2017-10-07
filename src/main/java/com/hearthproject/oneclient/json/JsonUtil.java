@@ -6,6 +6,8 @@ import com.hearthproject.oneclient.api.modpack.ModpackInstaller;
 import com.hearthproject.oneclient.api.modpack.PackType;
 import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.modpack.curse.CurseModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.data.FileData;
+import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import io.gsonfire.GsonFireBuilder;
 import javafx.collections.FXCollections;
@@ -28,13 +30,10 @@ public class JsonUtil {
 			return CurseInstaller.class;
 		}
 		return ModpackInstaller.class;
-	}).registerTypeSelector(ModInstaller.class, readElement -> {
-		String type = readElement.getAsJsonObject().get("type").getAsString();
-		if (type.equals(PackType.CURSE.name())) {
-			return CurseModInstaller.class;
-		}
-		return ModInstaller.class;
-	}).createGsonBuilder().registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
+	}).createGsonBuilder()
+		.registerTypeAdapter(ModInstaller.class, new ModInstallDeserialize())
+		.registerTypeAdapter(ModInstaller.class, new ModInstallSerialize())
+		.registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
 
 	static class ObservableListDeserializer<T> implements JsonDeserializer<ObservableList<T>> {
 
@@ -46,6 +45,35 @@ public class JsonUtil {
 			return FXCollections.observableArrayList(tasks);
 		}
 
+	}
+
+	static class ModInstallDeserialize implements JsonDeserializer<ModInstaller> {
+		@Override
+		public ModInstaller deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			JsonObject object = (JsonObject) json;
+			if (object.get("type").getAsString().equals("CURSE")) {
+				CurseModInstaller installer = new CurseModInstaller();
+				installer.setName(object.get("name").getAsString());
+				installer.setHash(GSON.fromJson(object.getAsJsonObject("hash"), FileHash.class));
+				installer.setFileData(GSON.fromJson(object.getAsJsonObject("fileData"), FileData.class));
+			}
+			return GSON.fromJson(object, ModInstaller.class);
+		}
+	}
+
+	static class ModInstallSerialize implements JsonSerializer<ModInstaller> {
+
+		@Override
+		public JsonElement serialize(ModInstaller src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject object = new JsonObject();
+			object.addProperty("name", src.getName());
+			object.addProperty("type", src.getType().name());
+			object.add("hash", GSON.toJsonTree(src.getHash()));
+			if (src instanceof CurseModInstaller) {
+				object.add("data", GSON.toJsonTree(((CurseModInstaller) src).getFileData()));
+			}
+			return object;
+		}
 	}
 
 	public static void save(File file, String json) {
