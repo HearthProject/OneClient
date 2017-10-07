@@ -135,6 +135,7 @@ public class NewInstanceController {
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
+			ImageUtil.IMAGE_CACHE.put(instance.getName(), ImageUtil.openImage(instance.getIconFile()));
 		}
 
 		instance.setGameVersion(mcVersionComboBox.getValue().id);

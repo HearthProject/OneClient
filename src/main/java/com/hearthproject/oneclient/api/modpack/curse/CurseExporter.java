@@ -58,6 +58,9 @@ public class CurseExporter implements IExporter {
 			minecraft.modLoaders.add(forge);
 			manifest.minecraft = minecraft;
 
+			try {
+				FileUtils.deleteDirectory(new File(Constants.TEMPDIR, instance.getName()));
+			} catch (IOException ignore) { }
 			File temp = FileUtil.findDirectory(Constants.TEMPDIR, instance.getName());
 			File overrides = FileUtil.findDirectory(temp, "overrides");
 			File mods = FileUtil.findDirectory(overrides, "mods");
