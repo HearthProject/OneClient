@@ -274,6 +274,7 @@ public class MinecraftUtil {
 				cpb.append(mcJar.getAbsolutePath());
 
 				ArrayList<String> arguments = new ArrayList<>();
+				arguments.add(SettingsUtil.settings.wrapperCommand);
 				arguments.add(SettingsUtil.settings.getJavaPath());
 
 				arguments.add("-Djava.library.path=" + natives.getAbsolutePath());
