@@ -121,10 +121,6 @@ public class Instance {
 		return new File(getDirectory(), icon);
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
 	public ObservableList<ModInstaller> getMods() {
 		return mods;
 	}

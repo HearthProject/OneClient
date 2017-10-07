@@ -48,7 +48,7 @@ public class CurseExporter implements IExporter {
 			if (installer != null) {
 				manifest.projectID = installer.projectId;
 			}
-			manifest.files = instance.getMods().stream().filter(m -> m.getType() == PackType.CURSE).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
+			manifest.files = instance.getMods().stream().filter(m -> m instanceof CurseModInstaller).map(m -> ((CurseModInstaller) m).getFileData()).collect(Collectors.toList());
 			manifest.overrides = "overrides";
 
 			Manifest.Minecraft.Modloader forge = new Manifest.Minecraft.Modloader(instance.getForgeVersion());
@@ -69,7 +69,7 @@ public class CurseExporter implements IExporter {
 			//icon
 
 			try {
-				FileUtils.copyDirectory(instance.getIcon(), config);
+				FileUtils.copyFile(instance.getIcon(), new File(overrides, "icon.png"));
 			} catch (IOException e) {
 				OneClientLogging.error(e);
 			}
