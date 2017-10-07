@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.fx.controllers;
 
+import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
@@ -8,6 +9,7 @@ import com.hearthproject.oneclient.util.OperatingSystem;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -18,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainController {
+	@FXML
+	public Label version;
 	@FXML
 	public VBox topButtonBox;
 	@FXML
@@ -51,6 +55,7 @@ public class MainController {
 	public ArrayList<ContentPane> contentPanes = new ArrayList<>();
 
 	public void onStart(Stage stage) throws IOException {
+		version.setText(Constants.getVersion() == null ? "Development" : Constants.getVersion());
 		profileBox = new HBox();
 		MinecraftAuthController.updateGui();
 		topButtonBox.getChildren().add(profileBox);

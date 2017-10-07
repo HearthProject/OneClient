@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
@@ -9,6 +10,7 @@
     <children>
         <VBox fx:id="sideBox" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="270.0" prefWidth="270.0" style="-fx-background-color: -oc-dark;">
             <children>
+                <Label fx:id="version" text="Label"/>
                     <ImageView fx:id="imageBox" fitHeight="105.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@../images/logo_big.png" />
