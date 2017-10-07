@@ -20,7 +20,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class JsonUtil {
 
@@ -30,38 +29,32 @@ public class JsonUtil {
 			return CurseInstaller.class;
 		}
 		return ModpackInstaller.class;
-	}).createGsonBuilder()
-		.registerTypeAdapter(ModInstaller.class, new ModInstallDeserialize())
-		.registerTypeAdapter(ModInstaller.class, new ModInstallSerialize())
-		.registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListDeserializer<>()).setPrettyPrinting().create();
+	})
+		.createGsonBuilder()
+		.registerTypeHierarchyAdapter(ModInstaller.class, new ModInstallerAdapter())
+		.registerTypeAdapterFactory(new JavaFxPropertyTypeAdapterFactory()).registerTypeAdapter(ObservableList.class, new ObservableListCreator()).setPrettyPrinting().create();
 
-	static class ObservableListDeserializer<T> implements JsonDeserializer<ObservableList<T>> {
-
-		@Override
-		public ObservableList<T> deserialize(JsonElement json, Type type, JsonDeserializationContext context)
-			throws JsonParseException {
-			Gson gson = new Gson();
-			List<T> tasks = gson.fromJson(json.getAsJsonArray().toString(), type);
-			return FXCollections.observableArrayList(tasks);
+	static class ObservableListCreator implements InstanceCreator<ObservableList<?>> {
+		public ObservableList<?> createInstance(Type type) {
+			// No need to use a parametrized list since the actual instance will have the raw type anyway.
+			return FXCollections.observableArrayList();
 		}
-
 	}
 
-	static class ModInstallDeserialize implements JsonDeserializer<ModInstaller> {
+	static class ModInstallerAdapter implements JsonDeserializer<ModInstaller>, JsonSerializer<ModInstaller> {
 		@Override
 		public ModInstaller deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			JsonObject object = (JsonObject) json;
-			if (object.get("type").getAsString().equals("CURSE")) {
-				CurseModInstaller installer = new CurseModInstaller();
-				installer.setName(object.get("name").getAsString());
-				installer.setHash(GSON.fromJson(object.getAsJsonObject("hash"), FileHash.class));
-				installer.setFileData(GSON.fromJson(object.getAsJsonObject("fileData"), FileData.class));
+			ModInstaller installer = new ModInstaller();
+			installer.setType(PackType.byName(object.get("type").getAsString()));
+			if (installer.getType() == PackType.CURSE) {
+				installer = new CurseModInstaller();
+				((CurseModInstaller) installer).setFileData(GSON.fromJson(object.getAsJsonObject("data"), FileData.class));
 			}
-			return GSON.fromJson(object, ModInstaller.class);
+			installer.setHash(GSON.fromJson(object.getAsJsonObject("hash"), FileHash.class));
+			installer.setName(object.get("name").getAsString());
+			return installer;
 		}
-	}
-
-	static class ModInstallSerialize implements JsonSerializer<ModInstaller> {
 
 		@Override
 		public JsonElement serialize(ModInstaller src, Type typeOfSrc, JsonSerializationContext context) {

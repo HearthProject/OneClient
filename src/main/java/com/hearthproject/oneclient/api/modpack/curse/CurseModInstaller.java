@@ -26,7 +26,7 @@ public class CurseModInstaller extends ModInstaller {
 	private transient List<CurseFullProject.CurseFile> files;
 	private transient CurseFullProject.CurseFile file;
 	public transient CurseFullProject project;
-	public boolean resolveDependencies;
+	public transient boolean resolveDependencies;
 
 	public CurseModInstaller() {
 		setType(PackType.CURSE);
