@@ -128,13 +128,8 @@ public class Curse {
 		return false;
 	}
 
-	public static URL getCurseForge(String projectID) {
-		try {
-			return new URL(CURSE_FORGE.replace("${projectID}", projectID));
-		} catch (MalformedURLException e) {
-			OneClientLogging.error(e);
-		}
-		return null;
+	public static String getCurseForge(String projectID) {
+		return CURSE_FORGE.replace("${projectID}", projectID);
 	}
 
 }

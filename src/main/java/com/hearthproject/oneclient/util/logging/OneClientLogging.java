@@ -42,7 +42,7 @@ public class OneClientLogging {
 	}
 
 	public static void init() {
-		LoggerContext context = (LoggerContext) LogManager.getContext(false);
+		LoggerContext context = (LoggerContext) LogManager.getContext(true);
 		context.reconfigure();
 	}
 

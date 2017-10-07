@@ -20,6 +20,10 @@ public class CurseProject {
 		return Name.toLowerCase().contains(name.toLowerCase());
 	}
 
+	public boolean matchesId(String id) {
+		return Id.equalsIgnoreCase(id);
+	}
+
 	public boolean matchesVersion(String version) {
 		if (version.equals("All"))
 			return true;

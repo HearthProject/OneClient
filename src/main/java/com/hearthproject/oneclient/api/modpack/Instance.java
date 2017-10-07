@@ -130,7 +130,6 @@ public class Instance {
 	}
 
 	public boolean hasMod(String name) {
-		System.out.println(name);
 		return getMods().stream().anyMatch(m -> m.getName().equals(name));
 	}
 

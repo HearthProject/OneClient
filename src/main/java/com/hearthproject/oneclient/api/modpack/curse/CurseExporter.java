@@ -28,7 +28,6 @@ public class CurseExporter implements IExporter {
 	public void export(Instance instance) {
 		instance.verifyMods();
 		new Thread(() -> {
-			System.out.println(instance.getMods());
 			CurseInstaller installer = null;
 			if (instance.installer instanceof CurseInstaller) {
 				installer = (CurseInstaller) instance.installer;
@@ -67,6 +66,13 @@ public class CurseExporter implements IExporter {
 			File manifestJson = new File(temp, "manifest.json");
 			//manifest
 			JsonUtil.save(manifestJson, JsonUtil.GSON.toJson(manifest, Manifest.class));
+			//icon
+
+			try {
+				FileUtils.copyDirectory(instance.getIcon(), config);
+			} catch (IOException e) {
+				OneClientLogging.error(e);
+			}
 			//configs
 			try {
 				FileUtils.copyDirectory(instance.getConfigDirectory(), config);

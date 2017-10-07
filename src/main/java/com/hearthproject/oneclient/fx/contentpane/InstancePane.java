@@ -3,7 +3,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.ModInstaller;
-import com.hearthproject.oneclient.api.modpack.curse.CurseExporter;
+import com.hearthproject.oneclient.api.modpack.ModpackManager;
 import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
 import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
@@ -102,11 +102,7 @@ public class InstancePane extends ContentPane {
 			Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
 		});
 
-		MenuItem curse = new MenuItem("Curse ZIP");
-
-		curse.setOnAction(event -> new CurseExporter().export(instance));
-
-		buttonExport.getItems().addAll(curse);
+		ModpackManager.createExporters(buttonExport.getItems(), instance);
 
 		TableColumn<ModInstaller, Boolean> columnEnabled = new TableColumn<>("Enabled");
 		columnEnabled.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isEnabled()));

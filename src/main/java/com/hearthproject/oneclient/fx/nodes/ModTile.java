@@ -4,6 +4,7 @@ import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.api.modpack.DownloadManager;
 import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.ModInstaller;
+import com.hearthproject.oneclient.api.modpack.curse.Curse;
 import com.hearthproject.oneclient.api.modpack.curse.CurseModInstaller;
 import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
@@ -59,7 +60,7 @@ public class ModTile extends HBox implements Comparable<ModTile> {
 		service.setOnSucceeded(event -> MiscUtil.runLaterIfNeeded(() -> imageView.setImage(service.getValue())));
 		service.start();
 
-		MiscUtil.setupLink(title, mod.getName(), mod.project.getWebSiteURL());
+		MiscUtil.setupLink(title, mod.getName(), Curse.getCurseForge(mod.project.Id));
 		comboFile.setVisible(true);
 		comboFile.setItems(FXCollections.observableArrayList(mod.getFiles()).sorted());
 		comboFile.getSelectionModel().selectFirst();
