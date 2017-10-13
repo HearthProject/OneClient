@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DownloadTask extends Task<Void> {
-	private static final ExecutorService service = Executors.newFixedThreadPool(10);
+    private static final ExecutorService service = Executors.newSingleThreadExecutor();
 
 	private Runnable runnable;
 

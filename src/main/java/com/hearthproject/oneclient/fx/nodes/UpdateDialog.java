@@ -1,7 +1,6 @@
 package com.hearthproject.oneclient.fx.nodes;
 
-import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
-import javafx.beans.property.SimpleObjectProperty;
+import com.hearthproject.oneclient.api.cmdb.Database;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
@@ -10,18 +9,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UpdateDialog extends TableDialog<CurseFullProject.CurseFile> {
+public class UpdateDialog extends TableDialog<Database.ProjectFile> {
 
 	@SuppressWarnings("unchecked")
-	public UpdateDialog(List<CurseFullProject.CurseFile> files) {
-		super(files);
-		TableColumn<CurseFullProject.CurseFile, String> columnName = new TableColumn<>("Files");
-		columnName.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFileName()));
+    public UpdateDialog(List<Database.ProjectFile> files) {
+        super(files);
+        TableColumn<Database.ProjectFile, String> columnName = new TableColumn<>("Files");
+        columnName.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getFilename()));
 
-		TableColumn<CurseFullProject.CurseFile, String> columnVersion = new TableColumn<>("Version");
-		columnVersion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getGameVersion().stream().collect(Collectors.joining(", "))));
-		TableColumn<CurseFullProject.CurseFile, Date> columnDate = new TableColumn<>("Release Date");
-		columnDate.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getDate()));
+        TableColumn<Database.ProjectFile, String> columnVersion = new TableColumn<>("Version");
+        columnVersion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getVersions().stream().collect(Collectors.joining(", "))));
+        TableColumn<Database.ProjectFile, Date> columnDate = new TableColumn<>("Release Date");
+//TODO		columnDate.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getDate()));
 
 		table.getColumns().addAll(columnName, columnVersion, columnDate);
 

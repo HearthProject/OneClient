@@ -29,246 +29,240 @@ import static com.hearthproject.oneclient.util.MiscUtil.checkCancel;
 
 public class Instance {
 
-	public String name;
-	public String packVersion;
-	public String gameVersion;
-	public String forgeVersion;
-	public String url;
-	public String icon;
-	public Map<String, Object> info;
-	public transient Map<String, Object> tempInfo;
-	public ObservableList<ModInstaller> mods = FXCollections.observableArrayList();
+    public String name;
+    public String packVersion;
+    public String gameVersion;
+    public String forgeVersion;
+    public String url;
+    public Map<String, Object> info;
+    public transient Map<String, Object> tempInfo;
+    public ObservableList<ModInstaller> mods = FXCollections.observableArrayList();
 
-	public transient SimpleBooleanProperty installing;
-	public ModpackInstaller installer;
+    public transient SimpleBooleanProperty installing;
+    public ModpackInstaller installer;
 
-	public Instance(String name, String url, ModpackInstaller installer, Info... info) {
-		this();
-		this.name = name;
-		this.url = url;
-		this.installer = installer;
-		this.info = Arrays.stream(info).filter(Info::isKept).collect(Collectors.toMap(Info::getKey, Info::getInfo));
-		this.tempInfo = Arrays.stream(info).filter(Info::isTemp).collect(Collectors.toMap(Info::getKey, Info::getInfo));
-	}
+    public Instance(String name, String url, ModpackInstaller installer, Info... info) {
+        this();
+        this.name = name;
+        this.url = url;
+        this.installer = installer;
+        this.info = Arrays.stream(info).filter(Info::isKept).collect(Collectors.toMap(Info::getKey, Info::getInfo));
+        this.tempInfo = Arrays.stream(info).filter(Info::isTemp).collect(Collectors.toMap(Info::getKey, Info::getInfo));
+    }
 
-	public Instance() {
-		this.icon = "icon.png";
-		this.forgeVersion = "";
-		installing = new SimpleBooleanProperty(false);
-	}
+    public Instance() {
+        this.forgeVersion = "";
+        installing = new SimpleBooleanProperty(false);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPackVersion(String packVersion) {
-		this.packVersion = packVersion;
-	}
+    public void setPackVersion(String packVersion) {
+        this.packVersion = packVersion;
+    }
 
-	public void setGameVersion(String gameVersion) {
-		this.gameVersion = gameVersion;
-	}
+    public void setGameVersion(String gameVersion) {
+        this.gameVersion = gameVersion;
+    }
 
-	public String getPackVersion() {
-		return packVersion;
-	}
+    public String getPackVersion() {
+        return packVersion;
+    }
 
-	public String getGameVersion() {
-		return gameVersion;
-	}
+    public String getGameVersion() {
+        return gameVersion;
+    }
 
-	public String getForgeVersion() {
-		return forgeVersion;
-	}
+    public String getForgeVersion() {
+        return forgeVersion;
+    }
 
-	public void setForgeVersion(String forgeVersion) {
-		this.forgeVersion = forgeVersion;
-	}
+    public void setForgeVersion(String forgeVersion) {
+        this.forgeVersion = forgeVersion;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public File getDirectory() {
-		return new File(Constants.INSTANCEDIR, getName());
-	}
+    public File getDirectory() {
+        return new File(Constants.INSTANCEDIR, getName());
+    }
 
-	public File getDataFile() {
-		return new File(getDirectory(), "instance.json");
-	}
+    public File getDataFile() {
+        return new File(getDirectory(), "instance.json");
+    }
 
-	public File getModDirectory() {
-		return FileUtil.findDirectory(getDirectory(), "mods");
-	}
+    public File getModDirectory() {
+        return FileUtil.findDirectory(getDirectory(), "mods");
+    }
 
-	public File getConfigDirectory() {
-		return FileUtil.findDirectory(getDirectory(), "config");
-	}
+    public File getConfigDirectory() {
+        return FileUtil.findDirectory(getDirectory(), "config");
+    }
 
-	public File getIcon() {
-		File file = getIconFile();
-		if (!file.exists()) {
-			ImageUtil.createIcon(MiscUtil.parseLetters(getName()), file);
-		}
-		return file;
-	}
+    public File getIcon() {
+        File file = getIconFile();
+        if (!file.exists()) {
+            ImageUtil.createIcon(MiscUtil.parseLetters(getName()), file);
+        }
+        return file;
+    }
 
-	public File getIconFile() {
-		return new File(getDirectory(), icon);
-	}
+    public File getIconFile() {
+        return new File(getDirectory(), "icon.png");
+    }
 
-	public ObservableList<ModInstaller> getMods() {
-		return mods;
-	}
+    public ObservableList<ModInstaller> getMods() {
+        return mods;
+    }
 
-	public boolean hasMod(String name) {
-		return getMods().stream().anyMatch(m -> m.getName().equals(name));
-	}
+    public boolean hasMod(String name) {
+        return getMods().stream().anyMatch(m -> m.getName().equals(name));
+    }
 
-	public void setMods(ObservableList<ModInstaller> mods) {
-		this.mods = mods;
-	}
+    public void setMods(ObservableList<ModInstaller> mods) {
+        this.mods = mods;
+    }
 
-	public void install() {
-		OneClientLogging.info("{}: Installing with {}", getName(), installer.toString());
-		setInstalling(true);
+    public void install() {
+        OneClientLogging.info("{}: Installing with {}", getName(), installer.toString());
+        setInstalling(true);
 
-		FileUtil.createDirectory(getDirectory());
-		if (getDirectory().exists())
-			InstanceManager.addInstance(this);
+        FileUtil.createDirectory(getDirectory());
+        if (getDirectory().exists())
+            InstanceManager.addInstance(this);
 
-		if (checkCancel())
-			return;
-		if (installer != null)
-			installer.install(this);
-		if (checkCancel())
-			return;
-		try {
-			MinecraftUtil.installMinecraft(this);
-			if (checkCancel())
-				return;
-		} catch (Throwable throwable) {
-			OneClientLogging.error(throwable);
-		}
-		save();
-		setInstalling(false);
+        if (checkCancel())
+            return;
+        if (installer != null)
+            installer.install(this);
+        if (checkCancel())
+            return;
+        try {
+            MinecraftUtil.installMinecraft(this);
+            if (checkCancel())
+                return;
+        } catch (Throwable throwable) {
+            OneClientLogging.error(throwable);
+        }
+        save();
+        setInstalling(false);
 
-	}
+    }
 
-	public void delete() {
-		try {
-			FileUtils.deleteDirectory(getDirectory());
-			getDirectory().delete();
-			InstanceManager.removeInstance(this);
-		} catch (IOException e) {
-			OneClientLogging.error(e);
-		}
-	}
+    public void delete() {
+        try {
+            FileUtils.deleteDirectory(getDirectory());
+            getDirectory().delete();
+            InstanceManager.removeInstance(this);
+        } catch (IOException e) {
+            OneClientLogging.error(e);
+        }
+    }
 
-	public void update() {
-		if (installer != null)
-			installer.update(this);
-	}
+    public void update() {
+        if (installer != null)
+            installer.update(this);
+    }
 
-	public void save() {
-		JsonUtil.save(new File(getDirectory(), "instance.json"), toString());
-	}
+    public void save() {
+        JsonUtil.save(new File(getDirectory(), "instance.json"), toString());
+    }
 
-	@Override
-	public String toString() {
-		return JsonUtil.GSON.toJson(this);
-	}
+    @Override
+    public String toString() {
+        return JsonUtil.GSON.toJson(this);
+    }
 
-	public ModpackInstaller getInstaller() {
-		return installer;
-	}
+    public ModpackInstaller getInstaller() {
+        return installer;
+    }
 
-	private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar.disabled"), FileFilterUtils.suffixFileFilter(".zip.disabled"), FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
+    private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar.disabled"), FileFilterUtils.suffixFileFilter(".zip.disabled"), FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
 
-	//walks mod directory and creates Mod objects for any not found
-	//Remove Mod entries for files that are no longer available.
-	public void verifyMods() {
-		new Thread(() -> {
-			File modDir = getModDirectory();
-			File[] mods = modDir.listFiles(MOD_FILTER);
-			List<ModInstaller> newMods = Lists.newArrayList();
-			if (mods == null || mods.length == 0) {
-				this.mods.clear();
-				return;
-			}
-			if (this.mods != null) {
-				List<File> files = Lists.newArrayList(mods);
-				List<ModInstaller> removal = Lists.newArrayList();
-				for (ModInstaller mod : this.mods) {
-					Collection<File> sorted = Collections2.filter(files, f -> {
-						if (f != null && mod != null && mod.getHash() != null) {
-							return f.toString().equals(mod.getHash().getFilePath());
-						}
-						return false;
-					});
-					boolean match = false;
-					for (File file : sorted) {
-						if (mod.matches(file))
-							match = true;
-					}
-					if (!match) {
-						removal.add(mod);
-					}
-				}
-				this.mods.removeAll(removal);
+    //walks mod directory and creates Mod objects for any not found
+    //Remove Mod entries for files that are no longer available.
+    public void verifyMods() {
+        File modDir = getModDirectory();
+        File[] mods = modDir.listFiles(MOD_FILTER);
+        List<ModInstaller> newMods = Lists.newArrayList();
+        if (mods == null || mods.length == 0) {
+            this.mods.clear();
+            return;
+        }
+        if (this.mods != null) {
+            List<File> files = Lists.newArrayList(mods);
+            List<ModInstaller> removal = Lists.newArrayList();
+            for (ModInstaller mod : this.mods) {
+                Collection<File> sorted = Collections2.filter(files, f -> {
+                    if (f != null && mod != null && mod.getHash() != null) {
+                        return f.toString().equals(mod.getHash().getFilePath());
+                    }
+                    return false;
+                });
+                boolean match = false;
+                for (File file : sorted) {
+                    if (mod.matches(file))
+                        match = true;
+                }
+                if (!match) {
+                    removal.add(mod);
+                }
+            }
+            this.mods.removeAll(removal);
 
-				files.forEach(file -> {
-					boolean match = false;
-					Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
-						if (m != null) {
-							return m.getHash().getFilePath().equals(file.toString());
-						}
-						return false;
-					});
-					for (ModInstaller mod : sorted) {
-						if (mod.matches(file)) {
-							match = true;
-							break;
-						}
-					}
-					if (!match) {
-						ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
-						newMods.add(mod);
-					}
-				});
-				this.mods.addAll(newMods);
-			}
+            files.forEach(file -> {
+                boolean match = false;
+                Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
+                    if (m != null) {
+                        return m.getHash().getFilePath().equals(file.toString());
+                    }
+                    return false;
+                });
+                for (ModInstaller mod : sorted) {
+                    if (mod.matches(file)) {
+                        match = true;
+                        break;
+                    }
+                }
+                if (!match) {
+                    ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
+                    newMods.add(mod);
+                }
+            });
+            this.mods.addAll(newMods);
+        }
+        this.save();
+    }
 
-			MiscUtil.runLaterIfNeeded(this::save);
-		}).start();
+    public boolean isInstalling() {
+        return installing.get();
+    }
 
-	}
+    public SimpleBooleanProperty installingProperty() {
+        return installing;
+    }
 
-	public boolean isInstalling() {
-		return installing.get();
-	}
+    public void setInstalling(boolean installing) {
+        this.installing.set(installing);
+    }
 
-	public SimpleBooleanProperty installingProperty() {
-		return installing;
-	}
+    public String createLaunchScript() {
+        StringBuilder builder = new StringBuilder();
 
-	public void setInstalling(boolean installing) {
-		this.installing.set(installing);
-	}
+        String mainClass = "mainClass" + "net.minecraft.launcherwrapper.Launcher" + "\n";
+        builder.append(mainClass);
 
-	public String createLaunchScript() {
-		StringBuilder builder = new StringBuilder();
-
-		String mainClass = "mainClass" + "net.minecraft.launcherwrapper.Launcher" + "\n";
-		builder.append(mainClass);
-
-		//TODO applet class (wrapper thing?)
-		//TODO unfinished
-		return "";
-	}
+        //TODO applet class (wrapper thing?)
+        //TODO unfinished
+        return "";
+    }
 
 }

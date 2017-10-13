@@ -14,6 +14,7 @@ import com.hearthproject.oneclient.json.models.minecraft.AssetObject;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.minecraft.Version;
 import com.hearthproject.oneclient.json.models.modloader.forge.ForgeVersionProfile;
+import com.hearthproject.oneclient.util.BindUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.FileUtil;
@@ -113,8 +114,8 @@ public class MinecraftUtil {
 	}
 
 	public static ObservableList<String> getVersions(final boolean snapshots) {
-		ObservableList<String> versions = getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(MiscUtil.toObservableList());
-		versions.add(0, "All");
+        ObservableList<String> versions = getGameVersionData().versions.stream().filter(p -> p.isRelease() || snapshots).map(GameVersion.VersionData::getId).collect(BindUtil.toObservableList());
+        versions.add(0, "All");
 		return versions;
 	}
 

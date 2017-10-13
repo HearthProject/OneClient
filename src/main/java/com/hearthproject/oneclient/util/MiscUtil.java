@@ -10,8 +10,6 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Hyperlink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -23,7 +21,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 public class MiscUtil {
 
@@ -102,16 +99,6 @@ public class MiscUtil {
 		} else {
 			Platform.runLater(runnable);
 		}
-	}
-
-	public static <T> Collector<T, ?, ObservableList<T>> toObservableList() {
-		return Collector.of(
-			FXCollections::observableArrayList,
-			ObservableList::add,
-			(l1, l2) -> {
-				l1.addAll(l2);
-				return l1;
-			});
 	}
 
 	public static class ProviderProperty<T> extends ObjectProperty<T> {

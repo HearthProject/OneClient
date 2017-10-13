@@ -1,5 +1,6 @@
 package com.hearthproject.oneclient.api.modpack;
 
+import com.hearthproject.oneclient.fx.nodes.ModTile;
 import com.hearthproject.oneclient.util.files.FileHash;
 import org.apache.commons.io.FilenameUtils;
 
@@ -83,4 +84,8 @@ public class ModInstaller implements IInstallable {
 	public void setHash(FileHash hash) {
 		this.hash = hash;
 	}
+
+    public ModTile createTile(Instance instance, boolean download) {
+        return new ModTile(instance, this);
+    }
 }

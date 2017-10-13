@@ -1,11 +1,11 @@
 package com.hearthproject.oneclient.fx.nodes;
 
 import com.hearthproject.oneclient.DownloadTask;
+import com.hearthproject.oneclient.api.cmdb.Database;
 import com.hearthproject.oneclient.api.modpack.DownloadManager;
 import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.curse.Curse;
 import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
-import com.hearthproject.oneclient.api.modpack.curse.data.CurseFullProject;
 import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
@@ -38,7 +38,7 @@ public class ModpackTile extends HBox implements Comparable<ModpackTile> {
 	@FXML
 	protected StackPane nodePane;
 	@FXML
-	protected ComboBox<CurseFullProject.CurseFile> comboFile;
+	protected ComboBox<Database.ProjectFile> comboFile;
 	@FXML
 	protected VBox left, right;
 
@@ -69,11 +69,10 @@ public class ModpackTile extends HBox implements Comparable<ModpackTile> {
 			installer.setFile(comboFile.getValue());
 			comboFile.valueProperty().addListener((v, a, b) -> installer.setFile(b));
 		}
-		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers((double) instance.tempInfo.get("downloads")));
+		Label downloads = info("Downloads: %s", MiscUtil.formatNumbers((int) instance.tempInfo.get("downloads")));
 		Label gameVersions = info("Versions: %s", instance.tempInfo.get("gameVersions"));
 		right.setAlignment(Pos.BASELINE_RIGHT);
 		right.getChildren().addAll(gameVersions, downloads);
-		//		right.getChildren().addAll(((List<CurseProject.Category>)instance.info.get("categories")).stream().map(CurseProject.Category::getNode).collect(Collectors.toList()));
 		left.getChildren().addAll(
 			info("By %s", instance.tempInfo.get("authors")),
 			info("%s", instance.tempInfo.get("summary"))
