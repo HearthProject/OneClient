@@ -62,7 +62,6 @@ public class CurseModPane extends ContentPane {
     };
 
     private Instance instance;
-    private PageService pageService;
     private List<Database.Project> mods;
 
     public CurseModPane() {
@@ -104,12 +103,12 @@ public class CurseModPane extends ContentPane {
 
         mods = Curse.DATABASE.getPopular("mods");
 
-        loadingIcon.visibleProperty().bind(pageService.runningProperty());
-        buttonSearch.disableProperty().bind(pageService.runningProperty());
-        listMods.disableProperty().bind(pageService.runningProperty());
-        textSearch.disableProperty().bind(pageService.runningProperty());
-        filterSort.disableProperty().bind(pageService.runningProperty());
-        toggleSort.disableProperty().bind(pageService.runningProperty());
+//        loadingIcon.visibleProperty().bind(pageService.runningProperty());
+//        buttonSearch.disableProperty().bind(pageService.runningProperty());
+//        listMods.disableProperty().bind(pageService.runningProperty());
+//        textSearch.disableProperty().bind(pageService.runningProperty());
+//        filterSort.disableProperty().bind(pageService.runningProperty());
+//        toggleSort.disableProperty().bind(pageService.runningProperty());
     }
 
     @Override
@@ -138,5 +137,6 @@ public class CurseModPane extends ContentPane {
     public void close() {
         tiles.clear();
     }
+
 
 }

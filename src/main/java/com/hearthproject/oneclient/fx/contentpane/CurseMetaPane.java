@@ -1,8 +1,5 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.cmdb.Database;
 import com.hearthproject.oneclient.api.modpack.Instance;
@@ -11,8 +8,9 @@ import com.hearthproject.oneclient.api.modpack.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.nodes.ModpackTile;
-import com.hearthproject.oneclient.util.AsyncTask;
+import com.hearthproject.oneclient.util.AsyncService;
 import com.hearthproject.oneclient.util.BindUtil;
+import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
@@ -28,11 +26,8 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 public class CurseMetaPane extends ContentPane {
-    private static final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     public static final ObservableList<String> VERSIONS = MinecraftUtil.getVersions(false);
 
     static {
@@ -52,7 +47,7 @@ public class CurseMetaPane extends ContentPane {
     public ImageView loadingIcon;
 
     private SimpleIntegerProperty count = new SimpleIntegerProperty(0);
-    private SimpleBooleanProperty pageService = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
 
     public CurseMetaPane() {
         super("gui/contentpanes/curse_packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
@@ -60,24 +55,23 @@ public class CurseMetaPane extends ContentPane {
 
     private final EventHandler<ScrollEvent> scroll = event -> {
         if (event.getDeltaY() < 0) {
-            page();
+            load();
         }
     };
 
-    public AsyncTask<List<Database.Project>> modpacks;
+    private AsyncService<List<Database.Project>> modpacks;
+    private PageService pageService;
 
     @Override
     protected void onStart() {
-
-        modpacks = new AsyncTask<>(() -> FXCollections.observableArrayList(Curse.DATABASE.getPopular("modpack")));
-        service.submit(modpacks);
+        pageService = new PageService(10, () -> modpacks.getValue());
+        modpacks = new AsyncService<>(() -> FXCollections.observableArrayList(Curse.DATABASE.getPopular("modpack")));
+        modpacks.start();
         BindUtil.bindMapping(tiles, listPacks.getItems(), project -> {
             Instance instance = new CurseImporter(project).create();
             return new ModpackTile(instance);
         });
-        modpacks.addListener(this::page, service);
-
-
+        modpacks.setOnSucceeded(event -> load());
         anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
         anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
@@ -105,26 +99,22 @@ public class CurseMetaPane extends ContentPane {
         listPacks.setPlaceholder(placeholder = new Label("Loading..."));
         listPacks.setOnScroll(scroll);
 
-        loadingIcon.visibleProperty().bind(pageService);
-        buttonSearch.disableProperty().bind(pageService);
-        textSearch.disableProperty().bind(pageService);
-        filterSort.disableProperty().bind(pageService);
-        filterVersion.disableProperty().bind(pageService);
-        toggleSort.disableProperty().bind(pageService);
+        loadingIcon.visibleProperty().bind(pageService.runningProperty());
+        buttonSearch.disableProperty().bind(pageService.runningProperty());
+        textSearch.disableProperty().bind(pageService.runningProperty());
+        filterSort.disableProperty().bind(pageService.runningProperty());
+        filterVersion.disableProperty().bind(pageService.runningProperty());
+        toggleSort.disableProperty().bind(pageService.runningProperty());
 
 
     }
 
-    public void page() {
 
-        try {
-            List<Database.Project> add = Lists.newArrayList();
-            for (int i = 0; i < 10; i++) {
-                add.add(modpacks.get().remove(0));
-            }
-            tiles.addAll(add);
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+    public void load() {
+        if (!pageService.isRunning()) {
+            pageService.reset();
+            pageService.start();
+            pageService.setOnSucceeded(event -> MiscUtil.runLaterIfNeeded(() -> tiles.addAll(pageService.getValue())));
         }
     }
 
@@ -142,27 +132,4 @@ public class CurseMetaPane extends ContentPane {
         return false;
     }
 
-//	public class PackService extends PageService<ModpackTile> {
-//
-//		public PackService(Supplier<List<Map.Entry<String, CurseProject>>> entries, ObservableList<ModpackTile> tiles, StringProperty placeholder, IntegerProperty count) {
-//			super(entries, tiles, placeholder, count);
-//		}
-//
-//		@Override
-//		protected Task<Void> createTask() {
-//			return new PageTask<ModpackTile>(entries.get(), tiles, placeholder, count) {
-//				@Override
-//				public void addElement(List<ModpackTile> elements, Map.Entry<String, CurseProject> entry) {
-//					Instance instance = new CurseImporter(entry.getKey()).create();
-//					if (instance != null) {
-//						MiscUtil.runLaterIfNeeded(() -> {
-//							elements.add(new ModpackTile(instance));
-//							page.setText((count.intValue() - entries.get().size()) + "/" + count.intValue());
-//						});
-//					}
-//
-//				}
-//			};
-//		}
-//	}
 }
