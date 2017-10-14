@@ -3,6 +3,7 @@ package com.hearthproject.oneclient.util.files;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.tukaani.xz.XZInputStream;
@@ -162,5 +163,17 @@ public class FileUtil {
         if (files.length > n)
             return files[n];
         return null;
+    }
+
+
+    public static String createMD5Hash(File file) {
+        String md5 = null;
+        try (FileInputStream stream = new FileInputStream(file)) {
+            md5 = DigestUtils.md5Hex(stream);
+            stream.close();
+        } catch (IOException e) {
+            OneClientLogging.error(e);
+        }
+        return md5;
     }
 }

@@ -57,7 +57,8 @@
                 </HBox>
                 <HBox fx:id="hBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="200.0" prefHeight="513.0" prefWidth="1087.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <ListView fx:id="listPacks" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                        <ListView fx:id="tiles" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                  HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </children>

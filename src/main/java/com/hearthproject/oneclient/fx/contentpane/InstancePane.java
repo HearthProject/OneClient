@@ -1,10 +1,10 @@
 package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.modpack.Instance;
-import com.hearthproject.oneclient.api.modpack.ModInstaller;
-import com.hearthproject.oneclient.api.modpack.ModpackManager;
-import com.hearthproject.oneclient.api.modpack.curse.CurseInstaller;
+import com.hearthproject.oneclient.api.base.Instance;
+import com.hearthproject.oneclient.api.base.ModInstaller;
+import com.hearthproject.oneclient.api.base.ModpackManager;
+import com.hearthproject.oneclient.api.modpack.curse.CurseDownloader;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
 import com.hearthproject.oneclient.fx.controllers.NewInstanceController;
@@ -19,6 +19,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+
+import java.io.File;
 
 public class InstancePane extends ContentPane {
 
@@ -63,7 +65,7 @@ public class InstancePane extends ContentPane {
         textPackName.setText(instance.getName());
         textMinecraftVersion.setText("Minecraft " + instance.getGameVersion());
 
-        packIcon.setImage(ImageUtil.openImage(instance.getIcon()));
+        packIcon.setImage(ImageUtil.openImage(new File(instance.getIcon())));
         packIcon.setFitWidth(150);
         packIcon.setFitHeight(150);
 
@@ -73,12 +75,12 @@ public class InstancePane extends ContentPane {
 
         buttonChangePack.setDisable(true);
         buttonUpdate.setDisable(true);
-        if (instance.installer instanceof CurseInstaller) {
+        if (instance.installer instanceof CurseDownloader) {
             buttonUpdate.setDisable(false);
             buttonUpdate.setOnAction(event -> instance.update());
             buttonChangePack.setOnAction(event -> {
 
-                CurseInstaller installer = (CurseInstaller) instance.installer;
+                CurseDownloader installer = (CurseDownloader) instance.installer;
 //               TODO Database.ProjectFile update = installer.findUpdate(instance, false);
 //                if (update != null) {
 //                    installer.setFile(update);
@@ -92,13 +94,14 @@ public class InstancePane extends ContentPane {
 
         buttonBack.setOnAction(event -> ContentPanes.INSTANCES_PANE.button.fire());
 
-        buttonGetCurseMods.setOnAction(event -> CurseModPane.show(instance));
+        //TODO
+//        buttonGetCurseMods.setOnAction(event -> CurseModPane.show(instance));
         buttonDelete.setOnAction(event -> {
             instance.delete();
             Main.mainController.setContent(ContentPanes.INSTANCES_PANE);
         });
         ModpackManager.createExporters(buttonExport.getItems(), instance);
-        BindUtil.bindMapping(instance.getMods(), listMods.getItems(), mod -> mod.createTile(instance, false));
+        BindUtil.bindMapping(instance.getMods(), listMods.getItems(), mod -> mod.createTile(instance));
 //		TableColumn<ModInstaller, Boolean> columnEnabled = new TableColumn<>("Enabled");
 //		columnEnabled.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isEnabled()));
 //

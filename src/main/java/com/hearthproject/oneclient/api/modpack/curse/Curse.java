@@ -4,127 +4,55 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
-import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.cmdb.Database;
-import com.hearthproject.oneclient.api.modpack.curse.data.CurseProjects;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Curse {
-
-    public static Database DATABASE;
-    public static Cache<String, CurseProjects> MODPACKS_CACHE;
-
+    private static Cache<String, Database> DATABASE_CACHE;
+    private static final String DATABASE_KEY = "MAIN";
     private static final String CURSE_FORGE = "https://minecraft.curseforge.com/projects/${projectID}";
-    private static final String CURSE_META_BASE = "https://cursemeta.dries007.net/";
-    private static final String CURSE_META_PROJECT = CURSE_META_BASE + "${projectID}.json";
-    private static final String CURSE_META_FILES = CURSE_META_BASE + "${projectID}/files.json";
-    private static final String CURSE_META_FILE = CURSE_META_BASE + "${projectID}/${fileID}.json";
-    private static final String CURSE_META_MODPACKS = CURSE_META_BASE + "modpacks.json";
-    private static final String CURSE_META_MODS = CURSE_META_BASE + "mods.json";
-
     private static final String CURSE_META_DATA_BASE = "https://openminemods.digitalfishfun.com/raw_cleaned.json.xz";
 
     public static void init() {
+        OneClientLogging.logger.info("Loading Curse Modpacks");
         RemovalListener<String, Object> removalListener = removal -> {
             if (removal.getCause() == RemovalCause.EXPIRED) {
-                getModpacks();
+                DATABASE_CACHE.put(DATABASE_KEY, loadDatabase());
             }
         };
-        MODPACKS_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).removalListener(removalListener).build();
-        getModpacks();
-        getMods();
-
-        FileUtil.downloadFromURL(CURSE_META_DATA_BASE, new File(Constants.TEMPDIR, "cmdb.json.xz"));
-        FileUtil.extract(new File(Constants.TEMPDIR, "cmdb.json.xz"), new File(Constants.TEMPDIR, "cmdb.json"));
-
-        DATABASE = JsonUtil.read(new File(Constants.TEMPDIR, "cmdb.json"), Database.class);
-        if (DATABASE != null) {
-            DATABASE.generatePopular();
-        }
-
+        DATABASE_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).removalListener(removalListener).build();
     }
 
-    public static URL getProjectURL(String projectID) {
-        try {
-            return new URL(CURSE_META_PROJECT.replace("${projectID}", projectID));
-        } catch (MalformedURLException e) {
-            OneClientLogging.error(e);
-        }
-        return null;
+    public static Database getDatabase() {
+        if (!DATABASE_CACHE.asMap().containsKey(DATABASE_KEY))
+            DATABASE_CACHE.put(DATABASE_KEY, loadDatabase());
+        return DATABASE_CACHE.getIfPresent(DATABASE_KEY);
     }
 
-    public static URL getProjectFilesURL(String projectID) {
-        try {
-            return new URL(CURSE_META_FILES.replace("${projectID}", projectID));
-        } catch (MalformedURLException e) {
-            OneClientLogging.error(e);
-        }
-        return null;
-    }
-
-    public static URL getFileURL(String projectID, String fileID) {
-        try {
-            return new URL(CURSE_META_FILE.replace("${projectID}", projectID).replace("${fileID}", fileID));
-        } catch (MalformedURLException e) {
-            OneClientLogging.error(e);
-        }
-        return null;
-    }
-
-    public static CurseProjects getMods() {
-
-        CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODS");
-        if (packs == null) {
-            try {
-                OneClientLogging.info("Loading Curse Mods");
-                packs = JsonUtil.read(new URL(CURSE_META_MODS), CurseProjects.class);
-                MODPACKS_CACHE.put("MODS", packs);
-            } catch (MalformedURLException e) {
-                OneClientLogging.error(e);
+    private static Database loadDatabase() {
+        OneClientLogging.info("Curse - Retrieving Database");
+        File xz = new File("cmdb.json.xz");
+        File json = new File("cmdb.json");
+        if (xz.exists())
+            FileUtils.deleteQuietly(xz);
+        if (json.exists())
+            FileUtils.deleteQuietly(json);
+        FileUtil.downloadFromURL(CURSE_META_DATA_BASE, xz);
+        if (xz.exists()) {
+            FileUtil.extract(xz, json);
+            if (json.exists()) {
+                return JsonUtil.read(json, Database.class);
             }
         }
-        return packs;
+        return null;
     }
-
-    public static CurseProjects getModpacks() {
-
-        CurseProjects packs = MODPACKS_CACHE.getIfPresent("MODPACKS");
-        if (packs == null) {
-            try {
-                OneClientLogging.info("Loading Curse Modpacks");
-                packs = JsonUtil.read(new URL(CURSE_META_MODPACKS), CurseProjects.class);
-                MODPACKS_CACHE.put("MODPACKS", packs);
-            } catch (MalformedURLException e) {
-                OneClientLogging.error(e);
-            }
-        }
-        return packs;
-    }
-
-//    public static List<CurseFullProject.CurseFile> getFiles(String projectId, String gameVersion) {
-//        CurseFullProject.CurseFile[] files = JsonUtil.read(Curse.getProjectFilesURL(projectId), CurseFullProject.CurseFile[].class);
-//        if (files != null) {
-//            List<CurseFullProject.CurseFile> curseFiles = Lists.newArrayList(files).stream().filter(file -> gameVersion.isEmpty() || isCompatible(gameVersion, file.getGameVersion())).collect(Collectors.toList());
-//            curseFiles.forEach(f -> f.projectId = projectId);
-//            curseFiles.sort(Comparator.comparing(CurseFullProject.CurseFile::getDate));
-//            return curseFiles;
-//        }
-//        return Lists.newArrayList();
-//    }
-//
-//    public static List<CurseFullProject.CurseFile> getNewFiles(String projectId, String gameVersion, CurseFullProject.CurseFile current) {
-//        if (current == null)
-//            return getFiles(projectId, gameVersion);
-//        return getFiles(projectId, gameVersion).stream().filter(file -> file.compareTo(current) < 0).collect(Collectors.toList());
-//    }
 
     //Hardcode sub version comparison
     public static String formatVersion(String version) {
@@ -147,8 +75,8 @@ public class Curse {
         return false;
     }
 
-    public static String getCurseForge(String projectID) {
-        return CURSE_FORGE.replace("${projectID}", projectID);
+    public static String getCurseForge(int projectID) {
+        return CURSE_FORGE.replace("${projectID}", String.valueOf(projectID));
     }
 
 }

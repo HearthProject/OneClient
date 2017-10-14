@@ -1,7 +1,9 @@
-package com.hearthproject.oneclient.api.modpack;
+package com.hearthproject.oneclient.api.base;
 
 import com.google.common.collect.Maps;
+import com.hearthproject.oneclient.api.modpack.IExporter;
 import com.hearthproject.oneclient.api.modpack.curse.CurseExporter;
+import com.hearthproject.oneclient.api.modpack.manual.ModlistExporter;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 

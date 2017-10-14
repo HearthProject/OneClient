@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.fx.controllers;
 
 import com.hearthproject.oneclient.Main;
-import com.hearthproject.oneclient.api.modpack.Instance;
-import com.hearthproject.oneclient.api.modpack.InstanceManager;
+import com.hearthproject.oneclient.api.base.Instance;
+import com.hearthproject.oneclient.api.base.InstanceManager;
 import com.hearthproject.oneclient.fx.contentpane.ContentPanes;
 import com.hearthproject.oneclient.json.models.minecraft.GameVersion;
 import com.hearthproject.oneclient.json.models.modloader.IModloader;
@@ -59,13 +59,6 @@ public class NewInstanceController {
 	public Instance instance;
 
 	public static void start(Instance instance) {
-		//TODO DEDUPLICATE THIS
-		if (!MinecraftAuthController.isUserValid()) {
-			MinecraftAuthController.updateGui();
-			//TODO replace with a login request
-			OneClientLogging.alert("You must log into minecraft to play the game!", "You are not logged in!");
-			return;
-		}
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL fxmlUrl = classLoader.getResource("gui/instance_creation.fxml");

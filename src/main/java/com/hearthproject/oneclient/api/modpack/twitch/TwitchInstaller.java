@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.api.modpack.twitch;
 
-import com.hearthproject.oneclient.api.modpack.Instance;
-import com.hearthproject.oneclient.api.modpack.ModpackInstaller;
-import com.hearthproject.oneclient.api.modpack.PackType;
+import com.hearthproject.oneclient.api.base.Instance;
+import com.hearthproject.oneclient.api.base.ModpackInstaller;
+import com.hearthproject.oneclient.api.base.PackType;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FileUtils;
 

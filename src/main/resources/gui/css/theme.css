@@ -694,3 +694,8 @@
 	-fx-background-color: -dark-background-color;
 	-fx-text-fill: -text-color;
 }
+
+.oc-dialog {
+    -fx-background-color: -fill-color;
+    -fx-text-fill: -text-color;
+}

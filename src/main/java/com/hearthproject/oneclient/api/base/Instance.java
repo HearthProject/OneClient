@@ -1,11 +1,11 @@
-package com.hearthproject.oneclient.api.modpack;
+package com.hearthproject.oneclient.api.base;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.modpack.manual.ManualModInstaller;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.MiscUtil;
-import com.hearthproject.oneclient.util.files.FileHash;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
@@ -19,11 +19,8 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.hearthproject.oneclient.util.MiscUtil.checkCancel;
 
@@ -33,21 +30,15 @@ public class Instance {
     public String packVersion;
     public String gameVersion;
     public String forgeVersion;
-    public String url;
-    public Map<String, Object> info;
-    public transient Map<String, Object> tempInfo;
     public ObservableList<ModInstaller> mods = FXCollections.observableArrayList();
 
     public transient SimpleBooleanProperty installing;
     public ModpackInstaller installer;
 
-    public Instance(String name, String url, ModpackInstaller installer, Info... info) {
+    public Instance(String name, ModpackInstaller installer) {
         this();
         this.name = name;
-        this.url = url;
         this.installer = installer;
-        this.info = Arrays.stream(info).filter(Info::isKept).collect(Collectors.toMap(Info::getKey, Info::getInfo));
-        this.tempInfo = Arrays.stream(info).filter(Info::isTemp).collect(Collectors.toMap(Info::getKey, Info::getInfo));
     }
 
     public Instance() {
@@ -87,10 +78,6 @@ public class Instance {
         this.forgeVersion = forgeVersion;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public File getDirectory() {
         return new File(Constants.INSTANCEDIR, getName());
     }
@@ -107,12 +94,12 @@ public class Instance {
         return FileUtil.findDirectory(getDirectory(), "config");
     }
 
-    public File getIcon() {
+    public String getIcon() {
         File file = getIconFile();
         if (!file.exists()) {
             ImageUtil.createIcon(MiscUtil.parseLetters(getName()), file);
         }
-        return file;
+        return file.toString();
     }
 
     public File getIconFile() {
@@ -127,10 +114,6 @@ public class Instance {
         return getMods().stream().anyMatch(m -> m.getName().equals(name));
     }
 
-    public void setMods(ObservableList<ModInstaller> mods) {
-        this.mods = mods;
-    }
-
     public void install() {
         OneClientLogging.info("{}: Installing with {}", getName(), installer.toString());
         setInstalling(true);
@@ -138,7 +121,6 @@ public class Instance {
         FileUtil.createDirectory(getDirectory());
         if (getDirectory().exists())
             InstanceManager.addInstance(this);
-
         if (checkCancel())
             return;
         if (installer != null)
@@ -186,7 +168,6 @@ public class Instance {
     }
 
     private static final FileFilter MOD_FILTER = FileFilterUtils.or(FileFilterUtils.suffixFileFilter(".jar.disabled"), FileFilterUtils.suffixFileFilter(".zip.disabled"), FileFilterUtils.suffixFileFilter(".jar"), FileFilterUtils.suffixFileFilter(".zip"));
-
     //walks mod directory and creates Mod objects for any not found
     //Remove Mod entries for files that are no longer available.
     public void verifyMods() {
@@ -202,14 +183,14 @@ public class Instance {
             List<ModInstaller> removal = Lists.newArrayList();
             for (ModInstaller mod : this.mods) {
                 Collection<File> sorted = Collections2.filter(files, f -> {
-                    if (f != null && mod != null && mod.getHash() != null) {
-                        return f.toString().equals(mod.getHash().getFilePath());
+                    if (f != null && mod != null && mod.getData() != null) {
+                        return mod.getData().matches(f);
                     }
                     return false;
                 });
                 boolean match = false;
                 for (File file : sorted) {
-                    if (mod.matches(file))
+                    if (mod.equals(file))
                         match = true;
                 }
                 if (!match) {
@@ -222,18 +203,18 @@ public class Instance {
                 boolean match = false;
                 Collection<ModInstaller> sorted = Collections2.filter(this.mods, m -> {
                     if (m != null) {
-                        return m.getHash().getFilePath().equals(file.toString());
+                        return m.getData().matches(file);
                     }
                     return false;
                 });
                 for (ModInstaller mod : sorted) {
-                    if (mod.matches(file)) {
+                    if (mod.getData().matches(file)) {
                         match = true;
                         break;
                     }
                 }
                 if (!match) {
-                    ModInstaller mod = new ModInstaller(PackType.MANUAL, new FileHash(file));
+                    ModInstaller mod = new ManualModInstaller(new FileData(file));
                     newMods.add(mod);
                 }
             });

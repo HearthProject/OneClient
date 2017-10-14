@@ -3,8 +3,8 @@ package com.hearthproject.oneclient.util.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hearthproject.oneclient.Constants;
-import com.hearthproject.oneclient.api.modpack.Instance;
-import com.hearthproject.oneclient.api.modpack.InstanceManager;
+import com.hearthproject.oneclient.api.base.Instance;
+import com.hearthproject.oneclient.api.base.InstanceManager;
 import com.hearthproject.oneclient.fx.SplashScreen;
 import com.hearthproject.oneclient.fx.controllers.LogController;
 import com.hearthproject.oneclient.fx.controllers.MinecraftAuthController;
@@ -54,7 +54,8 @@ public class MinecraftUtil {
 	public static File VERSION_MANIFEST;
 
 	public static void load() {
-		ASSETS = new File(Constants.MINECRAFTDIR, "assets");
+        OneClientLogging.logger.info("Loading Minecraft versions");
+        ASSETS = new File(Constants.MINECRAFTDIR, "assets");
 		LEGACY_ASSETS = new File(ASSETS, "legacy");
 		VERSIONS = new File(Constants.MINECRAFTDIR, "versions");
 		LIBRARIES = new File(Constants.MINECRAFTDIR, "libraries");

@@ -1,6 +1,7 @@
-package com.hearthproject.oneclient.api.modpack;
+package com.hearthproject.oneclient.api.base;
 
 import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
 import com.hearthproject.oneclient.Constants;
 import com.hearthproject.oneclient.api.modpack.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.SplashScreen;
@@ -13,16 +14,17 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class InstanceManager {
     protected static ObservableMap<String, Instance> INSTANCES_MAP = FXCollections.observableHashMap();
     protected static ObservableList<Instance> INSTANCES = FXCollections.observableArrayList();
+    public static ObservableList<Instance> FEATURED = FXCollections.observableArrayList();
+    public static ObservableList<Instance> RECENT = FXCollections.observableArrayList();
 
     static {
         INSTANCES_MAP.addListener((MapChangeListener<? super String, ? super Instance>) change -> {
@@ -39,6 +41,7 @@ public class InstanceManager {
         MiscUtil.runLaterIfNeeded(() -> {
             if (!INSTANCES_MAP.containsKey(instance.getName())) {
                 INSTANCES_MAP.put(instance.getName(), instance);
+                addRecent(instance);
                 instance.verifyMods();
             }
         });
@@ -120,25 +123,25 @@ public class InstanceManager {
         private int projectId;
     }
 
-    public static List<Integer> getFeaturedProjects() {
-        Featured[] array = null;
+    public static List<Featured> getFeaturedProjects() {
+
+        Type list = new TypeToken<List<Featured>>() {
+        }.getType();
+
         try {
-            array = JsonUtil.read(new URL(FEATURED_URL), Featured[].class);
+            return JsonUtil.read(new URL(FEATURED_URL), list);
         } catch (MalformedURLException e) {
-            OneClientLogging.error(e);
-        }
-        if (array != null) {
-            return Arrays.stream(array).map(f -> f.projectId).collect(Collectors.toList());
+            e.printStackTrace();
         }
         return null;
     }
 
     public static ObservableList<Instance> getFeaturedInstances() {
         ObservableList<Instance> list = FXCollections.observableArrayList();
-        List<Integer> featured = getFeaturedProjects();
+        List<Featured> featured = getFeaturedProjects();
         if (featured != null) {
-            for (int project : featured) {
-                Instance instance = new CurseImporter(project).create();
+            for (Featured project : featured) {
+                Instance instance = new CurseImporter(project.name, project.projectId).create();
                 if (INSTANCES_MAP.containsKey(instance.getName())) {
                     instance.setInstalling(true);
                 }

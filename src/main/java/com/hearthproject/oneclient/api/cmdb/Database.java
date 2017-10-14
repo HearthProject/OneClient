@@ -1,8 +1,9 @@
 package com.hearthproject.oneclient.api.cmdb;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.annotations.SerializedName;
+import com.hearthproject.oneclient.api.modpack.curse.Curse;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import javafx.scene.control.Hyperlink;
@@ -13,12 +14,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Database {
-    public static final String WILDCARD = "*";
+    public static final Set<String> WILDCARDS = Sets.newHashSet("*", "All");
     public Map<String, String> authors;
     public Map<Integer, Project> projects;
     public Map<Integer, Category> categories;
     public Map<Integer, ProjectFile> files;
-    public Map<String, List<Project>> popular;
 
     public Database() {
     }
@@ -35,38 +35,49 @@ public class Database {
         return categories.getOrDefault(pid, null);
     }
 
-    public List<Project> searchProjects(String query, String type) {
-        return searchProjects(query, type, 25, 80, WILDCARD);
+    public List<Project> searchProjects(String query, String type, String version, String sort, boolean reverse) {
+        return searchProjects(query, type, -1, 80, version, sort, reverse);
     }
 
-    public List<Project> searchProjects(String query, String type, int limit, int threshold, String version) {
+
+    public List<Project> searchProjects(String query, String type, String sort) {
+        return searchProjects(query, type, -1, 80, "*", sort, false);
+    }
+
+    public List<Project> searchProjects(String query, String type, int limit, int threshold, String version, String sort, boolean reverse) {
         List<Pair<Project, Integer>> out = Lists.newArrayList();
         for (Project project : projects.values()) {
-            if (!type.equals(WILDCARD) && !project.type.equals(type))
+            if (!isWildcard(type) && !project.type.equals(type))
                 continue;
-            if (!version.equals(WILDCARD) && !project.versions.contains(version))
+            if (!isWildcard(version) && !project.versions.contains(version))
                 continue;
+            if (!query.isEmpty()) {
+                int partial = FuzzySearch.partialRatio(query.toLowerCase(), project.title.toLowerCase());
+                int full = FuzzySearch.ratio(query.toLowerCase(), project.title.toLowerCase());
 
-            int partial = FuzzySearch.partialRatio(query.toLowerCase(), project.title.toLowerCase());
-            int full = FuzzySearch.ratio(query.toLowerCase(), project.title.toLowerCase());
+                int body = FuzzySearch.partialRatio(query.toLowerCase(), project.desc.toLowerCase());
+                int full_body = FuzzySearch.ratio(query.toLowerCase(), project.desc.toLowerCase());
 
-            int body = FuzzySearch.partialRatio(query.toLowerCase(), project.desc.toLowerCase());
-            int full_body = FuzzySearch.ratio(query.toLowerCase(), project.desc.toLowerCase());
-
-            if (partial >= threshold) {
-                out.add(Pair.of(project, partial + full));
-                if (out.size() >= limit)
-                    break;
-                continue;
-            }
-            if (body >= threshold) {
-                out.add(Pair.of(project, body + full_body));
-                if (out.size() >= limit)
-                    break;
+                if (partial >= threshold) {
+                    out.add(Pair.of(project, partial + full));
+                    if (limit > 0 && out.size() >= limit)
+                        break;
+                    continue;
+                }
+                if (body >= threshold) {
+                    out.add(Pair.of(project, body + full_body));
+                    if (limit > 0 && out.size() >= limit)
+                        break;
+                }
+            } else {
+                out.add(Pair.of(project, 0));
             }
         }
         out.sort(Comparator.comparingInt(Pair::getValue));
         Collections.reverse(out);
+        Comparator<Project> sorting = sort(sort, true);
+        if (sorting != null)
+            return out.stream().map(Pair::getKey).sorted(sort(sort, reverse)).collect(Collectors.toList());
         return out.stream().map(Pair::getKey).collect(Collectors.toList());
     }
 
@@ -74,7 +85,7 @@ public class Database {
         return files.values().stream().filter(f -> f.filename.equals(filename.toLowerCase())).findAny().orElse(null);
     }
 
-    public List<Integer> getFiles(int pid, String version) {
+    public List<Integer> getProjectFiles(int pid, String version) {
         Project project = getProject(pid);
         if (project == null)
             return null;
@@ -87,34 +98,38 @@ public class Database {
         return out;
     }
 
-    public List<Project> getPopular(String type) {
-        return getPopular(type, -1, WILDCARD);
-    }
-
-    public List<Project> getPopular(String type, int limit, String version) {
-        List<Project> projects = this.popular.get(type);
-        if (!Objects.equals(version, WILDCARD))
-            projects = projects.stream().filter(p -> p.versions.contains(version)).collect(Collectors.toList());
-        if (limit > 0)
-            projects = projects.subList(0, limit);
-        return projects;
+    public List<ProjectFile> getFiles(List<Integer> ids) {
+        return ids.stream().map(id -> files.get(id)).sorted(Comparator.comparingInt(ProjectFile::getDate).reversed()).collect(Collectors.toList());
     }
 
     public static final String[] TYPES = new String[]{"mod", "texturepack", "world", "modpack"};
 
-    public void generatePopular() {
-        if (this.projects != null) {
-            this.popular = Maps.newHashMap();
-            for (String type : TYPES) {
-                List<Project> projects = this.projects.values().stream().filter(p -> p.type.equals(type)).sorted().collect(Collectors.toList());
-                this.popular.put(type, projects);
-            }
+    private boolean isWildcard(String query) {
+        return WILDCARDS.contains(query);
+    }
+
+    private Comparator<Project> sort(String sorting, boolean reverse) {
+        Comparator<Project> comparator;
+        switch (sorting.toLowerCase()) {
+            default:
+            case "popularity":
+                comparator = Comparator.comparing(Project::getPopularity).reversed();
+                break;
+            case "alphabetical":
+                comparator = Comparator.comparing(Project::getTitle).reversed();
+                break;
+            case "fuzzy":
+                return null;
         }
+        if (comparator == null)
+            return null;
+        return reverse ? comparator.reversed() : comparator;
     }
 
     public class Project implements Comparable<Project> {
         private boolean featured;
         private double popularity;
+        private int id;
         private int rank;
         private int downloads;
         private int primaryCategory;
@@ -127,10 +142,9 @@ public class Database {
         private String title;
         private String primaryAuthor;
         private List<String> authors;
-        private String id;
         private List<Integer> files;
-        private Set<String> versions;
         private List<Attachment> attachments;
+        private Set<String> versions;
 
         @Override
         public String toString() {
@@ -193,7 +207,7 @@ public class Database {
             return authors;
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
@@ -216,6 +230,10 @@ public class Database {
         @Override
         public int compareTo(Project project) {
             return Double.compare(project.popularity, popularity);
+        }
+
+        public List<ProjectFile> getProjectFiles() {
+            return Curse.getDatabase().getFiles(getFiles());
         }
     }
 

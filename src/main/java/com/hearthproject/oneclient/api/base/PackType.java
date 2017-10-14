@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.api.modpack;
+package com.hearthproject.oneclient.api.base;
 
 public enum PackType {
 	MANUAL,

@@ -1,8 +1,8 @@
 package com.hearthproject.oneclient.api.modpack.multimc;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.base.Instance;
 import com.hearthproject.oneclient.api.modpack.IImporter;
-import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.logging.OneClientLogging;
 import org.apache.commons.io.FilenameUtils;
@@ -33,8 +33,8 @@ public class MMCImporter implements IImporter {
 	public Instance create() {
 		String name = config.getProperty("name");
 		String gameVersion = config.getProperty("IntendedVersion");
-		Instance instance = new Instance(name, "", new MMCInstaller(pack));
-		instance.setGameVersion(gameVersion);
+        Instance instance = new Instance(name, new MMCInstaller(pack));
+        instance.setGameVersion(gameVersion);
 		instance.setForgeVersion(config.getProperty("ForgeVersion"));
 		return instance;
 	}

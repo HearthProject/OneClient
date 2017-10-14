@@ -1,9 +1,8 @@
 package com.hearthproject.oneclient.api.modpack.curse;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.base.Instance;
 import com.hearthproject.oneclient.api.modpack.IImporter;
-import com.hearthproject.oneclient.api.modpack.Instance;
-import com.hearthproject.oneclient.api.modpack.curse.data.Manifest;
 import com.hearthproject.oneclient.json.JsonUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -23,7 +22,7 @@ public class CurseZipImporter implements IImporter {
 	public Instance create() {
 		Manifest manifest = JsonUtil.read(new File(pack, "manifest.json"), Manifest.class);
 		if (manifest != null)
-			return new Instance(manifest.name, "", new CurseZipInstaller(manifest, pack));
-		return null;
+            return new Instance(manifest.name, new CurseInstaller(manifest, pack));
+        return null;
 	}
 }

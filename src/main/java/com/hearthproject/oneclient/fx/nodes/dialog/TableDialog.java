@@ -1,5 +1,6 @@
-package com.hearthproject.oneclient.fx.nodes;
+package com.hearthproject.oneclient.fx.nodes.dialog;
 
+import com.hearthproject.oneclient.util.MiscUtil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -28,8 +29,8 @@ public class TableDialog<T> extends Dialog<T> {
 		GridPane.setHgrow(table, Priority.ALWAYS);
 		GridPane.setFillWidth(table, true);
 
-		label = createContentLabel(dialogPane.getContentText());
-		label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        label = MiscUtil.createContentLabel(dialogPane.getContentText());
+        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		label.textProperty().bind(dialogPane.contentTextProperty());
 
 		this.grid = new GridPane();
@@ -60,15 +61,6 @@ public class TableDialog<T> extends Dialog<T> {
 		Platform.runLater(table::requestFocus);
 	}
 
-	private static Label createContentLabel(String text) {
-		Label label = new Label(text);
-		label.setMaxWidth(Double.MAX_VALUE);
-		label.setMaxHeight(Double.MAX_VALUE);
-		label.getStyleClass().add("content");
-		label.setWrapText(true);
-		label.setPrefWidth(360);
-		return label;
-	}
 
 	public TableView<T> getTable() {
 		return table;

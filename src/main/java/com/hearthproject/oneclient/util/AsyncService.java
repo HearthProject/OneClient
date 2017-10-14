@@ -4,6 +4,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 public class AsyncService<T> extends Service<T> {
 
@@ -11,6 +12,7 @@ public class AsyncService<T> extends Service<T> {
 
     public AsyncService(Callable<T> function) {
         this.function = function;
+        this.setExecutor(Executors.newSingleThreadExecutor());
     }
 
     @Override

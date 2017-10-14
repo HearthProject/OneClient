@@ -113,7 +113,8 @@ public class ForgeUtils {
 
 	//http://files.minecraftforge.net/maven/net/minecraftforge/forge/json
 	public static ForgeVersions loadForgeVersions() throws IOException {
-		if (forgeVersions != null) {
+        OneClientLogging.logger.info("Loading Forge versions");
+        if (forgeVersions != null) {
 			return forgeVersions;
 		}
 		SplashScreen.updateProgess("Downloading forge version json", 30);

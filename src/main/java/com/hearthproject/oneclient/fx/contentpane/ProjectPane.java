@@ -2,21 +2,15 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.Main;
 import com.hearthproject.oneclient.api.cmdb.Database;
-import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.curse.Curse;
-import com.hearthproject.oneclient.api.modpack.curse.CurseImporter;
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.nodes.ModpackTile;
+import com.hearthproject.oneclient.fx.nodes.ProjectTile;
 import com.hearthproject.oneclient.util.AsyncService;
-import com.hearthproject.oneclient.util.BindUtil;
-import com.hearthproject.oneclient.util.MiscUtil;
 import com.hearthproject.oneclient.util.files.FileUtil;
 import com.hearthproject.oneclient.util.files.ImageUtil;
 import com.hearthproject.oneclient.util.minecraft.MinecraftUtil;
 import com.jfoenix.controls.JFXToggleButton;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -27,7 +21,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.util.List;
 
-public class CurseMetaPane extends ContentPane {
+public abstract class ProjectPane extends ContentPane {
     public static final ObservableList<String> VERSIONS = MinecraftUtil.getVersions(false);
 
     static {
@@ -37,41 +31,33 @@ public class CurseMetaPane extends ContentPane {
     public JFXToggleButton toggleSort;
     public ComboBox<String> filterSort;
     public ComboBox<String> filterVersion;
-    public Label placeholder, page;
-    public ObservableList<Database.Project> tiles = FXCollections.observableArrayList();
-    public ListView<ModpackTile> listPacks;
+    public Label placeholder;
+    public ObservableList<Database.Project> projects = FXCollections.observableArrayList();
+    public ListView<ProjectTile> tiles;
     public Button buttonSearch;
     public TextField textSearch;
     public AnchorPane anchorPane;
 
     public ImageView loadingIcon;
 
-    private SimpleIntegerProperty count = new SimpleIntegerProperty(0);
-    private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
+    private String type;
 
-    public CurseMetaPane() {
-        super("gui/contentpanes/curse_packs.fxml", "Get Modpacks", "modpacks.png", ButtonDisplay.TOP);
+    public ProjectPane(String name, String image, String type) {
+        super("gui/contentpanes/curse_packs.fxml", name, image, ButtonDisplay.TOP);
+        this.type = type;
     }
 
     private final EventHandler<ScrollEvent> scroll = event -> {
         if (event.getDeltaY() < 0) {
-            load();
+            loadPage();
         }
     };
 
-    private AsyncService<List<Database.Project>> modpacks;
+    private AsyncService<List<Database.Project>> projectService;
     private PageService pageService;
 
     @Override
     protected void onStart() {
-        pageService = new PageService(10, () -> modpacks.getValue());
-        modpacks = new AsyncService<>(() -> FXCollections.observableArrayList(Curse.DATABASE.getPopular("modpack")));
-        modpacks.start();
-        BindUtil.bindMapping(tiles, listPacks.getItems(), project -> {
-            Instance instance = new CurseImporter(project).create();
-            return new ModpackTile(instance);
-        });
-        modpacks.setOnSucceeded(event -> load());
         anchorPane.prefWidthProperty().bind(Main.mainController.contentBox.widthProperty());
         anchorPane.prefHeightProperty().bind(Main.mainController.contentBox.heightProperty());
 
@@ -81,42 +67,51 @@ public class CurseMetaPane extends ContentPane {
 
         filterVersion.setItems(VERSIONS);
         filterVersion.getSelectionModel().selectFirst();
-        filterVersion.valueProperty().addListener(v -> {
-        });
+        filterVersion.valueProperty().addListener(v -> load());
 
-        filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical"));
+        filterSort.setItems(FXCollections.observableArrayList("Popularity", "Alphabetical", "Fuzzy"));
         filterSort.getSelectionModel().selectFirst();
-        filterSort.valueProperty().addListener(v -> {
-        });
+        filterSort.valueProperty().addListener(v -> load());
 
-        toggleSort.selectedProperty().addListener(v -> {
-        });
+        toggleSort.selectedProperty().addListener(v -> load());
+        buttonSearch.setOnAction(action -> load());
 
-        buttonSearch.setOnAction(action -> {
-        });
+        tiles.setFixedCellSize(162);
+        tiles.setPlaceholder(placeholder = new Label("Loading..."));
+        tiles.setOnScroll(scroll);
 
-        listPacks.setFixedCellSize(162);
-        listPacks.setPlaceholder(placeholder = new Label("Loading..."));
-        listPacks.setOnScroll(scroll);
-
+        pageService = new PageService(10, () -> projectService.getValue());
+        load();
+        bind();
         loadingIcon.visibleProperty().bind(pageService.runningProperty());
         buttonSearch.disableProperty().bind(pageService.runningProperty());
         textSearch.disableProperty().bind(pageService.runningProperty());
         filterSort.disableProperty().bind(pageService.runningProperty());
         filterVersion.disableProperty().bind(pageService.runningProperty());
         toggleSort.disableProperty().bind(pageService.runningProperty());
-
-
     }
 
 
+    public ObservableList<Database.Project> search(String query, String version, String sort, boolean reverse) {
+        return FXCollections.observableArrayList(Curse.getDatabase().searchProjects(query, type, version, sort, reverse));
+    }
+
     public void load() {
+        projectService = new AsyncService<>(() -> search(textSearch.getText(), filterVersion.getValue(), filterSort.getValue(), toggleSort.isSelected()));
+        projects.clear();
+        projectService.setOnSucceeded(event -> loadPage());
+        projectService.start();
+    }
+
+    public void loadPage() {
         if (!pageService.isRunning()) {
             pageService.reset();
             pageService.start();
-            pageService.setOnSucceeded(event -> MiscUtil.runLaterIfNeeded(() -> tiles.addAll(pageService.getValue())));
+            pageService.setOnSucceeded(event -> projects.addAll(pageService.getValue()));
         }
     }
+
+    public abstract void bind();
 
     @Override
     public void refresh() {

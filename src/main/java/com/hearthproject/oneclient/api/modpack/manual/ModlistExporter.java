@@ -1,6 +1,9 @@
-package com.hearthproject.oneclient.api.modpack;
+package com.hearthproject.oneclient.api.modpack.manual;
 
 import com.hearthproject.oneclient.Constants;
+import com.hearthproject.oneclient.api.base.Instance;
+import com.hearthproject.oneclient.api.base.ModInstaller;
+import com.hearthproject.oneclient.api.modpack.IExporter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

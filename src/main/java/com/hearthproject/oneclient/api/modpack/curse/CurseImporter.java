@@ -1,39 +1,25 @@
 package com.hearthproject.oneclient.api.modpack.curse;
 
-import com.hearthproject.oneclient.api.cmdb.Database;
+import com.hearthproject.oneclient.api.base.Instance;
 import com.hearthproject.oneclient.api.modpack.IImporter;
-import com.hearthproject.oneclient.api.modpack.Info;
-import com.hearthproject.oneclient.api.modpack.Instance;
 
 public class CurseImporter implements IImporter {
 
-    private Database.Project project;
+    private String name;
+    private int projectID;
 
-    public CurseImporter(int id) {
-        this.project = Curse.DATABASE.getProject(id);
+    public CurseImporter(int projectID) {
+        this.projectID = projectID;
     }
 
-    public CurseImporter(Database.Project project) {
-        this.project = project;
+    public CurseImporter(String name, int projectID) {
+        this(projectID);
+        this.name = name;
     }
 
     @Override
     public Instance create() {
-        String name = project.getTitle();
-
-        if (name == null)
-            return null;
-
-        Instance instance = new Instance(name, project.getSite(), new CurseInstaller(project),
-                new Info("popularity", project.getPopularity()),
-                new Info("authors", project.getAuthors()),
-//			new Info("categories", categories),
-                new Info("downloads", project.getDownloads()),
-                new Info("gameVersions", project.getVersions()),
-                new Info("summary", project.getDesc()),
-                new Info("icon-url", project.getIconURL())
-        );
-        return instance;
+        return new Instance(name, new CurseDownloader(projectID));
     }
 
 

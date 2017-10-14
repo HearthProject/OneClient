@@ -1,4 +1,4 @@
-package com.hearthproject.oneclient.fx.nodes;
+package com.hearthproject.oneclient.fx.nodes.dialog;
 
 import com.hearthproject.oneclient.util.files.JavaUtil;
 import javafx.beans.property.SimpleStringProperty;

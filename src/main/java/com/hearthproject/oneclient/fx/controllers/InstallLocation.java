@@ -8,6 +8,7 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
@@ -19,9 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.function.Predicate;
 
-public class InstallLocation {
-	public TextField locationField;
-
+public class InstallLocation extends Dialog<File> {
+    public TextField locationField;
 	public Button browseButton;
 	public Button okButton;
 

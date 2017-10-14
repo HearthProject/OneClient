@@ -2,7 +2,7 @@ package com.hearthproject.oneclient.fx.contentpane;
 
 import com.hearthproject.oneclient.fx.contentpane.base.ButtonDisplay;
 import com.hearthproject.oneclient.fx.contentpane.base.ContentPane;
-import com.hearthproject.oneclient.fx.nodes.JavaDialog;
+import com.hearthproject.oneclient.fx.nodes.dialog.JavaDialog;
 import com.hearthproject.oneclient.util.OperatingSystem;
 import com.hearthproject.oneclient.util.files.JavaUtil;
 import com.hearthproject.oneclient.util.launcher.SettingsUtil;

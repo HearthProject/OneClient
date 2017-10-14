@@ -11,6 +11,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -212,5 +213,15 @@ public class MiscUtil {
 		}
 		return false;
 	}
+
+    public static Label createContentLabel(String text) {
+        Label label = new Label(text);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        label.getStyleClass().add("content");
+        label.setWrapText(true);
+        label.setPrefWidth(360);
+        return label;
+    }
 
 }

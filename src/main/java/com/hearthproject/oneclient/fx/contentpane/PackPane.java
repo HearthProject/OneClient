@@ -3,8 +3,8 @@ package com.hearthproject.oneclient.fx.contentpane;
 import com.google.gson.JsonObject;
 import com.hearthproject.oneclient.DownloadTask;
 import com.hearthproject.oneclient.Main;
+import com.hearthproject.oneclient.api.base.Instance;
 import com.hearthproject.oneclient.api.modpack.DownloadManager;
-import com.hearthproject.oneclient.api.modpack.Instance;
 import com.hearthproject.oneclient.api.modpack.curse.CurseZipImporter;
 import com.hearthproject.oneclient.api.modpack.multimc.MMCImporter;
 import com.hearthproject.oneclient.api.modpack.twitch.TwitchImporter;
@@ -38,8 +38,8 @@ public class PackPane extends ContentPane {
 
 		buttonCurse.setOnAction(event -> {
 			Main.mainController.currentContent.button.setSelected(false);
-			Main.mainController.setContent(ContentPanes.CURSE_META_PANE);
-		});
+            Main.mainController.setContent(ContentPanes.CURSE_PACK_PANE);
+        });
 
 		buttonMMC.setOnAction(event -> {
 			FileChooser chooser = new FileChooser();
